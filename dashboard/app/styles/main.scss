@@ -1,0 +1,76 @@
+@import 'sass-bootstrap/lib/bootstrap';
+
+body {
+	background-color: grey;
+}
+$size: 180px;
+.gauge {
+    position: relative;
+    border-radius: 3px;
+    background-color: white;
+    margin: 25px 0;
+    width: $size;
+    min-width: $size;
+    max-width: $size;
+    min-height: $size;
+    height: $size;
+    max-width: $size;
+    text-align: left;
+    line-height: 1;
+    padding: 9px;
+
+}
+
+/* Gradient transparent - color - transparent */
+		
+$hr-width: 140px;
+hr.style-two {
+    border: 0;
+    margin: 8px 0 8px 0;
+    height: 1px;
+    background: #ccc;
+}
+span.infotext {
+    font-size: 25px;
+    text-align: center;
+    display: inline-block;
+    margin: 10px auto auto 50px;
+}
+span.infotext-2 {
+    position: absolute;
+    right: 26px;
+    bottom: 70px;
+    display: inline-block;
+    margin: 10px auto auto 4px;
+    color: #999;
+}
+span.health-text {
+    font-size: 25px;
+    width: $hr-width;
+    text-align: center;
+    display: inline-block;
+    margin: 10px auto 10px 15px;
+}
+span.mon-text {
+    text-align: right;
+    width: $hr-width;
+    display: inline-block;
+    margin: 5px auto auto 15px;
+}
+span.mon-text-2 {
+    text-align: right;
+    width: $hr-width;
+    display: inline-block;
+    margin: 10px auto auto 15px;
+    color: #aaa;
+}
+span.subtext {
+    position: absolute;
+    display: inline-block;
+    font-size: 10px;
+    bottom: 10px;
+    right: 8px;
+}
+.table tr:first-child > th, .table tr:first-child > td {
+    border-top: 0px;
+}
