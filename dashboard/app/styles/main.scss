@@ -1,8 +1,17 @@
 @import 'sass-bootstrap/lib/bootstrap';
 
+@font-face {
+	font-family: 'ApexSansMedium';
+	font-style: normal;
+	src: url('ApexSans-Medium.woff') format('woff');
+}
+
 body {
 	background-color: grey;
+	font-family: 'ApexSansMedium';
+	font-style: normal;
 }
+
 $size: 180px;
 .gauge {
     position: relative;
@@ -73,4 +82,18 @@ span.subtext {
 }
 .table tr:first-child > th, .table tr:first-child > td {
     border-top: 0px;
+}
+
+$g-width: 163px;
+.mycanvas {
+	max-width: $g-width;
+	max-height: $size;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+.mytext {
+	margin: 15px auto 0 auto;
+	text-align: center;
+	font-size: 20px;
 }
