@@ -13,14 +13,13 @@
         <link rel="stylesheet" href="styles/main.css">
         <!-- build:js scripts/vendor/modernizr.js -->
         <script src="bower_components/modernizr/modernizr.js"></script>
-	<link href='styles/ApexSans-Medium.woff' rel='stylesheet' type='text/css'>
         <!-- endbuild -->
     </head>
     <body>
-        <div class="container-fluid">
+        <div class="container">
 		<div class="row-fluid">
 			<div class="gauge span2">
-				Status
+				<span class="card-title">Status</span>
 				<hr class="style-two"></hr>
 				<span class="health-text">OK</span>
 				<span class="mon-text">1 / 1 mons</span>
@@ -29,14 +28,14 @@
 				<span class="subtext">50 secs ago</span>
 			</div>
 			<div class="gauge span2">
-				Free Space
+				<span class="card-title">Free Space</span>
 				<hr class="style-two"></hr>
 				<span class="infotext">73.5</span>
 				<span class="infotext-2">of 73.6G</span>
 				<span class="subtext">20 secs ago</span>
 			</div>
 			<div class="gauge span2">
-				Pools
+				<span class="card-title">Pools</span>
 				<hr class="style-two"></hr>
 				<table class="table">
 					<tr>
@@ -58,11 +57,17 @@
 				<span class="subtext">20 secs ago</span>
 			</div>
 			<div class="gauge span2">
-				Free Space
+				<span class="card-title">Used Space</span>
 				<hr class="style-two"></hr>
 				<div class="mytext"><span class="number">0</span>%</div>
 				<canvas class="mycanvas"></canvas>
+				<span class="subtext">of 19.41TB</span>
 			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="graph-one span10">
+			</div>
+		</div>
         </div>
 
         <!--[if lt IE 7]>

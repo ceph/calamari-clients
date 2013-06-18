@@ -6,8 +6,17 @@
 	src: url('ApexSans-Medium.woff') format('woff');
 }
 
+$itred: #f05c56;
+$itdarkred: #9c4850;
+$itgray: #5e6a71;
+$itdarkgray: #37424a;
+$itlightgray: #e6e8e8;
+$itdarkred: #9c4850;
+$itaqua: #55aeba;
+$itlightaqua: #80d2dc;
+
 body {
-	background-color: grey;
+	background-color: $itdarkgray;
 	font-family: 'ApexSansMedium';
 	font-style: normal;
 }
@@ -16,7 +25,7 @@ $size: 180px;
 .gauge {
     position: relative;
     border-radius: 3px;
-    background-color: white;
+    background-color: $itlightgray;
     margin: 25px 0;
     width: $size;
     min-width: $size;
@@ -27,10 +36,11 @@ $size: 180px;
     text-align: left;
     line-height: 1;
     padding: 9px;
-
+    color: $itdarkgray;
 }
 
 /* Gradient transparent - color - transparent */
+
 		
 $hr-width: 140px;
 hr.style-two {
@@ -51,7 +61,7 @@ span.infotext-2 {
     bottom: 70px;
     display: inline-block;
     margin: 10px auto auto 4px;
-    color: #999;
+    color: $itgray;
 }
 span.health-text {
     font-size: 25px;
@@ -65,6 +75,7 @@ span.mon-text {
     width: $hr-width;
     display: inline-block;
     margin: 5px auto auto 15px;
+    color: $itgray;
 }
 span.mon-text-2 {
     text-align: right;
@@ -96,4 +107,12 @@ $g-width: 163px;
 	margin: 15px auto 0 auto;
 	text-align: center;
 	font-size: 20px;
+}
+.graph-one {
+	background-color: $itlightgray;
+	height: 180px;
+	margin: 0;
+	padding: 0;
+}
+.graph-one.flotr-titles {
 }
