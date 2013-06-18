@@ -11,7 +11,6 @@ $itdarkred: #9c4850;
 $itgray: #5e6a71;
 $itdarkgray: #37424a;
 $itlightgray: #e6e8e8;
-$itdarkred: #9c4850;
 $itaqua: #55aeba;
 $itlightaqua: #80d2dc;
 
@@ -113,6 +112,13 @@ $g-width: 163px;
 	height: 180px;
 	margin: 0;
 	padding: 0;
+    	border-radius: 3px;
 }
-.graph-one.flotr-titles {
+.raphael-one {
+	margin-top: 25px;
+	padding-top: 20px;
+	padding-left: 90px;
+	background-color: $itlightgray;
+	height: 600;
+    	border-radius: 3px;
 }
