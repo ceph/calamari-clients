@@ -1,7 +1,7 @@
 .git
 *.swp
 *.swo
-*/.sass-cache
-*/.tmp
-*/node_modules
-*/app/bower_components
+dashboard/.sass-cache
+dashboard/.tmp
+dashboard/node_modules
+dashboard/app/bower_components
