@@ -30,7 +30,7 @@ require.config({
         gauge: 'vendor/gauge',
         bean: '../bower_components/bean/bean',
         flotr2: 'vendor/flotr2.amd',
-        raphael: '../bower_components/raphael/raphael'
+        raphael: 'vendor/raphael'
     }
 });
 
