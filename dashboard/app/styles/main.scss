@@ -14,39 +14,51 @@ $itlightgray: #e6e8e8;
 $itaqua: #55aeba;
 $itlightaqua: #80d2dc;
 
+$itapp-background-color: $itdarkgray;
+$itapp-card-color: $itlightgray;
+$itapp-font-family: 'ApexSansMedium';
+$itapp-standard-font-color: $itdarkgray;
+
 body {
-	background-color: $itdarkgray;
-	font-family: 'ApexSansMedium';
+	background-color: $itapp-background-color;
+	font-family: $itapp-font-family;
 	font-style: normal;
 }
 
-$size: 180px;
+$itapp-card-height: 220px;
 .gauge {
+    margin-top: 20px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
     position: relative;
     border-radius: 3px;
-    background-color: $itlightgray;
-    margin: 25px 0;
-    width: $size;
-    min-width: $size;
-    max-width: $size;
-    min-height: $size;
-    height: $size;
-    max-width: $size;
+    background-color: $itapp-card-color;
+    min-height: $itapp-card-height;
     text-align: left;
     line-height: 1;
     padding: 9px;
-    color: $itdarkgray;
+    color: $itapp-standard-font-color;
 }
 
 /* Gradient transparent - color - transparent */
 
 		
-$hr-width: 140px;
+$hr-width: 173px;
 hr.style-two {
     border: 0;
     margin: 8px 0 8px 0;
     height: 1px;
     background: #ccc;
+}
+.card-title {
+	text-transform: uppercase;
+}
+table.metrics tr td:first-child {
+    text-align: right;
+    color: $itgray;
+}
+table.metric td:last-child {
 }
 span.infotext {
     font-size: 25px;
@@ -63,17 +75,17 @@ span.infotext-2 {
     color: $itgray;
 }
 span.health-text {
-    font-size: 25px;
+    font-size: 35px;
     width: $hr-width;
     text-align: center;
-    display: inline-block;
-    margin: 10px auto 10px 15px;
+    display: block;
+    margin: 0 auto 10px auto;
 }
 span.mon-text {
-    text-align: right;
+    text-align: center;
     width: $hr-width;
     display: inline-block;
-    margin: 5px auto auto 15px;
+    margin: 5px auto auto auto;
     color: $itgray;
 }
 span.mon-text-2 {
@@ -97,7 +109,7 @@ span.subtext {
 $g-width: 163px;
 .mycanvas {
 	max-width: $g-width;
-	max-height: $size;
+	max-height: $itapp-card-height;
 	box-sizing: border-box;
 	padding: 0;
 	margin: 0;
@@ -110,15 +122,15 @@ $g-width: 163px;
 .graph-one {
 	background-color: $itlightgray;
 	height: 180px;
-	margin: 0;
 	padding: 0;
     	border-radius: 3px;
+	margin-top: 20px;
 }
 .raphael-one {
-	margin-top: 25px;
-	padding-top: 20px;
-	padding-left: 90px;
+	padding: 0;
+	margin-top: 20px;
+	margin-bottom: 20px;
 	background-color: $itlightgray;
-	height: 600;
+	height: 600px;
     	border-radius: 3px;
 }
