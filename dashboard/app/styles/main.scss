@@ -1,5 +1,5 @@
 @import 'sass-bootstrap/lib/bootstrap';
-
+@import 'compass/css3';
 @font-face {
 	font-family: 'ApexSansMedium';
 	font-style: normal;
@@ -18,6 +18,8 @@ $itapp-background-color: $itdarkgray;
 $itapp-card-color: $itlightgray;
 $itapp-font-family: 'ApexSansMedium';
 $itapp-standard-font-color: $itdarkgray;
+$itapp-card-border-radius: 3px;
+$itapp-card-box-shadow-color: #5e6a71;
 
 body {
 	background-color: $itapp-background-color;
@@ -26,19 +28,22 @@ body {
 }
 
 $itapp-card-height: 220px;
+
+.card {
+    color: $itapp-standard-font-color;
+    background-color: $itapp-card-color;
+    @include box-shadow($itapp-card-box-shadow-color 0 2px 0 0);
+    @include box-sizing(border-box);
+    @include border-radius($itapp-card-border-radius);
+}
+
 .gauge {
     margin-top: 20px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
     position: relative;
-    border-radius: 3px;
-    background-color: $itapp-card-color;
     min-height: $itapp-card-height;
     text-align: left;
     line-height: 1;
     padding: 9px;
-    color: $itapp-standard-font-color;
 }
 
 /* Gradient transparent - color - transparent */
@@ -123,7 +128,6 @@ $g-width: 163px;
 	background-color: $itlightgray;
 	height: 180px;
 	padding: 0;
-    	border-radius: 3px;
 	margin-top: 20px;
 }
 .raphael-one {
@@ -132,5 +136,4 @@ $g-width: 163px;
 	margin-bottom: 20px;
 	background-color: $itlightgray;
 	height: 600px;
-    	border-radius: 3px;
 }
