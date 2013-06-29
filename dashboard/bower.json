@@ -11,7 +11,8 @@
     "modernizr": "~2.6.2",
     "bean": "~1.0.4",
     "gauge.js": "latest",
-    "raphael": "~2.1.0"
+    "raphael": "~2.1.0",
+    "font-awesome": "~3.2.1"
   },
   "devDependencies": {}
 }

@@ -1,4 +1,5 @@
 @import 'sass-bootstrap/lib/bootstrap';
+@import 'font-awesome/scss/font-awesome';
 @import 'compass/css3';
 @font-face {
 	font-family: 'ApexSansMedium';
@@ -20,6 +21,7 @@ $itapp-font-family: 'ApexSansMedium';
 $itapp-standard-font-color: $itdarkgray;
 $itapp-card-border-radius: 3px;
 $itapp-card-box-shadow-color: #5e6a71;
+$itapp-subtext-font-color: $itgray;
 
 body {
 	background-color: $itapp-background-color;
@@ -42,14 +44,14 @@ $itapp-card-height: 220px;
     position: relative;
     min-height: $itapp-card-height;
     text-align: left;
-    line-height: 1;
+    line-height: 1.25;
     padding: 9px;
 }
 
 /* Gradient transparent - color - transparent */
 
 		
-$hr-width: 173px;
+$hr-width: 210px;
 hr.style-two {
     border: 0;
     margin: 8px 0 8px 0;
@@ -61,7 +63,7 @@ hr.style-two {
 }
 table.metrics tr td:first-child {
     text-align: right;
-    color: $itgray;
+    color: $itapp-subtext-font-color;
 }
 table.metric td:last-child {
 }
@@ -77,14 +79,14 @@ span.infotext-2 {
     bottom: 70px;
     display: inline-block;
     margin: 10px auto auto 4px;
-    color: $itgray;
+    color: $itapp-subtext-font-color;
 }
 span.health-text {
     font-size: 35px;
     width: $hr-width;
     text-align: center;
     display: block;
-    margin: 0 auto 10px auto;
+    margin: 15px auto 10px auto;
 }
 span.mon-text {
     text-align: center;
