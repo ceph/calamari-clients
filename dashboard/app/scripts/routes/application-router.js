@@ -2,13 +2,13 @@
 
 define([
     'jquery',
-    'backbone',
+    'backbone'
 ], function ($, Backbone) {
     'use strict';
 
     var ApplicationRouter = Backbone.Router.extend({
         routes: {
-        },
+        }
 
     });
 

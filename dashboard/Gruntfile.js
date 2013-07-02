@@ -1,3 +1,4 @@
+/* jshint -W070 */
 'use strict';
 var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
 var mountFolder = function (connect, dir) {

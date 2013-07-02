@@ -64,7 +64,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
 
     return {
         AppModel: ApplicationModel,
-        OSDModel: OSD,
+        OSDModel: OSD
     };
 });
 

@@ -11,7 +11,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
             this.listenTo(this.model, 'change', this.render);
         },
         render: function() {
-            console.log(this.model.toJSON());
+//          console.log(this.model.toJSON());
             this.$el.html(this.template(this.model.toJSON()));
         }
     });
