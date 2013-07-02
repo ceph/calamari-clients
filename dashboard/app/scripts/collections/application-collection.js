@@ -4,12 +4,12 @@ define([
     'underscore',
     'backbone',
     'models/application-model'
-], function (_, Backbone, ApplicationModel) {
+], function (_, Backbone, models) {
     'use strict';
 
-    var ApplicationCollection = Backbone.Collection.extend({
-        model: ApplicationModel
+    var OSDCollection = Backbone.Collection.extend({
+        model: models.OSDModel
     });
 
-    return ApplicationCollection;
+    return OSDCollection;
 });

@@ -37,6 +37,7 @@ $itapp-card-height: 220px;
     @include box-shadow($itapp-card-box-shadow-color 0 2px 0 0);
     @include box-sizing(border-box);
     @include border-radius($itapp-card-border-radius);
+    padding: 9px;
 }
 
 .gauge {
@@ -45,7 +46,6 @@ $itapp-card-height: 220px;
     min-height: $itapp-card-height;
     text-align: left;
     line-height: 1.25;
-    padding: 9px;
 }
 
 /* Gradient transparent - color - transparent */
@@ -132,10 +132,26 @@ $g-width: 163px;
 	padding: 0;
 	margin-top: 20px;
 }
+#viz {
+	margin-top: 15px;
+}
 .raphael-one {
-	padding: 0;
 	margin-top: 20px;
 	margin-bottom: 20px;
 	background-color: $itlightgray;
-	height: 600px;
+}
+
+tspan:hover, circle:hover {
+	cursor: pointer;
+}
+
+.detail {
+	margin-top: 10px;
+}
+.detail td:first-child {
+	padding-top: 10px;
+}
+.detail td.value {
+	font-family: 'Andale Mono';
+	padding: 10px 0 15px 15px;
 }

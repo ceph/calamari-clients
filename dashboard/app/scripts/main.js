@@ -34,7 +34,7 @@ require.config({
     }
 });
 
-require(['jquery', 'backbone', 'gauge', 'raphael'], function($, Backbone, Gauge) {
+require(['jquery', 'backbone', 'gauge', './views/raphael_demo', 'raphael'], function($, Backbone, Gauge) {
     Backbone.history.start();
     var opts = {
         lines: 10,
@@ -49,25 +49,5 @@ require(['jquery', 'backbone', 'gauge', 'raphael'], function($, Backbone, Gauge)
     r = Math.floor(r);
     gauge.set(r);
     gauge.setTextField($('.number')[0]);
-
-    var data1 = [];
-    var data2 = [];
-    var data3 = [];
-    for (var i = 0; i < 96; i += 1) {
-        data1.push([i * 15, Math.floor(100 * Math.random())]);
-        data2.push([i * 15, Math.floor(100 * Math.random())]);
-        data3.push([i * 15, Math.floor(100 * Math.random())]);
-    }
-    /*
-    var $el = $('.raphael-one');
-    var $itred = '#f05c56',
-        $itdarkred = '#9c4850',
-        $itgray = '#5e6a71',
-        $itdarkgray = '#37424a',
-        $itlightgray = '#e6e8e8',
-        $itaqua = '#55aeba',
-        $itlightaqua = '#80d2dc';
-
-	*/
 
 });

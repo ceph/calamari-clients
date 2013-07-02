@@ -16,104 +16,117 @@
     <!-- endbuild -->
   </head>
   <body>
-      <div class="container">
-	  <div class="row">
-	      <div class="span3 card gauge">
-		  <span class="card-title">Status</span>
-		  <hr class="style-two"></hr>
-		  <span class="health-text">WARN</span>
-		  <span class="mon-text">20 inactive</span>
-		  <span class="mon-text">14 unclean</span>
-		  <span class="mon-text">2 stale</span>
+    <div class="container">
+      <div class="row">
+	<div class="span3 card gauge">
+	  <span class="card-title">Status</span>
+	  <hr class="style-two"></hr>
+	  <span class="health-text">WARN</span>
+	  <span class="mon-text">20 inactive</span>
+	  <span class="mon-text">14 unclean</span>
+	  <span class="mon-text">2 stale</span>
 
-		  <!--div><i class="icon-warning-sign" style='font-size: 125px; opacity: 0.10; z: -10; position: absolute; left: 48px; top: 55px; color: red;'></i></div-->
-		  <span class="subtext">50 secs ago</span>
-	      </div>
-	      <div class="gauge card span3">
-		  <span class="card-title">Ceph Metrics</span>
-		  <hr class="style-two"></hr>
-		  <table class='table metrics'>
-		      <tr>
-			  <td>
-			      mons
-			  </td>
-			  <td>
-			      3 / 3
-			  </td>
-		      </tr>
-		      <tr>
-			  <td>
-			      osds
-			  </td>
-			  <td>
-			      32 /32
-			  </td>
-		      </tr>
-		      <tr>
-			  <td>
-			      pgs
-			  </td>
-			  <td>
-			      156 / 192
-			  </td>
-		      </tr>
-		  </table>
-		  <span class="subtext">20 secs ago</span>
-	      </div>
-	      <div class="gauge card span3">
-		  <span class="card-title">Pools</span>
-		  <hr class="style-two"></hr>
-		  <table class="table">
-		      <tr>
-			  <th>data</th>
-			  <td>3.2K</td>
-			  <td>1.25T</td>
-		      </tr>
-		      <tr>
-			  <th>metadata</th>
-			  <td>21</td>
-			  <td>9K</td>
-		      </tr>
-		      <tr>
-			  <th>rbd</th>
-			  <td>0</td>
-			  <td>0K</td>
-		      </tr>
-		  </table>
-		  <span class="subtext">20 secs ago</span>
-	      </div>
-	      <div class="gauge card span3">
-		  <span class="card-title">Used Space</span>
-		  <hr class="style-two"></hr>
-		  <div class="mytext"><span class="number">0</span>%</div>
-		  <canvas class="mycanvas"></canvas>
-		  <span class="subtext">of 19.41TB</span>
-	      </div>
-	  </div>
-	  <div class="row">
-	      <div class="graph-one card span12">
-	      </div>
-	  </div>
-	  <div class="row">
-	      <div class="raphael-one card span12">
-	      </div>
-	  </div>
+	  <!--div><i class="icon-warning-sign" style='font-size: 125px; opacity: 0.10; z: -10; position: absolute; left: 48px; top: 55px; color: red;'></i></div-->
+	  <span class="subtext">50 secs ago</span>
+	</div>
+	<div class="gauge card span3">
+	  <span class="card-title">Ceph Metrics</span>
+	  <hr class="style-two"></hr>
+	  <table class='table metrics'>
+	    <tr>
+	      <td>
+		mons
+	      </td>
+	      <td>
+		3 / 3
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>
+		osds
+	      </td>
+	      <td>
+		32 /32
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>
+		pgs
+	      </td>
+	      <td>
+		156 / 192
+	      </td>
+	    </tr>
+	  </table>
+	  <span class="subtext">20 secs ago</span>
+	</div>
+	<div class="gauge card span3">
+	  <span class="card-title">Pools</span>
+	  <hr class="style-two"></hr>
+	  <table class="table">
+	    <tr>
+	      <th>data</th>
+	      <td>3.2K</td>
+	      <td>1.25T</td>
+	    </tr>
+	    <tr>
+	      <th>metadata</th>
+	      <td>21</td>
+	      <td>9K</td>
+	    </tr>
+	    <tr>
+	      <th>rbd</th>
+	      <td>0</td>
+	      <td>0K</td>
+	    </tr>
+	  </table>
+	  <span class="subtext">20 secs ago</span>
+	</div>
+	<div class="gauge card span3">
+	  <span class="card-title">Used Space</span>
+	  <hr class="style-two"></hr>
+	  <div class="mytext"><span class="number">0</span>%</div>
+	  <canvas class="mycanvas"></canvas>
+	  <span class="subtext">of 19.41TB</span>
+	</div>
       </div>
+      <div class="row">
+	<div class="graph-one card span12">
+	</div>
+      </div>
+      <div class="row">
+	<div class="raphael-one card span12">
+	  <span class="card-title">OSD State</span>
+	  <hr class="style-two"></hr>
+	  <div id="viz" class="viz span9">
+	  </div>
+	  <div class="detail span2">
+	    OSD Attributes
+	    <hr class="style-two">
+	    <table>
+	      <tbody>
+	      <tr><td colspan=2>No OSD selected</td></tr>
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+      </div>
+    </div>
 
-      <!--[if lt IE 7]>
-      <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-      <![endif]-->
+    <!--[if lt IE 7]>
+    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+    <![endif]-->
 
-      <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-      <!--script>
-      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-      s.parentNode.insertBefore(g,s)}(document,'script'));
-      </script-->
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <!--script>
+    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+    </script-->
 
-      <!-- build:js scripts/main.js -->
-      <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
-      <!-- endbuild -->
+    <!-- build:js scripts/main.js -->
+    <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
+    <!-- endbuild -->
   </body>
 </html>
