@@ -95,12 +95,13 @@ require(['underscore', 'backbone', './helpers/raphael_support', 'jquery', './hel
     detailPanel.setElement($('.detail tbody'));
     $('svg').on('click', function(evt) {
         if (evt.target.nodeName === 'tspan' || evt.target.nodeName === 'circle') {
-            var x = evt.pageX;
-            var y = evt.pageY;
+            var x = evt.clientX;
+            var y = evt.clientY;
             //console.log(x + ' / ' + y);
             var el = r.getElementByPoint(x, y);
             if (el) {
                 var cid = el.data('modelid');
+                //console.log(cid);
                 detailPanel.model.set(collection.get(cid).attributes);
             }
         }
@@ -136,4 +137,3 @@ require(['underscore', 'backbone', './helpers/raphael_support', 'jquery', './hel
         simulateUsed: simulateUsedChanges
     };
 });
-
