@@ -13,17 +13,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         },
         animationFinished: function() {
             if (this.$el.hasClass('part1')) {
-                console.log('done with part1');
+                //console.log('done with part1');
                 this.$el.html(this.template(this.model.toJSON()));
                 this.$el.removeClass().addClass('fadeInAnim part2');
             } else if (this.$el.hasClass('part2')) {
                 this.$el.removeClass();
-                this.$el.off('webkitAnimationEnd', this.animationFinished);
+                this.$el.off('webkitAnimationEnd animationend', this.animationFinished);
             }
         },
         render: function() {
             //          console.log(this.model.toJSON());
-            this.$el.on('webkitAnimationEnd', this.animationFinished);
+            this.$el.on('webkitAnimationEnd animationend', this.animationFinished);
             this.$el.addClass('part1 fadeOutAnim');
         }
     });

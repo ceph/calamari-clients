@@ -10,7 +10,8 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
         height = 11 * step;
     var animateCircle = function(r, originX, originY, radius, destX, destY, model) {
             var c = r.circle(originX, originY, 20 * model.getUsedPercentage()).attr({
-                fill: model.getCapacityColor()
+                fill: model.getCapacityColor(),
+                stroke: 'none'
             });
             c.data('modelid', model.cid);
             var t;
@@ -106,6 +107,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                 var y = evt.clientY;
                 //console.log(x + ' / ' + y);
                 var el = r.getElementByPoint(x, y);
+                //console.log(el);
                 if (el) {
                     var cid = el.data('modelid');
                     //console.log(cid);

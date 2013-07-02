@@ -7,6 +7,11 @@
 	font-style: normal;
 	src: url('ApexSans-Medium.woff') format('woff');
 }
+@font-face {
+	font-family: 'ApexSansLight';
+	font-style: normal;
+	src: url('ApexSans-Light.woff') format('woff');
+}
 
 $itred: #f05c56;
 $itdarkred: #9c4850;
@@ -151,25 +156,33 @@ tspan:hover, circle:hover {
 }
 
 .detail {
-	overflow: hidden;
+	word-wrap: break-word;
+	word-break: break-all;
 	margin-top: 10px;
 }
 .detail td:first-child {
 	padding-top: 10px;
 }
+.table th {
+	font-weight: normal;
+}
+.table td {
+	color: $itgray;
+}
 .detail td.value {
-	font-family: 'Andale Mono';
+	//font-family: 'Andale Mono';
+	color: $itgray;
 	padding: 10px 0 15px 15px;
 }
 @include animate-fadeInDown($class: true);
 @include animate-fadeOutUp($class: true);
 
 .fadeInAnim {
-  @include animation(fadeInDown 0.75s 0);
+  @include animation(fadeInDown 0.75s);
 }
 
 .fadeOutAnim {
-  @include animation(fadeOutUp 0.5s 0);
+  @include animation(fadeOutUp 0.5s);
 }
 circle {
 	stroke: 'none';
