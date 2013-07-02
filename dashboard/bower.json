@@ -12,7 +12,9 @@
     "bean": "~1.0.4",
     "gauge.js": "latest",
     "raphael": "~2.1.0",
-    "font-awesome": "~3.2.1"
+    "font-awesome": "~3.2.1",
+    "backbone.wreqr": "~0.2.0",
+    "humanize": "~0.0.7"
   },
   "devDependencies": {}
 }

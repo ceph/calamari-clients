@@ -71,14 +71,16 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                     var change = Math.floor(capacity * Math.random());
                     m.set('used', change);
                 });
+                window.vent.trigger('updateTotals');
             };
 
         var resetChanges = function() {
                 raphdemo.collection.each(function(m) {
                     var capacity = m.get('capacity');
-                    var change = Math.floor(capacity * 0.33);
+                    var change = capacity * 0.05;
                     m.set('used', change);
                 });
+                window.vent.trigger('updateTotals');
             };
         raphdemo.simulateUsed = simulateUsedChanges;
         raphdemo.resetChanges = resetChanges;
@@ -99,19 +101,6 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
         var detailPanel = new View();
         detailPanel.setElement($('.detail tbody'));
         $('svg').on('click', function(evt) {
-            if (evt.target.nodeName === 'tspan' || evt.target.nodeName === 'circle') {
-                var x = evt.clientX;
-                var y = evt.clientY;
-                //console.log(x + ' / ' + y);
-                var el = r.getElementByPoint(x, y);
-                if (el) {
-                    var cid = el.data('modelid');
-                    //console.log(cid);
-                    detailPanel.model.set(raphdemo.collection.get(cid).attributes);
-                }
-            }
-        });
-        $('svg').on('hover', function(evt) {
             if (evt.target.nodeName === 'tspan' || evt.target.nodeName === 'circle') {
                 var x = evt.clientX;
                 var y = evt.clientY;

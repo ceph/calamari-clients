@@ -10,6 +10,9 @@ require.config({
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
         },
+        wreqr: {
+            deps: ['backbone']
+        },
         bootstrap: {
             deps: ['jquery'],
             exports: 'jquery'
@@ -29,12 +32,14 @@ require.config({
         bootstrap: 'vendor/bootstrap',
         gauge: 'vendor/gauge',
         bean: '../bower_components/bean/bean',
+        wreqr: '../bower_components/backbone.wreqr/lib/backbone.wreqr',
         flotr2: 'vendor/flotr2.amd',
-        raphael: 'vendor/raphael'
+        raphael: 'vendor/raphael',
+        humanize: '../bower_components/humanize/humanize'
     }
 });
 
-require(['jquery', 'backbone', 'gauge', 'views/raphael_demo'], function($, Backbone, Gauge, raphdemo) {
+require(['jquery', 'backbone', 'gauge', 'wreqr', 'views/raphael_demo', 'humanize'], function($, Backbone, Gauge, wreqr, raphdemo, humanize) {
     Backbone.history.start();
     var opts = {
         lines: 10,
@@ -45,20 +50,42 @@ require(['jquery', 'backbone', 'gauge', 'views/raphael_demo'], function($, Backb
     };
     var gauge = new Gauge($('.mycanvas')[0]).setOptions(opts);
 
-    var r = Math.random() * 100;
+    var r = Math.random(Date.now()) * 100;
     r = Math.floor(r);
-    var totalUsed = 0,
-        totalCapacity = 0;
+    window.vent = new Backbone.Wreqr.EventAggregator();
+    var collection;
     raphdemo.then(function(r, raphdemo) {
-        raphdemo.collection.each(function(m) {
+        collection = raphdemo.collection;
+        gauge.set(0);
+        gauge.setTextField($('.number')[0]);
+        window.vent.trigger('updateTotals');
+    });
+    var ONE_GIGABYTE = 1024 * 1024 * 1024;
+    window.vent.on('updateTotals', function() {
+        var totalUsed = 0,
+            totalCapacity = 0,
+            totalObj = 0,
+            totalObjSpace = 0;
+        collection.each(function(m) {
             totalUsed += m.get('used');
             totalCapacity += m.get('capacity');
+            totalObj += Math.random(Date.now()) * 100;
         });
         r = (totalUsed / totalCapacity) * 100;
         r = Math.floor(r);
         console.log(r);
+        var used = humanize.filesize(totalUsed * ONE_GIGABYTE);
+        used = used.replace(' Tb', 'T');
+        $('.usedcap').text(used);
+        var total = humanize.filesize(totalCapacity * ONE_GIGABYTE);
+        total = total.replace(' Tb', 'T');
+        $('.totalcap').text(total);
+        $('.objcount').text(Math.floor(totalObj));
+        totalObjSpace = totalObj * 50;
+        totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');
+        $('.objspace').text(totalObjSpace);
+
         gauge.set(r);
-        gauge.setTextField($('.number')[0]);
     });
 
 });

@@ -63,11 +63,14 @@ hr.style-two {
 .card-title {
 	text-transform: uppercase;
 }
-table.metrics tr td:first-child {
-    text-align: right;
+table.metrics tbody tr td:first-child {
     color: $itapp-subtext-font-color;
 }
-table.metric td:last-child {
+table.metrics tr td:first-child {
+    color: $itapp-subtext-font-color;
+}
+table.metrics tr td {
+	text-align: right;
 }
 span.infotext {
     font-size: 25px;
@@ -115,13 +118,13 @@ span.subtext {
     border-top: 0px;
 }
 
-$g-width: 163px;
+$g-width: $itapp-card-height;
 .mycanvas {
 	max-width: $g-width;
 	max-height: $itapp-card-height;
 	box-sizing: border-box;
 	padding: 0;
-	margin: 0;
+	margin-left: -10px;
 }
 .mytext {
 	margin: 15px auto 0 auto;
