@@ -23,6 +23,7 @@ $itapp-standard-font-color: $itdarkgray;
 $itapp-card-border-radius: 3px;
 $itapp-card-box-shadow-color: #5e6a71;
 $itapp-subtext-font-color: $itgray;
+$itapp-viz-text-color: #000;
 
 body {
 	background-color: $itapp-background-color;
@@ -166,4 +167,12 @@ tspan:hover, circle:hover {
 
 .fadeOutAnim {
   @include animation(fadeOutUp 0.5s 0);
+}
+circle {
+	stroke: 'none';
+}
+text {
+	font: 9px ApexSansMedium;
+	stroke: none;
+	fill: $itapp-viz-text-color;
 }

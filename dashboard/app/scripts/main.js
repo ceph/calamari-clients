@@ -34,7 +34,7 @@ require.config({
     }
 });
 
-require(['jquery', 'backbone', 'gauge', './views/raphael_demo', 'raphael'], function($, Backbone, Gauge) {
+require(['jquery', 'backbone', 'gauge', 'views/raphael_demo'], function($, Backbone, Gauge, raphdemo) {
     Backbone.history.start();
     var opts = {
         lines: 10,
@@ -44,10 +44,21 @@ require(['jquery', 'backbone', 'gauge', './views/raphael_demo', 'raphael'], func
 
     };
     var gauge = new Gauge($('.mycanvas')[0]).setOptions(opts);
-    gauge.maxValue = 100;
+
     var r = Math.random() * 100;
     r = Math.floor(r);
-    gauge.set(r);
-    gauge.setTextField($('.number')[0]);
+    var totalUsed = 0,
+        totalCapacity = 0;
+    raphdemo.then(function(r, raphdemo) {
+        raphdemo.collection.each(function(m) {
+            totalUsed += m.get('used');
+            totalCapacity += m.get('capacity');
+        });
+        r = (totalUsed / totalCapacity) * 100;
+        r = Math.floor(r);
+        console.log(r);
+        gauge.set(r);
+        gauge.setTextField($('.number')[0]);
+    });
 
 });
