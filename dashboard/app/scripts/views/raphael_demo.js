@@ -1,6 +1,6 @@
 /*global require*/
 'use strict';
-require(['underscore', 'backbone', '../helpers/raphael_support', 'jquery', '../helpers/generate-osds', '../views/application-view', 'raphael'], function(_, Backbone, rs, $, generate, View) {
+require(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'helpers/generate-osds', 'views/application-view', 'raphael'], function(_, Backbone, rs, $, generate, View) {
     var r = window.Raphael('viz', 720, 520);
     var originX = 0,
         originY = 0,

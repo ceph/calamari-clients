@@ -34,6 +34,7 @@ module.exports = function (grunt) {
                 tasks: ['coffee:test']
             },
             compass: {
+                config: 'config.rb',
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
                 tasks: ['compass']
             },
