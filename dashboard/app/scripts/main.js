@@ -32,7 +32,7 @@ require.config({
         bootstrap: 'vendor/bootstrap',
         gauge: 'vendor/gauge',
         bean: '../bower_components/bean/bean',
-        wreqr: '../bower_components/backbone.wreqr/lib/backbone.wreqr',
+        wreqr: '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
         flotr2: 'vendor/flotr2.amd',
         raphael: 'vendor/raphael',
         humanize: '../bower_components/humanize/humanize'
@@ -80,6 +80,7 @@ require(['jquery', 'backbone', 'gauge', 'wreqr', 'views/raphael_demo', 'humanize
         var total = humanize.filesize(totalCapacity * ONE_GIGABYTE);
         total = total.replace(' Tb', 'T');
         $('.totalcap').text(total);
+        $('.totalused').text(used);
         $('.objcount').text(Math.floor(totalObj));
         totalObjSpace = totalObj * 50;
         totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');

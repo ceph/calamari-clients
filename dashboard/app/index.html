@@ -21,7 +21,8 @@
 	<div class="span3 card gauge">
 	  <span class="card-title">Status</span>
 	  <hr class="style-two"></hr>
-	  <span class="health-text">WARN</span>
+	  <span class="health-text warn">WARN</span>
+	  <span class="mon-text">PGs</span>
 	  <span class="mon-text">20 inactive</span>
 	  <span class="mon-text">14 unclean</span>
 	  <span class="mon-text">2 stale</span>
@@ -30,7 +31,7 @@
 	  <span class="subtext">50 secs ago</span>
 	</div>
 	<div class="gauge card span3">
-	  <span class="card-title">Metrics</span>
+	  <span class="card-title">Processes</span>
 	  <hr class="style-two"></hr>
 	  <table class='table metrics'>
 	    <tbody>
@@ -42,7 +43,16 @@
 		  3
 		</td>
 		<td>
+		</td>
+	      </tr>
+	      <tr>
+		<th>
+		  mds
+		</th>
+		<td>
 		  3
+		</td>
+		<td>
 		</td>
 	      </tr>
 	      <tr>
@@ -50,21 +60,10 @@
 		  osds
 		</th>
 		<td>
-		  32
+		  160
 		</td>
 		<td>
-		  32
-		</td>
-	      </tr>
-	      <tr>
-		<th>
-		  pgs
-		</th>
-		<td>
-		  156
-		</td>
-		<td>
-		  192
+		  160
 		</td>
 	      </tr>
 	    </tbody>
@@ -72,7 +71,7 @@
 	  <span class="subtext">20 secs ago</span>
 	</div>
 	<div class="gauge card span3">
-	  <span class="card-title">Pools</span>
+	  <span class="card-title">Data</span>
 	  <hr class="style-two"></hr>
 	  <table class="table">
 	    <tr>
@@ -94,23 +93,20 @@
 	  <span class="subtext">20 secs ago</span>
 	</div>
 	<div class="gauge card span3">
-	  <span class="card-title">Used</span>
+	  <span class="card-title">Usage</span>
 	  <hr class="style-two"></hr>
 	  <div class="mytext"><span class="number">0</span>%</div>
 	  <canvas class="mycanvas"></canvas>
-	  <span class="subtext">of <span class="totalcap">0T</span></span>
-	</div>
-      </div>
-      <div class="row">
-	<div class="graph-one card span12">
+	  <span class="subtext"><span class="totalused">0</span> of <span class="totalcap">0T</span></span>
 	</div>
       </div>
       <div class="row">
 	<div class="raphael-one card span12">
-	  <span class="card-title">OSD State</span>
+	  <span class="card-title">OSDS</span>
 	  <hr class="style-two"></hr>
 	  <div id="viz" class="viz span9">
 	  </div>
+
 	  <div class="detail span2">
 	    OSD Attributes
 	    <hr class="style-two">
@@ -120,6 +116,12 @@
 	      </tbody>
 	    </table>
 	  </div>
+	</div>
+      </div>
+      <div class="row">
+	<div class="span12 notifications card">
+	  <span class="card-title">Notifications</span>
+	  <hr class="style-two"></hr>
 	</div>
       </div>
     </div>

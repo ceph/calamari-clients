@@ -45,10 +45,11 @@ $itapp-card-height: 220px;
     @include box-sizing(border-box);
     @include border-radius($itapp-card-border-radius);
     padding: 9px;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .gauge {
-    margin-top: 20px;
     position: relative;
     min-height: $itapp-card-height;
     text-align: left;
@@ -96,7 +97,7 @@ span.health-text {
     width: $hr-width;
     text-align: center;
     display: block;
-    margin: 15px auto 10px auto;
+    margin: 10px auto 10px auto;
 }
 span.mon-text {
     text-align: center;
@@ -136,19 +137,16 @@ $g-width: $itapp-card-height;
 	text-align: center;
 	font-size: 20px;
 }
-.graph-one {
-	background-color: $itlightgray;
-	height: 180px;
-	padding: 0;
-	margin-top: 20px;
-}
 #viz {
 	margin-top: 15px;
 }
+$second-row-height: 600px;
+$third-row-height: 90px;
+.notifications {
+	min-height: $third-row-height;
+}
 .raphael-one {
-	margin-top: 20px;
-	margin-bottom: 20px;
-	background-color: $itlightgray;
+	height: $second-row-height;
 }
 
 tspan:hover, circle:hover {
@@ -178,11 +176,11 @@ tspan:hover, circle:hover {
 @include animate-fadeOutUp($class: true);
 
 .fadeInAnim {
-  @include animation(fadeInDown 0.75s);
+  @include animation(fadeInDown 0.25s);
 }
 
 .fadeOutAnim {
-  @include animation(fadeOutUp 0.5s);
+  @include animation(fadeOutUp 0.25s);
 }
 circle {
 	stroke: 'none';
@@ -191,4 +189,18 @@ text {
 	font: 9px ApexSansMedium;
 	stroke: none;
 	fill: $itapp-viz-text-color;
+}
+@mixin textalert($color) {
+	color: $color;
+	opacity: 0.95;
+	text-shadow: 2px 2px $itdarkgray;
+}
+.warn {
+	@include textalert(orange);
+}
+.fail {
+	@include textalert(red);
+}
+.ok {
+	@include textalert(green);
 }

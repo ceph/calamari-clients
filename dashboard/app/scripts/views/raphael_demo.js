@@ -36,7 +36,11 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
             return c.animate(aFn);
         };
     var d = $.Deferred(function() {
-        var r = window.Raphael('viz', 720, 520);
+        var w = 720,
+            h = 520;
+        var r = window.Raphael('viz', w, h);
+        //        var zoom = 1.06;
+        //        r.setViewBox(-20, 0, w * zoom, h * zoom, true);
         var path = rs.calcGrid(originX, originY, width, height, step);
         var path1 = r.path('M0,0').attr({
             'stroke-width': 1,
