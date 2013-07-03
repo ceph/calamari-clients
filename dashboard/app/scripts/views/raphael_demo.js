@@ -1,6 +1,6 @@
 /*global define*/
 'use strict';
-define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstrap', 'helpers/generate-osds', 'views/application-view', 'raphael'], function(_, Backbone, rs, $, bs, generate, View) {
+define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstrap', 'helpers/generate-osds', 'views/application-view', 'models/application-model', 'raphael'], function(_, Backbone, rs, $, bs, generate, View, models) {
 
     var originX = 0,
         originY = 0,
@@ -8,6 +8,38 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
         osds = 16 * 10,
         width = 17 * step,
         height = 11 * step;
+    var legendCircle = function(r, originX, originY, percent) {
+            var m = new models.OSDModel({
+                capacity: 1024,
+                used: percent * 1024
+            });
+            var c = r.circle(originX, originY, 16 * m.getUsedPercentage()).attr({
+                fill: m.getCapacityColor(),
+                stroke: 'none',
+                opacity: 0
+            });
+            var aFn = window.Raphael.animation({
+                opacity: 1
+            }, 250, 'easeOut');
+            var text = percent * 100;
+            if (text <= 40 || text === 70 || text === 100) {
+                text = text.toString();
+            } else {
+                text = '\xBA';
+            }
+            r.text(originX, originY + 30, text).attr({
+                'font-size': '13px',
+                'font-family': 'ApexSansLight'
+            });
+            return c.animate(aFn);
+        };
+    var drawLegend = function(r, originX, originY) {
+            var xp = originX,
+                i;
+            for (i = 4; i <= 10; i += 1, xp += 32) {
+                legendCircle(r, xp, originY, i / 10);
+            }
+        };
     var animateCircle = function(r, originX, originY, radius, destX, destY, model) {
             var c = r.circle(originX, originY, 20 * model.getUsedPercentage()).attr({
                 fill: model.getCapacityColor(),
@@ -35,18 +67,20 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
             model.view = c;
             return c.animate(aFn);
         };
+
     var d = $.Deferred(function() {
         var w = 720,
             h = 520;
         var r = window.Raphael('viz', w, h);
-        //        var zoom = 1.06;
-        //        r.setViewBox(-20, 0, w * zoom, h * zoom, true);
         var path = rs.calcGrid(originX, originY, width, height, step);
         var path1 = r.path('M0,0').attr({
             'stroke-width': 1,
             'stroke': '#5e6a71',
             'opacity': 0.40
         });
+
+        drawLegend(r, 250, 485);
+
         var collection = generate.osds(osds);
         var raphdemo = {
             collection: collection
@@ -58,7 +92,6 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                 d.resolve(r, raphdemo);
             }
         }, 250);
-
         path1.animate(anim);
     });
     var p = d.promise();

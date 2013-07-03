@@ -88,18 +88,8 @@ define(['underscore', 'raphael'], function() {
             };
 
         };
-    var drawLegend = function(ox, oy) {
-            var path = [];
-            path.push('M');
-            path.push(ox);
-            path.push(',');
-            path.push(oy);
-            path.push('L');
-            return path.join('');
-        };
     return {
         calcGrid: calcGrid,
         calcPosition: calculatePosition,
-        drawLegend: drawLegend
     };
 });
