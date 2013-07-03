@@ -90,6 +90,6 @@ define(['underscore', 'raphael'], function() {
         };
     return {
         calcGrid: calcGrid,
-        calcPosition: calculatePosition,
+        calcPosition: calculatePosition
     };
 });

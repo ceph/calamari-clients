@@ -28,7 +28,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                 text = '\xBA';
             }
             r.text(originX, originY + 30, text).attr({
-                'font-size': '13px',
+                'font-size': '12px',
                 'font-family': 'ApexSansLight'
             });
             return c.animate(aFn);
