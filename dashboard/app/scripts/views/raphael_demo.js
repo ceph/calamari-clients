@@ -16,6 +16,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
             var c = r.circle(originX, originY, 16 * m.getUsedPercentage()).attr({
                 fill: m.getCapacityColor(),
                 stroke: 'none',
+                'cursor': 'default',
                 opacity: 0
             });
             var aFn = window.Raphael.animation({
@@ -28,6 +29,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                 text = '\xBA';
             }
             r.text(originX, originY + 30, text).attr({
+                'cursor': 'default',
                 'font-size': '12px',
                 'font-family': 'ApexSansLight'
             });
@@ -148,7 +150,11 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                 if (el) {
                     var cid = el.data('modelid');
                     //console.log(cid);
-                    detailPanel.model.set(raphdemo.collection.get(cid).attributes);
+                    if (cid) {
+			// ignore circles and tspans without data
+                        detailPanel.model.set(raphdemo.collection.get(cid).attributes);
+                    }
+                    return;
                 }
             }
         });

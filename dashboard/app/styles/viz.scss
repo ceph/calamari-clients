@@ -1,0 +1,46 @@
+@import 'animate';
+@import 'inktank_colors';
+#viz {
+	margin-top: 15px;
+}
+.raphael-one {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	background-color: $itlightgray;
+}
+
+tspan:hover, circle:hover {
+	cursor: pointer;
+}
+
+.detail {
+	overflow: hidden;
+	margin-top: 10px;
+}
+.detail td:first-child {
+	padding-top: 10px;
+}
+.detail td.value {
+	font-family: 'Andale Mono';
+	padding: 10px 0 15px 15px;
+}
+@include animate-fadeInDown($class: true);
+@include animate-fadeOutUp($class: true);
+
+.fadeInAnim {
+  @include animation(fadeInDown 0.25s 0);
+}
+
+.fadeOutAnim {
+  @include animation(fadeOutUp 0.25s 0);
+}
+circle {
+       stroke: 'none';
+}
+$itapp-viz-text-color: $itdarkgray;
+text {
+       font: 9px ApexSansMedium;
+       stroke: none;
+       fill: $itapp-viz-text-color;
+}
+

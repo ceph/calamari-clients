@@ -1,0 +1,129 @@
+@import 'compass/css3';
+@import 'inktank_colors';
+
+$itapp-background-color: $itdarkgray;
+$itapp-card-color: $itlightgray;
+$itapp-font-family: 'ApexSansMedium';
+$itapp-standard-font-color: $itdarkgray;
+$itapp-card-border-radius: 3px;
+$itapp-card-box-shadow-color: #5e6a71;
+$itapp-subtext-font-color: $itgray;
+
+body {
+	background-color: $itapp-background-color;
+	font-family: $itapp-font-family;
+	font-style: normal;
+}
+
+$itapp-card-height: 220px;
+
+.card {
+    color: $itapp-standard-font-color;
+    background-color: $itapp-card-color;
+    @include box-shadow($itapp-card-box-shadow-color 0 2px 0 0);
+    @include box-sizing(border-box);
+    @include border-radius($itapp-card-border-radius);
+    padding: 9px;
+}
+
+.gauge {
+    margin-top: 20px;
+    position: relative;
+    min-height: $itapp-card-height;
+    text-align: left;
+    line-height: 1.25;
+}
+
+$hr-width: 210px;
+hr.style-two {
+    border: 0;
+    margin: 8px 0 8px 0;
+    height: 1px;
+    background: #ccc;
+}
+.card-title {
+	text-transform: uppercase;
+}
+table.metrics tr td:first-child {
+    text-align: right;
+    color: $itapp-subtext-font-color;
+}
+table.metric td:last-child {
+}
+span.infotext {
+    font-size: 25px;
+    text-align: center;
+    display: inline-block;
+    margin: 10px auto auto 50px;
+}
+span.infotext-2 {
+    position: absolute;
+    right: 26px;
+    bottom: 70px;
+    display: inline-block;
+    margin: 10px auto auto 4px;
+    color: $itapp-subtext-font-color;
+}
+span.health-text {
+    font-size: 35px;
+    width: $hr-width;
+    text-align: center;
+    display: block;
+    margin: 15px auto 10px auto;
+}
+span.mon-text {
+    text-align: center;
+    width: $hr-width;
+    display: inline-block;
+    margin: 5px auto auto auto;
+    color: $itgray;
+}
+span.mon-text-2 {
+    text-align: right;
+    width: $hr-width;
+    display: inline-block;
+    margin: 10px auto auto 15px;
+    color: #aaa;
+}
+span.subtext {
+    position: absolute;
+    display: inline-block;
+    font-size: 10px;
+    bottom: 10px;
+    right: 8px;
+}
+.table tr:first-child > th, .table tr:first-child > td {
+    border-top: 0px;
+}
+$g-width: 205px;
+.usage-canvas {
+	max-width: $g-width;
+	max-height: $itapp-card-height;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+.mytext {
+	margin: 15px auto 0 auto;
+	text-align: center;
+	font-size: 20px;
+}
+.graph-one {
+	background-color: $itlightgray;
+	height: 180px;
+	padding: 0;
+	margin-top: 20px;
+}
+@mixin textalert($color) {
+       color: $color;
+       opacity: 0.95;
+}
+.warn {
+       @include textalert(orange);
+}
+.fail {
+       @include textalert(red);
+}
+.ok {
+       @include textalert(green);
+}

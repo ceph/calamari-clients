@@ -48,7 +48,7 @@ require(['jquery', 'backbone', 'gauge', 'wreqr', 'views/raphael_demo', 'humanize
         generateGradient: true
 
     };
-    var gauge = new Gauge($('.mycanvas')[0]).setOptions(opts);
+    var gauge = new Gauge($('.usage-canvas')[0]).setOptions(opts);
 
     var r = Math.random(Date.now()) * 100;
     r = Math.floor(r);
