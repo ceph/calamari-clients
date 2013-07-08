@@ -22,7 +22,7 @@ $third-row-height: 120px;
 .card {
     color: $itapp-standard-font-color;
     background-color: $itapp-card-color;
-    @include box-shadow($itapp-card-box-shadow-color 0 2px 4px rgba(0,0,0,.2));
+    @include box-shadow(0 2px 4px rgba(0,0,0,.2));
     @include box-sizing(border-box);
     @include border-radius($itapp-card-border-radius);
     padding: 9px;

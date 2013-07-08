@@ -1,48 +1,86 @@
+@import 'compass/css3';
 @import 'inktank_colors';
 
 $diameter: 50px;
-$round-fontsize: 22px;
+$round-fontsize: 24px;
 $ring-color: #fff;
 $ring-text: #fff;
 $ring-border-width: 2px;
+$notification-border-color: darken($itlightgray, 10%);
+$notification-background-color: lighten($itlightgray, 10%);
+$message-title-color: $itdarkgray;
+$message-detail-color: $itgray;
 
+$notification-width: 453px;
+.notifications {
+	.badge {
+	}
+}
 .notification {
-	box-sizing: border-box;
+	position: relative;
+	@include box-shadow(0 1px 2px rgba(0,0,0,.2));
+	@include box-sizing(border-box);
+	display: inline-block;
 	min-height: 60px;
 	padding: 12px;
 	border-radius: 0;
-	background-color: gray;
+	border: 1px solid $notification-border-color;
+	background-color: $notification-background-color;
 	margin: 3px;
+	width: $notification-width;
+	min-height: 65px;
+}
+.timesince {
+	position: absolute;
+	right: 8px;
+	top: 2px;
+	font-size: 11px;
 }
 .round {
 	display: inline-block;
-	font-size: $round-fontsize;
 	color: $ring-text;
 	height: $diameter;
 	width: $diameter;
-	border: $ring-border-width solid $ring-color;
 	text-align: center;
-	line-height: $diameter;
 	border-radius: 50%;
 	vertical-align: top;
 }
+.round-warn {
+	font-size: $round-fontsize;
+	line-height: $diameter* 0.78;
+	border: $ring-border-width solid orange;
+	opacity: 0.95;
+}
+.round-fail {
+	font-size: 30px;
+	line-height: $diameter * 0.80;
+	border: $ring-border-width solid red;
+	opacity: 0.70;
+}
+.round-ok {
+	font-size: 30px;
+	line-height: $diameter * 0.80;
+	border: $ring-border-width solid green;
+	opacity: 0.70;
+}
 .message-title {
-	color: #fff;
+	color: $message-title-color;
 	font-weight: light;
 	font-size: 20px;
-	letter-spacing: 0.09em;
 	display: table-row;
 }
 .message-detail {
-	color: lightgray;
+	margin-top: 4px;
+	color: $message-detail-color;
 	text-overflow: break-word;
-	width: 20em;
+	width: 23.5em;
 	font-size: 12px;
 	overflow: hidden;
-	letter-spacing: 0.09em;
 	text-overflow: ellipsis;
-	line-height: 1;
+	line-height: 1.5;
 }
 .message {
+	margin-left: 10px;
+	font-family: 'ApexSansMedium';
 	display: inline-block;
 }
