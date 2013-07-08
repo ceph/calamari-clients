@@ -57,7 +57,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                     cx: destX,
                     cy: destY
                 }, 333, 'easeIn', function() {
-                    t = r.text(destX, destY, model.get('index')).attr({
+                    t = r.text(destX, destY-1, model.get('index')).attr({
                         font: '',
                         stroke: '',
                         fill: '',
