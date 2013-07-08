@@ -1,0 +1,48 @@
+@import 'inktank_colors';
+
+$diameter: 50px;
+$round-fontsize: 22px;
+$ring-color: #fff;
+$ring-text: #fff;
+$ring-border-width: 2px;
+
+.notification {
+	box-sizing: border-box;
+	min-height: 60px;
+	padding: 12px;
+	border-radius: 0;
+	background-color: gray;
+	margin: 3px;
+}
+.round {
+	display: inline-block;
+	font-size: $round-fontsize;
+	color: $ring-text;
+	height: $diameter;
+	width: $diameter;
+	border: $ring-border-width solid $ring-color;
+	text-align: center;
+	line-height: $diameter;
+	border-radius: 50%;
+	vertical-align: top;
+}
+.message-title {
+	color: #fff;
+	font-weight: light;
+	font-size: 20px;
+	letter-spacing: 0.09em;
+	display: table-row;
+}
+.message-detail {
+	color: lightgray;
+	text-overflow: break-word;
+	width: 20em;
+	font-size: 12px;
+	overflow: hidden;
+	letter-spacing: 0.09em;
+	text-overflow: ellipsis;
+	line-height: 1;
+}
+.message {
+	display: inline-block;
+}

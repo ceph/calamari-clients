@@ -16,6 +16,8 @@ body {
 }
 
 $itapp-card-height: 220px;
+$second-row-height: 600px;
+$third-row-height: 120px;
 
 .card {
     color: $itapp-standard-font-color;
@@ -24,10 +26,11 @@ $itapp-card-height: 220px;
     @include box-sizing(border-box);
     @include border-radius($itapp-card-border-radius);
     padding: 9px;
+    margin-top: 15px;
+    margin-bottom: 0;
 }
 
 .gauge {
-    margin-top: 20px;
     position: relative;
     min-height: $itapp-card-height;
     text-align: left;
@@ -108,12 +111,6 @@ $g-width: 205px;
 	text-align: center;
 	font-size: 20px;
 }
-.graph-one {
-	background-color: $itlightgray;
-	height: 180px;
-	padding: 0;
-	margin-top: 20px;
-}
 @mixin textalert($color) {
        color: $color;
        opacity: 0.95;
@@ -127,3 +124,8 @@ $g-width: 205px;
 .ok {
        @include textalert(green);
 }
+.notifications {
+       min-height: $third-row-height;
+       margin-bottom: 10px;
+}
+
