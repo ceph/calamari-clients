@@ -11,7 +11,7 @@ $notification-background-color: lighten($itlightgray, 10%);
 $message-title-color: $itdarkgray;
 $message-detail-color: $itgray;
 
-$notification-width: 453px;
+$notification-width: 916px;
 .notifications {
 	.badge {
 	}
@@ -22,13 +22,17 @@ $notification-width: 453px;
 	@include box-sizing(border-box);
 	display: inline-block;
 	min-height: 60px;
-	padding: 12px;
+	padding: 3px;
 	border-radius: 0;
 	border: 1px solid $notification-border-color;
 	background-color: $notification-background-color;
 	margin: 3px;
 	width: $notification-width;
-	min-height: 65px;
+	min-height: 1em;
+	i {
+		padding-right: 5px;
+		padding-left: 3px;
+	}
 }
 .timesince {
 	position: absolute;
@@ -36,51 +40,22 @@ $notification-width: 453px;
 	top: 2px;
 	font-size: 11px;
 }
-.round {
-	display: inline-block;
-	color: $ring-text;
-	height: $diameter;
-	width: $diameter;
-	text-align: center;
-	border-radius: 50%;
-	vertical-align: top;
-}
-.round-warn {
-	font-size: $round-fontsize;
-	line-height: $diameter* 0.78;
-	border: $ring-border-width solid orange;
-	opacity: 0.95;
-}
-.round-fail {
-	font-size: 30px;
-	line-height: $diameter * 0.80;
-	border: $ring-border-width solid red;
-	opacity: 0.70;
-}
-.round-ok {
-	font-size: 30px;
-	line-height: $diameter * 0.80;
-	border: $ring-border-width solid green;
-	opacity: 0.70;
-}
 .message-title {
+	display: inline-block;
 	color: $message-title-color;
-	font-weight: light;
-	font-size: 20px;
-	display: table-row;
+	min-width: 7em;
 }
 .message-detail {
-	margin-top: 4px;
 	color: $message-detail-color;
 	text-overflow: break-word;
-	width: 23.5em;
-	font-size: 12px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	line-height: 1.5;
 }
 .message {
-	margin-left: 10px;
+	margin: 3px;
 	font-family: 'ApexSansMedium';
 	display: inline-block;
+}
+.read {
+	opacity: 0.50;
 }
