@@ -42,7 +42,7 @@ require.config({
         'backbone.wreqr': '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
         flotr2: 'vendor/flotr2.amd',
         raphael: 'vendor/raphael',
-        humanize: '../bower_components/humanize/humanize',
+        humanize: 'vendor/humanize',
         marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette'
     }
 });

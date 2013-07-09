@@ -1,6 +1,6 @@
 /*global require */
 'use strict';
-require(['jquery', 'backbone', 'gauge', 'views/raphael_demo', 'humanize', 'marionette'], function($, Backbone, Gauge, raphdemo, humanize) {
+require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'humanize', 'views/notification-card-view', 'marionette'], function($, _, Backbone, Gauge, raphdemo, humanize, NotificationCardView) {
     Backbone.history.start();
     var opts = {
         lines: 10,
@@ -22,6 +22,43 @@ require(['jquery', 'backbone', 'gauge', 'views/raphael_demo', 'humanize', 'mario
         window.vent.trigger('updateTotals');
     });
     var ONE_GIGABYTE = 1024 * 1024 * 1024;
+
+    _.extend(humanize.catalog, {
+        'about a minute ago': '1m',
+        ' minutes ago': 'm',
+        'about an hour ago': '1h',
+        ' hours ago': 'h',
+        '1 day ago': '1d',
+        ' days ago': 'd',
+        'about a month ago': '1M',
+        'in about a month': 'in about a month',
+        ' months ago': 'M',
+        ' a year ago': '1y',
+        ' years ago': 'y',
+    });
+    NotificationCardView.view.setElement($('.notifications')).render();
+    NotificationCardView.collection.add(
+    [{
+        title: 'OSD',
+        message: 'OSD.100 has stopped responding',
+        timestamp: humanize.time() - 24 * 60 * 60,
+        priority: 2
+    }, {
+        title: 'Processes',
+        message: 'MDS 192.168.20.2 is online',
+        timestamp: humanize.time() - 60 * 60,
+        priority: 0
+    }, {
+        title: 'Processes',
+        message: 'OSD.10 has stopped responding',
+        timestamp: humanize.time() - 60,
+        priority: 2
+    }, {
+        title: 'Processes',
+        message: 'MDS 192.168.20.2 has become unreachable',
+        timestamp: humanize.time(),
+        priority: 1
+    }]);
     window.vent.on('updateTotals', function() {
         var totalUsed = 0,
             totalCapacity = 0,
