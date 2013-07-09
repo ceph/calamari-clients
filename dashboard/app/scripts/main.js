@@ -10,8 +10,14 @@ require.config({
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
         },
-        wreqr: {
+        'backbone.wreqr': {
             deps: ['backbone']
+        },
+        'backbone.babysitter': {
+            deps: ['backbone']
+        },
+        marionette: {
+            deps: ['backbone', 'backbone.babysitter', 'backbone.wreqr']
         },
         bootstrap: {
             deps: ['jquery'],
@@ -32,14 +38,16 @@ require.config({
         bootstrap: 'vendor/bootstrap',
         gauge: 'vendor/gauge',
         bean: '../bower_components/bean/bean',
-        wreqr: '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
+        'backbone.babysitter': '../bower_components/backbone.marionette/public/javascripts/backbone.babysitter',
+        'backbone.wreqr': '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
         flotr2: 'vendor/flotr2.amd',
         raphael: 'vendor/raphael',
-        humanize: '../bower_components/humanize/humanize'
+        humanize: '../bower_components/humanize/humanize',
+        marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette'
     }
 });
 
-require(['jquery', 'backbone', 'gauge', 'wreqr', 'views/raphael_demo', 'humanize'], function($, Backbone, Gauge, wreqr, raphdemo, humanize) {
+require(['jquery', 'backbone', 'gauge', 'views/raphael_demo', 'humanize', 'marionette'], function($, Backbone, Gauge, raphdemo, humanize) {
     Backbone.history.start();
     var opts = {
         lines: 10,
