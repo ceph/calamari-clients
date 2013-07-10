@@ -15,7 +15,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             priority: 0,
             timestamp: 0,
             acked: false
-        },
+        }
     });
 
     return Notification;

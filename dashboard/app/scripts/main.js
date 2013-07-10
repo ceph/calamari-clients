@@ -3,22 +3,6 @@
 
 require.config({
     shim: {
-        underscore: {
-            exports: '_'
-        },
-        backbone: {
-            deps: ['underscore', 'jquery'],
-            exports: 'Backbone'
-        },
-        'backbone.wreqr': {
-            deps: ['backbone']
-        },
-        'backbone.babysitter': {
-            deps: ['backbone']
-        },
-        marionette: {
-            deps: ['backbone', 'backbone.babysitter', 'backbone.wreqr']
-        },
         bootstrap: {
             deps: ['jquery'],
             exports: 'jquery'
@@ -38,7 +22,7 @@ require.config({
         bootstrap: 'vendor/bootstrap',
         gauge: 'vendor/gauge',
         bean: '../bower_components/bean/bean',
-        'backbone.babysitter': '../bower_components/backbone.marionette/public/javascripts/backbone.babysitter',
+        'backbone.babysitter': '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
         'backbone.wreqr': '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
         flotr2: 'vendor/flotr2.amd',
         raphael: 'vendor/raphael',

@@ -29,7 +29,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', '../models/
             model.timeStr = humanize.relativeTime(model.timestamp);
             return model;
         },
-        initialize: function() {},
+        initialize: function() {}
     });
 
     return NotificationItemView;

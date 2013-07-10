@@ -34,7 +34,7 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
         'in about a month': 'in about a month',
         ' months ago': 'M',
         ' a year ago': '1y',
-        ' years ago': 'y',
+        ' years ago': 'y'
     });
     NotificationCardView.view.setElement($('.notifications')).render();
     NotificationCardView.collection.add(
