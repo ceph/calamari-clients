@@ -52,13 +52,16 @@ table.metrics tr td:first-child {
     text-align: right;
     color: $itapp-subtext-font-color;
 }
+table.metrics td {
+    width: 100px;
+}
 table.metric td:last-child {
 }
 .table th, .table td {
     padding: 4px;
 }
 .table tbody td, .table thead th {
-	text-align: center;
+	text-align: right;
 }
 .table tbody td {
 	font-family: ApexSansLight;

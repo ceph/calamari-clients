@@ -58,16 +58,39 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
         timestamp: humanize.time(),
         priority: 1
     }]);
+    var replaceText = function($el, text, removeClass, addClass) {
+            $el.css('display', 'none').text(text);
+            if (removeClass !== undefined) {
+                $el.removeClass(removeClass);
+            }
+            if (addClass !== undefined) {
+                $el.addClass(addClass);
+            }
+            $el.fadeIn().css('display', '');
+        };
     window.vent.on('status:healthok', function() {
         var $el = $('.health-text');
-        $el.css('display', 'none').text('OK').removeClass('warn').addClass('ok').fadeIn().css('display', '');
+        replaceText($el, 'OK', 'warn', 'ok');
     });
     window.vent.on('status:healthwarn', function() {
         var $el = $('.health-text');
-        $el.css('display', 'none').text('WARN').removeClass('ok').addClass('warn').fadeIn().css('display', '');
+        replaceText($el, 'WARN', 'ok', 'warn');
     });
     window.vent.on('status:healthok status:healthwarn', function() {
-        $('.detail tbody').css('display', 'none').text('No OSD selected').fadeIn().css('display', '');
+        replaceText($('.detail tbody'), 'No OSD Selected');
+    });
+    window.vent.on('status:healthok', function() {
+        replaceText($('.warn-pg, .warn-osd, .warn-pool'), '0');
+        replaceText($('.ok-pg'), 2400);
+        replaceText($('.ok-pool'), 10);
+    });
+    window.vent.on('status:healthwarn', function() {
+        var pg = Math.round(Math.random() * 45)+5;
+        var pool = Math.round(Math.random() * 1)+1;
+        replaceText($('.warn-pg'), pg);
+        replaceText($('.warn-pool'), pool);
+        replaceText($('.ok-pg'), 2400 - pg);
+        replaceText($('.ok-pool'), 10 - pool);
     });
     window.vent.on('updateTotals', function() {
         var totalUsed = 0,
