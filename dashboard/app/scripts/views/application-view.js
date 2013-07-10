@@ -15,7 +15,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
             var model = this.model.toJSON();
             model.created = humanize.date('Y-M-d H:i', model.created / 1000);
             model.modified = humanize.date('Y-M-d H:i', model.modified / 1000);
-            model.status = model.up && model. in ? 'up/in' : model.up && !model. in ? 'up/out' : 'down';
+            model.status = model.up && model['in'] ? 'up/in' : model.up && !model['in'] ? 'up/out' : 'down';
             return model;
         },
         animationFinished: function() {

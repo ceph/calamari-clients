@@ -56,7 +56,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             used: 0,
             uuid: '',
             up: true,
-            in : true,
+            'in': true,
             created: Date.now(),
             modified: Date.now(),
             ip: ''
