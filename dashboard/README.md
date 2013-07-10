@@ -8,3 +8,7 @@ Used for animating different elements using CSS3. Enhances Compass a library for
 
 	sudo gem install animate
 	
+Symbolic Link
+-------------
+
+	cd app && ln -fs bower_components/font-awesome/font font
