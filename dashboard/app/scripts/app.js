@@ -24,18 +24,16 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
     var ONE_GIGABYTE = 1024 * 1024 * 1024;
 
     _.extend(humanize.catalog, {
-        'about a minute ago': '1m',
-        ' seconds ago': 's',
-        ' minutes ago': 'm',
-        'about an hour ago': '1h',
-        ' hours ago': 'h',
-        '1 day ago': '1d',
-        ' days ago': 'd',
-        'about a month ago': '1M',
-        'in about a month': 'in about a month',
-        ' months ago': 'M',
-        ' a year ago': '1y',
-        ' years ago': 'y'
+        'about_a_minute_ago': '1m',
+        'minutes_ago': 'm',
+        'about_an_hour_ago': '1h',
+        'hours_ago': 'h',
+        'one_day_ago': '1d',
+        'days_ago': 'd',
+        'about_a_month_ago': '1M',
+        'months_ago': 'M',
+        'a_year_ago': '1y',
+        'years_ago': 'y'
     });
     NotificationCardView.view.setElement($('.notifications')).render();
     NotificationCardView.collection.add(
