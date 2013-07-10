@@ -16,7 +16,8 @@
     "backbone.wreqr": "~0.2.0",
     "humanize": "~0.0.7",
     "backbone.marionette": "~1.0.4",
-    "backbone.babysitter": "~0.0.6"
+    "backbone.babysitter": "~0.0.6",
+    "Faker": "~0.5.11"
   },
   "devDependencies": {}
 }
