@@ -14,9 +14,10 @@ tspan:hover, circle:hover {
 .detail {
 	overflow: hidden;
 	margin-top: 10px;
+	line-height: 1;
 }
-.detail td:first-child {
-	padding-top: 10px;
+.detail td {
+	padding-top: 0px;
 }
 .detail td.value {
 	font-family: 'Andale Mono';

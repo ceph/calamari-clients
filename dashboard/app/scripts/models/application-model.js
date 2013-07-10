@@ -10,24 +10,27 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
     var OSD = Backbone.Model.extend({
         initialize: function() {
             _.bindAll(this, 'getUsedPercentage', 'updateSize', 'getCapacityColor', 'stateChange');
-            this.on('change:used', this.updateSize);
-            this.on('change:up', this.stateChange);
+            this.on('change:up change:in', this.updateSize);
         },
         getUsedPercentage: function() {
-            if (this.get('used') === 0) {
-                return 0;
+            var up = this.get('up');
+            var _in = this.get('in');
+            if (up && _in) {
+                console.log('up');
+                return 0.4;
             }
-            var value = Math.max((this.get('used') / this.get('capacity')), 0.4);
-            return value;
+            if (up && _in === false) {
+                console.log('out');
+                return 0.66;
+            }
+            console.log('down');
+            return 1;
         },
         getCapacityColor: function() {
             var s = 'hsb(' + [(1 - this.getUsedPercentage()) * 0.5, 1, 0.75] + ')';
             return s;
         },
         updateSize: function() {
-            if (this.get('up') === false) {
-                return;
-            }
             //console.log('size of ' + this.get('index') + ' changed to ' + this.get('used'));
             if (this.view) {
                 var a = window.Raphael.animation({
@@ -52,7 +55,11 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             capacity: 1024,
             used: 0,
             uuid: '',
-            up: true
+            up: true,
+            in : true,
+            created: Date.now(),
+            modified: Date.now(),
+            ip: ''
         },
         destroy: function() {
             this.off('changed');
@@ -67,4 +74,3 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
         OSDModel: OSD
     };
 });
-

@@ -25,6 +25,7 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
 
     _.extend(humanize.catalog, {
         'about a minute ago': '1m',
+        ' seconds ago': 's',
         ' minutes ago': 'm',
         'about an hour ago': '1h',
         ' hours ago': 'h',

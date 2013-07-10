@@ -26,65 +26,77 @@
 	  <!--div><i class="icon-warning-sign" style='font-size: 125px; opacity: 0.10; z: -10; position: absolute; left: 48px; top: 55px; color: red;'></i></div-->
 	  <span class="subtext">50 secs ago</span>
 	</div>
-	<div class="gauge card span3">
-	  <span class="card-title">Processes</span>
+	<div class="gauge card span6">
+	  <span class="card-title">Status</span>
 	  <hr class="style-two"></hr>
 	  <table class='table metrics'>
+		  <thead>
+
+		    <tr>
+		      <th>&nbsp;</th>
+		      <th class="ok">OK</th>
+		      <th class="warn">WARN</th>
+		      <th class="fail">CRIT</th>
+		    </tr>
+		  </thead>
 	    <tbody>
 	      <tr>
 		<th>
-		  mons
+		  MON
 		</th>
 		<td>
 		  3
 		</td>
 		<td>
+		  0
+		</td>
+		<td>
+		  0
 		</td>
 	      </tr>
 	      <tr>
 		<th>
-		  mds
-		</th>
-		<td>
-		  3
-		</td>
-		<td>
-		</td>
-	      </tr>
-	      <tr>
-		<th>
-		  osds
+		  OSD
 		</th>
 		<td>
 		  160
 		</td>
 		<td>
-		  160
+		  0
+		</td>
+		<td>
+		  0
+		</td>
+	      </tr>
+	      <tr>
+		<th>
+		  POOL
+		</th>
+		<td>
+		  10
+		</td>
+		<td>
+		  0
+		</td>
+		<td>
+		  0
+		</td>
+	      </tr>
+	      <tr>
+		<th>
+		  PG
+		</th>
+		<td>
+		  2400
+		</td>
+		<td>
+		  0
+		</td>
+		<td>
+		  0
 		</td>
 	      </tr>
 	    </tbody>
-	  </table>
-	  <span class="subtext">20 secs ago</span>
-	</div>
-	<div class="gauge card span3">
-	  <span class="card-title">Data</span>
-	  <hr class="style-two"></hr>
-	  <table class="table">
-	    <tr>
-	      <th>data</th>
-	      <td class="usedcap">0</td>
-	      <td class="totalcap">0</td>
-	    </tr>
-	    <tr>
-	      <th>metadata</th>
-	      <td class="objcount">0</td>
-	      <td class="objspace">0</td>
-	    </tr>
-	    <tr>
-	      <th>rbd</th>
-	      <td>0</td>
-	      <td>0K</td>
-	    </tr>
 	  </table>
 	  <span class="subtext">20 secs ago</span>
 	</div>
@@ -98,7 +110,7 @@
       </div>
       <div class="row">
 	<div class="raphael-one card span12">
-	  <span class="card-title">OSD Utilization</span>
+	  <span class="card-title">OSD Status</span>
 	  <hr class="style-two"></hr>
 	  <div id="viz" class="viz span9">
 	  </div>
@@ -114,7 +126,7 @@
 	  </div>
 	</div>
       </div>
-      <div class="row">
+      <div class="row" style="display:none">
 	      <div class="span12 notifications card">
 	      </div>
       </div>

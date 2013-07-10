@@ -54,6 +54,15 @@ table.metrics tr td:first-child {
 }
 table.metric td:last-child {
 }
+.table th, .table td {
+    padding: 4px;
+}
+.table tbody td, .table thead th {
+	text-align: center;
+}
+.table tbody td {
+	font-family: ApexSansLight;
+}
 span.infotext {
     font-size: 25px;
     text-align: center;

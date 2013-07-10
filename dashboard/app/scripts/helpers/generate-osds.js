@@ -1,5 +1,5 @@
 /*global define */
-define(['backbone', '../collections/application-collection'], function(Backbone, Collection) {
+define(['backbone', '../collections/application-collection', 'faker'], function(Backbone, Collection, Faker) {
     'use strict';
     var generateOsds = function(count) {
             var c = new Collection();
@@ -13,7 +13,11 @@ define(['backbone', '../collections/application-collection'], function(Backbone,
                     index: i,
                     used: Math.floor(Math.max(768 * Math.random()) + 1, 1024),
                     uuid: '0D5BB8' + d1.toString(16) + d2.toString(16) + '-6161-48D4-' + d3.toString(16) + '160-9863A3F016D0',
-                    up: true
+                    up: true,
+                    in : true,
+                    created: Date.now() - 3600000 * Math.floor(Math.random() * 10000),
+                    modified: Date.now() - Math.floor(Math.random() * 100),
+                    ip: Faker.Internet.ip()
                 });
             }
             return c;

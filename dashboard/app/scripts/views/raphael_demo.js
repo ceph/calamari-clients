@@ -9,10 +9,22 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
         width = 17 * step,
         height = 11 * step;
     var legendCircle = function(r, originX, originY, percent) {
-            var m = new models.OSDModel({
+            var srctext = ['down', 'up/out', 'up/in'];
+            var srcstate = [{
+                up: false,
+                in : false
+            }, {
+                up: true,
+                in : false
+            }, {
+                up: true,
+                in : true
+            }];
+            var i = Math.round(1 / percent) - 1;
+            var m = new models.OSDModel(_.extend(srcstate[i], {
                 capacity: 1024,
                 used: percent * 1024
-            });
+            }));
             var c = r.circle(originX, originY, 16 * m.getUsedPercentage()).attr({
                 fill: m.getCapacityColor(),
                 stroke: 'none',
@@ -22,13 +34,8 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
             var aFn = window.Raphael.animation({
                 opacity: 1
             }, 250, 'easeOut');
-            var text = percent * 100;
-            if (text <= 40 || text === 70 || text === 100) {
-                text = text.toString();
-            } else {
-                text = '\xBA';
-            }
-            r.text(originX, originY + 30, text).attr({
+            var text = srctext[i];
+            r.text(originX, originY + 23, text).attr({
                 'cursor': 'default',
                 'font-size': '12px',
                 'font-family': 'ApexSansLight'
@@ -38,8 +45,8 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
     var drawLegend = function(r, originX, originY) {
             var xp = originX,
                 i;
-            for (i = 4; i <= 10; i += 1, xp += 32) {
-                legendCircle(r, xp, originY, i / 10);
+            for (i = 1; i <= 3; i += 1, xp += 50) {
+                legendCircle(r, xp, originY, i / 3);
             }
         };
     var animateCircle = function(r, originX, originY, radius, destX, destY, model) {
@@ -57,7 +64,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                     cx: destX,
                     cy: destY
                 }, 333, 'easeIn', function() {
-                    t = r.text(destX, destY-1, model.get('index')).attr({
+                    t = r.text(destX, destY - 1, model.get('index')).attr({
                         font: '',
                         stroke: '',
                         fill: '',
@@ -81,7 +88,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
             'opacity': 0.40
         });
 
-        drawLegend(r, 250, 485);
+        drawLegend(r, 285, 475);
 
         var collection = generate.osds(osds);
         var raphdemo = {
@@ -105,11 +112,21 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
         });
         return $.Deferred().resolve(r, raphdemo);
     }).then(function(r, raphdemo) {
+        var maxRed = 3;
         var simulateUsedChanges = function() {
                 raphdemo.collection.each(function(m) {
-                    var capacity = m.get('capacity');
-                    var change = Math.floor(capacity * Math.random());
-                    m.set('used', change);
+                    var up = true;
+                    var _in = Math.random();
+                    _in = _in < 0.95;
+                    if (!_in && (Math.random() > 0.6) && maxRed > 0) {
+                        maxRed -= 1;
+                        up = false;
+                        //console.log(m.cid + ' setting to down');
+                    }
+                    m.set({
+                        'up': up,
+                        'in': _in
+                    });
                 });
                 window.vent.trigger('updateTotals');
                 window.vent.trigger('status:healthwarn');
@@ -117,9 +134,10 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
 
         var resetChanges = function() {
                 raphdemo.collection.each(function(m) {
-                    var capacity = m.get('capacity');
-                    var change = capacity * 0.05;
-                    m.set('used', change);
+                    m.set({
+                        'up': true,
+                        'in': true
+                    });
                 });
                 window.vent.trigger('updateTotals');
                 window.vent.trigger('status:healthok');
@@ -153,7 +171,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                     var cid = el.data('modelid');
                     //console.log(cid);
                     if (cid) {
-			// ignore circles and tspans without data
+                        // ignore circles and tspans without data
                         detailPanel.model.set(raphdemo.collection.get(cid).attributes);
                     }
                     return;
