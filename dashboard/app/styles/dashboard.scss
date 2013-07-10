@@ -1,3 +1,4 @@
+@import 'animate';
 @import 'compass/css3';
 @import 'inktank_colors';
 
@@ -68,11 +69,11 @@ span.infotext-2 {
     color: $itapp-subtext-font-color;
 }
 span.health-text {
-    font-size: 35px;
+    font-size: 45px;
     width: $hr-width;
     text-align: center;
     display: block;
-    margin: 15px auto 10px auto;
+    margin: 40px auto 0px auto;
 }
 span.mon-text {
     text-align: center;
@@ -129,3 +130,11 @@ $g-width: 205px;
        margin-bottom: 10px;
 }
 
+@include animate-fadeIn($class: true);
+@include animate-fadeOut($class: true);
+.fadeInStatusAnim {
+	@include animation(fadeIn 0.25s 0);
+}
+.fadeOutAnim {
+	@include animation(fadeOut 0.25s 0);
+}

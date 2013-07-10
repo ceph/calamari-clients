@@ -112,6 +112,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                     m.set('used', change);
                 });
                 window.vent.trigger('updateTotals');
+                window.vent.trigger('status:healthwarn');
             };
 
         var resetChanges = function() {
@@ -121,6 +122,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                     m.set('used', change);
                 });
                 window.vent.trigger('updateTotals');
+                window.vent.trigger('status:healthok');
             };
         raphdemo.simulateUsed = simulateUsedChanges;
         raphdemo.resetChanges = resetChanges;

@@ -59,6 +59,14 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
         timestamp: humanize.time(),
         priority: 1
     }]);
+    window.vent.on('status:healthok', function() {
+        var $el = $('.health-text');
+        $el.css('display', 'none').text('OK').removeClass('warn').addClass('ok').fadeIn().css('display', '');
+    });
+    window.vent.on('status:healthwarn', function() {
+        var $el = $('.health-text');
+        $el.css('display', 'none').text('WARN').removeClass('ok').addClass('warn').fadeIn().css('display', '');
+    });
     window.vent.on('updateTotals', function() {
         var totalUsed = 0,
             totalCapacity = 0,
@@ -83,7 +91,6 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
         totalObjSpace = totalObj * 50;
         totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');
         $('.objspace').text(totalObjSpace);
-
         gauge.set(r);
     });
 
