@@ -66,6 +66,9 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
         var $el = $('.health-text');
         $el.css('display', 'none').text('WARN').removeClass('ok').addClass('warn').fadeIn().css('display', '');
     });
+    window.vent.on('status:healthok status:healthwarn', function() {
+        $('.detail tbody').css('display', 'none').text('No OSD selected').fadeIn().css('display', '');
+    });
     window.vent.on('updateTotals', function() {
         var totalUsed = 0,
             totalCapacity = 0,
