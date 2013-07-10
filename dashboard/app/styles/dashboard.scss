@@ -20,6 +20,16 @@ $itapp-card-height: 220px;
 $second-row-height: 600px;
 $third-row-height: 120px;
 
+.navbar {
+	margin-bottom:0;
+	.navbar-inner {
+	     background-image: linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%));
+    	     @include border-radius(3px);
+    	     @include box-shadow(0 2px 4px rgba(0,0,0,.2));
+             border: 1px solid darken($itdarkred, 15%);
+        }
+}
+
 .card {
     color: $itapp-standard-font-color;
     background-color: $itapp-card-color;
@@ -27,7 +37,7 @@ $third-row-height: 120px;
     @include box-sizing(border-box);
     @include border-radius($itapp-card-border-radius);
     padding: 9px;
-    margin-top: 15px;
+    margin-top: 10px;
     margin-bottom: 0;
 }
 

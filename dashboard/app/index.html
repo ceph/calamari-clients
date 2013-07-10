@@ -16,6 +16,13 @@
     <!-- endbuild -->
   </head>
   <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+	<ul class="nav">
+	  <a class="brand" href="http://www.inktank.com"><img src="/images/logo.png" alt="Inktank Logo"/></a>
+	</ul>
+      </div>
+    </div>
     <div class="container">
       <div class="row">
 	<div class="span3 card gauge">
@@ -30,15 +37,15 @@
 	  <span class="card-title">Status</span>
 	  <hr class="style-two"></hr>
 	  <table class='table metrics'>
-		  <thead>
+	    <thead>
 
-		    <tr>
-		      <th>&nbsp;</th>
-		      <th class="ok">OK</th>
-		      <th class="warn">WARN</th>
-		      <th class="fail">CRIT</th>
-		    </tr>
-		  </thead>
+	      <tr>
+		<th>&nbsp;</th>
+		<th class="ok">OK</th>
+		<th class="warn">WARN</th>
+		<th class="fail">CRIT</th>
+	      </tr>
+	    </thead>
 	    <tbody>
 	      <tr>
 		<th>
@@ -127,26 +134,26 @@
 	</div>
       </div>
       <div class="row" style="display:none">
-	      <div class="span12 notifications card">
-	      </div>
-      </div>
+	<div class="span12 notifications card">
+	</div>
       </div>
     </div>
+  </div>
 
-    <!--[if lt IE 7]>
-    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-    <![endif]-->
+  <!--[if lt IE 7]>
+  <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+  <![endif]-->
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-    <!--script>
-    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-    s.parentNode.insertBefore(g,s)}(document,'script'));
-    </script-->
+  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+  <!--script>
+  var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script-->
 
-    <!-- build:js scripts/main.js -->
-    <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
-    <!-- endbuild -->
-  </body>
+  <!-- build:js scripts/main.js -->
+  <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
+  <!-- endbuild -->
+</body>
 </html>
