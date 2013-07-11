@@ -85,13 +85,14 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
         replaceText($('.ok-pool'), 10);
     });
     window.vent.on('status:healthwarn', function() {
-        var pg = Math.round(Math.random() * 45)+5;
-        var pool = Math.round(Math.random() * 1)+1;
+        var pg = Math.round(Math.random() * 45) + 5;
+        var pool = Math.round(Math.random() * 1) + 1;
         replaceText($('.warn-pg'), pg);
         replaceText($('.warn-pool'), pool);
         replaceText($('.ok-pg'), 2400 - pg);
         replaceText($('.ok-pool'), 10 - pool);
     });
+    var flip = false;
     window.vent.on('updateTotals', function() {
         var totalUsed = 0,
             totalCapacity = 0,
@@ -102,9 +103,13 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
             totalCapacity += m.get('capacity');
             totalObj += Math.random(Date.now()) * 100;
         });
-        r = (totalUsed / totalCapacity) * 100;
+        if (flip) {
+            r *= 1.10;
+        } else {
+            r *= 0.90;
+        }
+        flip = !flip;
         r = Math.floor(r);
-        console.log(r);
         var used = humanize.filesize(totalUsed * ONE_GIGABYTE);
         used = used.replace(' Tb', 'T');
         $('.usedcap').text(used);

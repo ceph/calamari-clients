@@ -12,13 +12,13 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
             var srctext = ['down', 'up/out', 'up/in'];
             var srcstate = [{
                 up: false,
-                'in' : false
+                'in': false
             }, {
                 up: true,
-                'in' : false
+                'in': false
             }, {
                 up: true,
-                'in' : true
+                'in': true
             }];
             var i = Math.round(1 / percent) - 1;
             var m = new models.OSDModel(_.extend(srcstate[i], {
@@ -112,8 +112,8 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
         });
         return $.Deferred().resolve(r, raphdemo);
     }).then(function(r, raphdemo) {
-        var maxRed = 3;
         var simulateUsedChanges = function() {
+                var maxRed = 2;
                 raphdemo.collection.each(function(m) {
                     var up = true;
                     var _in = Math.random();
