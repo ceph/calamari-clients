@@ -9,19 +9,33 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
     // This is the model backing the OSD entity
     //
     return Backbone.Model.extend({
+        // `radius` *default* maxium radius 20 pixels
+	//
+        // `animationTime` *default* animation time 500ms
+	//
+        // `delay` *default* delay before animation 125ms
+	//
+        // `easing` *default* easing algorithm easeIn
+	//
+        // `minPerc` *default* minimum radius as percentage
+	//
         radius: 20,
         animationTime: 500,
+        delay: 125,
+        easing: 'easeIn',
+        minPerc: 0.4,
+
         initialize: function() {
             // Creation sets a the function which decides how the percentage
             // via virtual function getPercentage which is the external interface
             // for use in rendering.
             this.getPercentage = this._getStatus;
 
-            // TODO: this watcher probably needs to be virtual
+            // TODO: this watcher probably needs to be virtual.
             // It should ignore changes on things we're not currently
             // interested in
             this.on('change:up change:in', this.updateSize);
-            _.bindAll(this, '_getStatus', '_getUsedPercentage', 'updateSize', 'getColor', 'stateChange');
+            _.bindAll(this, '_getStatus', '_getUsedPercentage', 'updateSize', 'getColor');
         },
         _getStatus: function() {
             // Internal method - looks at the OSD state
@@ -43,32 +57,20 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             if (this.get('used') === 0) {
                 return 0;
             }
-            var value = Math.max((this.get('used') / this.get('capacity')), 0.4);
+            var value = Math.max((this.get('used') / this.get('capacity')), this.minPerc);
             return value;
         },
         getColor: function() {
             var s = 'hsb(' + [(1 - this.getPercentage()) * 0.5, 1, 0.75] + ')';
             return s;
         },
-        updateSize: function(delay) {
-            if (delay === undefined) {
-                delay = 125;
-            }
+        updateSize: function() {
             if (this.view) {
                 var a = window.Raphael.animation({
                     r: (this.radius * this.getPercentage()),
                     fill: this.getColor()
-                }, this.animationTime, 'easeIn');
-                this.view.animate(a.delay(delay));
-            }
-        },
-        stateChange: function() {
-            var color = this.get('up') ? this.getColor() : '#fff';
-            if (this.view) {
-                var a = window.Raphael.animation({
-                    fill: color
-                }, 1000, 'easeIn');
-                this.view.animate(a.delay(125));
+                }, this.animationTime, this.easing);
+                this.view.animate(a.delay(this.delay));
             }
         },
         defaults: {
@@ -84,7 +86,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             ports: []
         },
         destroy: function() {
-            this.off('changed');
+            this.off('change');
             if (this.view) {
                 this.view = null;
             }

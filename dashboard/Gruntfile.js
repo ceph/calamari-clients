@@ -332,7 +332,9 @@ module.exports = function (grunt) {
         'copy',
         'usemin'
     ]);
-
+    grunt.registerTask('docs', [
+        'docco:dist'
+    ]);
     grunt.registerTask('default', [
         'jshint',
         'docco',
