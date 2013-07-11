@@ -26,7 +26,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                 used: percent * 1024
             }));
             var c = r.circle(originX, originY, 16 * m.getUsedPercentage()).attr({
-                fill: m.getCapacityColor(),
+                fill: m.getColor(),
                 stroke: 'none',
                 'cursor': 'default',
                 opacity: 0
@@ -51,7 +51,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
         };
     var animateCircle = function(r, originX, originY, radius, destX, destY, model) {
             var c = r.circle(originX, originY, 20 * model.getUsedPercentage()).attr({
-                fill: model.getCapacityColor(),
+                fill: model.getColor(),
                 stroke: 'none'
             });
             c.data('modelid', model.cid);

@@ -9,40 +9,38 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
 
     var OSD = Backbone.Model.extend({
         initialize: function() {
-            _.bindAll(this, 'getUsedPercentage', 'updateSize', 'getCapacityColor', 'stateChange');
+            _.bindAll(this, 'getUsedPercentage', 'updateSize', 'getColor', 'stateChange');
             this.on('change:up change:in', this.updateSize);
         },
         getUsedPercentage: function() {
             var up = this.get('up');
             var _in = this.get('in');
             if (up && _in) {
-//                console.log('up');
                 return 0.4;
             }
             if (up && _in === false) {
-//                console.log('out');
                 return 0.66;
             }
-//           console.log('down');
             return 1;
         },
-        getCapacityColor: function() {
+        getColor: function() {
             var s = 'hsb(' + [(1 - this.getUsedPercentage()) * 0.5, 1, 0.75] + ')';
             return s;
         },
-        updateSize: function() {
-            //console.log('size of ' + this.get('index') + ' changed to ' + this.get('used'));
+        updateSize: function(delay) {
+            if (delay === undefined) {
+                delay = 125;
+            }
             if (this.view) {
                 var a = window.Raphael.animation({
                     r: (20 * this.getUsedPercentage()),
-                    fill: this.getCapacityColor()
+                    fill: this.getColor()
                 }, 1000, 'easeIn');
-                this.view.animate(a.delay(125));
+                this.view.animate(a.delay(delay));
             }
         },
         stateChange: function() {
-            //console.log('isDown');
-            var color = this.get('up') ? this.getCapacityColor() : '#fff';
+            var color = this.get('up') ? this.getColor() : '#fff';
             if (this.view) {
                 var a = window.Raphael.animation({
                     fill: color
@@ -59,7 +57,8 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             'in': true,
             created: Date.now(),
             modified: Date.now(),
-            ip: ''
+            ip: '127.0.0.1',
+            ports: []
         },
         destroy: function() {
             this.off('changed');
