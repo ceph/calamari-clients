@@ -19,7 +19,8 @@ module.exports = function (grunt) {
     // configurable paths
     var yeomanConfig = {
         app: 'app',
-        dist: 'dist'
+        dist: 'dist',
+        docs: 'docs'
     };
 
     grunt.initConfig({
@@ -270,6 +271,14 @@ module.exports = function (grunt) {
                     '.tmp/scripts/templates.js': ['<%= yeoman.app %>/scripts/templates/*.ejs']
                 }
             }
+        },
+        docco: {
+            dist: {
+                src: ['<%= yeoman.app %>/scripts/**/*.js'],
+                options: {
+                    output: '<%= yeoman.docs %>'
+                }
+            }
         }
     });
 
@@ -326,6 +335,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', [
         'jshint',
+        'docco',
         'test',
         'build'
     ]);
