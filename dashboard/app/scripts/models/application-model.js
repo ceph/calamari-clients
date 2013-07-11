@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['underscore', 'backbone', 'models/osd-model'], function(_, Backbone, OSD) {
+define(['underscore', 'backbone', 'models/osd-model', 'models/usage-model'], function(_, Backbone, OSD, Usage) {
     'use strict';
 
     var ApplicationModel = Backbone.Model.extend({
@@ -15,6 +15,7 @@ define(['underscore', 'backbone', 'models/osd-model'], function(_, Backbone, OSD
 
     return {
         AppModel: ApplicationModel,
-        OSDModel: OSD
+        OSDModel: OSD,
+        UsageModel: Usage
     };
 });

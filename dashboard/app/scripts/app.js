@@ -1,15 +1,13 @@
 /*global require */
-'use strict';
-require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'humanize', 'views/notification-card-view', 'marionette'], function($, _, Backbone, Gauge, raphdemo, humanize, NotificationCardView) {
-    Backbone.history.start();
-    var opts = {
-        lines: 10,
-        colorStart: '#80d2dc',
-        colorStop: '#55aeba',
-        generateGradient: true
+/* jshint -W106 */
 
-    };
-    var gauge = new Gauge($('.usage-canvas')[0]).setOptions(opts);
+'use strict';
+require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', 'views/notification-card-view', 'views/usage-view', 'models/usage-model', 'marionette'], function($, _, Backbone, raphdemo, humanize, NotificationCardView, UsageView, UsageModel) {
+    Backbone.history.start();
+    var gauge = new UsageView({
+        model: new UsageModel(),
+        el: $('.usage')
+    });
 
     var r = Math.random(Date.now()) * 100;
     r = Math.floor(r);
@@ -17,8 +15,7 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
     var collection;
     raphdemo.then(function(r, raphdemo) {
         collection = raphdemo.collection;
-        gauge.set(0);
-        gauge.setTextField($('.number')[0]);
+        gauge.render();
         window.vent.trigger('updateTotals');
     });
     var ONE_GIGABYTE = 1024 * 1024 * 1024;
@@ -110,18 +107,17 @@ require(['jquery', 'underscore', 'backbone', 'gauge', 'views/raphael_demo', 'hum
         }
         flip = !flip;
         r = Math.floor(r);
-        var used = humanize.filesize(totalUsed * ONE_GIGABYTE);
-        used = used.replace(' Tb', 'T');
-        $('.usedcap').text(used);
-        var total = humanize.filesize(totalCapacity * ONE_GIGABYTE);
-        total = total.replace(' Tb', 'T');
-        $('.totalcap').text(total);
-        $('.totalused').text(used);
+
+        var settings = {
+            total_avail: totalCapacity * ONE_GIGABYTE,
+            total_space: totalCapacity * ONE_GIGABYTE,
+            total_used: totalUsed * ONE_GIGABYTE
+        };
+        gauge.set(settings);
         $('.objcount').text(Math.floor(totalObj));
         totalObjSpace = totalObj * 50;
         totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');
         $('.objspace').text(totalObjSpace);
-        gauge.set(r);
     });
 
 });
