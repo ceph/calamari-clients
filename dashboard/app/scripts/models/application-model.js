@@ -16,14 +16,14 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             var up = this.get('up');
             var _in = this.get('in');
             if (up && _in) {
-                console.log('up');
+//                console.log('up');
                 return 0.4;
             }
             if (up && _in === false) {
-                console.log('out');
+//                console.log('out');
                 return 0.66;
             }
-            console.log('down');
+//           console.log('down');
             return 1;
         },
         getCapacityColor: function() {

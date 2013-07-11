@@ -1,5 +1,6 @@
 @import 'animate';
 @import 'inktank_colors';
+@import 'compass/typography/text/force-wrap';
 #viz {
 	margin-top: 15px;
 }
@@ -12,7 +13,6 @@ tspan:hover, circle:hover {
 }
 
 .detail {
-	overflow: hidden;
 	margin-top: 10px;
 	line-height: 1;
 }
@@ -20,8 +20,10 @@ tspan:hover, circle:hover {
 	padding-top: 0px;
 }
 .detail td.value {
+	@include force-wrap();
+	max-width: 10em;
 	font-family: 'Andale Mono';
-	padding: 10px 0 15px 15px;
+	padding: 5px 0 12px 10px;
 }
 @include animate-fadeInDown($class: true);
 @include animate-fadeOutUp($class: true);
