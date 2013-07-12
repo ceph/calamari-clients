@@ -1,6 +1,6 @@
 /*global define*/
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'helpers/generate-osds', 'views/application-view', 'models/application-model', 'raphael'], function($, _, Backbone, Rs, JST, bs, Generate, View, Models) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'helpers/generate-osds', 'views/application-view', 'models/application-model', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, Generate, View, Models) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
