@@ -37,9 +37,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
                 generateGradient: true
 
             });
-            console.log(options);
             this.title = options.title === undefined ? 'Untitled' : options.title;
-            console.log(this.title);
             this.on('render', this.postRender);
             _.bindAll(this, 'updateView');
         },
