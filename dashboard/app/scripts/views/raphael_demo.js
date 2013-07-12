@@ -1,14 +1,60 @@
 /*global define*/
 'use strict';
-define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstrap', 'helpers/generate-osds', 'views/application-view', 'models/application-model', 'raphael'], function(_, Backbone, rs, $, bs, generate, View, models) {
-
-    var originX = 0,
-        originY = 0,
-        step = 40,
-        osds = 16 * 10,
-        width = 17 * step,
-        height = 11 * step;
-    var legendCircle = function(r, originX, originY, percent) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'helpers/generate-osds', 'views/application-view', 'models/application-model', 'raphael'], function($, _, Backbone, Rs, JST, bs, Generate, View, Models) {
+    var OSDVisualization = Backbone.Marionette.ItemView.extend({
+        template: JST['app/scripts/templates/viz.ejs'],
+        serializeData: function() {
+            return {};
+        },
+        originX: 0,
+        originY: 0,
+        step: 40,
+        osdCount: 16 * 10,
+        timer: null,
+        ui: {
+            viz: '.viz',
+            detail: '.detail tbody'
+        },
+        events: {
+            'click .viz': 'clickHandler'
+        },
+        initialize: function(options) {
+            this.App = options.App;
+            this.width = 17 * this.step;
+            this.height = 11 * this.step;
+            this.w = 720;
+            this.h = 520;
+            _.bindAll(this);
+            this.keyHandler = _.debounce(this.keyHandler, 250, true);
+            this.App.vent.on('keyup', this.keyHandler);
+        },
+        drawGrid: function(deferred) {
+            var path = Rs.calcGrid(this.originX, this.originY, this.width, this.height, this.step);
+            var path1 = this.r.path('M0,0').attr({
+                'stroke-width': 1,
+                'stroke': '#5e6a71',
+                'opacity': 0.40
+            });
+            this.drawLegend(this.r, 285, 475);
+            this.collection = Generate.osds(this.osdCount);
+            var anim = window.Raphael.animation({
+                path: path,
+                callback: function() {
+                    deferred.resolve();
+                }
+            }, 250);
+            path1.animate(anim);
+        },
+        moveCircle: function(m) {
+            var pos = Rs.calcPosition(m.get('index'), this.originX, this.originY, this.width, this.height, this.step);
+            this.animateCircleTraversal(this.r, this.originX, this.originY, 8, pos.nx, pos.ny, m);
+        },
+        calculatePositions: function() {
+            this.collection.each(this.moveCircle);
+            return $.Deferred().resolve();
+        },
+        legendCircle: function(r, originX, originY, percent) {
+            // Helper method to draw circles for use as legends beneath viz.
             var srctext = ['down', 'up/out', 'up/in'];
             var srcstate = [{
                 up: false,
@@ -21,7 +67,7 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                 'in': true
             }];
             var i = Math.round(1 / percent) - 1;
-            var m = new models.OSDModel(_.extend(srcstate[i], {
+            var m = new Models.OSDModel(_.extend(srcstate[i], {
                 capacity: 1024,
                 used: percent * 1024
             }));
@@ -41,15 +87,16 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
                 'font-family': 'ApexSansLight'
             });
             return c.animate(aFn);
-        };
-    var drawLegend = function(r, originX, originY) {
+        },
+        drawLegend: function(r, originX, originY) {
+            // Calls legend circle to place in viz.
             var xp = originX,
                 i;
             for (i = 1; i <= 3; i += 1, xp += 50) {
-                legendCircle(r, xp, originY, i / 3);
+                this.legendCircle(r, xp, originY, i / 3);
             }
-        };
-    var animateCircle = function(r, originX, originY, radius, destX, destY, model) {
+        },
+        animateCircleTraversal: function(r, originX, originY, radius, destX, destY, model) {
             var c = r.circle(originX, originY, 20 * model.getPercentage()).attr({
                 fill: model.getColor(),
                 stroke: 'none'
@@ -75,136 +122,102 @@ define(['underscore', 'backbone', 'helpers/raphael_support', 'jquery', 'bootstra
             });
             model.view = c;
             return c.animate(aFn);
-        };
-
-    var d = $.Deferred(function() {
-        var w = 720,
-            h = 520;
-        var r = window.Raphael('viz', w, h);
-        var path = rs.calcGrid(originX, originY, width, height, step);
-        var path1 = r.path('M0,0').attr({
-            'stroke-width': 1,
-            'stroke': '#5e6a71',
-            'opacity': 0.40
-        });
-
-        drawLegend(r, 285, 475);
-
-        var collection = generate.osds(osds);
-        var raphdemo = {
-            collection: collection
-        };
-
-        var anim = window.Raphael.animation({
-            path: path,
-            callback: function() {
-                d.resolve(r, raphdemo);
-            }
-        }, 250);
-        path1.animate(anim);
-    });
-    var p = d.promise();
-    p.then(function(r, raphdemo) {
-        raphdemo.collection.each(function(m) {
-            //console.log(m.attributes);
-            var pos = rs.calcPosition(m.get('index'), originX, originY, width, height, step);
-            animateCircle(r, originX, originY, 8, pos.nx, pos.ny, m);
-        });
-        return $.Deferred().resolve(r, raphdemo);
-    }).then(function(r, raphdemo) {
-        var simulateUsedChanges = function() {
-                var maxRed = 2;
-                raphdemo.collection.each(function(m) {
-                    var up = true;
-                    var _in = Math.random();
-                    _in = _in < 0.95;
-                    if (!_in && (Math.random() > 0.6) && maxRed > 0) {
-                        maxRed -= 1;
-                        up = false;
-                        //console.log(m.cid + ' setting to down');
-                    }
-                    m.set({
-                        'up': up,
-                        'in': _in
-                    });
+        },
+        simulateUsedChanges: function() {
+            var maxRed = 2;
+            this.collection.each(function(m) {
+                var up = true;
+                var _in = Math.random();
+                _in = _in < 0.95;
+                if (!_in && (Math.random() > 0.6) && maxRed > 0) {
+                    maxRed -= 1;
+                    up = false;
+                    //console.log(m.cid + ' setting to down');
+                }
+                m.set({
+                    'up': up,
+                    'in': _in
                 });
-                window.vent.trigger('updateTotals');
-                window.vent.trigger('status:healthwarn');
-            };
-
-        var resetChanges = function() {
-                raphdemo.collection.each(function(m) {
-                    m.set({
-                        'up': true,
-                        'in': true
-                    });
+            });
+            this.App.vent.trigger('updateTotals');
+            this.App.vent.trigger('status:healthwarn');
+        },
+        resetChanges: function() {
+            this.collection.each(function(m) {
+                m.set({
+                    'up': true,
+                    'in': true
                 });
-                window.vent.trigger('updateTotals');
-                window.vent.trigger('status:healthok');
-            };
-        raphdemo.simulateUsed = simulateUsedChanges;
-        raphdemo.resetChanges = resetChanges;
-        var timer = null;
-        raphdemo.startSimulation = function() {
-            timer = setTimeout(function() {
-                simulateUsedChanges();
-                timer = raphdemo.startSimulation();
+            });
+            this.App.vent.trigger('updateTotals');
+            this.App.vent.trigger('status:healthok');
+        },
+        startSimulation: function() {
+            var self = this;
+            this.timer = setTimeout(function() {
+                self.simulateUsedChanges();
+                self.timer = self.startSimulation();
             }, 3000);
-            return timer;
-        };
-        raphdemo.stopSimulation = function() {
-            clearTimeout(timer);
-            timer = null;
-        };
-        var parentOffset = $('svg').offset();
-        console.log('parentOffset ', parentOffset);
-        var detailPanel = new View();
-        detailPanel.setElement($('.detail tbody'));
-        $('svg').on('click', function(evt) {
+            return this.timer;
+        },
+        stopSimulation: function() {
+            clearTimeout(this.timer);
+            this.timer = null;
+        },
+        render: function() {
+            Backbone.Marionette.ItemView.prototype.render.apply(this);
+            this.r = window.Raphael(this.ui.viz[0], this.w, this.h);
+            this.detailPanel = new View({
+                el: this.ui.detail
+            });
+            var d = $.Deferred();
+            var p = $.when(this.drawGrid(d));
+            p.then(this.calculatePositions);
+            return p;
+        },
+        keyHandler: function(evt) {
+            evt.preventDefault();
+            if (!evt.keyCode) {
+                return;
+            }
+            var keyCode = evt.keyCode;
+            if (keyCode === 82) {
+                this.resetChanges();
+                return;
+            }
+            if (keyCode === 85) {
+                this.simulateUsedChanges();
+                return;
+            }
+            if (keyCode === 32) {
+                var $spinner = $('.icon-spinner');
+                if (this.timer === null) {
+                    this.startSimulation();
+                    $spinner.closest('i').addClass('.icon-spin').show();
+                } else {
+                    this.stopSimulation();
+                    $spinner.closest('i').removeClass('.icon-spin').hide();
+                }
+            }
+        },
+        clickHandler: function(evt) {
             if (evt.target.nodeName === 'tspan' || evt.target.nodeName === 'circle') {
                 var x = evt.clientX;
                 var y = evt.clientY;
                 //console.log(x + ' / ' + y);
-                var el = r.getElementByPoint(x, y);
+                var el = this.r.getElementByPoint(x, y);
                 //console.log(el);
                 if (el) {
                     var cid = el.data('modelid');
                     //console.log(cid);
                     if (cid) {
                         // ignore circles and tspans without data
-                        detailPanel.model.set(raphdemo.collection.get(cid).attributes);
+                        this.detailPanel.model.set(this.collection.get(cid).attributes);
                     }
                     return;
                 }
             }
-        });
-        $('body').on('keyup', _.debounce(function(evt) {
-            evt.preventDefault();
-            if (!evt.keyCode) {
-                return;
-            }
-            console.log('got ' + evt.keyCode);
-            var keyCode = evt.keyCode;
-            if (keyCode === 82) {
-                raphdemo.resetChanges();
-                return;
-            }
-            if (keyCode === 85) {
-                raphdemo.simulateUsed();
-                return;
-            }
-            if (keyCode === 32) {
-                var $spinner = $('.icon-spinner');
-                if (timer === null) {
-                    raphdemo.startSimulation();
-                    $spinner.closest('i').addClass('.icon-spin').show();
-                } else {
-                    raphdemo.stopSimulation();
-                    $spinner.closest('i').removeClass('.icon-spin').hide();
-                }
-            }
-        }, 250, true));
-        return $.Deferred().resolve(r, raphdemo);
+        }
     });
-    return p;
+    return OSDVisualization;
 });

@@ -2,7 +2,69 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', 'views/notification-card-view', 'views/usage-view', 'models/usage-model', 'marionette'], function($, _, Backbone, raphdemo, humanize, NotificationCardView, UsageView, UsageModel) {
+require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', 'views/notification-card-view', 'views/usage-view', 'models/usage-model', 'marionette'], function($, _, Backbone, Viz, humanize, NotificationCardView, UsageView, UsageModel) {
+    var App = new Backbone.Marionette.Application();
+    window.App = App;
+
+    var replaceText = function($el, text, removeClass, addClass) {
+            $el.css('display', 'none').text(text);
+            if (removeClass !== undefined) {
+                $el.removeClass(removeClass);
+            }
+            if (addClass !== undefined) {
+                $el.addClass(addClass);
+            }
+            $el.fadeIn().css('display', '');
+        };
+    App.vent.on('status:healthok', function() {
+        var $el = $('.health-text');
+        console.log('hi');
+        replaceText($el, 'OK', 'warn', 'ok');
+    });
+    App.vent.on('status:healthwarn', function() {
+        var $el = $('.health-text');
+        replaceText($el, 'WARN', 'ok', 'warn');
+    });
+    App.vent.on('status:healthok status:healthwarn', function() {
+        replaceText($('.detail tbody'), 'No OSD Selected');
+    });
+    App.vent.on('status:healthok', function() {
+        replaceText($('.warn-pg, .warn-osd, .warn-pool'), '0');
+        replaceText($('.ok-pg'), 2400);
+        replaceText($('.ok-pool'), 10);
+    });
+    App.vent.on('status:healthwarn', function() {
+        var pg = Math.round(Math.random() * 45) + 5;
+        var pool = Math.round(Math.random() * 1) + 1;
+        replaceText($('.warn-pg'), pg);
+        replaceText($('.warn-pool'), pool);
+        replaceText($('.ok-pg'), 2400 - pg);
+        replaceText($('.ok-pool'), 10 - pool);
+    });
+    App.vent.on('updateTotals', function() {
+        var ONE_GIGABYTE = 1024 * 1024 * 1024;
+        var totalUsed = 0,
+            totalCapacity = 0,
+            totalObj = 0,
+            totalObjSpace = 0;
+        viz.collection.each(function(m) {
+            totalUsed += m.get('used');
+            totalCapacity += m.get('capacity');
+            totalObj += Math.random(Date.now()) * 100;
+        });
+
+        var settings = {
+            total_avail: totalCapacity * ONE_GIGABYTE,
+            total_space: totalCapacity * ONE_GIGABYTE,
+            total_used: totalUsed * ONE_GIGABYTE
+        };
+        gauge.set(settings);
+        $('.objcount').text(Math.floor(totalObj));
+        totalObjSpace = totalObj * 50;
+        totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');
+        $('.objspace').text(totalObjSpace);
+    });
+
     Backbone.history.start();
     var gauge = new UsageView({
         model: new UsageModel(),
@@ -10,16 +72,19 @@ require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', '
         el: $('.usage')
     });
 
-    var r = Math.random(Date.now()) * 100;
-    r = Math.floor(r);
-    window.vent = new Backbone.Wreqr.EventAggregator();
-    var collection;
-    raphdemo.then(function(r, raphdemo) {
-        collection = raphdemo.collection;
-        gauge.render();
-        window.vent.trigger('updateTotals');
+    var viz = new Viz({
+        App: App,
+        el: '.raphael-one'
     });
-    var ONE_GIGABYTE = 1024 * 1024 * 1024;
+    window.Viz = viz;
+    $('body').on('keyup', function(evt) {
+        App.vent.trigger('keyup', evt);
+    });
+
+    viz.render().then(function() {
+        gauge.render();
+        App.vent.trigger('updateTotals');
+    });
 
     _.extend(humanize.catalog, {
         'about_a_minute_ago': '1m',
@@ -56,69 +121,5 @@ require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', '
         timestamp: humanize.time(),
         priority: 1
     }]);
-    var replaceText = function($el, text, removeClass, addClass) {
-            $el.css('display', 'none').text(text);
-            if (removeClass !== undefined) {
-                $el.removeClass(removeClass);
-            }
-            if (addClass !== undefined) {
-                $el.addClass(addClass);
-            }
-            $el.fadeIn().css('display', '');
-        };
-    window.vent.on('status:healthok', function() {
-        var $el = $('.health-text');
-        replaceText($el, 'OK', 'warn', 'ok');
-    });
-    window.vent.on('status:healthwarn', function() {
-        var $el = $('.health-text');
-        replaceText($el, 'WARN', 'ok', 'warn');
-    });
-    window.vent.on('status:healthok status:healthwarn', function() {
-        replaceText($('.detail tbody'), 'No OSD Selected');
-    });
-    window.vent.on('status:healthok', function() {
-        replaceText($('.warn-pg, .warn-osd, .warn-pool'), '0');
-        replaceText($('.ok-pg'), 2400);
-        replaceText($('.ok-pool'), 10);
-    });
-    window.vent.on('status:healthwarn', function() {
-        var pg = Math.round(Math.random() * 45) + 5;
-        var pool = Math.round(Math.random() * 1) + 1;
-        replaceText($('.warn-pg'), pg);
-        replaceText($('.warn-pool'), pool);
-        replaceText($('.ok-pg'), 2400 - pg);
-        replaceText($('.ok-pool'), 10 - pool);
-    });
-    var flip = false;
-    window.vent.on('updateTotals', function() {
-        var totalUsed = 0,
-            totalCapacity = 0,
-            totalObj = 0,
-            totalObjSpace = 0;
-        collection.each(function(m) {
-            totalUsed += m.get('used');
-            totalCapacity += m.get('capacity');
-            totalObj += Math.random(Date.now()) * 100;
-        });
-        if (flip) {
-            r *= 1.10;
-        } else {
-            r *= 0.90;
-        }
-        flip = !flip;
-        r = Math.floor(r);
-
-        var settings = {
-            total_avail: totalCapacity * ONE_GIGABYTE,
-            total_space: totalCapacity * ONE_GIGABYTE,
-            total_used: totalUsed * ONE_GIGABYTE
-        };
-        gauge.set(settings);
-        $('.objcount').text(Math.floor(totalObj));
-        totalObjSpace = totalObj * 50;
-        totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');
-        $('.objspace').text(totalObjSpace);
-    });
 
 });
