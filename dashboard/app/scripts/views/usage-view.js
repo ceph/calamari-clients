@@ -11,6 +11,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
         className: 'gauge card span3 usage',
         template: JST['app/scripts/templates/usage.ejs'],
         ui: {
+            cardtitle: '.card-title',
             number: '.number',
             totalused: '.totalused',
             totalcap: '.totalcap',
@@ -19,9 +20,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
         modelEvents: {
             'change': 'updateView'
         },
+        serializeData: function() {
+            return {
+                title: this.title
+            };
+        },
         initialize: function(options) {
             // The are defaults for Gauge.js and can be overidden from the contructor
-            this.opts = _.extend({
+            this.opts = {};
+            _.extend(this.opts, {
                 minValue: 0,
                 maxValue: 100,
                 lines: 10,
@@ -29,7 +36,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
                 colorStop: '#55aeba',
                 generateGradient: true
 
-            }, options);
+            });
+            console.log(options);
+            this.title = options.title === undefined ? 'Untitled' : options.title;
+            console.log(this.title);
             this.on('render', this.postRender);
             _.bindAll(this, 'updateView');
         },
@@ -38,6 +48,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
         postRender: function() {
             this.gauge = new Gauge(this.ui.canvas[0]).setOptions(this.opts);
             this.gauge.setTextField(this.ui.number[0]);
+            this.gauge.set(0);
         },
         updateView: function(model) {
             var attr = model.toJSON();

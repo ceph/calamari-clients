@@ -6,6 +6,7 @@ require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', '
     Backbone.history.start();
     var gauge = new UsageView({
         model: new UsageModel(),
+        title: 'Usage',
         el: $('.usage')
     });
 
