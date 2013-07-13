@@ -72,9 +72,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
         updateView: function(model) {
             var attr = model.toJSON();
             var used = humanize.filesize(attr.total_used);
-            used = used.replace(' Tb', 'T');
+            used = used.replace(' ', '');
             var total = humanize.filesize(attr.total_space);
-            total = total.replace(' Tb', 'T');
+            total = total.replace(' ', '');
             this.ui.totalused.text(used);
             this.ui.totalcap.text(total);
             this.gauge.set(model.getPercentageUsed());
