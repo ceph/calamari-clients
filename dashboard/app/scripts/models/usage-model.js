@@ -21,6 +21,12 @@ define(['underscore', 'backbone'], function(_, Backbone) {
             total_space: 0,
             total_used: 0
         },
+        parse: function(response /*, options*/ ) {
+            response.total_used *= 1024;
+            response.total_avail *= 1024;
+            response.total_space *= 1024;
+            return response;
+        },
         getPercentageUsed: function() {
             return this.get('total_used') / this.get('total_avail') * 100;
         }
