@@ -11,6 +11,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
         className: 'gauge card span3 usage',
         template: JST['app/scripts/templates/usage.ejs'],
         timer: null,
+        delay: 20000,
         ui: {
             cardtitle: '.card-title',
             number: '.number',
@@ -55,7 +56,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             this.timer = setTimeout(function() {
                 self.fetchUsage();
                 self.timer = self.startFetch();
-            }, 10000);
+            }, self.delay);
             return this.timer;
         },
         fetchUsage: function() {
