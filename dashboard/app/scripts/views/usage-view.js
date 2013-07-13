@@ -51,6 +51,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
                 this.startFetch();
             }
         },
+        parse: function(response/*, options*/) {
+            response.totalused *= 1024;
+            response.totalcap *= 1024;
+            return response;
+        },
         startFetch: function() {
             var self = this;
             this.timer = setTimeout(function() {
