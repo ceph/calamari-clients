@@ -1,5 +1,5 @@
 /*global define*/
-/* jshint -W106*/
+/* jshint -W106, -W069*/
 define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'marionette'], function($, _, Backbone, JST, Gauge, humanize) {
     'use strict';
 
