@@ -1,4 +1,5 @@
 /*global define*/
+/* jshint -W106 */
 
 define(['underscore', 'backbone'], function(_, Backbone) {
     'use strict';
@@ -12,10 +13,16 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     // time we got an update from the server.
     //
     window.Health = Backbone.Model.extend({
+        url: function() {
+            return '/api/v1/cluster/' + this.get('cluster') + '/health';
+        },
         defaults: {
+            cluster: 1,
+            adde: '',
+            added_ms: Date.now(),
             state: 'HEALTH_OK',
             details: '',
-            lastUpdate: Date.now()
+            report: {}
         },
     });
     return window.Health;

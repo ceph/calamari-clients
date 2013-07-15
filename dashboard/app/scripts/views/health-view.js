@@ -22,9 +22,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
         serializeData: function() {
             var model = this.model.toJSON();
             var clazz = '',
-                subtext = humanize.relativeTime(model.lastUpdate / 1000),
+                subtext = humanize.relativeTime(model.report.added_ms / 1000),
                 healthText = '';
-            switch (model.state) {
+            switch (model.report.overall_status) {
             case 'HEALTH_WARN':
                 healthText = 'WARN';
                 clazz = 'warn';
@@ -41,9 +41,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
 
             var viewModel = {
                 title: this.title,
-                healthText: healthText,
                 clazz: clazz,
-                subtext: subtext
+                healthText: healthText,
+                relTimeStr: subtext
             };
             return viewModel;
         },
