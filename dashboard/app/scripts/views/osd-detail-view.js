@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
 
     var ApplicationView = Backbone.View.extend({
         tagName: 'tbody',
-        template: JST['app/scripts/templates/application.ejs'],
+        template: JST['app/scripts/templates/osd-details.ejs'],
         initialize: function() {
             this.model = new model.OSDModel();
             this.listenTo(this.model, 'change', this.render);
