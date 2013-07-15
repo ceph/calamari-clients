@@ -1,21 +1,19 @@
 /*global define*/
 
-define(['underscore', 'backbone', 'models/osd-model', 'models/usage-model'], function(_, Backbone, OSD, Usage) {
+define(['underscore', 'backbone', 'models/osd-model', 'models/usage-model', 'models/health-model'], function(_, Backbone, OSD, Usage, Health) {
     'use strict';
 
     var ApplicationModel = Backbone.Model.extend({
         defaults: {}
     });
 
-    // OSDModel
-    // --------
+    // All Models
+    // ---------
     //
-    // This is the model backing the OSD entity
-    //
-
     return {
         AppModel: ApplicationModel,
         OSDModel: OSD,
-        UsageModel: Usage
+        UsageModel: Usage,
+        HealthModel: Health
     };
 });

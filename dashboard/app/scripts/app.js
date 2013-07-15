@@ -2,7 +2,7 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', 'views/notification-card-view', 'views/usage-view', 'models/usage-model', 'helpers/config-loader', 'marionette'], function($, _, Backbone, Viz, humanize, NotificationCardView, UsageView, UsageModel, configloader) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'marionette'], function($, _, Backbone, humanize, views, models, configloader) {
     var config = {
         offline: true
     };
@@ -61,9 +61,11 @@ require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', '
             });
 
             var settings = {
-                total_avail: totalCapacity * ONE_GIGABYTE,
-                total_space: totalCapacity * ONE_GIGABYTE,
-                total_used: totalUsed * ONE_GIGABYTE
+                report: {
+                    total_avail: totalCapacity * ONE_GIGABYTE,
+                    total_space: totalCapacity * ONE_GIGABYTE,
+                    total_used: totalUsed * ONE_GIGABYTE
+                }
             };
             gauge.set(settings);
             $('.objcount').text(Math.floor(totalObj));
@@ -73,14 +75,14 @@ require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', '
         });
 
         Backbone.history.start();
-        var gauge = new UsageView({
+        var gauge = new views.UsageView({
             App: App,
-            model: new UsageModel(),
+            model: new models.UsageModel(),
             title: 'Usage',
             el: $('.usage')
         });
 
-        var viz = new Viz({
+        var viz = new views.OSDVisualization({
             App: App,
             el: '.raphael-one'
         });
@@ -106,8 +108,8 @@ require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', '
             'a_year_ago': '1y',
             'years_ago': 'y'
         });
-        NotificationCardView.view.setElement($('.notifications')).render();
-        NotificationCardView.collection.add(
+        views.NotificationCardView.view.setElement($('.notifications')).render();
+        views.NotificationCardView.collection.add(
         [{
             title: 'OSD',
             message: 'OSD.100 has stopped responding',
