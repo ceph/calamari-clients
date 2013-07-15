@@ -31,7 +31,10 @@ define(['underscore', 'backbone'], function(_, Backbone) {
         },
         getPercentageUsed: function() {
             var report = this.get('report');
-            return (report.total_used / report.total_avail) * 100;
+            if (report.total_space === 0) {
+                return 0;
+            }
+            return (report.total_used / report.total_space) * 100;
         }
 
     });
