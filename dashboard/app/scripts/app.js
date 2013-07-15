@@ -23,6 +23,7 @@ require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', '
 
     promise.done(function() {
         var App = new Backbone.Marionette.Application();
+        App.Config = config;
         App.vent.on('status:healthok', function() {
             var $el = $('.health-text');
             replaceText($el, 'OK', 'warn', 'ok');
@@ -131,7 +132,6 @@ require(['jquery', 'underscore', 'backbone', 'views/raphael_demo', 'humanize', '
 
         // Global Exports
         window.inktank = {
-            Config: config,
             Viz: viz,
             App: App
         };

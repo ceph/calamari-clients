@@ -46,7 +46,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             this.on('render', this.postRender);
             _.bindAll(this, 'updateView', 'fetchUsage');
 
-            if (this.App && !this.App.offline) {
+            if (this.App && !this.App.Config['offline']) {
                 this.fetchUsage();
                 this.startFetch();
             }
