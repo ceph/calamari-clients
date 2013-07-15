@@ -18,11 +18,11 @@ define(['underscore', 'backbone'], function(_, Backbone) {
         },
         defaults: {
             cluster: 1,
-            adde: '',
+            added: '',
             added_ms: Date.now(),
-            state: 'HEALTH_OK',
-            details: '',
-            report: {}
+            report: {
+                overall_status: 'HEALTH_OK'
+            }
         },
     });
     return window.Health;

@@ -1,6 +1,6 @@
 /*global define*/
 /* jshint -W106, -W069*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'marionette'], function($, _, Backbone, JST, humanize) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette'], function($, _, Backbone, JST, humanize) {
     'use strict';
 
     /* HealthView
@@ -22,7 +22,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
         serializeData: function() {
             var model = this.model.toJSON();
             var clazz = '',
-                subtext = humanize.relativeTime(model.report.added_ms / 1000),
+                subtext = humanize.relativeTime(model.added_ms / 1000),
                 healthText = '';
             switch (model.report.overall_status) {
             case 'HEALTH_WARN':
@@ -35,17 +35,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
                 break;
             default:
                 healthText = 'OK';
-                clazz = 'OK';
+                clazz = 'ok';
                 break;
             }
 
-            var viewModel = {
+            return {
                 title: this.title,
                 clazz: clazz,
                 healthText: healthText,
                 relTimeStr: subtext
             };
-            return viewModel;
         },
         initialize: function(options) {
             // The are defaults for Gauge.js and can be overidden from the contructor

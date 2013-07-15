@@ -132,6 +132,12 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             priority: 1
         }]);
 
+        var health = new views.HealthView({
+            model: new models.HealthModel(),
+            el: '.health'
+        });
+        health.render();
+
         // Global Exports
         window.inktank = {
             Viz: viz,
