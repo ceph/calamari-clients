@@ -13,7 +13,10 @@ require.config({
         },
         flotr2: {
             deps: ['bean', 'underscore']
-        }
+        },
+        raphael: {
+            exports: 'Raphael'
+        },
     },
     paths: {
         faker: '../bower_components/Faker/Faker',

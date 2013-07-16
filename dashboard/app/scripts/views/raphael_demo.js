@@ -1,4 +1,4 @@
-/*global define*/
+/*global define, Raphael*/
 'use strict';
 define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'helpers/generate-osds', 'views/osd-detail-view', 'models/application-model', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, Generate, View, Models) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
@@ -28,7 +28,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.App.vent.on('keyup', this.keyHandler);
         },
-        drawGrid: function(deferred) {
+        drawGrid: function(d) {
             var path = Rs.calcGrid(this.originX, this.originY, this.width, this.height, this.step);
             var path1 = this.r.path('M0,0').attr({
                 'stroke-width': 1,
@@ -37,11 +37,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             this.drawLegend(this.r, 285, 475);
             this.collection = Generate.osds(this.osdCount);
-            var anim = window.Raphael.animation({
+            var anim = Raphael.animation({
                 path: path,
-                callback: function() {
-                    deferred.resolve();
-                }
+                callback: d.resolve
             }, 250);
             path1.animate(anim);
         },
@@ -77,7 +75,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 'cursor': 'default',
                 opacity: 0
             });
-            var aFn = window.Raphael.animation({
+            var aFn = Raphael.animation({
                 opacity: 1
             }, 250, 'easeOut');
             var text = srctext[i];
@@ -103,7 +101,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             c.data('modelid', model.cid);
             var t;
-            var aFn = window.Raphael.animation({
+            var aFn = Raphael.animation({
                 cx: destX,
                 cy: originY
             }, 250, 'easeOut', function() {
@@ -172,7 +170,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 el: this.ui.detail
             });
             var d = $.Deferred();
-            var p = $.when(this.drawGrid(d));
+            $.when(this.drawGrid(d));
+            var p = d.promise();
             p.then(this.calculatePositions);
             return p;
         },
