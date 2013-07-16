@@ -27,13 +27,22 @@ tspan:hover, circle:hover {
 }
 @include animate-fadeInDown($class: true);
 @include animate-fadeOutUp($class: true);
+@include animate-fadeIn($class: true);
+@include animate-fadeOut($class: true);
 
+.fadeInDownAnim {
+  @include animation(fadeInDown 0.25s);
+}
+
+.fadeOutUpAnim {
+  @include animation(fadeOutUp 0.25s);
+}
 .fadeInAnim {
-  @include animation(fadeInDown 0.25s 0);
+  @include animation(fadeIn 0.25s);
 }
 
 .fadeOutAnim {
-  @include animation(fadeOutUp 0.25s 0);
+  @include animation(fadeOut 0.25s);
 }
 circle {
        stroke: 'none';
