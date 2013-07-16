@@ -79,6 +79,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             model: new models.UsageModel(),
             title: 'Usage'
         });
+        gauge.on('item:postrender', function() {
+            App.vent.trigger('updateTotals');
+        });
 
         gaugesLayout.status.show(new views.StatusView());
 
@@ -92,9 +95,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
 
         viz.render().then(function() {
-            gaugesLayout.usage.on('show', function() {
-                App.vent.trigger('updateTotals');
-            });
             gaugesLayout.usage.show(gauge);
         });
 

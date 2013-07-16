@@ -68,6 +68,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             this.gauge = new Gauge(this.ui.canvas[0]).setOptions(this.opts);
             this.gauge.setTextField(this.ui.number[0]);
             this.gauge.set(0);
+            this.triggerMethod('item:postrender', this);
         },
         updateView: function(model) {
             var attr = model.toJSON();
