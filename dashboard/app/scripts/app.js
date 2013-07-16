@@ -92,8 +92,10 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
 
         viz.render().then(function() {
+            gaugesLayout.usage.on('show', function() {
+                App.vent.trigger('updateTotals');
+            });
             gaugesLayout.usage.show(gauge);
-            App.vent.trigger('updateTotals');
         });
 
         _.extend(humanize.catalog, {
@@ -132,7 +134,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             priority: 1
         }]);
 
-        var poller = new Poller({App: App});
+        var poller = new Poller({
+            App: App
+        });
 
         // Global Exports
         window.inktank = {
