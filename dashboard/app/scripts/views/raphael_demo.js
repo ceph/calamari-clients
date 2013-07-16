@@ -168,6 +168,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             Backbone.Marionette.ItemView.prototype.render.apply(this);
             this.r = window.Raphael(this.ui.viz[0], this.w, this.h);
             this.detailPanel = new View({
+                App: this.App,
                 el: this.ui.detail
             });
             var d = $.Deferred();

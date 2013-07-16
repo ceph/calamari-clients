@@ -25,17 +25,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         var App = new Backbone.Marionette.Application();
         App.Config = config;
         App.vent.on('status:healthok', function() {
-            var $el = $('.health-text');
-            replaceText($el, 'OK', 'warn', 'ok');
-        });
-        App.vent.on('status:healthwarn', function() {
-            var $el = $('.health-text');
-            replaceText($el, 'WARN', 'ok', 'warn');
-        });
-        App.vent.on('status:healthok status:healthwarn', function() {
-            replaceText($('.detail tbody'), 'No OSD Selected');
-        });
-        App.vent.on('status:healthok', function() {
             replaceText($('.warn-pg, .warn-osd, .warn-pool'), '0');
             replaceText($('.ok-pg'), 2400);
             replaceText($('.ok-pool'), 10);
@@ -81,7 +70,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
         gaugesLayout.render();
         gaugesLayout.health.show(new views.HealthView({
-            model: new models.HealthModel(),
+            App: App,
+            model: new models.HealthModel()
         }));
         var gauge = new views.UsageView({
             App: App,

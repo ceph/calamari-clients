@@ -3,13 +3,20 @@
 define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-model', 'humanize'], function($, _, Backbone, JST, model, humanize) {
     'use strict';
 
-    var ApplicationView = Backbone.View.extend({
+    var OSDDetailView = Backbone.View.extend({
         tagName: 'tbody',
         template: JST['app/scripts/templates/osd-details.ejs'],
-        initialize: function() {
+        initialize: function(options) {
+            _.bindAll(this, 'animationFinished', 'toJSON', 'clearDetail');
             this.model = new model.OSDModel();
             this.listenTo(this.model, 'change', this.render);
-            _.bindAll(this, 'animationFinished', 'toJSON');
+            if (options.App !== undefined) {
+                this.App = options.App;
+                this.App.vent.on('status:healthok status:healthwarn', this.clearDetail);
+            }
+        },
+        clearDetail: function() {
+            this.$el.text('No OSD Selected');
         },
         toJSON: function() {
             var model = this.model.toJSON();
@@ -35,5 +42,5 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         }
     });
 
-    return ApplicationView;
+    return OSDDetailView;
 });

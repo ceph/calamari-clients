@@ -19,6 +19,23 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
         modelEvents: {
             'change': 'updateView'
         },
+        initialize: function(options) {
+            // The are defaults for Gauge.js and can be overidden from the contructor
+            _.bindAll(this, 'updateView', 'ok', 'warn');
+            if (options.App !== undefined) {
+                this.App = options.App;
+                this.App.vent.on('status:healthok', this.ok);
+                this.App.vent.on('status:healthwarn', this.warn);
+            }
+            if (this.App && !this.App.Config['offline']) {
+            }
+        },
+        ok: function() {
+            this.ui.healthText.removeClass('warn fail').addClass('ok').text('OK');
+        },
+        warn: function() {
+            this.ui.healthText.removeClass('ok fail').addClass('warn').text('WARN');
+        },
         serializeData: function() {
             var model = this.model.toJSON();
             var clazz = '',
@@ -45,16 +62,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
                 healthText: healthText,
                 relTimeStr: subtext
             };
-        },
-        initialize: function(options) {
-            // The are defaults for Gauge.js and can be overidden from the contructor
-            _.bindAll(this, 'updateView');
-            if (options.App !== undefined) {
-                this.App = options.App;
-            }
-            if (this.App && !this.App.Config['offline']) {
-                /* Placeholder */
-            }
         },
         updateView: function(model) {
             console.log(model);
