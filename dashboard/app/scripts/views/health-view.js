@@ -1,6 +1,6 @@
 /*global define*/
 /* jshint -W106, -W069*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette'], function($, _, Backbone, JST, humanize) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/animation', 'marionette'], function($, _, Backbone, JST, humanize, animation) {
     'use strict';
 
     /* HealthView
@@ -21,20 +21,24 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
         },
         initialize: function(options) {
             // The are defaults for Gauge.js and can be overidden from the contructor
-            _.bindAll(this, 'updateView', 'ok', 'warn');
+            this.fadeInOutAnimation = animation('fadeOutAnim', 'fadeInAnim');
+            _.bindAll(this, 'updateView', 'ok', 'warn', 'fadeInOutAnimation');
             if (options.App !== undefined) {
                 this.App = options.App;
                 this.App.vent.on('status:healthok', this.ok);
                 this.App.vent.on('status:healthwarn', this.warn);
             }
-            if (this.App && !this.App.Config['offline']) {
-            }
+            if (this.App && !this.App.Config['offline']) {}
         },
         ok: function() {
-            this.ui.healthText.removeClass('warn fail').addClass('ok').text('OK');
+            this.fadeInOutAnimation(this.ui.healthText, function() {
+                this.ui.healthText.removeClass('warn fail').addClass('ok').text('OK');
+            });
         },
         warn: function() {
-            this.ui.healthText.removeClass('ok fail').addClass('warn').text('WARN');
+            this.fadeInOutAnimation(this.ui.healthText, function() {
+                this.ui.healthText.removeClass('ok fail').addClass('warn').text('WARN');
+            });
         },
         serializeData: function() {
             var model = this.model.toJSON();
