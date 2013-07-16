@@ -29,9 +29,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
         },
         initialize: function(options) {
             // The are defaults for Gauge.js and can be overidden from the contructor
-            if (options.App !== undefined) {
-                this.App = options.App;
+            this.App = Backbone.Marionette.getOption(this, 'App');
+
+            if (this.App) {
+                this.App.vent.on('usage:update', this.set);
             }
+
             this.opts = {};
             _.extend(this.opts, {
                 minValue: 0,
@@ -44,23 +47,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             });
             this.title = options.title === undefined ? 'Untitled' : options.title;
             this.on('render', this.postRender);
-            _.bindAll(this, 'updateView', 'fetchUsage');
-
-            if (this.App && !this.App.Config['offline']) {
-                this.fetchUsage();
-                this.startFetch();
-            }
-        },
-        startFetch: function() {
-            var self = this;
-            this.timer = setTimeout(function() {
-                self.fetchUsage();
-                self.timer = self.startFetch();
-            }, self.delay);
-            return this.timer;
-        },
-        fetchUsage: function() {
-            return this.model.fetch();
+            _.bindAll(this, 'updateView');
         },
         // Once the render has been executed and has set up the widget
         // add the canvas based gauge dial
@@ -80,8 +67,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             this.ui.totalcap.text(total);
             this.gauge.set(model.getPercentageUsed());
         },
-        set: function(values) {
-            this.model.set(values);
+        set: function(model) {
+            this.model.set(model.toJSON());
         }
     });
 });

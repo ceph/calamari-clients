@@ -28,6 +28,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             if (this.App) {
                 this.App.vent.on('status:healthok', this._ok);
                 this.App.vent.on('status:healthwarn', this._warn);
+                this.App.vent.on('health:update', this.set);
             }
             if (this.App && !this.App.Config['offline']) {}
         },
@@ -51,8 +52,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 }
             });
         },
-        set: function(attr) {
-            this.model.set(attr);
+        set: function(model) {
+            this.model.set(model.toJSON());
         },
         serializeData: function() {
             var model = this.model.toJSON();

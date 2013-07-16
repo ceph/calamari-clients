@@ -56,7 +56,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     total_used: totalUsed * ONE_GIGABYTE
                 }
             };
-            gauge.set(settings);
+            gauge.set(new models.UsageModel(settings));
             $('.objcount').text(Math.floor(totalObj));
             totalObjSpace = totalObj * 50;
             totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');

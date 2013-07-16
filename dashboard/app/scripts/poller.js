@@ -30,6 +30,22 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             }, self.delay);
             return this.healthTimer;
         },
+        fetchUsage: function() {
+            var self = this;
+            this.usageTimer = setTimeout(function() {
+                self.usageModel.fetch({
+                    success: function(model /*, response, options*/ ) {
+                        self.App.vent.trigger('usage:update', model);
+                        self.usageTimer = self.fetchUsage();
+                    },
+                    error: function(model, response) {
+                        console.log(response);
+                        self.usageTimer = self.fetchUsage();
+                    }
+                });
+            }, self.delay);
+            return this.healthTimer;
+        },
         stop: function() {
             clearTimeout(this.healthTimer);
             this.healthTimer = null;
