@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -18,122 +18,110 @@
   <body>
     <div class="navbar">
       <div class="navbar-inner">
-	<ul class="nav">
-	  <a class="brand" href="http://www.inktank.com"><img src="images/logo.png" alt="Inktank Logo"/></a>
-	</ul>
+        <ul class="nav">
+          <a class="brand" href="http://www.inktank.com"><img src="images/logo.png" alt="Inktank Logo"/></a>
+        </ul>
       </div>
     </div>
     <div class="container">
-      <div class="row">
-	<div class="span3 card gauge health">
-	  <span class="card-title">Health</span>
-	  <hr class="style-two"></hr>
-	  <span class="health-text ok"></span>
-	  <span class="subtext"></span>
-	</div>
-	<div class="gauge card span6">
-	  <span class="card-title">Status</span>
-	  <hr class="style-two"></hr>
-	  <table class='table metrics'>
-	    <thead>
+      <div class="row gauges">
+        <div class="span3 card gauge health">
+          <span class="card-title">Health</span>
+          <hr class="style-two"></hr>
+          <span class="health-text ok"></span>
+          <span class="subtext"></span>
+        </div>
+        <div class="gauge card span6">
+          <span class="card-title">Status</span>
+          <hr class="style-two"></hr>
+          <table class='table metrics'>
+            <thead>
 
-	      <tr>
-		<th>&nbsp;</th>
-		<th class="ok">OK</th>
-		<th class="warn">WARN</th>
-		<th class="fail">CRIT</th>
-	      </tr>
-	    </thead>
-	    <tbody>
-	      <tr>
-		<th>
-		  MON
-		</th>
-		<td>
-		  3
-		</td>
-		<td>
-		  0
-		</td>
-		<td>
-		  0
-		</td>
-	      </tr>
-	      <tr>
-		<th>
-		  OSD
-		</th>
-		<td>
-		  160
-		</td>
-		<td class='warn-osd'>
-		  0
-		</td>
-		<td>
-		  0
-		</td>
-	      </tr>
-	      <tr>
-		<th>
-		  POOL
-		</th>
-		<td class='ok-pool'>
-		  10
-		</td>
-		<td class='warn-pool'>
-		  0
-		</td>
-		<td>
-		  0
-		</td>
-	      </tr>
-	      <tr>
-		<th>
-		  PG
-		</th>
-		<td class='ok-pg'>
-		  2400
-		</td>
-		<td class='warn-pg'>
-		  0
-		</td>
-		<td>
-		  0
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	  <span class="subtext">20 secs ago</span>
-	</div>
-	<div class="usage gauge card span3">
-	  <span class="card-title">Usage</span>
-	  <hr class="style-two"></hr>
-	  <div class="mytext"><span class="number">0</span>%</div>
-	  <canvas class="usage-canvas"></canvas>
-	  <span class="subtext"><span class="totalused">0</span> of <span class="totalcap">0T</span></span>
-	</div>
+              <tr>
+                <th>&nbsp;</th>
+                <th class="ok">OK</th>
+                <th class="warn">WARN</th>
+                <th class="fail">CRIT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>
+                  MON
+                </th>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  OSD
+                </th>
+                <td>
+                </td>
+                <td class='warn-osd'>
+                </td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  POOL
+                </th>
+                <td class='ok-pool'>
+                </td>
+                <td class='warn-pool'>
+                </td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  PG
+                </th>
+                <td class='ok-pg'>
+                </td>
+                <td class='warn-pg'>
+                </td>
+                <td>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <span class="subtext"></span>
+        </div>
+        <div class="usage gauge card span3">
+          <span class="card-title">Usage</span>
+          <hr class="style-two"></hr>
+          <div class="mytext"><span class="number">0</span>%</div>
+          <canvas class="usage-canvas"></canvas>
+          <span class="subtext"><span class="totalused">0</span> of <span class="totalcap">0T</span></span>
+        </div>
       </div>
       <div class="row">
-	<div class="raphael-one card span12">
-	  <span class="card-title">OSD Status</span>
-	  <hr class="style-two"></hr>
-	  <div id="viz" class="viz span9">
-	  </div>
+        <div class="raphael-one card span12">
+          <span class="card-title">OSD Status</span>
+          <hr class="style-two"></hr>
+          <div id="viz" class="viz span9">
+          </div>
 
-	  <div class="detail span2">
-	    OSD Attributes
-	    <hr class="style-two">
-	    <table>
-	      <tbody>
-		<tr><td colspan=2>No OSD selected</td></tr>
-	      </tbody>
-	    </table>
-	  </div>
-	</div>
+          <div class="detail span2">
+            OSD Attributes
+            <hr class="style-two">
+            <table>
+              <tbody>
+                <tr><td colspan=2>No OSD selected</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       <div class="row" style="display:none">
-	<div class="span12 notifications card">
-	</div>
+        <div class="span12 notifications card">
+        </div>
       </div>
     </div>
   </div>

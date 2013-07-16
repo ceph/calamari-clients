@@ -75,12 +75,21 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
 
         Backbone.history.start();
+
+        var gaugesLayout = new views.GaugesLayout({
+            el: '.gauges'
+        });
+        gaugesLayout.render();
+        gaugesLayout.health.show(new views.HealthView({
+            model: new models.HealthModel(),
+        }));
         var gauge = new views.UsageView({
             App: App,
             model: new models.UsageModel(),
-            title: 'Usage',
-            el: $('.usage')
+            title: 'Usage'
         });
+
+        gaugesLayout.status.show(new views.StatusView());
 
         var viz = new views.OSDVisualization({
             App: App,
@@ -92,7 +101,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
 
         viz.render().then(function() {
-            gauge.render();
+            gaugesLayout.usage.show(gauge);
             App.vent.trigger('updateTotals');
         });
 
@@ -132,11 +141,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             priority: 1
         }]);
 
-        var health = new views.HealthView({
-            model: new models.HealthModel(),
-            el: '.health'
-        });
-        health.render();
 
         // Global Exports
         window.inktank = {
