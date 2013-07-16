@@ -1,6 +1,6 @@
 /*global define*/
 /* jshint -W106, -W069*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/animation', 'marionette'], function($, _, Backbone, JST, humanize, animation) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/animation', 'models/health-model', 'marionette'], function($, _, Backbone, JST, humanize, animation) {
     'use strict';
 
     /* HealthView
@@ -22,23 +22,36 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         initialize: function(options) {
             // The are defaults for Gauge.js and can be overidden from the contructor
             this.fadeInOutAnimation = animation('fadeOutAnim', 'fadeInAnim');
-            _.bindAll(this, 'updateView', 'ok', 'warn', 'fadeInOutAnimation');
+            _.bindAll(this, 'updateView', '_ok', '_warn', 'fadeInOutAnimation');
             if (options.App !== undefined) {
                 this.App = options.App;
-                this.App.vent.on('status:healthok', this.ok);
-                this.App.vent.on('status:healthwarn', this.warn);
+                this.App.vent.on('status:healthok', this._ok);
+                this.App.vent.on('status:healthwarn', this._warn);
             }
             if (this.App && !this.App.Config['offline']) {}
         },
-        ok: function() {
-            this.fadeInOutAnimation(this.ui.healthText, function() {
-                this.ui.healthText.removeClass('warn fail').addClass('ok').text('OK');
+        // Demo Code
+        // ---------
+        _ok: function() {
+            this.model.set({
+                added_ms: Date.now() - 1000,
+                report: {
+                    overall_status: 'HEALTH_OK'
+                }
             });
         },
-        warn: function() {
-            this.fadeInOutAnimation(this.ui.healthText, function() {
-                this.ui.healthText.removeClass('ok fail').addClass('warn').text('WARN');
+        // Demo Code
+        // ---------
+        _warn: function() {
+            this.model.set({
+                added_ms: Date.now() - 1000,
+                report: {
+                    overall_status: 'HEALTH_WARN'
+                }
             });
+        },
+        set: function(attr) {
+            this.model.set(attr);
         },
         serializeData: function() {
             var model = this.model.toJSON();
@@ -68,7 +81,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             };
         },
         updateView: function(model) {
-            console.log(model);
+            console.log('changed ', model);
+            this.fadeInOutAnimation(this.ui.healthText, function() {
+                var data = this.serializeData();
+                this.ui.healthText.removeClass('warn ok fail').addClass(data.clazz).text(data.healthText);
+                this.ui.subText.text(data.relTimeStr);
+            });
         }
     });
 });

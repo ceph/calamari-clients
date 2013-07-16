@@ -69,10 +69,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             el: '.gauges'
         });
         gaugesLayout.render();
-        gaugesLayout.health.show(new views.HealthView({
+        var healthView = new views.HealthView({
             App: App,
             model: new models.HealthModel()
-        }));
+        });
+        gaugesLayout.health.show(healthView);
         var gauge = new views.UsageView({
             App: App,
             model: new models.UsageModel(),
@@ -135,7 +136,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         // Global Exports
         window.inktank = {
             Viz: viz,
-            App: App
+            App: App,
+            HealthView: healthView
         };
     });
 

@@ -21,7 +21,12 @@ define(['underscore', 'backbone'], function(_, Backbone) {
             added: '',
             added_ms: Date.now(),
             report: {
-                overall_status: 'HEALTH_OK'
+                overall_status: 'HEALTH_OK',
+                detail: [],
+                summary: [{
+                    'severity': 'HEALTH_OK',
+                    'summary': ''
+                }]
             }
         },
     });
