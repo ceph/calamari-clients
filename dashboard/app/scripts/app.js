@@ -2,7 +2,7 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'marionette'], function($, _, Backbone, humanize, views, models, configloader) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'marionette'], function($, _, Backbone, humanize, views, models, configloader, Poller) {
     var config = {
         offline: true
     };
@@ -132,12 +132,14 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             priority: 1
         }]);
 
+        var poller = new Poller({App: App});
 
         // Global Exports
         window.inktank = {
             Viz: viz,
             App: App,
-            HealthView: healthView
+            HealthView: healthView,
+            Poller: poller
         };
     });
 

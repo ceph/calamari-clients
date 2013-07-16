@@ -28,7 +28,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
                     'summary': ''
                 }]
             }
-        },
+        }
     });
     return window.Health;
 });

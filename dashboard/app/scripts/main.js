@@ -16,7 +16,7 @@ require.config({
         },
         raphael: {
             exports: 'Raphael'
-        },
+        }
     },
     paths: {
         faker: '../bower_components/Faker/Faker',
