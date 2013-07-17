@@ -1,7 +1,26 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health-model','marionette'], function($, _, Backbone, UsageModel, HealthModel) {
+define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health-model', 'marionette'], function($, _, Backbone, UsageModel, HealthModel) {
     'use strict';
+    var newFetcher = function(fnName, timerName, modelName, eventName) {
+            return function() {
+                var self = this;
+                var delay = this[timerName] === null ? 0 : this.delay;
+                this[timerName] = setTimeout(function() {
+                    self[modelName].fetch({
+                        success: function(model /*, response, options*/ ) {
+                            self.App.vent.trigger(eventName, model);
+                            self[timerName] = self[fnName].apply(self);
+                        },
+                        error: function(model, response) {
+                            console.log(response);
+                            self[timerName] = self[fnName].apply(self);
+                        }
+                    });
+                }, delay);
+                return this[timerName];
+            };
+        };
     return Backbone.Marionette.ItemView.extend({
         healthTimer: null,
         usageTimer: null,
@@ -12,41 +31,9 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             this.healthModel = new HealthModel();
             this.usageModel = new UsageModel();
             this.App = Backbone.Marionette.getOption(this, 'App');
-            _.bindAll(this, 'fetchHealth', 'stop');
-        },
-        fetchHealth: function() {
-            var self = this;
-            var delay = this.healthTimer === null ? 0 : this.delay;
-            this.healthTimer = setTimeout(function() {
-                self.healthModel.fetch({
-                    success: function(model /*, response, options*/ ) {
-                        self.App.vent.trigger('health:update', model);
-                        self.healthTimer = self.fetchHealth();
-                    },
-                    error: function(model, response) {
-                        console.log(response);
-                        self.healthTimer = self.fetchHealth();
-                    }
-                });
-            }, delay);
-            return this.healthTimer;
-        },
-        fetchUsage: function() {
-            var self = this;
-            var delay = this.usageTimer === null ? 0 : this.delay;
-            this.usageTimer = setTimeout(function() {
-                self.usageModel.fetch({
-                    success: function(model /*, response, options*/ ) {
-                        self.App.vent.trigger('usage:update', model);
-                        self.usageTimer = self.fetchUsage();
-                    },
-                    error: function(model, response) {
-                        console.log(response);
-                        self.usageTimer = self.fetchUsage();
-                    }
-                });
-            }, delay);
-            return this.usageTimer;
+            this.fetchHealth = newFetcher('fetchHealth', 'healthTimer', 'healthModel', 'health:update');
+            this.fetchUsage = newFetcher('fetchUsage', 'usageTimer', 'usageModel', 'usage:update');
+            _.bindAll(this, 'stop');
         },
         stop: function() {
             clearTimeout(this.healthTimer);
