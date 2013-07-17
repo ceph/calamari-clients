@@ -28,6 +28,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             };
         },
         initialize: function(options) {
+            _.bindAll(this, 'updateView', 'set');
             // The are defaults for Gauge.js and can be overidden from the contructor
             this.App = Backbone.Marionette.getOption(this, 'App');
 
@@ -47,7 +48,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             });
             this.title = options.title === undefined ? 'Untitled' : options.title;
             this.on('render', this.postRender);
-            _.bindAll(this, 'updateView');
         },
         // Once the render has been executed and has set up the widget
         // add the canvas based gauge dial

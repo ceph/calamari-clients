@@ -22,7 +22,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         initialize: function() {
             // The are defaults for Gauge.js and can be overidden from the contructor
             this.fadeInOutAnimation = animation('fadeOutAnim', 'fadeInAnim');
-            _.bindAll(this, 'updateView', '_ok', '_warn', 'fadeInOutAnimation');
+            _.bindAll(this, 'updateView', '_ok', '_warn', 'set', 'fadeInOutAnimation');
 
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {

@@ -16,6 +16,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         },
         fetchHealth: function() {
             var self = this;
+            var delay = this.healthTimer === null ? 0 : this.delay;
             this.healthTimer = setTimeout(function() {
                 self.healthModel.fetch({
                     success: function(model /*, response, options*/ ) {
@@ -27,11 +28,12 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                         self.healthTimer = self.fetchHealth();
                     }
                 });
-            }, self.delay);
+            }, delay);
             return this.healthTimer;
         },
         fetchUsage: function() {
             var self = this;
+            var delay = this.usageTimer === null ? 0 : this.delay;
             this.usageTimer = setTimeout(function() {
                 self.usageModel.fetch({
                     success: function(model /*, response, options*/ ) {
@@ -43,8 +45,8 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                         self.usageTimer = self.fetchUsage();
                     }
                 });
-            }, self.delay);
-            return this.healthTimer;
+            }, delay);
+            return this.usageTimer;
         },
         stop: function() {
             clearTimeout(this.healthTimer);

@@ -94,8 +94,15 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.vent.trigger('keyup', evt);
         });
 
+        var poller = new Poller({
+            App: App
+        });
         viz.render().then(function() {
             gaugesLayout.usage.show(gauge);
+            if (!config.offline) {
+                poller.fetchUsage();
+                poller.fetchHealth();
+            }
         });
 
         _.extend(humanize.catalog, {
@@ -133,10 +140,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             timestamp: humanize.time(),
             priority: 1
         }]);
-
-        var poller = new Poller({
-            App: App
-        });
 
         // Global Exports
         window.inktank = {
