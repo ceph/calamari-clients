@@ -84,11 +84,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         },
         updateView: function(model) {
             console.log('changed ', model);
-            this.fadeInOutAnimation(this.ui.healthText, function() {
-                var data = this.serializeData();
-                this.ui.healthText.removeClass('warn ok fail').addClass(data.clazz).text(data.healthText);
-                this.ui.subText.text(data.relTimeStr);
-            });
+            var data = this.serializeData();
+            if (data.healthText !== this.ui.healthText.text()) {
+                this.fadeInOutAnimation(this.ui.healthText, function() {
+                    this.ui.healthText.removeClass('warn ok fail').addClass(data.clazz).text(data.healthText);
+                });
+            }
+            this.ui.subText.text(data.relTimeStr);
         }
     });
 });
