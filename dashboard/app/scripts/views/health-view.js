@@ -58,7 +58,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         serializeData: function() {
             var model = this.model.toJSON();
             var clazz = '',
-                subtext = humanize.relativeTime(model.added_ms),
+                subtext = humanize.relativeTime(model.added_ms / 1000),
                 healthText = '';
             switch (model.report.overall_status) {
             case 'HEALTH_WARN':
