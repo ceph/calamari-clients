@@ -7,6 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
         className: 'gauge card span6 status',
         template: JST['app/scripts/templates/status.ejs'],
         title: 'status',
+        timer: null,
         ui: {
             cardTitle: '.card-title',
             subText: '.subtext',
@@ -28,7 +29,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
         },
         initialize: function(options) {
             // The are defaults for Gauge.js and can be overidden from the contructor
-            _.bindAll(this, 'updateView', 'set');
+            _.bindAll(this, 'updateView', 'set', 'updateTimer');
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
                 this.App.vent.on('status:update', this.set);
@@ -39,9 +40,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             if (this.App && !this.App.Config['offline']) {
                 /* Placeholder */
             }
+            this.on('render', function() {
+                if (this.timer === null) {
+                    this.updateTimer();
+                }
+            });
         },
         set: function(model) {
             this.model.set(model.attributes);
+        },
+        updateTimer: function() {
+            this.ui.subText.text(humanize.relativeTime(this.model.get('added_ms') / 1000));
+            this.timer = setTimeout(this.updateTimer, 1000);
         },
         updateView: function(model) {
             var attr = model.attributes;
@@ -49,7 +59,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             this.ui.warnosd.text(attr.osd['up_not_in']);
             this.ui.failosd.text(attr.osd['not_up_not_in']);
             this.ui.okpool.text(attr.pool['total']);
-            this.ui.subText.text(humanize.relativeTime(attr.added_ms/1000));
+            this.ui.subText.text(humanize.relativeTime(attr.added_ms / 1000));
         }
     });
 });

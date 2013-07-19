@@ -11,6 +11,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         className: 'gauge card span3 health',
         template: JST['app/scripts/templates/health.ejs'],
         title: 'health',
+        timer: null,
         ui: {
             cardTitle: '.card-title',
             healthText: '.health-text',
@@ -22,7 +23,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         initialize: function() {
             // The are defaults for Gauge.js and can be overidden from the contructor
             this.fadeInOutAnimation = animation('fadeOutAnim', 'fadeInAnim');
-            _.bindAll(this, 'updateView', '_ok', '_warn', 'set', 'fadeInOutAnimation');
+            _.bindAll(this, 'updateView', '_ok', '_warn', 'set', 'fadeInOutAnimation', 'updateTimer');
 
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
@@ -31,6 +32,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 this.App.vent.on('health:update', this.set);
             }
             if (this.App && !this.App.Config['offline']) {}
+            this.on('render', function() {
+                if (this.timer === null) {
+                    this.updateTimer();
+                }
+            });
+        },
+        updateTimer: function() {
+            this.ui.subText.text(humanize.relativeTime(this.model.get('added_ms') / 1000));
+            this.timer = setTimeout(this.updateTimer, 1000);
         },
         // Demo Code
         // ---------
@@ -82,8 +92,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 relTimeStr: subtext
             };
         },
-        updateView: function(model) {
-            console.log('changed ', model);
+        updateView: function( /* model */ ) {
             var data = this.serializeData();
             if (data.healthText !== this.ui.healthText.text()) {
                 this.fadeInOutAnimation(this.ui.healthText, function() {

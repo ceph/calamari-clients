@@ -9,6 +9,7 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
         },
         cluster: 1,
         defaults: {
+            'added_ms': Date.now(),
             'osd': {
                 'up_not_in': 0,
                 'not_up_not_in': 0,
