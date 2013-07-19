@@ -12,7 +12,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     // Details is optional and may contain extra info. The lastUpdate is the last
     // time we got an update from the server.
     //
-    window.Health = Backbone.Model.extend({
+    var Health = Backbone.Model.extend({
         url: function() {
             return '/api/v1/cluster/' + this.get('cluster') + '/health';
         },
@@ -30,5 +30,5 @@ define(['underscore', 'backbone'], function(_, Backbone) {
             }
         }
     });
-    return window.Health;
+    return Health;
 });

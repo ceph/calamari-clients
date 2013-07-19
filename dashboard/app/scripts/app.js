@@ -83,7 +83,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.vent.trigger('updateTotals');
         });
 
-        gaugesLayout.status.show(new views.StatusView());
+        var statusView = new views.StatusView({
+            App: App,
+            model: new models.StatusModel()
+        });
+        gaugesLayout.status.show(statusView);
 
         var viz = new views.OSDVisualization({
             App: App,
@@ -102,6 +106,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             if (!config.offline) {
                 poller.fetchUsage();
                 poller.fetchHealth();
+                poller.fetchStatus();
             }
         });
 
@@ -146,7 +151,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             Viz: viz,
             App: App,
             HealthView: healthView,
-            Poller: poller
+            Poller: poller,
+            StatusView: statusView,
+            models: models
         };
     });
 
