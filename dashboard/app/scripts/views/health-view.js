@@ -65,8 +65,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 healthText = 'WARN';
                 clazz = 'warn';
                 break;
-            case 'HEALTH_CRIT':
-                healthText = 'CRIT';
+            case 'HEALTH_ERR':
+                healthText = 'ERROR';
                 clazz = 'fail';
                 break;
             default:
