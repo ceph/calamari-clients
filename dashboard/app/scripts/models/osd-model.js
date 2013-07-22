@@ -44,10 +44,10 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             // something has failed
             var up = this.get('up');
             var _in = this.get('in');
-            if (up && _in) {
+            if (up === 1 && _in === 1) {
                 return 0.4;
             }
-            if (up && _in === false) {
+            if (up === 1 && _in === 0) {
                 return 0.66;
             }
             return 1;
