@@ -26,6 +26,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             _.bindAll(this);
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.App.vent.on('keyup', this.keyHandler);
+            this.listenTo(this.collection, 'add', this.addOSD);
+            this.listenTo(this.collection, 'remove', this.removeOSD);
+            this.listenTo(this.collection, 'change', this.updateOSD);
+        },
+        addOSD: function(m) {
+            this.moveCircle(m);
+        },
+        removeOSD: function(m) {
+            this.collection.remove(m);
+            m.view.remove();
+        },
+        updateOSD: function(m) {
+            m.set(m.attributes);
         },
         drawGrid: function(d) {
             var path = Rs.calcGrid(this.originX, this.originY, this.width, this.height, this.step);
