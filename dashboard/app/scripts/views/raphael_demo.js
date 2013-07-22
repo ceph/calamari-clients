@@ -17,6 +17,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         events: {
             'click .viz': 'clickHandler'
         },
+        collectionEvents: {
+            'add': 'addOSD',
+            'remove': 'removeOSD',
+            'change': 'updateOSD',
+        },
         initialize: function(options) {
             this.App = options.App;
             this.width = 17 * this.step;
@@ -26,16 +31,17 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             _.bindAll(this);
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.App.vent.on('keyup', this.keyHandler);
-            this.listenTo(this.collection, 'add', this.addOSD);
-            this.listenTo(this.collection, 'remove', this.removeOSD);
-            this.listenTo(this.collection, 'change', this.updateOSD);
         },
         addOSD: function(m) {
             this.moveCircle(m);
         },
         removeOSD: function(m) {
             this.collection.remove(m);
-            m.view.remove();
+            if (m.views) {
+                m.views.circle.remove();
+                m.views.text.remove();
+                m.views = null;
+            }
         },
         updateOSD: function(m) {
             m.set(m.attributes);
@@ -55,7 +61,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             path1.animate(anim);
         },
         moveCircle: function(m) {
-            var pos = Rs.calcPosition(m.get('index'), this.originX, this.originY, this.width, this.height, this.step);
+            var pos = Rs.calcPosition(m.get('osd'), this.originX, this.originY, this.width, this.height, this.step);
             this.animateCircleTraversal(this.r, this.originX, this.originY, 8, pos.nx, pos.ny, m);
         },
         calculatePositions: function() {
@@ -120,16 +126,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     cx: destX,
                     cy: destY
                 }, 333, 'easeIn', function() {
-                    t = r.text(destX, destY - 1, model.get('index')).attr({
+                    t = r.text(destX, destY - 1, model.get('osd')).attr({
                         font: '',
                         stroke: '',
                         fill: '',
                         style: ''
                     });
                     t.data('modelid', model.cid);
+                    model.views = {
+                        circle: c,
+                        text: t
+                    };
                 });
             });
-            model.view = c;
             return c.animate(aFn);
         },
         simulateUsedChanges: function() {

@@ -90,8 +90,8 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
         },
         destroy: function() {
             this.off('change');
-            if (this.view) {
-                this.view = null;
+            if (this.views) {
+                this.views = null;
             }
         }
     });

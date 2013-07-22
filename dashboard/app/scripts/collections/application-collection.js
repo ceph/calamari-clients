@@ -9,7 +9,7 @@ define(['underscore', 'backbone', 'models/application-model'], function(_, Backb
         epoch: 1,
         added_ms: 0,
         url: function() {
-            return '/api/v1/cluster/' + this.cluster + '/osd';
+            return '/api/v1/cluster/' + this.cluster + '/osds';
         },
         parse: function(response) {
             this.epoch = response.epoch;
