@@ -38,7 +38,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         removeOSD: function(m) {
             this.collection.remove(m);
             if (m.views) {
-                m.views.circle.remove();
+                var circle = m.views.circle;
+                circle.animate({
+                    'opacity': 0,
+                    'r': 0
+                }, 250, 'ease-in', function() {
+                    circle.remove();
+                });
                 m.views.text.remove();
                 m.views = null;
             }
