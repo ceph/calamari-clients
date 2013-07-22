@@ -72,14 +72,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             // Helper method to draw circles for use as legends beneath viz.
             var srctext = ['down', 'up/out', 'up/in'];
             var srcstate = [{
-                up: false,
-                'in': false
+                up: 0,
+                'in': 0
             }, {
-                up: true,
-                'in': false
+                up: 1,
+                'in': 0
             }, {
-                up: true,
-                'in': true
+                up: 1,
+                'in': 1
             }];
             var i = Math.round(1 / percent) - 1;
             var m = new Models.OSDModel(_.extend(srcstate[i], {
