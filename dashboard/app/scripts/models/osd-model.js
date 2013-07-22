@@ -1,3 +1,4 @@
+/*jshint -W106*/
 /*global define*/
 
 define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
@@ -10,15 +11,15 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
     //
     return Backbone.Model.extend({
         // `radius` *default* maxium radius 20 pixels
-	//
+        //
         // `animationTime` *default* animation time 500ms
-	//
+        //
         // `delay` *default* delay before animation 125ms
-	//
+        //
         // `easing` *default* easing algorithm easeIn
-	//
+        //
         // `minPerc` *default* minimum radius as percentage
-	//
+        //
         radius: 20,
         animationTime: 500,
         delay: 125,
@@ -74,15 +75,17 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             }
         },
         defaults: {
-            name: '1',
+            osd: '1',
             capacity: 1024,
             used: 0,
             uuid: '',
             up: true,
             'in': true,
-            created: Date.now(),
-            modified: Date.now(),
-            ip: '127.0.0.1',
+            up_from: 1,
+            public_addr: '127.0.0.1:0',
+            cluster_addr: '127.0.0.1:0',
+            heartbeat_back_addr: '127.0.0.1:0',
+            heartbeat_front_addr: '127.0.0.1:0',
             ports: []
         },
         destroy: function() {

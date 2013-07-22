@@ -1,6 +1,6 @@
 /*global define, Raphael*/
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'helpers/generate-osds', 'views/osd-detail-view', 'models/application-model', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, Generate, View, Models) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'models/application-model', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, View, Models) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
@@ -9,7 +9,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         originX: 0,
         originY: 0,
         step: 40,
-        osdCount: 16 * 10,
         timer: null,
         ui: {
             viz: '.viz',
@@ -36,7 +35,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 'opacity': 0.40
             });
             this.drawLegend(this.r, 285, 475);
-            this.collection = Generate.osds(this.osdCount);
             var anim = Raphael.animation({
                 path: path,
                 callback: d.resolve

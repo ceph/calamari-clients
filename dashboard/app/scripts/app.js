@@ -2,7 +2,7 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'marionette'], function($, _, Backbone, humanize, views, models, configloader, Poller) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/application-collection', 'marionette'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection) {
     var config = {
         offline: true
     };
@@ -89,8 +89,15 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
         gaugesLayout.status.show(statusView);
 
+        var collection;
+        if (config.offline) {
+            collection = Generate.osds(160);
+        } else {
+            collection = new Collection();
+        }
         var viz = new views.OSDVisualization({
             App: App,
+            collection: collection,
             el: '.raphael-one'
         });
 
