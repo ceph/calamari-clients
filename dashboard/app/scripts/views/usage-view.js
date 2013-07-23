@@ -38,8 +38,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
 
             this.opts = {};
             _.extend(this.opts, {
-                minValue: 0,
-                maxValue: 100,
                 lines: 10,
                 colorStart: '#80d2dc',
                 colorStop: '#55aeba',
@@ -55,6 +53,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             this.gauge = new Gauge(this.ui.canvas[0]).setOptions(this.opts);
             this.gauge.setTextField(this.ui.number[0]);
             this.gauge.set(0);
+            this.gauge.maxValue=100;
+            this.gauge.minValue=0;
             this.triggerMethod('item:postrender', this);
         },
         updateView: function(model) {
