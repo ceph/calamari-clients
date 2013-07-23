@@ -114,7 +114,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 poller.fetchUsage();
                 poller.fetchHealth();
                 poller.fetchStatus();
-                collection.fetch();
+                poller.updateEvent();
             }
         });
 

@@ -23,6 +23,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'remove': 'removeOSD',
             'change': 'updateOSD',
         },
+        updateCollection: function() {
+            if (this.collection.length > 0) {
+                this.collection.update.apply(this.collection);
+            } else {
+                this.collection.fetch();
+            }
+        },
         initialize: function(options) {
             this.App = options.App;
             this.width = 17 * this.step;
@@ -32,6 +39,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             _.bindAll(this);
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.listenTo(this.App.vent, 'keyup', this.keyHandler);
+            this.listenTo(this.App.vent, 'osd:update', this.updateCollection);
             this.listenTo(this.collection, 'request', this.spinnerShow);
             this.listenTo(this.collection, 'sync error', this.spinnerHide);
             this.listenTo(this.collection, 'reset', this.resetViews);

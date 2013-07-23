@@ -21,6 +21,17 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                 return this[timerName];
             };
         };
+    var newEventEmitter = function(fnName, timerName, eventName) {
+            return function() {
+                var self = this;
+                var delay = this[timerName] === null ? 0 : this.delay;
+                this[timerName] = setTimeout(function() {
+                    self.App.vent.trigger(eventName);
+                    self[timerName] = self[fnName].apply(self);
+                }, delay);
+                return this[timerName];
+            };
+        };
     return Backbone.Marionette.ItemView.extend({
         usageTimer: null,
         usageModel: null,
@@ -28,6 +39,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         healthModel: null,
         statusModel: null,
         statusTimer: null,
+        updateTimer: null,
         delay: 20000,
         initialize: function() {
             this.healthModel = new HealthModel();
@@ -37,6 +49,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             this.fetchHealth = newFetcher('fetchHealth', 'healthTimer', 'healthModel', 'health:update');
             this.fetchUsage = newFetcher('fetchUsage', 'usageTimer', 'usageModel', 'usage:update');
             this.fetchStatus = newFetcher('fetchStatus', 'statusTimer', 'statusModel', 'status:update');
+            this.updateEvent = newEventEmitter('updateEvent', 'updateTimer', 'osd:update');
             _.bindAll(this, 'stop');
         },
         stop: function() {
@@ -46,6 +59,8 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             this.usageTimer = null;
             clearTimeout(this.statusTimer);
             this.statusTimer = null;
+            clearTimeout(this.updateTimer);
+            this.updateTimer = null;
         }
     });
 });

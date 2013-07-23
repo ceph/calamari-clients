@@ -47,7 +47,7 @@ define(['underscore', 'backbone', 'models/application-model'], function(_, Backb
         },
         update: function(options) {
             options = options ? _.clone(options) : {};
-            options.url = this.url() + '/epoch/' + this.epoch;
+            options.url = this.url() + '/epoch/' + (this.epoch + 1);
             // Disable normal fetch processing path
             options.add = false;
             options.remove = false;
