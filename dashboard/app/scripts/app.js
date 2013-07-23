@@ -161,7 +161,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             HealthView: healthView,
             Poller: poller,
             StatusView: statusView,
-            models: models
+            models: models,
+            Gauge: gauge
         };
     });
 
