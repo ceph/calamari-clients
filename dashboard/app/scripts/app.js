@@ -2,7 +2,7 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/application-collection', 'marionette'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'marionette'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection) {
     var config = {
         offline: true
     };

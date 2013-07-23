@@ -66,7 +66,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             return s;
         },
         updateSize: function() {
-            if (this.views.circle) {
+            if (this.views && this.views.circle) {
                 var a = window.Raphael.animation({
                     r: (this.radius * this.getPercentage()),
                     fill: this.getColor()

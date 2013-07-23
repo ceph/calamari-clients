@@ -1,6 +1,6 @@
 /*jshint -W106*/
 /*global define */
-define(['backbone', '../collections/application-collection', 'faker'], function(Backbone, Collection, Faker) {
+define(['backbone', '../collections/osd-collection', 'faker'], function(Backbone, Collection, Faker) {
     'use strict';
     var generateOsds = function(count) {
             var c = new Collection();

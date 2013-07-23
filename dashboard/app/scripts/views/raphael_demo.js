@@ -152,7 +152,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 fill: model.getColor(),
                 stroke: 'none'
             });
-            c.data('modelid', model.cid);
+            c.data('modelid', model.id);
             var t;
             var aFn = Raphael.animation({
                 cx: destX,
@@ -162,13 +162,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     cx: destX,
                     cy: destY
                 }, 333, 'easeIn', function() {
-                    t = r.text(destX, destY - 1, model.get('osd')).attr({
+                    t = r.text(destX, destY - 1, model.id).attr({
                         font: '',
                         stroke: '',
                         fill: '',
                         style: ''
                     });
-                    t.data('modelid', model.cid);
+                    t.data('modelid', model.id);
                     model.views = {
                         circle: c,
                         text: t
@@ -186,7 +186,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 if (!_in && (Math.random() > 0.6) && maxRed > 0) {
                     maxRed -= 1;
                     up = false;
-                    //console.log(m.cid + ' setting to down');
+                    //console.log(m.id + ' setting to down');
                 }
                 m.set({
                     'up': up,
@@ -264,11 +264,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 var el = this.r.getElementByPoint(x, y);
                 //console.log(el);
                 if (el) {
-                    var cid = el.data('modelid');
-                    //console.log(cid);
-                    if (cid) {
+                    var id = el.data('modelid');
+                    //console.log(id);
+                    if (id) {
                         // ignore circles and tspans without data
-                        this.detailPanel.model.set(this.collection.get(cid).attributes);
+                        this.detailPanel.model.set(this.collection.get(id).attributes);
                     }
                     return;
                 }
