@@ -34,6 +34,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.listenTo(this.App.vent, 'keyup', this.keyHandler);
             this.listenTo(this.collection, 'request', this.spinnerShow);
             this.listenTo(this.collection, 'sync error', this.spinnerHide);
+            this.listenTo(this.collection, 'reset', this.resetViews);
+        },
+        resetViews: function(collection, options) {
+            _.each(options.previousModels, this.cleanupModelView);
         },
         spinnerShow: function() {
             this.ui.spinner.show();
@@ -44,8 +48,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         addOSD: function(m) {
             this.moveCircle(m);
         },
-        removeOSD: function(m) {
-            this.collection.remove(m);
+        cleanupModelView: function(m) {
             if (m.views) {
                 var circle = m.views.circle;
                 circle.animate({
@@ -57,6 +60,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 m.views.text.remove();
                 m.views = null;
             }
+        },
+        removeOSD: function(m) {
+            this.collection.remove(m);
+            this.cleanupModelView(m);
         },
         updateOSD: function(m) {
             m.set(m.attributes);
