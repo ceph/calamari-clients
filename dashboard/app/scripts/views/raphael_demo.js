@@ -32,8 +32,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             _.bindAll(this);
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.listenTo(this.App.vent, 'keyup', this.keyHandler);
-            this.listenTo(this.App.vent, 'spinner:show', this.spinnerShow);
-            this.listenTo(this.App.vent, 'spinner:hide', this.spinnerHide);
+            this.listenTo(this.collection, 'request', this.spinnerShow);
+            this.listenTo(this.collection, 'sync error', this.spinnerHide);
         },
         spinnerShow: function() {
             this.ui.spinner.show();
