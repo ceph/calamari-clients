@@ -51,7 +51,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 circle.animate({
                     'opacity': 0,
                     'r': 0
-                }, 250, 'ease-in', function() {
+                }, 250, 'easeIn', function() {
                     circle.remove();
                 });
                 m.views.text.remove();
@@ -79,14 +79,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             x: 40,
             y: 40
         }, {
-            x: 640,
+            x: 600,
             y: 40
         }, {
-            x: 640,
-            y: 480
+            x: 600,
+            y: 400
         }, {
             x: 40,
-            y: 480
+            y: 400
         }, ],
         moveCircle: function(m) {
             var start = this.startPosition[Math.floor(Math.random() * 4)];
