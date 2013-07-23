@@ -114,7 +114,12 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 poller.fetchUsage();
                 poller.fetchHealth();
                 poller.fetchStatus();
-                collection.fetch();
+                App.vent.trigger('spinner:show');
+                collection.fetch({
+                    success: function() {
+                        App.vent.trigger('spinner:hide');
+                    }
+                });
             }
         });
 

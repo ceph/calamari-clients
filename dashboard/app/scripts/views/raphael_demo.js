@@ -12,7 +12,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         timer: null,
         ui: {
             viz: '.viz',
-            detail: '.detail tbody'
+            detail: '.detail tbody',
+            spinner: '.icon-spinner'
         },
         events: {
             'click .viz': 'clickHandler'
@@ -30,7 +31,15 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.h = 520;
             _.bindAll(this);
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
-            this.App.vent.on('keyup', this.keyHandler);
+            this.listenTo(this.App.vent, 'keyup', this.keyHandler);
+            this.listenTo(this.App.vent, 'spinner:show', this.spinnerShow);
+            this.listenTo(this.App.vent, 'spinner:hide', this.spinnerHide);
+        },
+        spinnerShow: function() {
+            this.ui.spinner.show();
+        },
+        spinnerHide: function() {
+            this.ui.spinner.hide();
         },
         addOSD: function(m) {
             this.moveCircle(m);
