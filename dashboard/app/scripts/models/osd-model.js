@@ -25,7 +25,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
         delay: 125,
         easing: 'easeIn',
         minPerc: 0.4,
-
+        idAttribute: 'osd',
         initialize: function() {
             // Creation sets a the function which decides how the percentage
             // via virtual function getPercentage which is the external interface
@@ -66,12 +66,12 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             return s;
         },
         updateSize: function() {
-            if (this.view) {
+            if (this.views.circle) {
                 var a = window.Raphael.animation({
                     r: (this.radius * this.getPercentage()),
                     fill: this.getColor()
                 }, this.animationTime, this.easing);
-                this.view.animate(a.delay(this.delay));
+                this.views.circle.animate(a.delay(this.delay));
             }
         },
         defaults: {
