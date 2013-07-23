@@ -63,6 +63,9 @@ table.metrics tr td:first-child {
     text-align: right;
     color: $itapp-subtext-font-color;
 }
+.table.metrics td, .table.metrics th {
+    line-height: 16px;
+}
 table.metrics td {
     width: 100px;
 }
