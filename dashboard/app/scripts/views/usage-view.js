@@ -17,7 +17,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             number: '.number',
             totalused: '.totalused',
             totalcap: '.totalcap',
-            canvas: '.usage-canvas'
+            canvas: '.usage-canvas',
+            spinner: '.icon-spinner'
         },
         modelEvents: {
             'change': 'updateView'
@@ -33,7 +34,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             this.App = Backbone.Marionette.getOption(this, 'App');
 
             if (this.App) {
-                this.App.vent.on('usage:update', this.set);
+                this.listenTo(this.App.vent, 'usage:update', this.set);
             }
 
             this.opts = {};
@@ -45,17 +46,24 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
 
             });
             this.title = options.title === undefined ? 'Untitled' : options.title;
-            this.on('render', this.postRender);
+            this.listenToOnce(this, 'render', this.postRender);
         },
         // Once the render has been executed and has set up the widget
         // add the canvas based gauge dial
         postRender: function() {
+            var self = this;
             this.gauge = new Gauge(this.ui.canvas[0]).setOptions(this.opts);
             this.gauge.setTextField(this.ui.number[0]);
             this.gauge.set(0);
-            this.gauge.maxValue=100;
-            this.gauge.minValue=0;
+            this.gauge.maxValue = 100;
+            this.gauge.minValue = 0;
             this.triggerMethod('item:postrender', this);
+            this.listenTo(this.App.vent, 'usage:request', function() {
+                self.ui.spinner.css('visibility', 'visible');
+            });
+            this.listenTo(this.App.vent, 'usage:sync usage:error', function() {
+                self.ui.spinner.css('visibility', 'hidden');
+            });
         },
         updateView: function(model) {
             var attr = model.toJSON();

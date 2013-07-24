@@ -25,7 +25,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             failpg: '.fail-pg',
             okmon: '.ok-mon',
             warnmon: '.warn-mon',
-            failmon: '.fail-mon'
+            failmon: '.fail-mon',
+            spinner: '.icon-spinner'
         },
         modelEvents: {
             'change': 'updateView'
@@ -41,7 +42,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             _.bindAll(this, 'updateView', 'set', 'updateTimer');
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
-                this.App.vent.on('status:update', this.set);
+                this.listenTo(this.App.vent, 'status:update', this.set);
             }
             if (options && options.App !== undefined) {
                 this.App = options.App;
@@ -49,9 +50,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             if (this.App && !this.App.Config['offline']) {
                 /* Placeholder */
             }
-            this.on('render', function() {
-                if (this.timer === null) {
-                    this.updateTimer();
+            var self = this;
+            this.listenToOnce(this, 'render', function() {
+                self.listenTo(self.App.vent, 'status:request', function() {
+                    self.ui.spinner.css('visibility', 'visible');
+                });
+                self.listenTo(self.App.vent, 'status:sync status:error', function() {
+                    self.ui.spinner.css('visibility', 'hidden');
+                });
+                if (self.timer === null) {
+                    self.updateTimer();
                 }
             });
         },

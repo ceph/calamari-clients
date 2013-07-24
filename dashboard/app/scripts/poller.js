@@ -2,14 +2,23 @@
 
 define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health-model', 'models/status-model', 'marionette'], function($, _, Backbone, UsageModel, HealthModel, StatusModel) {
     'use strict';
-    var newFetcher = function(fnName, timerName, modelName, eventName) {
+    var newFetcher = function(fnName, timerName, modelName, eventPrefix) {
             return function() {
                 var self = this;
+                self.listenTo(self[modelName], 'request', function() {
+                    self.App.vent.trigger(eventPrefix + ':request');
+                });
+                self.listenTo(self[modelName], 'sync', function() {
+                    self.App.vent.trigger(eventPrefix + ':sync');
+                });
+                self.listenTo(self[modelName], 'error', function() {
+                    self.App.vent.trigger(eventPrefix + ':error');
+                });
                 var delay = this[timerName] === null ? 0 : this.delay;
                 this[timerName] = setTimeout(function() {
                     self[modelName].fetch({
                         success: function(model /*, response, options*/ ) {
-                            self.App.vent.trigger(eventName, model);
+                            self.App.vent.trigger(eventPrefix + ':update', model);
                             self[timerName] = self[fnName].apply(self);
                         },
                         error: function(model, response) {
@@ -46,9 +55,9 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             this.usageModel = new UsageModel();
             this.statusModel = new StatusModel();
             this.App = Backbone.Marionette.getOption(this, 'App');
-            this.fetchHealth = newFetcher('fetchHealth', 'healthTimer', 'healthModel', 'health:update');
-            this.fetchUsage = newFetcher('fetchUsage', 'usageTimer', 'usageModel', 'usage:update');
-            this.fetchStatus = newFetcher('fetchStatus', 'statusTimer', 'statusModel', 'status:update');
+            this.fetchHealth = newFetcher('fetchHealth', 'healthTimer', 'healthModel', 'health');
+            this.fetchUsage = newFetcher('fetchUsage', 'usageTimer', 'usageModel', 'usage');
+            this.fetchStatus = newFetcher('fetchStatus', 'statusTimer', 'statusModel', 'status');
             this.updateEvent = newEventEmitter('updateEvent', 'updateTimer', 'osd:update');
             _.bindAll(this, 'stop');
         },

@@ -15,7 +15,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         ui: {
             cardTitle: '.card-title',
             healthText: '.health-text',
-            subText: '.subtext'
+            subText: '.subtext',
+            spinner: '.icon-spinner'
         },
         modelEvents: {
             'change': 'updateView'
@@ -27,14 +28,22 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
 
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
-                this.App.vent.on('status:healthok', this._ok);
-                this.App.vent.on('status:healthwarn', this._warn);
-                this.App.vent.on('health:update', this.set);
+                this.listenTo(this.App.vent, 'status:healthok', this._ok);
+                this.listenTo(this.App.vent, 'status:healthwarn', this._warn);
+                this.listenTo(this.App.vent, 'health:update', this.set);
             }
-            if (this.App && !this.App.Config['offline']) {}
-            this.on('render', function() {
+            this.listenToOnce(this, 'render', function() {
                 if (this.timer === null) {
                     this.updateTimer();
+                }
+                var self = this;
+                if (this.App) {
+                    this.listenTo(this.App.vent, 'health:request', function() {
+                        self.ui.spinner.css('visibility', 'visible');
+                    });
+                    this.listenTo(this.App.vent, 'health:sync health:error', function() {
+                        self.ui.spinner.css('visibility', 'hidden');
+                    });
                 }
             });
         },

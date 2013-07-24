@@ -37,21 +37,20 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.w = 720;
             this.h = 520;
             _.bindAll(this);
+            var self = this;
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.listenTo(this.App.vent, 'keyup', this.keyHandler);
             this.listenTo(this.App.vent, 'osd:update', this.updateCollection);
-            this.listenTo(this.collection, 'request', this.spinnerShow);
-            this.listenTo(this.collection, 'sync error', this.spinnerHide);
+            this.listenTo(this.collection, 'request', function() {
+                self.ui.spinner.css('visibility', 'visible');
+            });
+            this.listenTo(this.collection, 'sync error', function() {
+                self.ui.spinner.css('visibility', 'hidden');
+            });
             this.listenTo(this.collection, 'reset', this.resetViews);
         },
         resetViews: function(collection, options) {
             _.each(options.previousModels, this.cleanupModelView);
-        },
-        spinnerShow: function() {
-            this.ui.spinner.show();
-        },
-        spinnerHide: function() {
-            this.ui.spinner.hide();
         },
         addOSD: function(m) {
             this.moveCircle(m);
