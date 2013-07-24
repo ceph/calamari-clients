@@ -20,6 +20,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             okmds: '.ok-mds',
             warnmds: '.warn-mds',
             failmds: '.fail-mds',
+            okpg: '.ok-pg',
+            warnpg: '.warn-pg',
+            failpg: '.fail-pg',
             okmon: '.ok-mon',
             warnmon: '.warn-mon',
             failmon: '.fail-mon'
@@ -70,6 +73,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             this.ui.failmds.text(attr.mds['not_up_not_in']);
             this.ui.okmon.text(attr.mon['in_quorum']);
             this.ui.failmon.text(attr.mon['not_in_quorum']);
+            this.ui.okpg.text(attr.pg['ok']);
+            this.ui.warnpg.text(attr.pg['warn']);
+            this.ui.failpg.text(attr.pg['critical']);
             this.ui.subText.text(humanize.relativeTime(attr.added_ms / 1000));
         }
     });

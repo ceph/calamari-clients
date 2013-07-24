@@ -1,85 +1,49 @@
-          <span class="card-title"><%- title %></span>
-          <hr class="style-two"></hr>
-          <table class='table metrics'>
-            <thead>
-              <tr>
-                <th>&nbsp;</th>
-                <th class="ok">OK</th>
-                <th class="warn">WARN</th>
-                <th class="fail">CRIT</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>
-                  MON
-                </th>
-                <td class='ok-mon'>
-                  0
-                </td>
-                <td class='warn-mon'>
-                  0
-                </td>
-                <td class='fail-mon'>
-                  0
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  OSD
-                </th>
-                <td class='ok-osd'>
-                  0
-                </td>
-                <td class='warn-osd'>
-                  0
-                </td>
-                <td class='fail-osd'>
-                  0
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  POOL
-                </th>
-                <td class='ok-pool'>
-                  0
-                </td>
-                <td class='warn-pool'>
-                  0
-                </td>
-                <td class='fail-pool'>
-                  0
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  PG
-                </th>
-                <td class='ok-pg'>
-                  0
-                </td>
-                <td class='warn-pg'>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  MDS
-                </th>
-                <td class='ok-mds'>
-                  0
-                </td>
-                <td class='warn-mds'>
-                  0
-                </td>
-                <td class='fail-mds'>
-                  0
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <span class="subtext"><%- relTime %></span>
+<span class="card-title">
+    <%- title %>
+</span>
+<hr class="style-two"></hr>
+<table class='table metrics'>
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th class="ok">OK</th>
+            <th class="warn">WARN</th>
+            <th class="fail">CRIT</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>MON</th>
+            <td class='ok-mon'>0</td>
+            <td class='warn-mon'>0</td>
+            <td class='fail-mon'>0</td>
+        </tr>
+        <tr>
+            <th>OSD</th>
+            <td class='ok-osd'>0</td>
+            <td class='warn-osd'>0</td>
+            <td class='fail-osd'>0</td>
+        </tr>
+        <tr>
+            <th>POOL</th>
+            <td class='ok-pool'>0</td>
+            <td class='warn-pool'>0</td>
+            <td class='fail-pool'>0</td>
+        </tr>
+        <tr>
+            <th>PG</th>
+            <td class='ok-pg'>0</td>
+            <td class='warn-pg'>0</td>
+            <td class='fail-pg'>0</td>
+        </tr>
+        <tr>
+            <th>MDS</th>
+            <td class='ok-mds'>0</td>
+            <td class='warn-mds'>0</td>
+            <td class='fail-mds'>0</td>
+        </tr>
+    </tbody>
+</table>
+<span class="subtext">
+    <%- relTime %>
+</span>
