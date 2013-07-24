@@ -197,8 +197,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     //console.log(m.id + ' setting to down');
                 }
                 m.set({
-                    'up': up,
-                    'in': _in
+                    'up': up ? 1 : 0,
+                    'in': _in ? 1 : 0
                 });
             });
             this.App.vent.trigger('updateTotals');
@@ -207,8 +207,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         resetChanges: function() {
             this.collection.each(function(m) {
                 m.set({
-                    'up': true,
-                    'in': true
+                    'up': 1,
+                    'in': 1
                 });
             });
             this.App.vent.trigger('updateTotals');

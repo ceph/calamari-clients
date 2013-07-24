@@ -35,8 +35,8 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             // TODO: this watcher probably needs to be virtual.
             // It should ignore changes on things we're not currently
             // interested in
-            this.on('change:up change:in', this.updateSize);
             _.bindAll(this, '_getStatus', '_getUsedPercentage', 'updateSize', 'getColor');
+            this.listenTo(this, 'change:up change:in', this.updateSize);
         },
         _getStatus: function() {
             // Internal method - looks at the OSD state
