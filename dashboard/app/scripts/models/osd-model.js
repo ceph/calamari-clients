@@ -37,6 +37,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             // interested in
             _.bindAll(this, '_getStatus', '_getUsedPercentage', 'updateSize', 'getColor');
             this.listenTo(this, 'change:up change:in', this.updateSize);
+            this.listenTo(this, 'change', this.showChange);
         },
         _getStatus: function() {
             // Internal method - looks at the OSD state
@@ -72,6 +73,19 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
                     fill: this.getColor()
                 }, this.animationTime, this.easing);
                 this.views.circle.animate(a.delay(this.delay));
+            }
+        },
+        showChange: function() {
+            if (this.views && this.views.text) {
+                var self = this.views.text;
+                var a = window.Raphael.animation({
+                    opacity: 0.3
+                }, 333, 'easeOut', function() {
+                    self.animate({
+                        opacity: 1
+                    }, 333, 'easeIn');
+                });
+                this.views.text.animate(a.delay(this.delay));
             }
         },
         defaults: {
