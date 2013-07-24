@@ -10,11 +10,12 @@ $itapp-standard-font-color: $itdarkgray;
 $itapp-card-border-radius: 3px;
 $itapp-card-box-shadow-color: #5e6a71;
 $itapp-subtext-font-color: $itgray;
+$itapp-card-title-font-color: $itdarkred;
 
 body {
-	background-color: $itapp-background-color;
-	font-family: $itapp-font-family;
-	font-style: normal;
+    background-color: $itapp-background-color;
+    font-family: $itapp-font-family;
+    font-style: normal;
 }
 
 $itapp-card-height: 220px;
@@ -22,13 +23,13 @@ $second-row-height: 600px;
 $third-row-height: 120px;
 
 .navbar {
-	margin-bottom:0;
-	.navbar-inner {
-	     @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
-    	     @include border-radius(3px);
-    	     @include box-shadow(0 2px 4px rgba(0,0,0,.2));
-             border: 1px solid darken($itdarkred, 15%);
-        }
+    margin-bottom:0;
+    .navbar-inner {
+        @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+        @include border-radius(3px);
+        @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
+        border: 1px solid darken($itdarkred, 15%);
+    }
 }
 
 .card {
@@ -57,7 +58,8 @@ hr.style-two {
     background: #ccc;
 }
 .card-title {
-	text-transform: uppercase;
+    color: $itapp-card-title-font-color;
+    text-transform: uppercase;
 }
 table.metrics tr td:first-child {
     text-align: right;
@@ -127,11 +129,11 @@ span.subtext {
 }
 $g-width: 205px;
 .usage-canvas {
-	max-width: $g-width;
-	max-height: $itapp-card-height;
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
+    max-width: $g-width;
+    max-height: $itapp-card-height;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
 }
 .mytext {
 	margin: 15px auto 0 auto;
@@ -152,15 +154,14 @@ $g-width: 205px;
        @include textalert(green);
 }
 .notifications {
-       min-height: $third-row-height;
-       margin-bottom: 10px;
+    min-height: $third-row-height;
+    margin-bottom: 10px;
 }
-
 @include animate-fadeIn($class: true);
 @include animate-fadeOut($class: true);
 .fadeInStatusAnim {
-	@include animation(fadeIn 0.25s 0);
+    @include animation(fadeIn 0.25s 0);
 }
 .fadeOutAnim {
-	@include animation(fadeOut 0.25s 0);
+    @include animation(fadeOut 0.25s 0);
 }
