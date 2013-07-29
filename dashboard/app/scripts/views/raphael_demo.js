@@ -102,10 +102,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             x: 40,
             y: 400
         }, ],
-        moveCircle: function(m) {
+        moveCircle: function(model, index) {
             var start = this.startPosition[Math.floor(Math.random() * 4)];
-            var pos = Rs.calcPosition(m.get('osd'), this.originX, this.originY, this.width, this.height, this.step);
-            this.animateCircleTraversal(this.r, start.x, start.y, 8, pos.nx, pos.ny, m);
+            var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
+            this.animateCircleTraversal(this.r, start.x, start.y, 8, pos.nx, pos.ny, model);
         },
         calculatePositions: function() {
             this.collection.each(this.moveCircle);
