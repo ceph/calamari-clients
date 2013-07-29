@@ -53,7 +53,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             _.each(options.previousModels, this.cleanupModelView);
         },
         addOSD: function(m) {
-            this.moveCircle(m);
+            this.moveCircle(m, this.collection.indexOf(m)-1);
         },
         cleanupModelView: function(m) {
             if (m.views) {
