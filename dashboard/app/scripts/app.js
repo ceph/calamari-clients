@@ -2,7 +2,7 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'marionette'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection) {
     var config = {
         offline: true,
         'delta-osd-api': false
@@ -23,6 +23,13 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         };
 
     promise.done(function() {
+        $('.dropdown-toggle').dropdown();
+        $('.logout').on('click', function() {
+            var d = $.get('/api/v1/auth/logout');
+            d.always(function() {
+                document.location = '/login/';
+            });
+        });
         var App = new Backbone.Marionette.Application();
         App.Config = config;
         App.vent.on('status:healthok', function() {

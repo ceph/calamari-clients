@@ -18,8 +18,14 @@
   <body>
     <div class="navbar">
       <div class="navbar-inner">
-        <ul class="nav">
-          <a class="brand" href="http://www.inktank.com"><img src="images/logo.png" alt="Inktank Logo"/></a>
+        <a class="brand" href="http://www.inktank.com"><img src="images/logo.png" alt="Inktank Logo"/></a>
+        <ul class="nav pull-right">
+          <li class="dropdown">
+          <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#"><i class="icon-user"></i> Admin</a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <li><a class='logout' tabindex="-1" href="#">Logout</a></li>
+             </ul>
+          </li>
         </ul>
       </div>
     </div>
