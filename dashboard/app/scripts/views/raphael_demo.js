@@ -24,14 +24,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'change': 'updateOSD',
         },
         updateCollection: function() {
-            if (this.collection.length > 0) {
+            if (this.App.Config['delta-osd-api'] && this.collection.length > 0) {
                 this.collection.update.apply(this.collection);
             } else {
                 this.collection.fetch();
             }
         },
-        initialize: function(options) {
-            this.App = options.App;
+        initialize: function() {
+            this.App = Backbone.Marionette.getOption(this, 'App');
             this.width = 17 * this.step;
             this.height = 11 * this.step;
             this.w = 720;
