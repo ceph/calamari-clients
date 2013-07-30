@@ -1,0 +1,9 @@
+{
+  "name": "gauge.js",
+  "version": "0.0.0",
+  "commit": "9620de4119bb40515a7263e228623e3f8939fc3d",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bernii/gauge.js.git"
+  }
+}
