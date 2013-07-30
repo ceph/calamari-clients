@@ -31,6 +31,20 @@ $third-row-height: 120px;
         border: 1px solid darken($itdarkred, 15%);
     }
 }
+.navbar .nav > li > a {
+	text-shadow: 0 1px 0 $itgray;
+	color: $itlightgray;
+	:hover {
+		color: $itgray;
+		text-shadow: 0 1px 0 $itdarkgray;
+	}
+}
+.navbar .nav li.dropdown.open > .dropdown-toggle {
+        @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+}
+.dropdownmenu {
+	background-color: $itgray;
+}
 
 .card {
     color: $itapp-standard-font-color;
