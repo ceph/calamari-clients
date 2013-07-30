@@ -30,6 +30,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 document.location = '/login/';
             });
         });
+        $('.settings').on('click', function() {
+            document.location = '/admin/';
+        });
         var App = new Backbone.Marionette.Application();
         App.Config = config;
         App.vent.on('status:healthok', function() {

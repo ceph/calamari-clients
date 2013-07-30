@@ -35,15 +35,21 @@ $third-row-height: 120px;
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
 	:hover {
-		color: $itgray;
-		text-shadow: 0 1px 0 $itdarkgray;
+		color: $itlightgray;
+		text-shadow: 0 1px 0 $itlightgray;
 	}
 }
 .navbar .nav li.dropdown.open > .dropdown-toggle {
         @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
 }
-.dropdownmenu {
-	background-color: $itgray;
+.dropdown-menu {
+	background-color: $itlightgray;
+    span {
+        display: inline-block;
+        width: 20px;
+        text-align: center;
+        margin-right: 5px;
+    }
 }
 
 .card {
