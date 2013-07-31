@@ -51,15 +51,33 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         updateTimer: null,
         delay: 20000,
         initialize: function() {
-            this.healthModel = new HealthModel();
-            this.usageModel = new UsageModel();
-            this.statusModel = new StatusModel();
             this.App = Backbone.Marionette.getOption(this, 'App');
+            this.cluster = Backbone.Marionette.getOption(this, 'cluster');
+            this.healthModel = new HealthModel({
+                cluster: this.cluster
+            });
+            this.usageModel = new UsageModel({
+                cluster: this.cluster
+            });
+            this.statusModel = new StatusModel({
+                cluster: this.cluster
+            });
+
+            this.start();
+            this.listenTo(this.App.vent, 'cluster:update', this.updateModels);
+            _.bindAll(this, 'stop', 'updateModels', 'start');
+        },
+        updateModels: function(cluster) {
+            this.healthmodel.set('cluster', cluster.id);
+            this.usageModel.set('cluster', cluster.id);
+            this.statusModel.set('cluster', cluster.id);
+            this.stop();
+        },
+        start: function() {
             this.fetchHealth = newFetcher('fetchHealth', 'healthTimer', 'healthModel', 'health');
             this.fetchUsage = newFetcher('fetchUsage', 'usageTimer', 'usageModel', 'usage');
             this.fetchStatus = newFetcher('fetchStatus', 'statusTimer', 'statusModel', 'status');
             this.updateEvent = newEventEmitter('updateEvent', 'updateTimer', 'osd:update');
-            _.bindAll(this, 'stop');
         },
         stop: function() {
             clearTimeout(this.healthTimer);

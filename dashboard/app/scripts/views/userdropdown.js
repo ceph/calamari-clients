@@ -21,7 +21,11 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'marionette'], function
                 logoutIcon: 'icon-power-off',
                 logoutLabel: 'Logout'
             });
+            this.listenTo(this.model, 'change', this.render);
             _.bindAll(this, 'settings', 'logout');
+        },
+        fetch: function() {
+            return this.model.fetch();
         },
         logout: function() {
             // TODO look at history API

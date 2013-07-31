@@ -5,10 +5,10 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
 
     var StatusModel = Backbone.Model.extend({
         url: function() {
-            return '/api/v1/cluster/' + this.cluster + '/health_counters';
+            return '/api/v1/cluster/' + this.get('cluster') + '/health_counters';
         },
-        cluster: 1,
         defaults: {
+            'cluster': 1,
             'added_ms': Date.now(),
             'mon': {
                 'not_in_quorum': 0,

@@ -2,7 +2,7 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown) {
     var config = {
         offline: true,
         'delta-osd-api': false
@@ -22,23 +22,31 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             $el.fadeIn().css('display', '');
         };
 
-    promise.done(function() {
-        var userMenu = new UserDropDown({
-            el: $('.usermenu')
-        });
-        userMenu.model.fetch({
-            success: function() {
-                userMenu.render();
-            }
-        });
-        var App = new Backbone.Marionette.Application();
+    var App, userMenu, clusterMenu;
+    var clusterDeferred = $.Deferred();
+    promise.then(function() {
+        App = new Backbone.Marionette.Application();
         App.Config = config;
-        App.vent.on('status:healthok', function() {
+        userMenu = new UserDropDown({
+            el: $('.usermenu'),
+            App: App
+        });
+        userMenu.fetch();
+        clusterMenu = new ClusterDropDown({
+            el: $('.clustermenu'),
+            App: App
+        });
+        return clusterMenu.fetch().done(function() {
+            clusterDeferred.resolve(clusterMenu.collection.at(0));
+        });
+    });
+    clusterDeferred.promise().done(function(cluster) {
+        App.vent.listenTo(App.vent, 'status:healthok', function() {
             replaceText($('.warn-pg, .warn-osd, .warn-pool'), '0');
             replaceText($('.ok-pg'), 2400);
             replaceText($('.ok-pool'), 10);
         });
-        App.vent.on('status:healthwarn', function() {
+        App.vent.listenTo(App.vent, 'status:healthwarn', function() {
             var pg = Math.round(Math.random() * 45) + 5;
             var pool = Math.round(Math.random() * 1) + 1;
             replaceText($('.warn-pg'), pg);
@@ -46,7 +54,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             replaceText($('.ok-pg'), 2400 - pg);
             replaceText($('.ok-pool'), 10 - pool);
         });
-        App.vent.on('updateTotals', function() {
+        App.vent.listenTo(App.vent, 'updateTotals', function() {
             var ONE_GIGABYTE = 1024 * 1024 * 1024;
             var totalUsed = 0,
                 totalCapacity = 0,
@@ -59,6 +67,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
 
             var settings = {
+                cluster: cluster.get('id'),
                 report: {
                     total_avail: totalCapacity * ONE_GIGABYTE,
                     total_space: totalCapacity * ONE_GIGABYTE,
@@ -80,21 +89,21 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         gaugesLayout.render();
         var healthView = new views.HealthView({
             App: App,
-            model: new models.HealthModel()
+            model: new models.HealthModel({})
         });
         gaugesLayout.health.show(healthView);
         var gauge = new views.UsageView({
             App: App,
-            model: new models.UsageModel(),
+            model: new models.UsageModel({}),
             title: 'Usage'
         });
-        gauge.on('item:postrender', function() {
+        gauge.listenTo(gauge, 'item:postrender', function() {
             App.vent.trigger('updateTotals');
         });
 
         var statusView = new views.StatusView({
             App: App,
-            model: new models.StatusModel()
+            model: new models.StatusModel({})
         });
         gaugesLayout.status.show(statusView);
 
@@ -102,7 +111,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         if (config.offline) {
             collection = Generate.osds(160);
         } else {
-            collection = new Collection();
+            collection = new Collection([], {
+                cluster: cluster.get('id')
+            });
         }
         var viz = new views.OSDVisualization({
             App: App,
@@ -115,7 +126,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
 
         var poller = new Poller({
-            App: App
+            App: App,
+            cluster: cluster.get('id')
         });
         viz.render().then(function() {
             gaugesLayout.usage.show(gauge);
@@ -165,14 +177,15 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
         // Global Exports
         window.inktank = {
-            Viz: viz,
             App: App,
+            ClusterMenu: clusterMenu,
+            Gauge: gauge,
             HealthView: healthView,
             Poller: poller,
             StatusView: statusView,
-            models: models,
-            Gauge: gauge,
-            UserMenu: userMenu
+            UserMenu: userMenu,
+            Viz: viz,
+            models: models
         };
     });
 
