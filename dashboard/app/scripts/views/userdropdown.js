@@ -23,16 +23,16 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'marionette'], function
             });
             _.bindAll(this, 'settings', 'logout');
         },
-        settings: function() {
+        logout: function() {
             // TODO look at history API
             var d = $.get('/api/v1/auth/logout');
             d.always(function() {
-                document.location = '/admin/';
+                document.location = '/login/';
             });
         },
-        logout: function() {
+        settings: function() {
             // TODO look at history API
-            document.location = '/login/';
+            document.location = '/admin/';
         }
 
     });
