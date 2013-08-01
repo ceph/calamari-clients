@@ -12,7 +12,7 @@ define(['underscore', 'backbone', 'models/application-model'], function(_, Backb
             return '/api/v1/cluster/' + this.cluster + '/osd';
         },
         initialize: function(models, options) {
-            if (options.cluster) {
+            if (options && options.cluster) {
                 this.cluster = options.cluster;
             }
         },
