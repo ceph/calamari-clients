@@ -3,13 +3,19 @@
 
 'use strict';
 require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown) {
+    /* Default Configuration */
     var config = {
         offline: true,
         'delta-osd-api': false
     };
+    /* Default Configuration */
+
+    /* Load Config.json first before starting app */
     var promise = configloader('scripts/config.json').then(function(result) {
         _.extend(config, result);
     });
+    /* Load Config.json first before starting app */
+
     // TODO replace this with CSS version
     var replaceText = function($el, text, removeClass, addClass) {
             $el.css('display', 'none').text(text);
@@ -23,7 +29,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         };
 
     var App, userMenu, clusterMenu;
-    var clusterDeferred = $.Deferred();
     promise.then(function() {
         App = new Backbone.Marionette.Application();
         App.Config = config;
@@ -32,15 +37,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App: App
         });
         userMenu.fetch();
-        clusterMenu = new ClusterDropDown({
-            el: $('.clustermenu'),
-            App: App
-        });
-        return clusterMenu.fetch().done(function() {
-            clusterDeferred.resolve(clusterMenu.collection.at(0));
-        });
-    });
-    clusterDeferred.promise().done(function(cluster) {
+
+        /* Demo Code */
         App.vent.listenTo(App.vent, 'status:healthok', function() {
             replaceText($('.warn-pg, .warn-osd, .warn-pool'), '0');
             replaceText($('.ok-pg'), 2400);
@@ -67,7 +65,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
 
             var settings = {
-                cluster: cluster.get('id'),
+                cluster: 1,
                 report: {
                     total_avail: totalCapacity * ONE_GIGABYTE,
                     total_space: totalCapacity * ONE_GIGABYTE,
@@ -80,9 +78,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');
             $('.objspace').text(totalObjSpace);
         });
+        /* Demo Code */
 
         Backbone.history.start();
 
+        /* Widget Setup */
         var gaugesLayout = new views.GaugesLayout({
             el: '.gauges'
         });
@@ -112,7 +112,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             collection = Generate.osds(160);
         } else {
             collection = new Collection([], {
-                cluster: cluster.get('id')
             });
         }
         var viz = new views.OSDVisualization({
@@ -125,16 +124,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.vent.trigger('keyup', evt);
         });
 
-        var poller = new Poller({
-            App: App,
-            cluster: cluster.get('id')
-        });
-        viz.render().then(function() {
-            gaugesLayout.usage.show(gauge);
-            if (!config.offline) {
-                poller.start();
-            }
-        });
 
         _.extend(humanize.catalog, {
             'about_a_minute_ago': '1m',
@@ -171,19 +160,43 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             timestamp: humanize.time(),
             priority: 1
         }]);
+        /* Widget Setup */
 
-        // Global Exports
-        window.inktank = {
-            App: App,
-            ClusterMenu: clusterMenu,
-            Gauge: gauge,
-            HealthView: healthView,
-            Poller: poller,
-            StatusView: statusView,
-            UserMenu: userMenu,
-            Viz: viz,
-            models: models
-        };
+        /* Defer Visualization startup to after loading the cluster metadata */
+        var clusterDeferred = $.Deferred();
+        clusterMenu = new ClusterDropDown({
+            el: $('.clustermenu'),
+            App: App
+        });
+        clusterMenu.fetch().done(function() {
+            clusterDeferred.resolve(clusterMenu.collection.at(0));
+        });
+        clusterDeferred.promise().done(function(cluster) {
+            var poller = new Poller({
+                App: App,
+                cluster: cluster.get('id')
+            });
+
+            viz.render().then(function() {
+                gaugesLayout.usage.show(gauge);
+                if (!config.offline) {
+                    poller.start();
+                }
+            });
+            // Global Exports
+            window.inktank = {
+                App: App,
+                ClusterMenu: clusterMenu,
+                Gauge: gauge,
+                HealthView: healthView,
+                Poller: poller,
+                StatusView: statusView,
+                UserMenu: userMenu,
+                Viz: viz,
+                models: models
+            };
+        });
+        /* Defer Visualization startup to after loading the cluster metadata */
     });
 
 });
