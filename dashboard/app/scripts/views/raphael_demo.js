@@ -31,8 +31,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
         },
         switchCluster: function(cluster) {
-            if (cluster && cluster.id) {
-                this.collection.cluster.id = cluster.id;
+            if (cluster) {
+                this.collection.cluster = cluster.get('id');
             }
         },
         initialize: function() {
