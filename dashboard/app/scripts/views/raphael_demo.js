@@ -30,6 +30,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 this.collection.fetch();
             }
         },
+        switchCluster: function(cluster) {
+            if (cluster && cluster.id) {
+                this.collection.cluster.id = cluster.id;
+            }
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.width = 17 * this.step;
@@ -41,6 +46,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.listenTo(this.App.vent, 'keyup', this.keyHandler);
             this.listenTo(this.App.vent, 'osd:update', this.updateCollection);
+            this.listenTo(this.App.vent, 'cluster:update', this.switchCluster);
             this.listenTo(this.collection, 'request', function() {
                 self.ui.spinner.css('visibility', 'visible');
             });
