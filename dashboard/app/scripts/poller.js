@@ -71,10 +71,11 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             _.bindAll(this, 'stop', 'updateModels', 'start');
         },
         updateModels: function(cluster) {
-            this.healthmodel.set('cluster', cluster.id);
+            this.healthModel.set('cluster', cluster.id);
             this.usageModel.set('cluster', cluster.id);
             this.statusModel.set('cluster', cluster.id);
             this.stop();
+            this.start();
         },
         start: function() {
             this.fetchHealth();

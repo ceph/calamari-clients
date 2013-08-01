@@ -21,7 +21,10 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'collections/cluster-co
             _.bindAll(this, 'clusterHandler');
         },
         clusterHandler: function(evt) {
-            console.log(evt);
+            var $target = $(evt.target);
+            var id = $target.attr('data-id');
+            this.ui.label.text('Cluster ' + $target.text());
+            this.App.vent.trigger('cluster:update', this.collection.get(id));
         },
         postRender: function() {
             var t = this.rowTemplate;
