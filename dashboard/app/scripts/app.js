@@ -132,10 +132,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         viz.render().then(function() {
             gaugesLayout.usage.show(gauge);
             if (!config.offline) {
-                poller.fetchUsage();
-                poller.fetchHealth();
-                poller.fetchStatus();
-                poller.updateEvent();
+                poller.start();
             }
         });
 

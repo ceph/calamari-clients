@@ -63,7 +63,10 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                 cluster: this.cluster
             });
 
-            this.start();
+            this.fetchHealth = newFetcher('fetchHealth', 'healthTimer', 'healthModel', 'health');
+            this.fetchUsage = newFetcher('fetchUsage', 'usageTimer', 'usageModel', 'usage');
+            this.fetchStatus = newFetcher('fetchStatus', 'statusTimer', 'statusModel', 'status');
+            this.updateEvent = newEventEmitter('updateEvent', 'updateTimer', 'osd:update');
             this.listenTo(this.App.vent, 'cluster:update', this.updateModels);
             _.bindAll(this, 'stop', 'updateModels', 'start');
         },
@@ -74,10 +77,10 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             this.stop();
         },
         start: function() {
-            this.fetchHealth = newFetcher('fetchHealth', 'healthTimer', 'healthModel', 'health');
-            this.fetchUsage = newFetcher('fetchUsage', 'usageTimer', 'usageModel', 'usage');
-            this.fetchStatus = newFetcher('fetchStatus', 'statusTimer', 'statusModel', 'status');
-            this.updateEvent = newEventEmitter('updateEvent', 'updateTimer', 'osd:update');
+            this.fetchHealth();
+            this.fetchUsage();
+            this.fetchStatus();
+            this.updateEvent();
         },
         stop: function() {
             clearTimeout(this.healthTimer);
