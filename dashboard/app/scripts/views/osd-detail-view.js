@@ -7,7 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         tagName: 'tbody',
         template: JST['app/scripts/templates/osd-details.ejs'],
         initialize: function(options) {
-            this.fadeInOutAnimation = animation('fadeOutUpAnim', 'fadeInDownAnim');
+            this.fadeInOutAnimation = animation.pair('fadeOutUpAnim', 'fadeInDownAnim');
             _.bindAll(this, 'clearDetail', 'fadeInOutAnimation');
             this.model = new model.OSDModel();
             this.listenTo(this.model, 'change', this.render);

@@ -188,6 +188,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 App: App,
                 ClusterMenu: clusterMenu,
                 Gauge: gauge,
+                Gauges: gaugesLayout,
                 HealthView: healthView,
                 Poller: poller,
                 StatusView: statusView,

@@ -179,9 +179,26 @@ $g-width: 205px;
 }
 @include animate-fadeIn($class: true);
 @include animate-fadeOut($class: true);
+@include animate-flipOutX($class: true);
+@include animate-flipOutY($class: true);
+@include animate-flipInX($class: true);
+@include animate-flipInY($class: true);
+
 .fadeInStatusAnim {
     @include animation(fadeIn 0.25s 0);
 }
 .fadeOutAnim {
     @include animation(fadeOut 0.25s 0);
+}
+.flipOutXCard {
+    @include animation(flipOutX 0.5s 0);
+}
+.flipOutYCard {
+    @include animation(flipOutY 0.5s 0);
+}
+.flipInXCard {
+    @include animation(flipInX 1.0s 0);
+}
+.flipInYCard {
+    @include animation(flipInY 1.0s 0);
 }

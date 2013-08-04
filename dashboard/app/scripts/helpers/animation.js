@@ -13,7 +13,7 @@ define(['jquery'], function($) {
     // @param class1 - css class of animation 1
     // @param class2 - css class of animation 2
     // @returns jQuery promise
-    return function(class1, class2) {
+    function pair(class1, class2) {
         return function(selector, fn1, fn2) {
             var d = $.Deferred();
             selector.on(events, d.resolve);
@@ -35,6 +35,26 @@ define(['jquery'], function($) {
                 }
             });
         };
+    }
+
+    function single(class1) {
+        return function(selector, fn1) {
+            var d = $.Deferred();
+            selector.on(events, d.resolve);
+            var self = this;
+            selector.addClass(class1);
+            return d.promise().then(function() {
+                if (fn1) {
+                    fn1.apply(self);
+                }
+                selector.off(events, d.resolve).removeClass(class1);
+            });
+        };
+    }
+
+    return {
+        pair: pair,
+        single: single
     };
 
 });
