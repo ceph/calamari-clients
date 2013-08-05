@@ -183,6 +183,34 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     poller.start();
                 }
             });
+
+            App.fullscreen = function() {
+                var d = $.Deferred();
+                var vent = this.vent;
+                vent.trigger('gauges:disappear', function() {
+                    d.resolve();
+                });
+                
+                d.promise().then(function() {
+                    vent.trigger('viz:fullscreen', function() {
+                        vent.trigger('gauges:collapse');
+                    });
+                });
+            };
+            App.dashboard = function() {
+                var d = $.Deferred();
+                var vent = this.vent;
+                vent.trigger('viz:dashboard', function() {
+                    d.resolve();
+                });
+                
+                d.promise().then(function() {
+                    vent.trigger('gauges:expand', function() {
+                        vent.trigger('gauges:reappear');
+                    });
+                });
+            };
+
             // Global Exports
             window.inktank = {
                 App: App,

@@ -48,6 +48,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 this.listenTo(this.App.vent, 'status:update', this.set);
                 this.listenTo(this.App.vent, 'gauges:disappear', this.disappear);
                 this.listenTo(this.App.vent, 'gauges:reappear', this.reappear);
+                this.listenTo(this.App.vent, 'gauges:expand', this.expand);
+                this.listenTo(this.App.vent, 'gauges:collapse', this.collapse);
             }
             if (options && options.App !== undefined) {
                 this.App = options.App;
@@ -91,14 +93,30 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.ui.failpg.text(attr.pg['critical']);
             this.ui.subText.text(humanize.relativeTime(attr.added_ms / 1000));
         },
-        disappear: function() {
+        disappear: function(callback) {
             return this.disappearAnimation(this.$el, function() {
                 this.$el.css('visibility', 'hidden');
+            }).then(function() {
+                if (callback) {
+                    callback.apply(this);
+                }
             });
         },
-        reappear: function() {
+        reappear: function(callback) {
             this.$el.css('visibility', 'visible');
-            return this.reappearAnimation(this.$el);
+            return this.reappearAnimation(this.$el, callback);
+        },
+        expand: function(callback) {
+            this.$el.css('display', 'block');
+            if (callback) {
+                callback.apply(this);
+            }
+        },
+        collapse: function(callback) {
+            this.$el.css('display', 'none');
+            if (callback) {
+                callback.apply(this);
+            }
         }
     });
 });

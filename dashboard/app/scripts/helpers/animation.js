@@ -46,13 +46,13 @@ define(['jquery'], function($) {
     }
 
     function single(class1) {
-        return function(selector, fn1) {
+        return function($selector, fn1) {
             var d = $.Deferred();
-            selector.on(animationEndEvent, d.resolve);
+            $selector.on(animationEndEvent, d.resolve);
             var self = this;
-            selector.addClass(class1);
+            $selector.addClass(class1);
             return d.promise().then(function() {
-                selector.off(animationEndEvent, d.resolve).removeClass(class1);
+                $selector.off(animationEndEvent, d.resolve).removeClass(class1);
                 if (fn1) {
                     fn1.apply(self);
                 }

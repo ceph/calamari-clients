@@ -1,6 +1,6 @@
 /*global define, Raphael*/
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'models/application-model', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, View, Models) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'models/application-model', 'helpers/animation', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, View, Models, animation) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
@@ -43,10 +43,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.h = 520;
             _.bindAll(this);
             var self = this;
+            this.vizMoveUpAnimation = animation.single('moveVizUpAnim');
+            this.vizMoveDownAnimation = animation.single('moveVizDownAnim');
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.listenTo(this.App.vent, 'keyup', this.keyHandler);
             this.listenTo(this.App.vent, 'osd:update', this.updateCollection);
             this.listenTo(this.App.vent, 'cluster:update', this.switchCluster);
+            this.listenTo(this.App.vent, 'viz:fullscreen', this.fullscreen);
+            this.listenTo(this.App.vent, 'viz:dashboard', this.dashboard);
             this.listenTo(this.collection, 'request', function() {
                 self.ui.spinner.css('visibility', 'visible');
             });
@@ -54,6 +58,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 self.ui.spinner.css('visibility', 'hidden');
             });
             this.listenTo(this.collection, 'reset', this.resetViews);
+        },
+        fullscreen: function(callback) {
+            this.vizMoveUpAnimation(this.$el, callback);
+        },
+        dashboard: function(callback) {
+            this.vizMoveDownAnimation(this.$el, callback);
         },
         resetViews: function(collection, options) {
             _.each(options.previousModels, this.cleanupModelView);

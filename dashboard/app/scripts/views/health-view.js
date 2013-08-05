@@ -24,9 +24,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         initialize: function() {
             // The are defaults for Gauge.js and can be overidden from the contructor
             this.fadeInOutAnimation = animation.pair('fadeOutAnim', 'fadeInAnim');
-            this.disappearAnimation = animation.single('fadeOutLeftAnim');
-            this.reappearAnimation = animation.single('fadeInLeftAnim');
-            _.bindAll(this, 'updateView', '_ok', '_warn', 'set', 'fadeInOutAnimation', 'disappearAnimation', 'reappearAnimation', 'updateTimer', 'disappear', 'reappear');
+            this.disappearAnimation = animation.single('fadeOutUpAnim');
+            this.reappearAnimation = animation.single('fadeInDownAnim');
+            _.bindAll(this, 'updateView', '_ok', '_warn', 'set', 'fadeInOutAnimation', 'disappearAnimation', 'reappearAnimation', 'updateTimer', 'disappear', 'reappear', 'expand', 'collapse');
 
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
@@ -35,6 +35,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 this.listenTo(this.App.vent, 'health:update', this.set);
                 this.listenTo(this.App.vent, 'gauges:disappear', this.disappear);
                 this.listenTo(this.App.vent, 'gauges:reappear', this.reappear);
+                this.listenTo(this.App.vent, 'gauges:expand', this.expand);
+                this.listenTo(this.App.vent, 'gauges:collapse', this.collapse);
             }
             this.listenToOnce(this, 'render', function() {
                 if (this.timer === null) {
@@ -114,14 +116,30 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             }
             this.ui.subText.text(data.relTimeStr);
         },
-        disappear: function() {
+        disappear: function(callback) {
             return this.disappearAnimation(this.$el, function() {
                 this.$el.css('visibility', 'hidden');
+            }).then(function() {
+                if (callback) {
+                    callback.apply(this);
+                }
             });
         },
-        reappear: function() {
+        reappear: function(callback) {
             this.$el.css('visibility', 'visible');
-            return this.reappearAnimation(this.$el);
+            return this.reappearAnimation(this.$el, callback);
+        },
+        expand: function(callback) {
+            this.$el.css('display', 'block');
+            if (callback) {
+                callback.apply(this);
+            }
+        },
+        collapse: function(callback) {
+            this.$el.css('display', 'none');
+            if (callback) {
+                callback.apply(this);
+            }
         }
     });
 });
