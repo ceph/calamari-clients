@@ -1,56 +1,72 @@
 @import 'animate';
 @import 'inktank_colors';
 @import 'compass/typography/text/force-wrap';
+@import 'compass/css3/transform';
 #viz {
-	margin-top: 15px;
+    margin-top: 15px;
 }
 .raphael-one {
-	background-color: $itlightgray;
+    background-color: $itlightgray;
 }
-
 tspan:hover, circle:hover {
-	cursor: pointer;
+    cursor: pointer;
 }
-
 .detail {
-	margin-top: 10px;
-	line-height: 1;
+    margin-top: 10px;
+    line-height: 1;
 }
 .detail td {
-	padding-top: 0px;
+    padding-top: 0px;
 }
 .detail td.value {
-	@include force-wrap();
-	max-width: 10em;
-	font-family: 'Andale Mono';
-	padding: 5px 0 12px 10px;
+    @include force-wrap();
+    max-width: 10em;
+    font-family:'Andale Mono';
+    padding: 5px 0 12px 10px;
 }
 @include animate-fadeInDown($class: true);
 @include animate-fadeOutUp($class: true);
 @include animate-fadeIn($class: true);
 @include animate-fadeOut($class: true);
 
+$shortTimer: 0.25s;
+$medTimer: 0.25s;
 .fadeInDownAnim {
-  @include animation(fadeInDown 0.25s);
+  @include animation(fadeInDown $shortTimer ease);
 }
 
 .fadeOutUpAnim {
-  @include animation(fadeOutUp 0.25s);
+  @include animation(fadeOutUp $shortTimer ease);
 }
 .fadeInAnim {
-  @include animation(fadeIn 0.25s);
+  @include animation(fadeIn $shortTimer ease);
 }
 
 .fadeOutAnim {
-  @include animation(fadeOut 0.25s);
+  @include animation(fadeOut $shortTimer ease);
 }
 circle {
        stroke: 'none';
 }
 $itapp-viz-text-color: $itdarkgray;
 text {
-       font: 9px ApexSansMedium;
-       stroke: none;
-       fill: $itapp-viz-text-color;
+    font: 9px ApexSansMedium;
+    stroke: none;
+    fill: $itapp-viz-text-color;
 }
-
+@include keyframes(move-up-viz) {
+    100% {
+        @include transform(translate(0px, -240px));
+    }
+}
+.moveVizUpAnim {
+    @include animation(move-up-viz $medTimer ease);
+}
+@include keyframes(move-down-viz) {
+    100% {
+        @include transform(translate(0px, 240px));
+    }
+}
+.moveVizDownAnim {
+    @include animation(move-down-viz $medTimer ease);
+}

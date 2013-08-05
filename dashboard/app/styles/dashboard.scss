@@ -177,6 +177,8 @@ $g-width: 205px;
     min-height: $third-row-height;
     margin-bottom: 10px;
 }
+.container {
+}
 @include animate-fadeIn($class: true);
 @include animate-fadeOut($class: true);
 @include animate-fadeOutUp($class: true);
@@ -190,26 +192,14 @@ $timeFast: 0.25s;
 $timeMed: 0.5s;
 $timeSlow: 1s;
 .fadeInStatusAnim {
-    @include animation(fadeIn $timeFast 0);
+    @include animation(fadeIn $timeFast ease);
 }
 .fadeOutAnim {
-    @include animation(fadeOut $timeFast 0);
-}
-.fadeOutLeftAnim {
-    @include animation(fadeOutLeft $timeMed 0);
-}
-.fadeInLeftAnim {
-    @include animation(fadeInLeft $timeSlow 0);
+    @include animation(fadeOut $timeFast ease);
 }
 .fadeOutUpAnim {
-    @include animation(fadeOutUp $timeMed 0);
+    @include animation(fadeOutUp $timeMed ease);
 }
 .fadeInDownAnim {
-    @include animation(fadeInDown $timeSlow 0);
-}
-.fadeOutRightAnim {
-    @include animation(fadeOutRight $timeMed 0);
-}
-.fadeInRightAnim {
-    @include animation(fadeInRight $timeSlow 0);
+    @include animation(fadeInDown $timeSlow ease);
 }
