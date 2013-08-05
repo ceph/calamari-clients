@@ -1,6 +1,6 @@
 /*global define*/
 /* jshint -W106, -W069*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette'], function($, _, Backbone, JST, humanize) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/animation', 'marionette'], function($, _, Backbone, JST, humanize, animation) {
     'use strict';
 
     return Backbone.Marionette.ItemView.extend({
@@ -38,11 +38,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             };
         },
         initialize: function(options) {
+            this.disappearAnimation = animation.single('fadeOutUpAnim');
+            this.reappearAnimation = animation.single('fadeInDownAnim');
+            _.bindAll(this, 'updateView', 'set', 'updateTimer', 'disappear', 'disappearAnimation', 'reappearAnimation', 'reappear');
+
             // The are defaults for Gauge.js and can be overidden from the contructor
-            _.bindAll(this, 'updateView', 'set', 'updateTimer');
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
                 this.listenTo(this.App.vent, 'status:update', this.set);
+                this.listenTo(this.App.vent, 'gauges:disappear', this.disappear);
+                this.listenTo(this.App.vent, 'gauges:reappear', this.reappear);
             }
             if (options && options.App !== undefined) {
                 this.App = options.App;
@@ -85,6 +90,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             this.ui.warnpg.text(attr.pg['warn']);
             this.ui.failpg.text(attr.pg['critical']);
             this.ui.subText.text(humanize.relativeTime(attr.added_ms / 1000));
+        },
+        disappear: function() {
+            return this.disappearAnimation(this.$el, function() {
+                this.$el.css('visibility', 'hidden');
+            });
+        },
+        reappear: function() {
+            this.$el.css('visibility', 'visible');
+            return this.reappearAnimation(this.$el);
         }
     });
 });

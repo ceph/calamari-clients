@@ -24,13 +24,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         initialize: function() {
             // The are defaults for Gauge.js and can be overidden from the contructor
             this.fadeInOutAnimation = animation.pair('fadeOutAnim', 'fadeInAnim');
-            _.bindAll(this, 'updateView', '_ok', '_warn', 'set', 'fadeInOutAnimation', 'updateTimer');
+            this.disappearAnimation = animation.single('fadeOutLeftAnim');
+            this.reappearAnimation = animation.single('fadeInLeftAnim');
+            _.bindAll(this, 'updateView', '_ok', '_warn', 'set', 'fadeInOutAnimation', 'disappearAnimation', 'reappearAnimation', 'updateTimer', 'disappear', 'reappear');
 
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
                 this.listenTo(this.App.vent, 'status:healthok', this._ok);
                 this.listenTo(this.App.vent, 'status:healthwarn', this._warn);
                 this.listenTo(this.App.vent, 'health:update', this.set);
+                this.listenTo(this.App.vent, 'gauges:disappear', this.disappear);
+                this.listenTo(this.App.vent, 'gauges:reappear', this.reappear);
             }
             this.listenToOnce(this, 'render', function() {
                 if (this.timer === null) {
@@ -109,6 +113,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 });
             }
             this.ui.subText.text(data.relTimeStr);
+        },
+        disappear: function() {
+            return this.disappearAnimation(this.$el, function() {
+                this.$el.css('visibility', 'hidden');
+            });
+        },
+        reappear: function() {
+            this.$el.css('visibility', 'visible');
+            return this.reappearAnimation(this.$el);
         }
     });
 });

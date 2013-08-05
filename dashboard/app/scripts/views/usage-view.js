@@ -1,6 +1,6 @@
 /*global define*/
 /* jshint -W106, -W069*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'marionette'], function($, _, Backbone, JST, Gauge, humanize) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'helpers/animation', 'marionette'], function($, _, Backbone, JST, Gauge, humanize, animation) {
     'use strict';
 
     /* UsageView
@@ -29,12 +29,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
             };
         },
         initialize: function(options) {
-            _.bindAll(this, 'updateView', 'set');
+            this.disappearAnimation = animation.single('fadeOutRightAnim');
+            this.reappearAnimation = animation.single('fadeInRightAnim');
+            _.bindAll(this, 'updateView', 'set', 'disappearAnimation', 'disappear', 'reappear', 'reappearAnimation');
             // The are defaults for Gauge.js and can be overidden from the contructor
             this.App = Backbone.Marionette.getOption(this, 'App');
 
             if (this.App) {
                 this.listenTo(this.App.vent, 'usage:update', this.set);
+                this.listenTo(this.App.vent, 'gauges:disappear', this.disappear);
+                this.listenTo(this.App.vent, 'gauges:reappear', this.reappear);
             }
 
             this.opts = {};
@@ -77,6 +81,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'm
         },
         set: function(model) {
             this.model.set(model.toJSON());
+        },
+        disappear: function() {
+            return this.disappearAnimation(this.$el, function() {
+                this.$el.css('visibility', 'hidden');
+            });
+        },
+        reappear: function() {
+            this.$el.css('visibility', 'visible');
+            return this.reappearAnimation(this.$el);
         }
     });
 });
