@@ -279,7 +279,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 if (el) {
                     var id = el.data('modelid');
                     //console.log(id);
-                    if (id) {
+                    if (_.isNumber(id)) {
                         // ignore circles and tspans without data
                         this.detailPanel.model.set(this.collection.get(id).attributes);
                     }
