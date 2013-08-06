@@ -13,10 +13,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         ui: {
             viz: '.viz',
             detail: '.detail',
-            spinner: '.icon-spinner'
+            spinner: '.icon-spinner',
+            stateicon: '.viz-controls i'
         },
         events: {
-            'click .viz': 'clickHandler'
+            'click .viz': 'clickHandler',
+            'click .viz-controls': 'screenHandler'
         },
         collectionEvents: {
             'add': 'addOSD',
@@ -58,6 +60,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 self.ui.spinner.css('visibility', 'hidden');
             });
             this.listenTo(this.collection, 'reset', this.resetViews);
+        },
+        screenHandler: function() {
+            var clazz = this.ui.stateicon.attr('class');
+            if (clazz === 'icon-fullscreen') {
+                this.ui.stateicon.attr('class', 'icon-resize-small');
+                this.App.vent.trigger('app:fullscreen');
+            } else {
+                this.ui.stateicon.attr('class', 'icon-fullscreen');
+                this.App.vent.trigger('app:dashboard');
+            }
         },
         fullscreen: function(callback) {
             this.vizMoveUpAnimation(this.$el, callback);

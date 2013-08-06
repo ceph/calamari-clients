@@ -37,7 +37,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App: App
         });
         userMenu.fetch();
-
         /* Demo Code */
         App.vent.listenTo(App.vent, 'status:healthok', function() {
             replaceText($('.warn-pg, .warn-osd, .warn-pool'), '0');
@@ -111,8 +110,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         if (config.offline) {
             collection = Generate.osds(160);
         } else {
-            collection = new Collection([], {
-            });
+            collection = new Collection([], {});
         }
         var viz = new views.OSDVisualization({
             App: App,
@@ -186,11 +184,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
             App.fullscreen = function() {
                 var d = $.Deferred();
-                var vent = this.vent;
+                var vent = App.vent;
                 vent.trigger('gauges:disappear', function() {
                     d.resolve();
                 });
-                
+
                 d.promise().then(function() {
                     vent.trigger('viz:fullscreen', function() {
                         vent.trigger('gauges:collapse');
@@ -199,17 +197,20 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             };
             App.dashboard = function() {
                 var d = $.Deferred();
-                var vent = this.vent;
+                var vent = App.vent;
                 vent.trigger('viz:dashboard', function() {
                     d.resolve();
                 });
-                
+
                 d.promise().then(function() {
                     vent.trigger('gauges:expand', function() {
                         vent.trigger('gauges:reappear');
                     });
                 });
             };
+
+            App.vent.listenTo(App.vent, 'app:fullscreen', App.fullscreen);
+            App.vent.listenTo(App.vent, 'app:dashboard', App.dashboard);
 
             // Global Exports
             window.inktank = {
