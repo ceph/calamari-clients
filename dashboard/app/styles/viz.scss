@@ -11,9 +11,14 @@
 tspan:hover, circle:hover {
     cursor: pointer;
 }
+.detail-outer {
+    text-overflow: hidden;
+    overflow: hidden;
+}
 .detail {
     margin-top: 10px;
     line-height: 1;
+    overflow: hidden;
 }
 .detail td {
     padding-top: 0px;
@@ -69,4 +74,32 @@ text {
 }
 .moveVizDownAnim {
     @include animation(move-down-viz $medTimer ease);
+}
+
+@include keyframes(fadeInRightToLeft) {
+    0% {
+        @include transform(translate(200px, 0px));
+        opacity: 0;
+    }
+    100% {
+        @include transform(translate(0px, 0px));
+        opacity: 1;
+    }
+}
+.fadeInRightToLeftAnim {
+    @include animation(fadeInRightToLeft $medTimer ease);
+}
+
+@include keyframes(fadeOutRightToLeft) {
+    0% {
+        @include transform(translate(0, 0px));
+        opacity: 1;
+    }
+    100% {
+        @include transform(translate(-200px, 0px));
+        opacity: 0;
+    }
+}
+.fadeOutRightToLeftAnim {
+    @include animation(fadeOutRightToLeft $medTimer ease);
 }

@@ -4,10 +4,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
     'use strict';
 
     var OSDDetailView = Backbone.Marionette.ItemView.extend({
-        tagName: 'tbody',
+        tagName: 'dev',
+        className: 'detail span2',
         template: JST['app/scripts/templates/osd-details.ejs'],
         initialize: function(options) {
-            this.fadeInOutAnimation = animation.pair('fadeOutUpAnim', 'fadeInDownAnim');
+            this.fadeInOutAnimation = animation.pair('fadeOutRightToLeftAnim', 'fadeInRightToLeftAnim');
             _.bindAll(this, 'clearDetail', 'fadeInOutAnimation');
             this.model = new model.OSDModel();
             this.listenTo(this.model, 'change', this.render);

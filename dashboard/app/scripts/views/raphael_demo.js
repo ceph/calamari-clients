@@ -1,6 +1,6 @@
 /*global define, Raphael*/
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'models/application-model', 'helpers/animation', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, View, Models, animation) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'models/application-model', 'helpers/animation', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, Models, animation) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
@@ -12,7 +12,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         timer: null,
         ui: {
             viz: '.viz',
-            detail: '.detail tbody',
+            detail: '.detail',
             spinner: '.icon-spinner'
         },
         events: {
@@ -244,7 +244,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         render: function() {
             Backbone.Marionette.ItemView.prototype.render.apply(this);
             this.r = window.Raphael(this.ui.viz[0], this.w, this.h);
-            this.detailPanel = new View({
+            this.detailPanel = new OSDDetailView({
                 App: this.App,
                 el: this.ui.detail
             });
