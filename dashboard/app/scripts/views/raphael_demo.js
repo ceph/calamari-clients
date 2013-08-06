@@ -48,6 +48,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.vizMoveUpAnimation = animation.single('moveVizUpAnim');
             this.vizMoveDownAnimation = animation.single('moveVizDownAnim');
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
+            this.screenHandler = _.debounce(this.screenHandler, 250, true);
             this.listenTo(this.App.vent, 'keyup', this.keyHandler);
             this.listenTo(this.App.vent, 'osd:update', this.updateCollection);
             this.listenTo(this.App.vent, 'cluster:update', this.switchCluster);
