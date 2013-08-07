@@ -9,13 +9,21 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         template: JST['app/scripts/templates/osd-details.ejs'],
         initialize: function(options) {
             this.fadeInOutAnimation = animation.pair('fadeOutRightToLeftAnim', 'fadeInRightToLeftAnim');
-            _.bindAll(this, 'clearDetail', 'fadeInOutAnimation');
+            _.bindAll(this, 'clearDetail', 'fadeInOutAnimation', 'hide', 'show');
             this.model = new model.OSDModel();
             this.listenTo(this.model, 'change', this.render);
             if (options.App !== undefined) {
                 this.App = options.App;
                 this.App.vent.on('status:healthok status:healthwarn', this.clearDetail);
+                this.App.vent.on('viz:fullscreen', this.hide);
+                this.App.vent.on('viz:dashboard', this.show);
             }
+        },
+        hide: function() {
+            this.$el.hide();
+        },
+        show: function() {
+            this.$el.show();
         },
         clearDetail: function() {
             this.fadeInOutAnimation(this.$el, function() {
