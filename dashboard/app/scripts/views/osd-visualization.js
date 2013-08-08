@@ -1,6 +1,6 @@
 /*global define, Raphael*/
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'models/application-model', 'helpers/animation', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, Models, animation) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
@@ -85,9 +85,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         dashboard: function(callback) {
             var self = this;
+            self.ui.filter.css('visibility', 'hidden');
             this.vizMoveDownAnimation(this.$el, callback).then(function() {
                 self.vizSlideLeftAnimation(self.ui.viz).then(function() {
                     self.ui.filter.hide();
+                    self.ui.filter.css('visibility', 'visible');
                 });
             });
         },
@@ -274,6 +276,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 App: this.App,
                 el: this.ui.detail
             });
+            this.filterPanel = new FilterView({
+                App: this.App,
+                el: this.ui.filter
+            }).render();
             var d = $.Deferred();
             $.when(this.drawGrid(d));
             var p = d.promise();
