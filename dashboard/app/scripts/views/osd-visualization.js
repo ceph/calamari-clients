@@ -12,6 +12,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         timer: null,
         ui: {
             viz: '.viz',
+            filter: '.filter',
             detail: '.detail',
             spinner: '.icon-spinner',
             stateicon: '.viz-controls i'
@@ -47,6 +48,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var self = this;
             this.vizMoveUpAnimation = animation.single('moveVizUpAnim');
             this.vizMoveDownAnimation = animation.single('moveVizDownAnim');
+            this.vizSlideRightAnimation = animation.single('slideVizRightAnim');
+            this.vizSlideLeftAnimation = animation.single('slideVizLeftAnim');
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.screenHandler = _.debounce(this.screenHandler, 250, true);
             this.listenTo(this.App.vent, 'keyup', this.keyHandler);
@@ -73,10 +76,20 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
         },
         fullscreen: function(callback) {
-            this.vizMoveUpAnimation(this.$el, callback);
+            var self = this;
+            this.vizMoveUpAnimation(this.$el, callback).then(function() {
+                self.vizSlideRightAnimation(self.ui.viz).then(function() {
+                    self.ui.filter.show();
+                });
+            });
         },
         dashboard: function(callback) {
-            this.vizMoveDownAnimation(this.$el, callback);
+            var self = this;
+            this.vizMoveDownAnimation(this.$el, callback).then(function() {
+                self.vizSlideLeftAnimation(self.ui.viz).then(function() {
+                    self.ui.filter.hide();
+                });
+            });
         },
         resetViews: function(collection, options) {
             _.each(options.previousModels, this.cleanupModelView);

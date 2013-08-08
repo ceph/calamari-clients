@@ -65,7 +65,7 @@ text {
 }
 @include keyframes(move-up-viz) {
     100% {
-        @include transform(translate(0px, -240px));
+        @include transform(translate(0px, -230px));
     }
 }
 .moveVizUpAnim {
@@ -73,7 +73,7 @@ text {
 }
 @include keyframes(move-down-viz) {
     100% {
-        @include transform(translate(0px, 240px));
+        @include transform(translate(0px, 230px));
     }
 }
 .moveVizDownAnim {
@@ -106,4 +106,25 @@ text {
 }
 .fadeOutRightToLeftAnim {
     @include animation(fadeOutRightToLeft $medTimer ease);
+}
+
+@include keyframes(slideVizRight) {
+    100% {
+        @include transform(translate(187px, 0px));
+    }
+}
+.slideVizRightAnim {
+    @include animation(slideVizRight $medTimer ease);
+}
+
+@include keyframes(slideVizLeft) {
+    100% {
+        @include transform(translate(-187px, 0px));
+    }
+}
+.slideVizLeftAnim {
+    @include animation(slideVizLeft $medTimer ease);
+}
+.filter {
+	margin-right: 35px;
 }
