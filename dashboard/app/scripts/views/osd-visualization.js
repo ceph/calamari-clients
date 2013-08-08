@@ -50,6 +50,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.vizMoveDownAnimation = animation.single('moveVizDownAnim');
             this.vizSlideRightAnimation = animation.single('slideVizRightAnim');
             this.vizSlideLeftAnimation = animation.single('slideVizLeftAnim');
+            this.fadeInAnimation = animation.single('fadeInAnim');
+            this.fadeOutAnimation = animation.single('fadeOutAnim');
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.screenHandler = _.debounce(this.screenHandler, 250, true);
             this.listenTo(this.App.vent, 'keyup', this.keyHandler);
@@ -80,16 +82,20 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.vizMoveUpAnimation(this.$el, callback).then(function() {
                 self.vizSlideRightAnimation(self.ui.viz).then(function() {
                     self.ui.filter.show();
+                    self.fadeInAnimation(self.ui.filter);
                 });
             });
         },
         dashboard: function(callback) {
             var self = this;
-            self.ui.filter.css('visibility', 'hidden');
             this.vizMoveDownAnimation(this.$el, callback).then(function() {
+                self.fadeOutAnimation(self.ui.filter).then(function() {
+                    self.ui.filter.css('visibility', 'hidden');
+                }).then(function() {
+                    self.ui.filter.css('visibility', 'visible');
+                });
                 self.vizSlideLeftAnimation(self.ui.viz).then(function() {
                     self.ui.filter.hide();
-                    self.ui.filter.css('visibility', 'visible');
                 });
             });
         },

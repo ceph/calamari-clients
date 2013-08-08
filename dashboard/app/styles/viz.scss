@@ -33,6 +33,9 @@ tspan:hover, circle:hover {
     font-family:'Andale Mono';
     padding: 5px 0 12px 10px;
 }
+.filter {
+	margin-right: 35px;
+}
 @include animate-fadeInDown($class: true);
 @include animate-fadeOutUp($class: true);
 @include animate-fadeIn($class: true);
@@ -124,7 +127,4 @@ text {
 }
 .slideVizLeftAnim {
     @include animation(slideVizLeft $medTimer ease);
-}
-.filter {
-	margin-right: 35px;
 }
