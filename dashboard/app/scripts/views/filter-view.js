@@ -1,5 +1,5 @@
 /*global define*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function($, _, Backbone, JST) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-collection', 'models/filter-model', 'marionette'], function($, _, Backbone, JST, FilterCollection) {
     'use strict';
 
     /*
@@ -8,15 +8,139 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
     return Backbone.Marionette.ItemView.extend({
         className: 'filter span2',
         template: JST['app/scripts/templates/filter.ejs'],
+        labelTemplate: JST['app/scripts/templates/filter-label.ejs'],
+        collection: new FilterCollection(),
         events: {
             'click .label': 'clickHandler'
         },
         initialize: function() {
             Backbone.Marionette.getOption(this, 'App');
+            this.collection.set([{
+                label: 'in/up',
+                index: 'inup'
+            }, {
+                label: 'in/down',
+                index: 'indown',
+                labelState: 'warning'
+            }, {
+                label: 'down',
+                index: 'down',
+                labelState: 'important'
+            }, {
+                category: 'pg-ok',
+                label: 'active',
+                index: 'active',
+                visible: false
+            }, {
+                category: 'pg-ok',
+                label: 'clean',
+                index: 'clean',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'creating',
+                index: 'creating',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'replaying',
+                index: 'replaying',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'splitting',
+                index: 'splitting',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'scrubbing',
+                index: 'scrubbing',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'degraded',
+                index: 'degraded',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'repair',
+                index: 'repair',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'recovery',
+                index: 'recovery',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'backfill',
+                index: 'backfill',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'wait-backfill',
+                index: 'wait-backfill',
+                visible: false
+            }, {
+                category: 'pg-warn',
+                label: 'remapped',
+                index: 'remapped',
+                visible: false
+            }, {
+                category: 'pg-crit',
+                label: 'down',
+                index: 'down',
+                visible: false
+            }, {
+                category: 'pg-crit',
+                label: 'peering',
+                index: 'peering',
+                visible: false
+            }, {
+                category: 'pg-crit',
+                label: 'incomplete',
+                index: 'incomplete',
+                visible: false
+            }, {
+                category: 'pg-crit',
+                label: 'stale',
+                index: 'stale',
+                visible: false
+            }]);
+            _.bindAll(this, 'postRender');
+            _.debounce(this.clickHandler, 250, true);
+            this.listenTo(this, 'render', this.postRender);
+            this.listenTo(this.collection, 'change', this.vizUpdate);
+        },
+        vizUpdate: function() {
+            if (this.App && this.App.vent) {
+                this.App.vent.trigger('viz:filter', this.collection);
+            }
+        },
+        postRender: function() {
+            this.collection.each(function(m) {
+                var $ul = this.$('ul');
+                if (m.get('visible')) {
+                    $ul.append(this.labelTemplate(m.toJSON()));
+                }
+            }, this);
+        },
+        serializeModel: function(model) {
+            var data = model.toJSON();
+            if (!data.enabled) {
+                data.labelState = '';
+            }
+            return data;
         },
         clickHandler: function(evt) {
             var $target = $(evt.target);
-            console.log($target.attr('data-filter'));
+            var index = $target.attr('data-filter');
+            var model = _.first(this.collection.where({
+                category: 'osd',
+                index: index
+            }));
+            model.set('enabled', !model.get('enabled'));
+            $target.closest('li').replaceWith(this.labelTemplate(this.serializeModel(model)));
         }
     });
 });
