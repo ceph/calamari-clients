@@ -67,6 +67,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             return s;
         },
         updateSize: function() {
+            // TODO this code needs to move to an OSD view
             if (this.views && this.views.circle) {
                 var a = window.Raphael.animation({
                     r: (this.radius * this.getPercentage()),
@@ -76,6 +77,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             }
         },
         showChange: function() {
+            // TODO this code needs to move to an OSD view
             if (this.views && this.views.text) {
                 var self = this.views.text;
                 var a = window.Raphael.animation({

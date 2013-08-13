@@ -59,6 +59,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.listenTo(this.App.vent, 'cluster:update', this.switchCluster);
             this.listenTo(this.App.vent, 'viz:fullscreen', this.fullscreen);
             this.listenTo(this.App.vent, 'viz:dashboard', this.dashboard);
+            this.listenTo(this.App.vent, 'viz:filter', this.filter);
             this.listenTo(this.collection, 'request', function() {
                 self.ui.spinner.css('visibility', 'visible');
             });
@@ -157,9 +158,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
             this.animateCircleTraversal(this.r, start.x, start.y, 8, pos.nx, pos.ny, model);
         },
-        calculatePositions: function() {
-            this.collection.each(this.moveCircle);
-            return $.Deferred().resolve();
+        calculatePositions: function(filterFn) {
+            var coll = this.collection.models;
+            if (filterFn) {
+                coll = _.filter(coll, filterFn);
+            }
+            console.log(coll.length);
+            _.each(coll, this.moveCircle);
+            var d = $.Deferred();
+            d.resolve();
+            return d.promise();
         },
         legendCircle: function(r, originX, originY, percent) {
             // Helper method to draw circles for use as legends beneath viz.
@@ -287,7 +295,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 el: this.ui.filter
             }).render();
             var d = $.Deferred();
-            $.when(this.drawGrid(d));
+            this.drawGrid(d);
             var p = d.promise();
             p.then(this.calculatePositions);
             return p;
@@ -334,6 +342,23 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     return;
                 }
             }
+        },
+        filter: function(filterCol) {
+            console.log('filter ' + filterCol.length);
+            var enabled = filterCol.where({
+                enabled: true,
+                visible: true
+            });
+            this.calculatePositions(function(m) {
+                return _.find(enabled, function(obj) {
+                    if (obj.get('match')) {
+                        var t =  obj.get('match')(m);
+                        console.log('matched ' + m.id + ' ' + t);
+                        return t;
+                    }
+                    return false;
+                });
+            });
         }
     });
     return OSDVisualization;

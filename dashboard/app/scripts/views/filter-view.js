@@ -14,18 +14,27 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             'click .label': 'clickHandler'
         },
         initialize: function() {
-            Backbone.Marionette.getOption(this, 'App');
+            this.App = Backbone.Marionette.getOption(this, 'App');
             this.collection.set([{
                 label: 'in/up',
-                index: 'inup'
+                index: 'inup',
+                match: function(m) {
+                    return m.get('in') && m.get('up');
+                }
             }, {
                 label: 'in/down',
                 index: 'indown',
-                labelState: 'warning'
+                labelState: 'warning',
+                match: function(m) {
+                    return m.get('in') && !m.get('up');
+                }
             }, {
                 label: 'down',
                 index: 'down',
-                labelState: 'important'
+                labelState: 'important',
+                match: function(m) {
+                    return !m.get('in');
+                }
             }, {
                 category: 'pg-ok',
                 label: 'active',
@@ -107,7 +116,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 index: 'stale',
                 visible: false
             }]);
-            _.bindAll(this, 'postRender');
+            _.bindAll(this, 'postRender', 'vizUpdate');
             _.debounce(this.clickHandler, 250, true);
             this.listenTo(this, 'render', this.postRender);
             this.listenTo(this.collection, 'change', this.vizUpdate);
@@ -121,7 +130,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             this.collection.each(function(m) {
                 var $ul = this.$('ul');
                 if (m.get('visible')) {
-                    $ul.append(this.labelTemplate(m.toJSON()));
+                    $ul.append(this.labelTemplate(this.serializeModel(m)));
                 }
             }, this);
         },
