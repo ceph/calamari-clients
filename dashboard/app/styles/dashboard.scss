@@ -185,6 +185,9 @@ $g-width: 205px;
     .label {
         cursor: pointer;
     }
+    .busy {
+        cursor: wait;
+    }
     ul {
         list-style: none;
 	margin-left: 0;

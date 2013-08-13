@@ -10,6 +10,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         template: JST['app/scripts/templates/filter.ejs'],
         labelTemplate: JST['app/scripts/templates/filter-label.ejs'],
         collection: new FilterCollection(),
+        clickHandlerDisabled: false,
         events: {
             'click .label': 'clickHandler'
         },
@@ -26,14 +27,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 index: 'indown',
                 labelState: 'warning',
                 match: function(m) {
-                    return m.get('in') && !m.get('up');
+                    return !m.get('in') && m.get('up');
                 }
             }, {
                 label: 'down',
                 index: 'down',
                 labelState: 'important',
                 match: function(m) {
-                    return !m.get('in');
+                    return !m.get('in') && !m.get('up');
                 }
             }, {
                 category: 'pg-ok',
@@ -117,9 +118,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 visible: false
             }]);
             _.bindAll(this, 'postRender', 'vizUpdate');
-            _.debounce(this.clickHandler, 250, true);
             this.listenTo(this, 'render', this.postRender);
             this.listenTo(this.collection, 'change', this.vizUpdate);
+            this.listenTo(this.App.vent, 'viz:render', this.filterEnable);
+        },
+        filterEnable: function() {
+            this.$('.label').removeClass('busy');
+            this.clickHandlerDisabled = false;
         },
         vizUpdate: function() {
             if (this.App && this.App.vent) {
@@ -142,6 +147,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             return data;
         },
         clickHandler: function(evt) {
+            if (this.clickHandlerDisabled) {
+                return;
+            }
+            this.$('.label').addClass('busy');
+            this.clickHandlerDisabled = true;
             var $target = $(evt.target);
             var index = $target.attr('data-filter');
             var model = _.first(this.collection.where({

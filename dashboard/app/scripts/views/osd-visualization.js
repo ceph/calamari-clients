@@ -80,24 +80,24 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         fullscreen: function(callback) {
             var self = this;
-            this.vizMoveUpAnimation(this.$el, callback).then(function() {
-                self.vizSlideRightAnimation(self.ui.viz).then(function() {
-                    self.ui.filter.show();
-                    self.fadeInAnimation(self.ui.filter);
-                });
+            return this.vizMoveUpAnimation(this.$el, callback).then(function() {
+                return self.vizSlideRightAnimation(self.ui.viz);
+            }).then(function() {
+                self.ui.filter.show();
+                return self.fadeInAnimation(self.ui.filter);
             });
         },
         dashboard: function(callback) {
             var self = this;
-            this.vizMoveDownAnimation(this.$el, callback).then(function() {
+            return this.vizMoveDownAnimation(this.$el, callback).then(function() {
                 self.fadeOutAnimation(self.ui.filter).then(function() {
                     self.ui.filter.css('visibility', 'hidden');
                 }).then(function() {
                     self.ui.filter.css('visibility', 'visible');
                 });
-                self.vizSlideLeftAnimation(self.ui.viz).then(function() {
-                    self.ui.filter.hide();
-                });
+                return self.vizSlideLeftAnimation(self.ui.viz);
+            }).then(function() {
+                self.ui.filter.hide();
             });
         },
         resetViews: function(collection, options) {
@@ -163,10 +163,15 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             if (filterFn) {
                 coll = _.filter(coll, filterFn);
             }
-            console.log(coll.length);
-            _.each(coll, this.moveCircle);
+            //console.log(coll.length);
             var d = $.Deferred();
-            d.resolve();
+            var last = _.last(coll);
+            if (last) {
+                last.deferred = d;
+            } else {
+                d.resolve();
+            }
+            _.each(coll, this.moveCircle);
             return d.promise();
         },
         legendCircle: function(r, originX, originY, percent) {
@@ -234,6 +239,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         style: ''
                     });
                     t.data('modelid', model.id);
+                    if (model.deferred) {
+                        model.deferred.resolve();
+                        model.deferred = null;
+                    }
                     model.views = {
                         circle: c,
                         text: t
@@ -297,7 +306,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var d = $.Deferred();
             this.drawGrid(d);
             var p = d.promise();
-            p.then(this.calculatePositions);
+            var vent = this.App.vent;
+            p.then(this.calculatePositions).then(function() {
+                vent.trigger('viz:render');
+            });
             return p;
         },
         keyHandler: function(evt) {
@@ -344,20 +356,26 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
         },
         filter: function(filterCol) {
-            console.log('filter ' + filterCol.length);
+            // console.log('filter ' + filterCol.length);
             var enabled = filterCol.where({
                 enabled: true,
                 visible: true
             });
-            this.calculatePositions(function(m) {
+            this.resetViews(null, {
+                previousModels: this.collection.models
+            });
+            var vent = this.App.vent;
+            return this.calculatePositions(function(m) {
                 return _.find(enabled, function(obj) {
                     if (obj.get('match')) {
-                        var t =  obj.get('match')(m);
-                        console.log('matched ' + m.id + ' ' + t);
+                        var t = obj.get('match')(m);
+                        //console.log('matched ' + m.id + ' ' + t);
                         return t;
                     }
                     return false;
                 });
+            }).then(function() {
+                vent.trigger('viz:render');
             });
         }
     });
