@@ -70,7 +70,7 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             // TODO this code needs to move to an OSD view
             if (this.views && this.views.circle) {
                 var a = window.Raphael.animation({
-                    r: (this.radius * this.getPercentage()),
+                    r: Math.floor(this.radius * this.getPercentage()),
                     fill: this.getColor()
                 }, this.animationTime, this.easing);
                 this.views.circle.animate(a.delay(this.delay));
