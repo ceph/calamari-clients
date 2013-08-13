@@ -4,6 +4,7 @@
 @import 'compass/css3/user-interface';
 @import 'compass/css3/transform';
 @import 'compass/css3/border-radius';
+@import 'compass/css3/box-shadow';
 #viz {
     margin-top: 15px;
 }
@@ -58,16 +59,21 @@ tspan:hover, circle:hover {
 	margin-right: 5px;
     }
 }
-.popover {
+$popover-height: 400px;
+$popover-width: 200px;
+.detail-popover {
+    @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
+    @include border-radius(0);
     opacity: 1.0;
     padding: 5px;
-    @include border-radius(0);
     background-color: rgba(255,255,255,0.7);
+    overflow: hidden;
+    text-overflow: hidden;
     position: absolute;
     top: 120px;
     left: 0;
-    min-height: 400px;
-    min-width: 200px;
+    height: 400px;
+    width: 200px;
     z-index: 100;
     .icon-remove {
         cursor: pointer;
@@ -164,4 +170,19 @@ text {
 }
 .slideVizLeftAnim {
     @include animation(slideVizLeft $medTimer ease);
+}
+@include keyframes(growDialog) {
+    0% {
+	    opacity: 0;
+	    left: -580px;
+    }
+    30% { 
+	    opacity: 1;
+    }
+    100% {
+	    left: 0;
+    }
+}
+.DialogInAnim {
+    @include animation(growDialog 0.5s ease-in-out);
 }

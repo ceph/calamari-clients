@@ -20,6 +20,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         },
         initialize: function(options) {
             this.replaceAnimation = animation.pair('fadeOutRightToLeftAnim', 'fadeInRightToLeftAnim');
+            this.popInAnimation = animation.single('DialogInAnim');
+            this.fadeOutAnimation = animation.single('fadeOutAnim');
             _.bindAll(this, 'clearDetail', 'replaceAnimation', 'hide', 'show', 'removeDialog');
             this.model = new model.OSDModel();
             this.listenTo(this.model, 'change', this.render);
@@ -33,17 +35,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         },
         removeDialog: function() {
             if (this.state === 'fullscreen') {
-                this.$el.hide();
+                var self = this;
+                this.fadeOutAnimation(this.$el).then(function() {
+                    self.$el.css('display','none');
+                });
             }
         },
         hide: function() {
             this.state = 'fullscreen';
-            this.$el.hide().addClass('popover');
+            this.$el.hide().addClass('detail-popover');
         },
         show: function() {
             this.state = 'dashboard';
             this.render();
-            this.$el.show().removeClass('popover');
+            this.$el.show().removeClass('detail-popover');
         },
         clearDetail: function() {
             this.replaceAnimation(this.$el, function() {
@@ -57,14 +62,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         },
         render: function() {
             if (this.state === 'dashboard') {
-                this.replaceAnimation(this.$el, function() {
+                return this.replaceAnimation(this.$el, function() {
                     this.$el.html(this.template(this.serializeData()));
                 });
-                return;
             }
             if (this.state === 'fullscreen') {
-                this.$el.show();
                 this.$el.html(this.template(this.serializeData()));
+                if (this.$el.is(':visible')) {
+                    return this.replaceAnimation(this.$el);
+                } else {
+                    this.$el.css('display', 'block');
+                    return this.popInAnimation(this.$el);
+                }
             }
         }
     });
