@@ -19,12 +19,29 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         events: {
             'click .viz': 'clickHandler',
-            'click .viz-controls': 'screenHandler'
+            'click .viz-controls': 'screenSwitchHandler'
         },
         collectionEvents: {
             'add': 'addOSD',
             'remove': 'removeOSD',
             'change': 'updateOSD',
+            'request': 'spinnerOn',
+            'sync error': 'spinnerOff',
+            'reset': 'resetViews'
+        },
+        appEvents: {
+            'keyup': 'keyHandler',
+            'osd:update': 'updateCollection',
+            'cluster:update': 'switchCluster',
+            'viz:fullscreen': 'fullscreen',
+            'viz:dashboard': 'dashboard',
+            'viz:filter': 'filter'
+        },
+        spinnerOn: function() {
+            this.ui.spinner.css('visibility', 'visible');
+        },
+        spinnerOff: function() {
+            this.ui.spinner.css('visibility', 'hidden');
         },
         updateCollection: function() {
             if (this.App.Config['delta-osd-api'] && this.collection.length > 0) {
@@ -38,6 +55,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 this.collection.cluster = cluster.get('id');
             }
         },
+        setupAnimations: function(obj) {
+            obj.vizMoveUpAnimation = animation.single('moveVizUpAnim');
+            obj.vizMoveDownAnimation = animation.single('moveVizDownAnim');
+            obj.vizSlideRightAnimation = animation.single('slideVizRightAnim');
+            obj.vizSlideLeftAnimation = animation.single('slideVizLeftAnim');
+            obj.fadeInAnimation = animation.single('fadeInAnim');
+            obj.fadeOutAnimation = animation.single('fadeOutAnim');
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.width = 17 * this.step;
@@ -45,30 +70,15 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.w = 720;
             this.h = 520;
             _.bindAll(this);
-            var self = this;
-            this.vizMoveUpAnimation = animation.single('moveVizUpAnim');
-            this.vizMoveDownAnimation = animation.single('moveVizDownAnim');
-            this.vizSlideRightAnimation = animation.single('slideVizRightAnim');
-            this.vizSlideLeftAnimation = animation.single('slideVizLeftAnim');
-            this.fadeInAnimation = animation.single('fadeInAnim');
-            this.fadeOutAnimation = animation.single('fadeOutAnim');
+
+            this.setupAnimations(this);
+
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
-            this.screenHandler = _.debounce(this.screenHandler, 250, true);
-            this.listenTo(this.App.vent, 'keyup', this.keyHandler);
-            this.listenTo(this.App.vent, 'osd:update', this.updateCollection);
-            this.listenTo(this.App.vent, 'cluster:update', this.switchCluster);
-            this.listenTo(this.App.vent, 'viz:fullscreen', this.fullscreen);
-            this.listenTo(this.App.vent, 'viz:dashboard', this.dashboard);
-            this.listenTo(this.App.vent, 'viz:filter', this.filter);
-            this.listenTo(this.collection, 'request', function() {
-                self.ui.spinner.css('visibility', 'visible');
-            });
-            this.listenTo(this.collection, 'sync error', function() {
-                self.ui.spinner.css('visibility', 'hidden');
-            });
-            this.listenTo(this.collection, 'reset', this.resetViews);
+            this.screenSwitchHandler = _.debounce(this.screenSwitchHandler, 250, true);
+
+            Backbone.Marionette.bindEntityEvents(this, this.App.vent, Backbone.Marionette.getOption(this, 'appEvents'));
         },
-        screenHandler: function() {
+        screenSwitchHandler: function() {
             var clazz = this.ui.stateicon.attr('class');
             if (clazz === 'icon-fullscreen') {
                 this.ui.stateicon.attr('class', 'icon-resize-small');
@@ -318,15 +328,18 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 return;
             }
             var keyCode = evt.keyCode;
-            if (keyCode === 82) {
+            if (keyCode === 27) /* Escape */ {
+                this.App.vent.trigger('escapekey');
+            }
+            if (keyCode === 82) /* r */ {
                 this.resetChanges();
                 return;
             }
-            if (keyCode === 85) {
+            if (keyCode === 85) /* u */{
                 this.simulateUsedChanges();
                 return;
             }
-            if (keyCode === 32) {
+            if (keyCode === 32) /* space */ {
                 var $spinner = $('.icon-spinner');
                 if (this.timer === null) {
                     this.startSimulation();

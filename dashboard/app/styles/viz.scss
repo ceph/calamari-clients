@@ -3,6 +3,7 @@
 @import 'compass/typography/text/force-wrap';
 @import 'compass/css3/user-interface';
 @import 'compass/css3/transform';
+@import 'compass/css3/border-radius';
 #viz {
     margin-top: 15px;
 }
@@ -11,6 +12,7 @@
     	cursor: pointer;
 }
 .raphael-one {
+    position: relative;
     background-color: $itlightgray;
 }
 tspan:hover, circle:hover {
@@ -58,12 +60,18 @@ tspan:hover, circle:hover {
 }
 .popover {
     opacity: 1.0;
+    padding: 5px;
+    @include border-radius(0);
+    background-color: rgba(255,255,255,0.7);
     position: absolute;
-    top: 100px;
-    left: 100px;
-    height: 100px;
-    width: 100px;
+    top: 120px;
+    left: 0;
+    min-height: 400px;
+    min-width: 200px;
     z-index: 100;
+    .icon-remove {
+        cursor: pointer;
+    }
 }
 @include animate-fadeInDown($class: true);
 @include animate-fadeOutUp($class: true);
