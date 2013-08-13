@@ -1,6 +1,7 @@
 @import 'animate';
 @import 'inktank_colors';
 @import 'compass/typography/text/force-wrap';
+@import 'compass/css3/user-interface';
 @import 'compass/css3/transform';
 #viz {
     margin-top: 15px;
@@ -34,7 +35,35 @@ tspan:hover, circle:hover {
     padding: 5px 0 12px 10px;
 }
 .filter {
-	margin-right: 35px;
+    margin-right: 35px;
+    @include user-select(none);	
+    .label {
+        cursor: pointer;
+    }
+    .busy {
+        cursor: wait;
+    }
+    ul {
+        list-style: none;
+        margin-left: 0;
+    }
+    li {
+        margin-top: 3px;
+    }
+    span.label {
+        min-width: 5em;
+	text-align: center;
+	margin-right: 5px;
+    }
+}
+.popover {
+    opacity: 1.0;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    height: 100px;
+    width: 100px;
+    z-index: 100;
 }
 @include animate-fadeInDown($class: true);
 @include animate-fadeOutUp($class: true);

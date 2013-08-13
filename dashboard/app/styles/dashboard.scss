@@ -1,7 +1,6 @@
 @import 'animate';
 @import 'compass/css3';
 @import 'compass/css3/images';
-@import 'compass/css3/user-interface';
 @import 'inktank_colors';
 
 $itapp-background-color: $itdarkgray;
@@ -179,27 +178,7 @@ $g-width: 205px;
     margin-bottom: 10px;
 }
 .container {
-}
-.filter {
-    @include user-select(none);	
-    .label {
-        cursor: pointer;
-    }
-    .busy {
-        cursor: wait;
-    }
-    ul {
-        list-style: none;
-	margin-left: 0;
-    }
-    li {
-        margin-top: 3px;
-    }
-    span.label {
-        min-width: 5em;
-	text-align: center;
-	margin-right: 5px;
-    }
+    position: relative;
 }
 @include animate-fadeIn($class: true);
 @include animate-fadeOut($class: true);
