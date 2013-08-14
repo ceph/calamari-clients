@@ -87,6 +87,12 @@ $popover-left: 0;
     .icon-remove {
         cursor: pointer;
     }
+    .icon-info-sign {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+        cursor: pointer;
+    }
 }
 @include animate-fadeInDown($class: true);
 @include animate-fadeOutUp($class: true);

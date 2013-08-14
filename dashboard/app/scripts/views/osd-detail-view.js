@@ -36,8 +36,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         removeDialog: function() {
             if (this.state === 'fullscreen') {
                 var self = this;
-                this.fadeOutAnimation(this.$el).then(function() {
-                    self.$el.css('display','none');
+                return this.fadeOutAnimation(this.$el).then(function() {
+                    self.$el.css('display', 'none');
                 });
             }
         },
@@ -53,9 +53,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
             this.$el.show().removeClass('detail-popover');
         },
         clearDetail: function() {
-            this.replaceAnimation(this.$el, function() {
-                this.$el.text('No OSD Selected');
-            });
+            if (!this.$el.is(':visible')) {
+                return;
+            }
+            if (this.state === 'dashboard') {
+                return this.replaceAnimation(this.$el, function() {
+                    this.$el.text('No OSD Selected');
+                });
+            }
+            return this.removeDialog();
         },
         serializeData: function() {
             var model = this.model.toJSON();
