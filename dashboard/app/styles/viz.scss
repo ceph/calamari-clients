@@ -59,21 +59,30 @@ tspan:hover, circle:hover {
 	margin-right: 5px;
     }
 }
-$popover-height: 400px;
-$popover-width: 200px;
+$popover-height: 350;
+$popover-width: 200;
+$popover-top: 120;
+$popover-left: 0;
+.detail-outer-popover {
+    height: #{$popover-height + 30}px;
+    width: #{$popover-width + 210}px;
+    overflow: hidden;
+    text-overflow: hidden;
+    position: absolute;
+    top: #{$popover-top}px;
+    left: #{$popover-left - 200}px;
+}
 .detail-popover {
     @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
     @include border-radius(0);
     opacity: 1.0;
     padding: 5px;
     background-color: rgba(255,255,255,0.7);
-    overflow: hidden;
-    text-overflow: hidden;
     position: absolute;
-    top: 120px;
-    left: 0;
-    height: 400px;
-    width: 200px;
+    top: 0;
+    left: 200px;
+    height: #{$popover-height}px;
+    width: #{$popover-width - 30}px;
     z-index: 100;
     .icon-remove {
         cursor: pointer;
@@ -180,7 +189,7 @@ text {
 	    opacity: 1;
     }
     100% {
-	    left: 0;
+	    left: 200px;
     }
 }
 .DialogInAnim {

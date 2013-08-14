@@ -44,10 +44,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         hide: function() {
             this.state = 'fullscreen';
             this.$el.hide().addClass('detail-popover');
+            this.$el.closest('.detail-outer').addClass('detail-outer-popover');
         },
         show: function() {
             this.state = 'dashboard';
             this.render();
+            this.$el.closest('.detail-outer').removeClass('detail-outer-popover');
             this.$el.show().removeClass('detail-popover');
         },
         clearDetail: function() {
