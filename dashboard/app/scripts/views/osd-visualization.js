@@ -85,6 +85,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         fullscreen: function(callback) {
             this.state = 'fullscreen';
+            this.$el.removeClass('card').addClass('workbench');
             var self = this;
             return this.vizMoveUpAnimation(this.$el, callback).then(function() {
                 return self.vizSlideRightAnimation(self.ui.viz);
@@ -95,6 +96,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         dashboard: function(callback) {
             this.state = 'dashboard';
+            this.$el.addClass('card').removeClass('workbench');
             var self = this;
             return this.vizMoveDownAnimation(this.$el, callback).then(function() {
                 self.fadeOutAnimation(self.ui.filter).then(function() {

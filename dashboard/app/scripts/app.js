@@ -2,7 +2,7 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation) {
     /* Default Configuration */
     var config = {
         offline: true,
@@ -182,24 +182,33 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 }
             });
 
+            var toWorkBenchAnimation = animation.single('toWorkBenchAnim');
             App.fullscreen = function() {
                 var d = $.Deferred();
                 var vent = App.vent;
+                var $body = $('body');
                 vent.trigger('gauges:disappear', function() {
                     d.resolve();
                 });
 
                 d.promise().then(function() {
+                    $body.addClass('workbench-mode');
+                    toWorkBenchAnimation($body);
                     vent.trigger('viz:fullscreen', function() {
                         vent.trigger('gauges:collapse');
                     });
                 });
             };
+            var toDashboardAnimation = animation.single('toDashboardAnim');
             App.dashboard = function() {
                 var d = $.Deferred();
                 var vent = App.vent;
-                vent.trigger('viz:dashboard', function() {
-                    d.resolve();
+                var $body = $('body');
+                $body.removeClass('workbench-mode');
+                toDashboardAnimation($body).then(function() {
+                    vent.trigger('viz:dashboard', function() {
+                        d.resolve();
+                    });
                 });
 
                 d.promise().then(function() {

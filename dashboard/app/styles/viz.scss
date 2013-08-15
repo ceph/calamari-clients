@@ -60,6 +60,13 @@ tspan:hover, circle:hover {
 	margin-right: 5px;
     }
 }
+.workbench-mode {
+    background-color: $itlightgray;
+}
+.workbench {
+    margin-top: 5px;
+    min-height: 800px;
+}
 $popover-height: 350;
 $popover-width: 200;
 $popover-top: 120;

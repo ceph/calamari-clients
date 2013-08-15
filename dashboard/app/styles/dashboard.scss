@@ -260,4 +260,25 @@ $timeSlow: 1s;
 .fadeInDownAnim {
     @include animation(fadeInDown $timeSlow ease);
 }
-
+@include keyframes(toWorkBench) {
+    0% {
+	    background-color: $itdarkgray;
+    }
+    100% {
+	    background-color: $itlightgray;
+    }
+}
+.toWorkBenchAnim {
+    @include animation(toWorkBench 0.125s ease-in);
+}
+@include keyframes(toDashboard) {
+    0% {
+	    background-color: $itlightgray;
+    }
+    100% {
+	    background-color: $itdarkgray;
+    }
+}
+.toDashboardAnim {
+    @include animation(toDashboard 0.125s ease-out);
+}
