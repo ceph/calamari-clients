@@ -181,6 +181,7 @@ $g-width: 205px;
     position: relative;
 }
 .inknav {
+    @include user-select(none);	
     width: 223px;
     position: absolute;
     left: 0;
