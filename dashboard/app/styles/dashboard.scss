@@ -181,14 +181,19 @@ $g-width: 205px;
     position: relative;
 }
 .inknav {
+    width: 223px;
     position: absolute;
-    top: 10px;
-    left: 385px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    top: 4px;
 }
-$bc-height: 35;
+$bc-height: 33;
 $bc-width: $bc-height;
+$bc-margin: 3;
 .bc-entry {
-    margin: 0px;
+    margin: #{$bc-margin}px;
     text-align: center;
     vertical-align: middle;
     display: inline-block;
@@ -197,23 +202,37 @@ $bc-width: $bc-height;
     text-overflow: hidden;
     overflow: hidden;
     @include border-radius(100%);
-    background: $itgray;
-    line-height: 2.1;
+    background: lighten($itgray, 15%);
+    line-height: 1.9;
     color: $itlightgray;
     cursor: pointer;
 }
 .bc-line {
-    height: 1px;
-    border-bottom: 1px solid $itgray;
+    height: 0;
+    border-top: 2px solid $itgray;
     display: inline-block;
-    margin-right: 4px;
-    margin-left: 5px;
+    margin: 0;
+    padding: 0;
     width: 40px;
 }
 .bc-active {
     color: $itdarkgray;
     background: $itlightgray;
     cursor: default;
+}
+.bc-circle {
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    height: #{$bc-height+($bc-margin * 2)}px;
+    width: #{$bc-width+ ($bc-margin * 2)}px;
+    text-overflow: hidden;
+    overflow: hidden;
+    @include border-radius(100%);
+    border: 2px solid $itgray;
+    margin: 0px;
+    padding: 0px;
+    cursor: pointer;
 }
 
 @include animate-fadeIn($class: true);
