@@ -20,6 +20,7 @@ tspan:hover, circle:hover {
     cursor: pointer;
 }
 .detail-outer {
+    display: none;
     text-overflow: hidden;
     overflow: hidden;
 }
@@ -64,6 +65,7 @@ $popover-width: 200;
 $popover-top: 120;
 $popover-left: 0;
 .detail-outer-popover {
+    display: block;
     height: #{$popover-height + 30}px;
     width: #{$popover-width + 210}px;
     overflow: hidden;

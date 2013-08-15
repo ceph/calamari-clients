@@ -70,9 +70,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         },
         render: function() {
             if (this.state === 'dashboard') {
-                return this.replaceAnimation(this.$el, function() {
-                    this.$el.html(this.template(this.serializeData()));
-                });
+                return;
             }
             if (this.state === 'fullscreen') {
                 this.$el.html(this.template(this.serializeData()));
