@@ -26,10 +26,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             this.$('.bc-active').removeClass('bc-active');
             this.ui.fullscreenIcon.closest('span').addClass('bc-active');
         },
+        serializeData: function() {
+            return {
+                title: {
+                    dashboard: 'Dashboard',
+                    bench: 'OSD Workbench',
+                    chart: 'Charting'
+                }
+            };
+        },
         switcher: function(evt) {
             var $target = $(evt.target);
             $target = $target.closest('span');
-            console.log($target);
             if ($target.hasClass('bc-active')) {
                 return;
             }
