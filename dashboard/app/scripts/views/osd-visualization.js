@@ -10,16 +10,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         originY: 0,
         step: 40,
         timer: null,
+        state: 'dashboard',
         ui: {
             viz: '.viz',
             filter: '.filter',
             detail: '.detail',
-            spinner: '.icon-spinner',
-            stateicon: '.viz-controls i'
+            spinner: '.icon-spinner'
         },
         events: {
             'click .viz': 'clickHandler',
-            //'click .viz-controls': 'screenSwitchHandler'
+            'click': 'screenSwitchHandler'
         },
         collectionEvents: {
             'add': 'addOSD',
@@ -79,16 +79,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             Backbone.Marionette.bindEntityEvents(this, this.App.vent, Backbone.Marionette.getOption(this, 'appEvents'));
         },
         screenSwitchHandler: function() {
-            var clazz = this.ui.stateicon.attr('class');
-            if (clazz === 'icon-fullscreen') {
-                this.ui.stateicon.attr('class', 'icon-resize-small');
+            if (this.state === 'dashboard') {
                 this.App.vent.trigger('app:fullscreen');
-            } else {
-                this.ui.stateicon.attr('class', 'icon-fullscreen');
-                this.App.vent.trigger('app:dashboard');
             }
         },
         fullscreen: function(callback) {
+            this.state = 'fullscreen';
             var self = this;
             return this.vizMoveUpAnimation(this.$el, callback).then(function() {
                 return self.vizSlideRightAnimation(self.ui.viz);
@@ -98,6 +94,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
         },
         dashboard: function(callback) {
+            this.state = 'dashboard';
             var self = this;
             return this.vizMoveDownAnimation(this.$el, callback).then(function() {
                 self.fadeOutAnimation(self.ui.filter).then(function() {
