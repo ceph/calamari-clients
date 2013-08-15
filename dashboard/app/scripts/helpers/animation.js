@@ -24,20 +24,27 @@ define(['jquery'], function($) {
     function pair(class1, class2) {
         return function($selector, fn1, fn2) {
             var d = $.Deferred();
-            $selector.on(animationEndEvent, d.resolve);
+            var resolver = function(evt) {
+                    evt.stopPropagation();
+                    d.resolve();
+                };
+            $selector.on(animationEndEvent, resolver);
             var self = this;
             $selector.addClass(class1);
             return d.promise().then(function() {
                 if (fn1) {
                     fn1.apply(self);
                 }
-                $selector.off(animationEndEvent, d.resolve).removeClass(class1);
+                $selector.off(animationEndEvent, resolver).removeClass(class1);
                 d = $.Deferred();
-                $selector.on(animationEndEvent, d.resolve).addClass(class2);
+                resolver = function(evt) {
+                    evt.stopPropagation();
+                    d.resolve();
+                };
+                $selector.on(animationEndEvent, resolver).addClass(class2);
                 return d.promise();
             }).then(function() {
-                $selector.removeClass(class2);
-                $selector.off(animationEndEvent, d.resolve);
+                $selector.removeClass(class2).off(animationEndEvent, resolver);
                 if (fn2) {
                     fn2.apply(self);
                 }
@@ -48,11 +55,15 @@ define(['jquery'], function($) {
     function single(class1) {
         return function($selector, fn1) {
             var d = $.Deferred();
-            $selector.on(animationEndEvent, d.resolve);
+            var resolver = function(evt) {
+                    evt.stopPropagation();
+                    d.resolve();
+                };
+            $selector.on(animationEndEvent, resolver);
             var self = this;
             $selector.addClass(class1);
             return d.promise().then(function() {
-                $selector.off(animationEndEvent, d.resolve).removeClass(class1);
+                $selector.off(animationEndEvent, resolver).removeClass(class1);
                 if (fn1) {
                     fn1.apply(self);
                 }
