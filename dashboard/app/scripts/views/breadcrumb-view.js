@@ -7,7 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         template: JST['app/scripts/templates/breadcrumb.ejs'],
         ui: {
             dashboardIcon: '.icon-dashboard',
-            fullscreenIcon: '.icon-zoom-in'
+            fullscreenIcon: '.icon-sitemap'
         },
         events: {
             'click span.bc-entry': 'switcher'
