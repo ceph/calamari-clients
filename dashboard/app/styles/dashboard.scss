@@ -180,6 +180,42 @@ $g-width: 205px;
 .container {
     position: relative;
 }
+.inknav {
+    position: absolute;
+    top: 10px;
+    left: 385px;
+}
+$bc-height: 35;
+$bc-width: $bc-height;
+.bc-entry {
+    margin: 0px;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    height: #{$bc-height}px;
+    width: #{$bc-width}px;
+    text-overflow: hidden;
+    overflow: hidden;
+    @include border-radius(100%);
+    background: $itgray;
+    line-height: 2.1;
+    color: $itlightgray;
+    cursor: pointer;
+}
+.bc-line {
+    height: 1px;
+    border-bottom: 1px solid $itgray;
+    display: inline-block;
+    margin-right: 4px;
+    margin-left: 5px;
+    width: 40px;
+}
+.bc-active {
+    color: $itdarkgray;
+    background: $itlightgray;
+    cursor: default;
+}
+
 @include animate-fadeIn($class: true);
 @include animate-fadeOut($class: true);
 @include animate-fadeOutUp($class: true);

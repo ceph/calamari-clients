@@ -19,7 +19,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         events: {
             'click .viz': 'clickHandler',
-            'click .viz-controls': 'screenSwitchHandler'
+            //'click .viz-controls': 'screenSwitchHandler'
         },
         collectionEvents: {
             'add': 'addOSD',

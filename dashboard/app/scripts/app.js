@@ -212,6 +212,12 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.vent.listenTo(App.vent, 'app:fullscreen', App.fullscreen);
             App.vent.listenTo(App.vent, 'app:dashboard', App.dashboard);
 
+            var breadcrumbView = new views.BreadCrumbView({
+                App: App,
+                el: '.inknav'
+            });
+            breadcrumbView.render();
+
             // Global Exports
             window.inktank = {
                 App: App,
