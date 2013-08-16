@@ -14,7 +14,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         ui: {
             viz: '.viz',
             filter: '.filter',
-            detail: '.detail',
+            detail: '.detail-outer',
             spinner: '.icon-spinner'
         },
         events: {

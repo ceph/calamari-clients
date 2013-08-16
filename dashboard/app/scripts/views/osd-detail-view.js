@@ -5,61 +5,51 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
 
     var OSDDetailView = Backbone.Marionette.ItemView.extend({
         tagName: 'div',
-        className: 'detail span2',
-        templateFullscreen: JST['app/scripts/templates/osd-details-full.ejs'],
-        templateDashboard: JST['app/scripts/templates/osd-details.ejs'],
-        template: function(args) {
-            if (this.state === 'dashboard') {
-                return this.templateDashboard.call(null, args);
-            }
-            return this.templateFullscreen.call(null, args);
-        },
+        template: JST['app/scripts/templates/osd-details-full.ejs'],
         state: 'dashboard',
         events: {
             'click .icon-remove': 'removeDialog'
+        },
+        ui: {
         },
         initialize: function(options) {
             this.replaceAnimation = animation.pair('fadeOutRightToLeftAnim', 'fadeInRightToLeftAnim');
             this.popInAnimation = animation.single('DialogInAnim');
             this.fadeOutAnimation = animation.single('fadeOutAnim');
-            _.bindAll(this, 'clearDetail', 'replaceAnimation', 'hide', 'show', 'removeDialog');
+            _.bindAll(this, 'clearDetail', 'template', 'replaceAnimation', 'toFullscreen', 'toDashboard', 'removeDialog');
             this.model = new model.OSDModel();
             this.listenTo(this.model, 'change', this.render);
             if (options.App !== undefined) {
                 this.App = options.App;
                 this.listenTo(this.App.vent, 'status:healthok status:healthwarn', this.clearDetail);
-                this.listenTo(this.App.vent, 'viz:fullscreen', this.hide);
-                this.listenTo(this.App.vent, 'viz:dashboard', this.show);
+                this.listenTo(this.App.vent, 'viz:fullscreen', this.toFullscreen);
+                this.listenTo(this.App.vent, 'viz:dashboard', this.toDashboard);
                 this.listenTo(this.App.vent, 'escapekey', this.removeDialog);
             }
         },
         removeDialog: function() {
             if (this.state === 'fullscreen') {
                 var self = this;
-                return this.fadeOutAnimation(this.$el).then(function() {
+                return this.fadeOutAnimation(this.ui.detail).then(function() {
                     self.$el.css('display', 'none');
                 });
             }
         },
-        hide: function() {
+        toFullscreen: function() {
             this.state = 'fullscreen';
-            this.$el.hide().addClass('detail-popover');
-            this.$el.closest('.detail-outer').addClass('detail-outer-popover');
+            this.hide().addClass('detail-outer-popover');
+            this.ui.detail = this.$('.detail');
         },
-        show: function() {
+        toDashboard: function() {
             this.state = 'dashboard';
-            this.render();
-            this.$el.closest('.detail-outer').removeClass('detail-outer-popover');
-            this.$el.show().removeClass('detail-popover');
+            this.hide().removeClass('detail-outer-popover');
+        },
+        isVisible: function() {
+            return this.$el.is(':visible');
         },
         clearDetail: function() {
-            if (!this.$el.is(':visible')) {
+            if (!this.isVisible() || this.state === 'dashboard') {
                 return;
-            }
-            if (this.state === 'dashboard') {
-                return this.replaceAnimation(this.$el, function() {
-                    this.$el.text('No OSD Selected');
-                });
             }
             return this.removeDialog();
         },
@@ -68,17 +58,23 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
             model.status = model.up && model['in'] ? 'up/in' : model.up && !model['in'] ? 'up/out' : 'down';
             return model;
         },
+        show: function() {
+            return this.$el.css('display', 'block');
+        },
+        hide: function() {
+            return this.$el.css('display', 'none');
+        },
         render: function() {
             if (this.state === 'dashboard') {
                 return;
             }
             if (this.state === 'fullscreen') {
-                this.$el.html(this.template(this.serializeData()));
-                if (this.$el.is(':visible')) {
-                    return this.replaceAnimation(this.$el);
+                this.ui.detail.html(this.template(this.serializeData()));
+                if (this.isVisible()) {
+                    return this.replaceAnimation(this.ui.detail);
                 } else {
-                    this.$el.css('display', 'block');
-                    return this.popInAnimation(this.$el);
+                    this.show();
+                    return this.popInAnimation(this.ui.detail);
                 }
             }
         }
