@@ -6,8 +6,16 @@
 @import 'compass/css3/border-radius';
 @import 'compass/css3/box-shadow';
 @import 'compass/css3/box-sizing';
-#viz {
+.viz {
+    position: absolute;
     margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+}
+.viz-fullscreen {
+    position: relative;
 }
 .viz-controls {
 	margin-right: 10px;
@@ -16,6 +24,7 @@
 .raphael-one {
     position: relative;
     background-color: $itlightgray;
+    height: 600px;
 }
 tspan:hover, circle:hover {
     cursor: pointer;
@@ -66,7 +75,7 @@ tspan:hover, circle:hover {
 }
 .workbench {
     margin-top: 5px;
-    min-height: 800px;
+//    min-height: 800px;
 }
 $popover-height: 350;
 $popover-width: 200;
@@ -240,7 +249,7 @@ text {
 
 @include keyframes(slideVizRight) {
     100% {
-        @include transform(translate(187px, 0px));
+        @include transform(translate(75px, 0px));
     }
 }
 .slideVizRightAnim {
@@ -249,7 +258,7 @@ text {
 
 @include keyframes(slideVizLeft) {
     100% {
-        @include transform(translate(-187px, 0px));
+        @include transform(translate(-85px, 0px));
     }
 }
 .slideVizLeftAnim {

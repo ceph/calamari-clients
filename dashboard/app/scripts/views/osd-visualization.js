@@ -90,6 +90,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return this.vizMoveUpAnimation(this.$el, callback).then(function() {
                 return self.vizSlideRightAnimation(self.ui.viz);
             }).then(function() {
+                self.ui.viz.addClass('viz-fullscreen');
                 self.ui.filter.show();
                 return self.fadeInAnimation(self.ui.filter);
             });
@@ -106,6 +107,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 });
                 return self.vizSlideLeftAnimation(self.ui.viz);
             }).then(function() {
+                self.ui.viz.removeClass('viz-fullscreen');
                 self.ui.filter.hide();
             });
         },
