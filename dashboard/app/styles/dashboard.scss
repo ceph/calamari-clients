@@ -203,10 +203,16 @@ $bc-margin: 3;
     text-overflow: hidden;
     overflow: hidden;
     @include border-radius(100%);
-    background: lighten($itgray, 15%);
+    @include background(linear-gradient(top left, lighten($itgray, 30%), $itdarkgray));
     line-height: 1.9;
     color: $itlightgray;
     cursor: pointer;
+}
+.bc-entry:hover {
+    @include background(linear-gradient(top left, $itdarkgray, lighten($itgray, 30%)));
+}
+.bc-entry:active {
+    @include background(linear-gradient(top left, $itdarkgray, $itlightgray));
 }
 .bc-line {
     height: 0;
@@ -220,6 +226,9 @@ $bc-margin: 3;
     color: $itdarkgray;
     background: $itlightgray;
     cursor: default;
+}
+.bc-active:hover {
+    background: $itlightgray;
 }
 .bc-circle {
     text-align: center;
