@@ -1,5 +1,5 @@
 /*global define*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-collection', 'models/filter-model', 'marionette'], function($, _, Backbone, JST, FilterCollection) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-collection', 'models/filter-model', 'views/switcher-view', 'marionette'], function($, _, Backbone, JST, FilterCollection, FilterModel, SwitcherView) {
     'use strict';
 
     /*
@@ -132,6 +132,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             }
         },
         postRender: function() {
+            this.switcher = new SwitcherView({
+                el: this.$('.switcher')
+            });
+            this.switcher.render();
             this.collection.each(function(m) {
                 var $ul = this.$('ul');
                 if (m.get('visible')) {
@@ -150,6 +154,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             if (this.clickHandlerDisabled) {
                 return;
             }
+            console.log('what');
             this.$('.label').addClass('busy');
             this.clickHandlerDisabled = true;
             var $target = $(evt.target);
