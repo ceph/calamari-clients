@@ -25,6 +25,7 @@ $third-row-height: 120px;
 .navbar {
     margin-bottom:0;
     .navbar-inner {
+    	min-height: 58px;
         @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
         @include border-radius(3px);
         @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
@@ -244,7 +245,21 @@ $bc-margin: 3;
     padding: 0px;
     cursor: pointer;
 }
-
+.bc-title {
+    position: absolute;
+    bottom: -15px;
+    color: $itlightgray;
+    font-size: 8px;
+}
+.bc-title-one {
+    left: -1px;
+}
+.bc-title-two {
+    left: 87px;
+}
+.bc-title-three {
+    left: 188px;
+}
 @include animate-fadeIn($class: true);
 @include animate-fadeOut($class: true);
 @include animate-fadeOutUp($class: true);
