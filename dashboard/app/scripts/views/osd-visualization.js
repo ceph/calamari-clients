@@ -144,7 +144,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 'stroke': '#5e6a71',
                 'opacity': 0.40
             });
-            this.drawLegend(this.r, 265, 475);
+            this.drawLegend(this.r, 285, 475);
             var anim = Raphael.animation({
                 path: path,
                 callback: d.resolve
@@ -204,7 +204,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 up: 1,
                 'in': 1
             }];
-            var percent = [1, 0.85, 0.60, 0.4];
+            var percent = [1, 0.66, 0.66, 0.4];
 
             var m = new Models.OSDModel(_.extend(srcstate[index], {
                 capacity: 1024,

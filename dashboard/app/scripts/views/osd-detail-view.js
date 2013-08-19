@@ -53,9 +53,22 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
             }
             return this.removeDialog();
         },
+        statusLabel: [
+            'down',
+            'down/in',
+            'up/out',
+            'up/in'
+        ],
         serializeData: function() {
             var model = this.model.toJSON();
-            model.status = model.up && model['in'] ? 'up/in' : model.up && !model['in'] ? 'up/out' : 'down';
+            var index = 0;
+            if (model['in']) {
+                index += 1;
+            }
+            if (model.up) {
+                index += 2;
+            }
+            model.status = this.statusLabel[index];
             return model;
         },
         show: function() {

@@ -49,10 +49,10 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
                 return 0.4;
             }
             if (up === 0 && _in === 1) {
-                return 0.60;
+                return 0.66;
             }
             if (up === 1 && _in === 0) {
-                return 0.85;
+                return 0.66;
             }
             return 1;
         },
