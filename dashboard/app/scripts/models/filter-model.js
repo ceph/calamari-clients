@@ -21,7 +21,8 @@ define(['underscore', 'backbone'], function(_, Backbone) {
             visible: true,
             label: 'filter',
             enabled: true,
-            labelState: _STATES[STATES.Success]
+            labelState: _STATES[STATES.Success],
+            labelColor: ''
         }
     });
 
