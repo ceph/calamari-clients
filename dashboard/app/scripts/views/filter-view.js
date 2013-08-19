@@ -17,17 +17,24 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.collection.set([{
-                label: 'in/up',
+                label: 'up/in',
                 index: 'inup',
                 match: function(m) {
-                    return m.get('in') && m.get('up');
+                    return m.get('up') && m.get('in');
                 }
             }, {
-                label: 'in/down',
+                label: 'up/out',
+                index: 'outup',
+                labelState: 'warning',
+                match: function(m) {
+                    return m.get('up') && !m.get('in');
+                }
+            }, {
+                label: 'down/in',
                 index: 'indown',
                 labelState: 'warning',
                 match: function(m) {
-                    return !m.get('in') && m.get('up');
+                    return !m.get('up') && m.get('in');
                 }
             }, {
                 label: 'down',

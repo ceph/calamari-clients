@@ -194,16 +194,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var srcstate = [{
                 up: 0,
                 'in': 0
-            },
-                {
+            }, {
                 up: 1,
                 'in': 0
-            },
-                {
+            }, {
                 up: 0,
                 'in': 1
-            },
-                {
+            }, {
                 up: 1,
                 'in': 1
             }];
@@ -388,7 +385,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
         },
         filter: function(filterCol) {
-            // console.log('filter ' + filterCol.length);
             var enabled = filterCol.where({
                 enabled: true,
                 visible: true
@@ -407,6 +403,15 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     return false;
                 });
             }).then(function() {
+                vent.trigger('viz:render');
+            });
+        },
+        reset: function() {
+            this.resetViews(null, {
+                previousModels: this.collection.models
+            });
+            var vent = this.App.vent;
+            return this.calculatePositions().then(function() {
                 vent.trigger('viz:render');
             });
         }
