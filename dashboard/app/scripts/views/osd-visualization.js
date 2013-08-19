@@ -144,7 +144,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 'stroke': '#5e6a71',
                 'opacity': 0.40
             });
-            this.drawLegend(this.r, 285, 475);
+            this.drawLegend(this.r, 265, 475);
             var anim = Raphael.animation({
                 path: path,
                 callback: d.resolve
@@ -185,23 +185,30 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             _.each(coll, this.moveCircle);
             return d.promise();
         },
-        legendCircle: function(r, originX, originY, percent) {
+        legendCircle: function(r, originX, originY, index) {
             // Helper method to draw circles for use as legends beneath viz.
-            var srctext = ['down', 'up/out', 'up/in'];
+            var srctext = ['down', 'up/out', 'down/in', 'up/in'];
             var srcstate = [{
                 up: 0,
                 'in': 0
-            }, {
+            },
+                {
                 up: 1,
                 'in': 0
-            }, {
+            },
+                {
+                up: 0,
+                'in': 1
+            },
+                {
                 up: 1,
                 'in': 1
             }];
-            var i = Math.round(1 / percent) - 1;
-            var m = new Models.OSDModel(_.extend(srcstate[i], {
+            var percent = [1, 0.85, 0.60, 0.4];
+
+            var m = new Models.OSDModel(_.extend(srcstate[index], {
                 capacity: 1024,
-                used: percent * 1024
+                used: percent[index] * 1024
             }));
             var c = r.circle(originX, originY, 16 * m.getPercentage()).attr({
                 fill: m.getColor(),
@@ -212,7 +219,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var aFn = Raphael.animation({
                 opacity: 1
             }, 250, 'easeOut');
-            var text = srctext[i];
+            var text = srctext[index];
             r.text(originX, originY + 23, text).attr({
                 'cursor': 'default',
                 'font-size': '12px',
@@ -224,8 +231,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             // Calls legend circle to place in viz.
             var xp = originX,
                 i;
-            for (i = 1; i <= 3; i += 1, xp += 50) {
-                this.legendCircle(r, xp, originY, i / 3);
+            for (i = 0; i < 4; i += 1, xp += 50) {
+                this.legendCircle(r, xp, originY, i);
             }
         },
         animateCircleTraversal: function(r, originX, originY, radius, destX, destY, model) {
@@ -272,6 +279,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     maxRed -= 1;
                     up = false;
                     //console.log(m.id + ' setting to down');
+                } else {
+                    if (Math.random() > 0.6) {
+                        up = false;
+                    }
                 }
                 m.set({
                     'up': up ? 1 : 0,
@@ -329,18 +340,22 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 return;
             }
             var keyCode = evt.keyCode;
-            if (keyCode === 27) /* Escape */ {
+            if (keyCode === 27) /* Escape */
+            {
                 this.App.vent.trigger('escapekey');
             }
-            if (keyCode === 82) /* r */ {
+            if (keyCode === 82) /* r */
+            {
                 this.resetChanges();
                 return;
             }
-            if (keyCode === 85) /* u */{
+            if (keyCode === 85) /* u */
+            {
                 this.simulateUsedChanges();
                 return;
             }
-            if (keyCode === 32) /* space */ {
+            if (keyCode === 32) /* space */
+            {
                 var $spinner = $('.icon-spinner');
                 if (this.timer === null) {
                     this.startSimulation();
