@@ -146,7 +146,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         serializeModel: function(model) {
             var data = model.toJSON();
             if (!data.enabled) {
-                data.labelState = '';
+                data.labelColor = 'label-disabled';
             }
             return data;
         },

@@ -69,6 +69,10 @@ tspan:hover, circle:hover {
 	text-align: center;
 	margin-right: 5px;
     }
+    span.label-disabled {
+        opacity: 0.5;
+	color: $itdarkgray;
+    }
 }
 .workbench-mode {
     background-color: $itlightgray;
