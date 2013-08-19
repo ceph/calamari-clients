@@ -17,24 +17,18 @@ define(['underscore', 'backbone'], function(_, Backbone) {
             added_date: Date.now(),
             cluster: 1,
             id: 0,
-            report: {
-                total_avail: 0,
-                total_space: 0,
-                total_used: 0
+            space: {
+                free_bytes: 0,
+                used_bytes: 0,
+                capacity_bytes: 0
             }
-        },
-        parse: function(response /*, options*/ ) {
-            response.report.total_used *= 1024;
-            response.report.total_avail *= 1024;
-            response.report.total_space *= 1024;
-            return response;
         },
         getPercentageUsed: function() {
-            var report = this.get('report');
-            if (report.total_space === 0) {
+            var space = this.get('space');
+            if (space.capacity_bytes === 0) {
                 return 0;
             }
-            return (report.total_used / report.total_space) * 100;
+            return (space.used_bytes / space.capacity_bytes) * 100;
         }
 
     });

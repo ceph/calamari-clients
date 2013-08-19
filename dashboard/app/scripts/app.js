@@ -65,10 +65,10 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
             var settings = {
                 cluster: 1,
-                report: {
-                    total_avail: totalCapacity * ONE_GIGABYTE,
-                    total_space: totalCapacity * ONE_GIGABYTE,
-                    total_used: totalUsed * ONE_GIGABYTE
+                space: {
+                    free_bytes: totalCapacity * ONE_GIGABYTE,
+                    capacity_bytes: totalCapacity * ONE_GIGABYTE,
+                    used_bytes: totalUsed * ONE_GIGABYTE
                 }
             };
             gauge.set(new models.UsageModel(settings));
