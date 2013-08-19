@@ -18,7 +18,7 @@ body {
     font-style: normal;
 }
 
-$itapp-card-height: 220px;
+$itapp-card-height: 210px;
 $second-row-height: 600px;
 $third-row-height: 120px;
 
@@ -87,7 +87,7 @@ table.metrics tr td:first-child {
     color: $itapp-subtext-font-color;
 }
 .table.metrics td, .table.metrics th {
-    line-height: 16px;
+    line-height: 20px;
 }
 table.metrics td {
     width: 100px;
@@ -157,7 +157,7 @@ $g-width: 205px;
     margin: 0;
 }
 .mytext {
-	margin: 15px auto 0 auto;
+	margin: 10px auto 0 auto;
 	text-align: center;
 	font-size: 20px;
 }

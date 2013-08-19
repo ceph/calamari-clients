@@ -82,10 +82,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.ui.okosd.text(attr.osd['up_in']);
             this.ui.warnosd.text(attr.osd['up_not_in']);
             this.ui.failosd.text(attr.osd['not_up_not_in']);
-            this.ui.okpool.text(attr.pool['total']);
-            this.ui.okmds.text(attr.mds['up_in']);
-            this.ui.warnmds.text(attr.mds['up_not_in']);
-            this.ui.failmds.text(attr.mds['not_up_not_in']);
             this.ui.okmon.text(attr.mon['in_quorum']);
             this.ui.failmon.text(attr.mon['not_in_quorum']);
             this.ui.okpg.text(attr.pg['ok']);
