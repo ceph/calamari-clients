@@ -200,6 +200,7 @@ circle {
        stroke: 'none';
 }
 $itapp-viz-text-color: $itdarkgray;
+$itapp-viz-vertical-slide-distance:  220;
 text {
     font: 9px ApexSansMedium;
     stroke: none;
@@ -207,7 +208,7 @@ text {
 }
 @include keyframes(move-up-viz) {
     100% {
-        @include transform(translate(0px, -230px));
+        @include transform(translate(0px, -#{$itapp-viz-vertical-slide-distance}px));
     }
 }
 .moveVizUpAnim {
@@ -215,7 +216,7 @@ text {
 }
 @include keyframes(move-down-viz) {
     100% {
-        @include transform(translate(0px, 230px));
+        @include transform(translate(0px, #{$itapp-viz-vertical-slide-distance}px));
     }
 }
 .moveVizDownAnim {

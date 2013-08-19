@@ -12,6 +12,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         timer: null,
         state: 'dashboard',
         ui: {
+            'cardTitle': '.card-title',
             viz: '.viz',
             filter: '.filter',
             detail: '.detail-outer',
@@ -85,6 +86,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         fullscreen: function(callback) {
             this.state = 'fullscreen';
+            this.ui.cardTitle.text('OSD Workbench');
             this.$el.removeClass('card').addClass('workbench');
             var self = this;
             return this.vizMoveUpAnimation(this.$el, callback).then(function() {
@@ -97,6 +99,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         dashboard: function(callback) {
             this.state = 'dashboard';
+            this.ui.cardTitle.text('OSD Status');
             this.$el.addClass('card').removeClass('workbench');
             var self = this;
             return this.vizMoveDownAnimation(this.$el, callback).then(function() {
