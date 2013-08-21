@@ -117,8 +117,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 pgSelectors.push('.fail');
             }
             this.ui.pgstate.html(pgstateHtml.join(''));
+            var ui = this.ui;
             _.each(pgSelectors, function(selector) {
-                this.ui.pgstate.find(selector).popover();
+                ui.pgstate.find(selector).popover();
             });
         },
         // uses partial application to format state strings for display
