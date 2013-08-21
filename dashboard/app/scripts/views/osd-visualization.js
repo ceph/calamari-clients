@@ -108,6 +108,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }).then(function() {
                     self.ui.filter.css('visibility', 'visible');
                 });
+                self.reset();
                 return self.vizSlideLeftAnimation(self.ui.viz);
             }).then(function() {
                 self.ui.viz.removeClass('viz-fullscreen');

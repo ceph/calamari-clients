@@ -124,10 +124,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 index: 'stale',
                 visible: false
             }]);
-            _.bindAll(this, 'postRender', 'vizUpdate');
+            _.bindAll(this, 'postRender', 'vizUpdate', 'reset');
             this.listenTo(this, 'render', this.postRender);
             this.listenTo(this.collection, 'change', this.vizUpdate);
             this.listenTo(this.App.vent, 'viz:render', this.filterEnable);
+            this.listenTo(this.App.vent, 'viz:dashboard', this.reset);
+        },
+        reset: function() {
+            this.$('.label-disabled').removeClass('label-disabled');
+            _.each(this.collection.where({ 'visible': true, 'enabled': false }), function(m) {
+                m.set('enabled', true, { silent: true });
+            });
         },
         filterEnable: function() {
             this.$('.label').removeClass('busy');
