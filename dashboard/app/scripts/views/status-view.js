@@ -92,7 +92,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.ui.warnpg.text(pg.warn);
             this.ui.failpg.text(pg.critical);
             this.ui.subText.text(humanize.relativeTime(attr.added_ms / 1000));
-            var pgstatus = model.getPGStatus();
+            var pgstatus = model.getPGStates();
             if (pgstatus.warn) {
                 this.ui.pgstatus.html(this.statusTemplate('PG Warnings', JSON.stringify(pgstatus.warn)));
             }
