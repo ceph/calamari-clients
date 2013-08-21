@@ -13,7 +13,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             cardTitle: '.card-title',
             subText: '.subtext',
             monstatus: '.mon-status',
-            pgstatus: '.pg-status',
+            pgstate: '.pg-status',
             okosd: '.ok-osd',
             warnosd: '.warn-osd',
             failosd: '.fail-osd',
@@ -74,6 +74,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             });
             this.formatPGWarn = this.formatStatus('PG Warn Status', 'icon-info warn');
             this.formatPGStates = this.formatStates('PGs');
+            this.formatPGCrit = this.formatStatus('PG Critical Status', 'icon-info fail');
+            this.formatPGStates = this.formatStates('PGs');
         },
         set: function(model) {
             this.model.set(model.attributes);
@@ -94,12 +96,32 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.ui.warnpg.text(pg.warn);
             this.ui.failpg.text(pg.critical);
             this.ui.subText.text(humanize.relativeTime(attr.added_ms / 1000));
-            var pgstatus = model.getPGStates();
-            if (pgstatus.warn) {
-                this.ui.pgstatus.html(this.formatPGWarn(this.formatPGStates(pgstatus.warn)));
-                this.ui.pgstatus.find('.warn').popover();
-            }
+            (function(self) {
+                // yield this it's not urgent
+                setTimeout(function() {
+                    self.addPGStateInfo.call(self, model.getPGStates());
+                }, 0);
+            })(this);
+
         },
+        // add pgstate info to ui
+        addPGStateInfo: function(pgstate) {
+            var pgstateHtml = [],
+                pgSelectors = [];
+            if (pgstate.warn) {
+                pgstateHtml.push(this.formatPGWarn(this.formatPGStates(pgstate.warn)));
+                pgSelectors.push('.warn');
+            }
+            if (pgstate.crit) {
+                pgstateHtml.push(this.formatPGCrit(this.formatPGStates(pgstate.crit)));
+                pgSelectors.push('.fail');
+            }
+            this.ui.pgstate.html(pgstateHtml.join(''));
+            _.each(pgSelectors, function(selector) {
+                this.ui.pgstate.find(selector).popover();
+            });
+        },
+        // uses partial application to format state strings for display
         formatStates: function(entity) {
             return function(states) {
                 return _.reduce(_.map(states, function(value, key) {
@@ -109,6 +131,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 });
             };
         },
+        // uses partial application function to create
+        // markup/configuration for state popover
         formatStatus: function(title, iconClass) {
             return function(status) {
                 return this.statusTemplate({
