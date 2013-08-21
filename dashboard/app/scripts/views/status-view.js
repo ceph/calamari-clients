@@ -72,6 +72,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                     self.updateTimer();
                 }
             });
+            this.formatPGWarn = this.formatStatus('PG Warn Status', 'icon-info warn');
         },
         set: function(model) {
             this.model.set(model.attributes);
@@ -94,7 +95,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.ui.subText.text(humanize.relativeTime(attr.added_ms / 1000));
             var pgstatus = model.getPGStates();
             if (pgstatus.warn) {
-                this.ui.pgstatus.html(this.statusTemplate('PG Warnings', JSON.stringify(pgstatus.warn)));
+                this.ui.pgstatus.html(this.formatPGWarn(JSON.stringify(pgstatus.warn)));
             }
         },
         formatStatus: function(title, iconClass) {
