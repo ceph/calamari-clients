@@ -96,6 +96,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             var pgstatus = model.getPGStates();
             if (pgstatus.warn) {
                 this.ui.pgstatus.html(this.formatPGWarn(JSON.stringify(pgstatus.warn)));
+                this.ui.pgstatus.find('.warn').popover();
             }
         },
         formatStatus: function(title, iconClass) {
