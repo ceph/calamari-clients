@@ -86,9 +86,9 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
             };
         },
         makePGStates: function() {
-            var okStates = this.makePGReader('ok', 'state', {}),
-                warnStates = this.makePGReader('warn', 'state', {}),
-                critStates = this.makePGReader('critical', 'state', {});
+            var okStates = this.makePGReader('ok', 'states', {}),
+                warnStates = this.makePGReader('warn', 'states', {}),
+                critStates = this.makePGReader('critical', 'states', {});
             var model = this;
             return function() {
                 var pg = model.get('pg');
