@@ -75,7 +75,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.formatPGWarn = this.formatStatus('PG Warn Status', 'icon-info warn');
             this.formatPGStates = this.formatStates('PGs');
             this.formatPGCrit = this.formatStatus('PG Critical Status', 'icon-info fail');
-            this.formatPGStates = this.formatStates('PGs');
         },
         set: function(model) {
             this.model.set(model.attributes);
