@@ -6,6 +6,7 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
     var StatusModel = Backbone.Model.extend({
         initialize: function() {
             this.getPGCounts = this.makePGCounter();
+            this.getPGStates = this.makePGStates();
         },
         url: function() {
             return '/api/v1/cluster/' + this.get('cluster') + '/health_counters';
@@ -81,6 +82,20 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
                     ok: okCount(pg),
                     warn: warnCount(pg),
                     crit: critCount(pg)
+                };
+            };
+        },
+        makePGStates: function() {
+            var okStates = this.makePGReader('ok', 'state', {}),
+                warnStates = this.makePGReader('warn', 'state', {}),
+                critStates = this.makePGReader('critical', 'state', {});
+            var model = this;
+            return function() {
+                var pg = model.get('pg');
+                return {
+                    ok: okStates(pg),
+                    warn: warnStates(pg),
+                    crit: critStates(pg)
                 };
             };
         }
