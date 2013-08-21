@@ -69,7 +69,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                     self.updateTimer();
                 }
             });
-            this.getPGCounts = this.makePGCounter();
         },
         set: function(model) {
             this.model.set(model.attributes);
@@ -78,44 +77,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.ui.subText.text(humanize.relativeTime(this.model.get('added_ms') / 1000));
             this.timer = setTimeout(this.updateTimer, 1000);
         },
-        // Return a partially applied function which
-        // always returns the default if the value is undefined
-        // or the result of the invoked function.
-        makeDefault: function(defaultValue) {
-            return function(fn) {
-                try {
-                    var value = fn();
-                    return value ? value : defaultValue;
-                } catch (e) {
-                    return defaultValue;
-                }
-            };
-        },
-        // Return a partially applied function
-        // which counts a specific pg counter
-        makePGCount: function(key) {
-            var countDefault = this.makeDefault(0);
-            return function(attr) {
-                return countDefault(function() {
-                    return attr.pg[key].count;
-                });
-            };
-        },
-        // Return a function which reads the
-        // counters 'ok', 'warn' and 'critical out of pg
-        makePGCounter: function() {
-            var okCount = this.makePGCount('ok'),
-                warnCount = this.makePGCount('warn'),
-                critCount = this.makePGCount('critical');
-
-            return function(attr) {
-                return {
-                    ok: okCount(attr),
-                    warn: warnCount(attr),
-                    crit: critCount(attr)
-                };
-            };
-        },
         updateView: function(model) {
             var attr = model.attributes;
             this.ui.okosd.text(attr.osd['up_in']);
@@ -123,7 +84,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.ui.failosd.text(attr.osd['not_up_not_in']);
             this.ui.okmon.text(attr.mon['in_quorum']);
             this.ui.failmon.text(attr.mon['not_in_quorum']);
-            var pg = this.getPGCounts(attr);
+            var pg = model.getPGCounts();
             this.ui.okpg.text(pg.ok);
             this.ui.warnpg.text(pg.warn);
             this.ui.failpg.text(pg.critical);
