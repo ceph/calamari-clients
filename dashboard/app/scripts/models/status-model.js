@@ -60,20 +60,20 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
         },
         // Return a partially applied function
         // which counts a specific pg counter
-        makePGCount: function(key) {
-            var countDefault = this.makeDefault(0);
+        makePGReader: function(key, value, defaultValue) {
+            var countDefault = this.makeDefault(defaultValue);
             return function(pg) {
                 return countDefault(function() {
-                    return pg[key].count;
+                    return pg[key][value];
                 });
             };
         },
         // Return a function which reads the
         // counters 'ok', 'warn' and 'critical out of pg
         makePGCounter: function() {
-            var okCount = this.makePGCount('ok'),
-                warnCount = this.makePGCount('warn'),
-                critCount = this.makePGCount('critical');
+            var okCount = this.makePGReader('ok', 'count', 0),
+                warnCount = this.makePGReader('warn', 'count', 0),
+                critCount = this.makePGReader('critical', 'count', 0);
             var model = this;
             return function() {
                 var pg = model.get('pg');
