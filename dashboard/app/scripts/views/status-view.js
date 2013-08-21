@@ -128,7 +128,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                     return value + ' ' + entity + ' ' + key;
                 }), function(memo, string) {
                     return memo + ', ' + string;
-                });
+                }, '');
             };
         },
         // uses partial application function to create
