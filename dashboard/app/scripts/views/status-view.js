@@ -108,11 +108,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         addPGStateInfo: function(pgstate) {
             var pgstateHtml = [],
                 pgSelectors = [];
-            if (pgstate.warn) {
+            if (_.keys(pgstate.warn).length) {
                 pgstateHtml.push(this.formatPGWarn(this.formatPGStates(pgstate.warn)));
                 pgSelectors.push('.warn');
             }
-            if (pgstate.crit) {
+            if (_.keys(pgstate.crit).length) {
                 pgstateHtml.push(this.formatPGCrit(this.formatPGStates(pgstate.crit)));
                 pgSelectors.push('.fail');
             }
