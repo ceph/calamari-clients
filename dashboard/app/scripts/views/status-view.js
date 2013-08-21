@@ -6,11 +6,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
     return Backbone.Marionette.ItemView.extend({
         className: 'gauge card span6 status',
         template: JST['app/scripts/templates/status.ejs'],
+        statusTemplate: JST['app/scripts/templates/status-icon.ejs'],
         title: 'status',
         timer: null,
         ui: {
             cardTitle: '.card-title',
             subText: '.subtext',
+            monstatus: '.mon-status',
+            pgstatus: '.pg-status',
             okosd: '.ok-osd',
             warnosd: '.warn-osd',
             failosd: '.fail-osd',
@@ -89,6 +92,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.ui.warnpg.text(pg.warn);
             this.ui.failpg.text(pg.critical);
             this.ui.subText.text(humanize.relativeTime(attr.added_ms / 1000));
+            var pgstatus = model.getPGStatus();
+            if (pgstatus.warn) {
+                this.ui.pgstatus.html(this.statusTemplate('PG Warnings', JSON.stringify(pgstatus.warn)));
+            }
+        },
+        formatStatus: function(title, iconClass) {
+            return function(status) {
+                return this.statusTemplate({
+                    iconClass: iconClass,
+                    content: status,
+                    title: title
+                });
+            };
         },
         disappear: function(callback) {
             return this.disappearAnimation(this.$el, function() {
