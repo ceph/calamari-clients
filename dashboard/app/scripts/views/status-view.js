@@ -164,7 +164,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 return _.reduce(_.map(states, function(value, key) {
                     return value + ' ' + entity + ' ' + key;
                 }), function(memo, string) {
-                    return memo + ', ' + string;
+                    return memo + ',<br /> ' + string;
                 });
             };
         },
