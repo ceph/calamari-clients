@@ -154,7 +154,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 });
                 $uiElement.html(obj.html.join(''));
                 _.each(obj.selectors, function(selector) {
-                    $uiElement.find(selector).popover();
+                    $uiElement.find(selector).closest('div').popover();
                 });
             };
         },
