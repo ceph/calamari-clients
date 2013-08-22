@@ -104,13 +104,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 pg = model.getPGCounts();
             this.ui.okosd.text(osd.ok);
             this.ui.warnosd.text(osd.warn);
-            this.ui.failosd.text(osd.fail);
+            this.ui.failosd.text(osd.crit);
             this.ui.okmon.text(mon.ok);
             this.ui.warnmon.text(mon.warn);
-            this.ui.failmon.text(mon.fail);
+            this.ui.failmon.text(mon.crit);
             this.ui.okpg.text(pg.ok);
             this.ui.warnpg.text(pg.warn);
-            this.ui.failpg.text(pg.critical);
+            this.ui.failpg.text(pg.crit);
             this.ui.subText.text(humanize.relativeTime(model.get('added_ms') / 1000));
             (function(self, m) {
                 setTimeout(function() {
@@ -127,8 +127,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             return function(obj) {
                 var html = '',
                     selectors = '';
-                if (_.keys(obj.states).length) {
-                    html = templateFn(contentFn(obj.states));
+                if (_.keys(obj).length) {
+                    html = templateFn(contentFn(obj));
                     selectors = selector;
                 }
                 return {
@@ -142,7 +142,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         // Expects a jquery object, and a warn and critical StateInfoView formatting objects
         makeStateView: function($uiElement, warnFn, critFn) {
             return function(data) {
-                var obj = _.reduce([warnFn(data.warn), critFn(data.critical)], function(memo, state) {
+                var obj = _.reduce([warnFn(data.warn), critFn(data.crit)], function(memo, state) {
                     if (state.content.length) {
                         memo.html.push(state.content);
                         memo.selectors.push(state.selector);
