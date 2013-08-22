@@ -73,8 +73,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 }
             });
             this.formatPGWarn = this.formatStatus('PG Warn Status', 'icon-info warn');
-            this.formatPGStates = this.formatStates('PGs');
             this.formatPGCrit = this.formatStatus('PG Critical Status', 'icon-info fail');
+            this.formatPGStates = this.formatStates('PGs');
+            this.formatOSDWarn = this.formatStatus('OSD Warn Status', 'icon-info warn');
+            this.formatOSDCrit = this.formatStatus('OSD Critical Status', 'icon-info fail');
+            this.formatOSDStates = this.formatStates('OSDs');
+            this.formatMONWarn = this.formatStatus('MON Warn Status', 'icon-info warn');
+            this.formatMONCrit = this.formatStatus('MON Critical Status', 'icon-info fail');
         },
         set: function(model) {
             this.model.set(model.attributes);
@@ -85,11 +90,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         },
         updateView: function(model) {
             var attr = model.attributes;
-            this.ui.okosd.text(attr.osd['up_in']);
-            this.ui.warnosd.text(attr.osd['up_not_in']);
-            this.ui.failosd.text(attr.osd['not_up_not_in']);
-            this.ui.okmon.text(attr.mon['in_quorum']);
-            this.ui.failmon.text(attr.mon['not_in_quorum']);
+            var osd = model.getOSDCounts();
+            this.ui.okosd.text(osd.ok);
+            this.ui.warnosd.text(osd.warn);
+            this.ui.failosd.text(osd.fail);
+            var mon = model.getMONCounts();
+            this.ui.okmon.text(mon.ok);
+            this.ui.warnmon.text(mon.warn);
+            this.ui.failmon.text(mon.fail);
             var pg = model.getPGCounts();
             this.ui.okpg.text(pg.ok);
             this.ui.warnpg.text(pg.warn);

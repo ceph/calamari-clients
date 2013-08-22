@@ -5,8 +5,12 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
 
     var StatusModel = Backbone.Model.extend({
         initialize: function() {
-            this.getPGCounts = this.makePGCounter();
-            this.getPGStates = this.makePGStates();
+            this.getPGCounts = this.makeCounter('pg');
+            this.getPGStates = this.makeStates('pg');
+            this.getOSDCounts = this.makeCounter('osd');
+            this.getOSDStates = this.makeStates('osd');
+            this.getMONCounts = this.makeCounter('mon');
+            this.getMONStates = this.makeStates('mon');
         },
         url: function() {
             return '/api/v1/cluster/' + this.get('cluster') + '/health_counters';
@@ -15,9 +19,15 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
             'cluster': 1,
             'added_ms': Date.now(),
             'mon': {
-                'not_in_quorum': 0,
-                'in_quorum': 0,
-                'total': 0
+                'ok': {
+                    count: 0
+                },
+                'warn': {
+                    count: 0
+                },
+                'critical': {
+                    count: 0
+                }
             },
             'mds': {
                 'not_up_not_in': 0,
@@ -26,10 +36,15 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
                 'up_not_in': 0
             },
             'osd': {
-                'up_not_in': 0,
-                'not_up_not_in': 0,
-                'total': 0,
-                'up_in': 0
+                'ok': {
+                    count: 0
+                },
+                'warn': {
+                    count: 0
+                },
+                'critical': {
+                    count: 0
+                }
             },
             pg: {
                 'ok': {
@@ -60,38 +75,38 @@ define(['underscore', 'backbone', ], function(_, Backbone) {
             };
         },
         // Return a partially applied function
-        // which counts a specific pg counter
-        makePGReader: function(key, value, defaultValue) {
+        // which counts a specific counter
+        makeReader: function(key, value, defaultValue) {
             var countDefault = this.makeDefault(defaultValue);
-            return function(pg) {
+            return function(src) {
                 return countDefault(function() {
-                    return pg[key][value];
+                    return src[key][value];
                 });
             };
         },
         // Return a function which reads the
         // counters 'ok', 'warn' and 'critical out of pg
-        makePGCounter: function() {
-            var okCount = this.makePGReader('ok', 'count', 0),
-                warnCount = this.makePGReader('warn', 'count', 0),
-                critCount = this.makePGReader('critical', 'count', 0);
+        makeCounter: function(key) {
+            var okCount = this.makeReader('ok', 'count', 0),
+                warnCount = this.makeReader('warn', 'count', 0),
+                critCount = this.makeReader('critical', 'count', 0);
             var model = this;
             return function() {
-                var pg = model.get('pg');
+                var obj = model.get(key);
                 return {
-                    ok: okCount(pg),
-                    warn: warnCount(pg),
-                    crit: critCount(pg)
+                    ok: okCount(obj),
+                    warn: warnCount(obj),
+                    crit: critCount(obj)
                 };
             };
         },
-        makePGStates: function() {
-            var okStates = this.makePGReader('ok', 'states', {}),
-                warnStates = this.makePGReader('warn', 'states', {}),
-                critStates = this.makePGReader('critical', 'states', {});
+        makeStates: function(key) {
+            var okStates = this.makeReader('ok', 'states', {}),
+                warnStates = this.makeReader('warn', 'states', {}),
+                critStates = this.makeReader('critical', 'states', {});
             var model = this;
             return function() {
-                var pg = model.get('pg');
+                var pg = model.get(key);
                 return {
                     ok: okStates(pg),
                     warn: warnStates(pg),
