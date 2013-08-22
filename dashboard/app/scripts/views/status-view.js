@@ -14,6 +14,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             subText: '.subtext',
             monstatus: '.mon-status',
             pgstate: '.pg-status',
+            monstate: '.mon-status',
+            osdstate: '.osd-status',
             okosd: '.ok-osd',
             warnosd: '.warn-osd',
             failosd: '.fail-osd',
@@ -43,7 +45,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         initialize: function(options) {
             this.disappearAnimation = animation.single('fadeOutUpAnim');
             this.reappearAnimation = animation.single('fadeInDownAnim');
-            _.bindAll(this, 'updateView', 'set', 'updateTimer', 'disappear', 'disappearAnimation', 'reappearAnimation', 'reappear');
+            _.bindAll(this, 'updateView', 'set', 'updateTimer', 'disappear', 'disappearAnimation', 'reappearAnimation', 'reappear', 'makeStatusTemplate');
 
             // The are defaults for Gauge.js and can be overidden from the contructor
             this.App = Backbone.Marionette.getOption(this, 'App');
@@ -60,6 +62,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             if (this.App && !this.App.Config['offline']) {
                 /* Placeholder */
             }
+
+            var PGStatesTemplate = this.makeStateTemplate('PGs'),
+                OSDStatesTemplate = this.makeStateTemplate('OSDs'),
+                MONStatesTemplate = this.makeStateTemplate('MONs'),
+                pgwarn = this.makeStateInfoView(this.makeStatusTemplate('PG Warn Status', 'icon-info warn'), PGStatesTemplate, '.warn'),
+                pgcrit = this.makeStateInfoView(this.makeStatusTemplate('PG Critical Status', 'icon-info fail'), PGStatesTemplate, '.fail'),
+                osdwarn = this.makeStateInfoView(this.makeStatusTemplate('OSD Warn Status', 'icon-info warn'), OSDStatesTemplate, '.warn'),
+                osdcrit = this.makeStateInfoView(this.makeStatusTemplate('OSD Critical Status', 'icon-info fail'), OSDStatesTemplate, '.fail'),
+                monwarn = this.makeStateInfoView(this.makeStatusTemplate('MON Warn Status', 'icon-info warn'), MONStatesTemplate, '.warn'),
+                moncrit = this.makeStateInfoView(this.makeStatusTemplate('MON Critical Status', 'icon-info fail'), MONStatesTemplate, '.fail');
+
             var self = this;
             this.listenToOnce(this, 'render', function() {
                 self.listenTo(self.App.vent, 'status:request', function() {
@@ -71,15 +84,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 if (self.timer === null) {
                     self.updateTimer();
                 }
+                // wait until self.ui is initialized
+                var ui = self.ui;
+                self.addPGStateInfo = self.makeStateView(ui.pgstate, pgwarn, pgcrit);
+                self.addOSDStateInfo = self.makeStateView(ui.osdstate, osdwarn, osdcrit);
+                self.addMONStateInfo = self.makeStateView(ui.monstate, monwarn, moncrit);
             });
-            this.formatPGWarn = this.formatStatus('PG Warn Status', 'icon-info warn');
-            this.formatPGCrit = this.formatStatus('PG Critical Status', 'icon-info fail');
-            this.formatPGStates = this.formatStates('PGs');
-            this.formatOSDWarn = this.formatStatus('OSD Warn Status', 'icon-info warn');
-            this.formatOSDCrit = this.formatStatus('OSD Critical Status', 'icon-info fail');
-            this.formatOSDStates = this.formatStates('OSDs');
-            this.formatMONWarn = this.formatStatus('MON Warn Status', 'icon-info warn');
-            this.formatMONCrit = this.formatStatus('MON Critical Status', 'icon-info fail');
         },
         set: function(model) {
             this.model.set(model.attributes);
@@ -89,48 +99,67 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.timer = setTimeout(this.updateTimer, 1000);
         },
         updateView: function(model) {
-            var attr = model.attributes;
-            var osd = model.getOSDCounts();
+            var osd = model.getOSDCounts(),
+                mon = model.getMONCounts(),
+                pg = model.getPGCounts();
             this.ui.okosd.text(osd.ok);
             this.ui.warnosd.text(osd.warn);
             this.ui.failosd.text(osd.fail);
-            var mon = model.getMONCounts();
             this.ui.okmon.text(mon.ok);
             this.ui.warnmon.text(mon.warn);
             this.ui.failmon.text(mon.fail);
-            var pg = model.getPGCounts();
             this.ui.okpg.text(pg.ok);
             this.ui.warnpg.text(pg.warn);
             this.ui.failpg.text(pg.critical);
-            this.ui.subText.text(humanize.relativeTime(attr.added_ms / 1000));
-            (function(self) {
-                // yield this it's not urgent
+            this.ui.subText.text(humanize.relativeTime(model.get('added_ms') / 1000));
+            (function(self, m) {
                 setTimeout(function() {
-                    self.addPGStateInfo.call(self, model.getPGStates());
+                    self.addPGStateInfo.call(self, m.getPGStates());
+                    self.addOSDStateInfo.call(self, m.getOSDStates());
+                    self.addMONStateInfo.call(self, m.getMONStates());
                 }, 0);
-            })(this);
+            })(this, model);
 
         },
-        // add pgstate info to ui
-        addPGStateInfo: function(pgstate) {
-            var pgstateHtml = [],
-                pgSelectors = [];
-            if (_.keys(pgstate.warn).length) {
-                pgstateHtml.push(this.formatPGWarn(this.formatPGStates(pgstate.warn)));
-                pgSelectors.push('.warn');
-            }
-            if (_.keys(pgstate.crit).length) {
-                pgstateHtml.push(this.formatPGCrit(this.formatPGStates(pgstate.crit)));
-                pgSelectors.push('.fail');
-            }
-            this.ui.pgstate.html(pgstateHtml.join(''));
-            var ui = this.ui;
-            _.each(pgSelectors, function(selector) {
-                ui.pgstate.find(selector).popover();
-            });
+        // use partial application to format warn and critical state
+        // data for display
+        makeStateInfoView: function(templateFn, contentFn, selector) {
+            return function(obj) {
+                var html = '',
+                    selectors = '';
+                if (_.keys(obj.states).length) {
+                    html = templateFn(contentFn(obj.states));
+                    selectors = selector;
+                }
+                return {
+                    content: html,
+                    selector: selectors
+                };
+            };
+        },
+        // Use partial application to display warn and critical info on status widget.
+        // Also responsible for initializing bootstrap popover jquery plugin
+        // Expects a jquery object, and a warn and critical StateInfoView formatting objects
+        makeStateView: function($uiElement, warnFn, critFn) {
+            return function(data) {
+                var obj = _.reduce([warnFn(data.warn), critFn(data.critical)], function(memo, state) {
+                    if (state.content.length) {
+                        memo.html.push(state.content);
+                        memo.selectors.push(state.selector);
+                    }
+                    return memo;
+                }, {
+                    html: [],
+                    selectors: []
+                });
+                $uiElement.html(obj.html.join(''));
+                _.each(obj.selectors, function(selector) {
+                    $uiElement.find(selector).popover();
+                });
+            };
         },
         // uses partial application to format state strings for display
-        formatStates: function(entity) {
+        makeStateTemplate: function(entity) {
             return function(states) {
                 return _.reduce(_.map(states, function(value, key) {
                     return value + ' ' + entity + ' ' + key;
@@ -141,9 +170,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         },
         // uses partial application function to create
         // markup/configuration for state popover
-        formatStatus: function(title, iconClass) {
+        makeStatusTemplate: function(title, iconClass) {
+            var self = this;
             return function(status) {
-                return this.statusTemplate({
+                return self.statusTemplate({
                     iconClass: iconClass,
                     content: status,
                     title: title
