@@ -239,11 +239,13 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             appRouter.on('route:dashboard', function() {
                 App.vent.trigger('app:dashboard');
             });
+
             appRouter.navigate('dashboard');
 
             // Global Exports
             window.inktank = {
                 App: App,
+                Router: appRouter,
                 ClusterMenu: clusterMenu,
                 Gauge: gauge,
                 Gauges: gaugesLayout,
