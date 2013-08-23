@@ -60,8 +60,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
                 lines: 10,
                 colorStart: '#80d2dc',
                 colorStop: '#55aeba',
-                generateGradient: true
-
+                generateGradient: true,
+                highDpiSupport: false
             });
             this.title = options.title === undefined ? 'Untitled' : options.title;
             this.listenToOnce(this, 'render', this.postRender);
