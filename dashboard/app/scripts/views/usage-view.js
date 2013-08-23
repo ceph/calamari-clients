@@ -75,6 +75,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             this.gauge.set(0);
             this.gauge.maxValue = 100;
             this.gauge.minValue = 0;
+            this.ui.canvas.css({'height':'', 'width':''});
             this.triggerMethod('item:postrender', this);
             this.listenTo(this.App.vent, 'usage:request', function() {
                 self.ui.spinner.css('visibility', 'visible');
