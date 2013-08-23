@@ -51,6 +51,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             if (action === 'bench') {
                 this.App.vent.trigger('app:fullscreen');
             }
+            if (action === 'chart') {
+                document.location = window.location.origin + ':8080';
+            }
         }
     });
 
