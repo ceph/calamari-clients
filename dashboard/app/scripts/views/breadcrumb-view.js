@@ -52,7 +52,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
                 this.App.vent.trigger('app:fullscreen');
             }
             if (action === 'chart') {
-                document.location = window.location.origin + ':8080';
+//                document.location = window.location.origin + ':8080';
             }
         }
     });
