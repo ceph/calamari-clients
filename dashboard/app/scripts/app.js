@@ -9,7 +9,13 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         'delta-osd-api': false
     };
     /* Default Configuration */
-
+    var AppRouter = Backbone.Router.extend({
+        routes: {
+            'workbench': 'workbench',
+            'dashboard': 'dashboard'
+        }
+    });
+    var appRouter = new AppRouter();
     /* Load Config.json first before starting app */
     var promise = configloader('scripts/config.json').then(function(result) {
         _.extend(config, result);
@@ -79,7 +85,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
         /* Demo Code */
 
-        Backbone.history.start();
 
         /* Widget Setup */
         var gaugesLayout = new views.GaugesLayout({
@@ -184,6 +189,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
             var toWorkBenchAnimation = animation.single('toWorkBenchAnim');
             App.fullscreen = function() {
+                appRouter.navigate('workbench');
                 var d = $.Deferred();
                 var vent = App.vent;
                 var $body = $('body');
@@ -201,6 +207,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             };
             var toDashboardAnimation = animation.single('toDashboardAnim');
             App.dashboard = function() {
+                appRouter.navigate('dashboard');
                 var d = $.Deferred();
                 var vent = App.vent;
                 var $body = $('body');
@@ -218,14 +225,21 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 });
             };
 
-            App.vent.listenTo(App.vent, 'app:fullscreen', App.fullscreen);
-            App.vent.listenTo(App.vent, 'app:dashboard', App.dashboard);
-
+            App.listenTo(App.vent, 'app:fullscreen', App.fullscreen);
+            App.listenTo(App.vent, 'app:dashboard', App.dashboard);
             var breadcrumbView = new views.BreadCrumbView({
                 App: App,
                 el: '.inknav'
             });
             breadcrumbView.render();
+
+            appRouter.on('route:workbench', function() {
+                App.vent.trigger('app:fullscreen');
+            });
+            appRouter.on('route:dashboard', function() {
+                App.vent.trigger('app:dashboard');
+            });
+            appRouter.navigate('dashboard');
 
             // Global Exports
             window.inktank = {
@@ -243,5 +257,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
         /* Defer Visualization startup to after loading the cluster metadata */
     });
+
+    Backbone.history.start();
 
 });
