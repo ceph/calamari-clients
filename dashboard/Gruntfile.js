@@ -50,7 +50,8 @@ module.exports = function (grunt) {
             },
             jst: {
                 files: [
-                    '<%= yeoman.app %>/scripts/templates/*.ejs'
+                    '<%= yeoman.app %>/scripts/templates/*.ejs',
+                    '<%= yeoman.app %>/scripts/templates/graphite/*.ejs',
                 ],
                 tasks: ['jst']
             }
@@ -268,7 +269,7 @@ module.exports = function (grunt) {
             },
             compile: {
                 files: {
-                    '.tmp/scripts/templates.js': ['<%= yeoman.app %>/scripts/templates/*.ejs']
+                    '.tmp/scripts/templates.js': ['<%= yeoman.app %>/scripts/templates/*.ejs', '<%= yeoman.app %>/scripts/templates/graphite/*.ejs']
                 }
             }
         },

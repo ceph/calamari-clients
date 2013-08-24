@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['underscore', 'backbone', 'models/osd-model', 'models/usage-model', 'models/health-model', 'models/status-model'], function(_, Backbone, OSD, Usage, Health, Status) {
+define(['underscore', 'backbone', 'models/osd-model', 'models/usage-model', 'models/health-model', 'models/status-model', 'models/graph-model'], function(_, Backbone, OSD, Usage, Health, Status, Graph) {
     'use strict';
 
     // All Models
@@ -10,6 +10,7 @@ define(['underscore', 'backbone', 'models/osd-model', 'models/usage-model', 'mod
         OSDModel: OSD,
         UsageModel: Usage,
         HealthModel: Health,
-        StatusModel: Status
+        StatusModel: Status,
+        GraphModel: Graph
     };
 });

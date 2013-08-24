@@ -2,7 +2,7 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers) {
     /* Default Configuration */
     var config = {
         offline: true,
@@ -242,6 +242,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
             appRouter.navigate('dashboard');
 
+            var graphWall = new GraphWall();
+
             // Global Exports
             window.inktank = {
                 App: App,
@@ -249,12 +251,14 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 ClusterMenu: clusterMenu,
                 Gauge: gauge,
                 Gauges: gaugesLayout,
+                GraphWallView: graphWall,
                 HealthView: healthView,
                 Poller: poller,
                 StatusView: statusView,
                 UserMenu: userMenu,
                 Viz: viz,
-                models: models
+                models: models,
+                helpers: helpers
             };
         });
         /* Defer Visualization startup to after loading the cluster metadata */
