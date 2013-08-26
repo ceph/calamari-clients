@@ -7,7 +7,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         template: JST['app/scripts/templates/breadcrumb.ejs'],
         ui: {
             dashboardIcon: '.icon-dashboard',
-            fullscreenIcon: '.icon-sitemap'
+            fullscreenIcon: '.icon-sitemap',
+            graphIcon: '.icon-barachart'
         },
         events: {
             'click span.bc-entry': 'switcher'
@@ -17,6 +18,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             _.bindAll(this, 'dashboardIcon', 'fullscreenIcon');
             this.listenTo(this.App.vent, 'app:dashboard', this.dashboardIcon);
             this.listenTo(this.App.vent, 'app:fullscreen', this.fullscreenIcon);
+            this.listenTo(this.App.vent, 'app:graph', this.graphIcon);
         },
         dashboardIcon: function() {
             this.$('.bc-active').removeClass('bc-active');
@@ -25,6 +27,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         fullscreenIcon: function() {
             this.$('.bc-active').removeClass('bc-active');
             this.ui.fullscreenIcon.closest('span').addClass('bc-active');
+        },
+        graphIcon: function() {
+            this.$('.bc-active').removeClass('bc-active');
+            this.ui.graphIcon.closest('span').addClass('bc-active');
         },
         serializeData: function() {
             return {
@@ -52,7 +58,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
                 this.App.vent.trigger('app:fullscreen');
             }
             if (action === 'chart') {
-//                document.location = window.location.origin + ':8080';
+                this.App.vent.trigger('app:graph');
             }
         }
     });

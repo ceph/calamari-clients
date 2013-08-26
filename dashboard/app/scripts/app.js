@@ -189,6 +189,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
             var toWorkBenchAnimation = animation.single('toWorkBenchAnim');
             App.fullscreen = function() {
+                graphWall.close();
                 appRouter.navigate('workbench');
                 var d = $.Deferred();
                 var vent = App.vent;
@@ -207,6 +208,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             };
             var toDashboardAnimation = animation.single('toDashboardAnim');
             App.dashboard = function() {
+                graphWall.close();
                 appRouter.navigate('dashboard');
                 var d = $.Deferred();
                 var vent = App.vent;
@@ -225,8 +227,14 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 });
             };
 
+            App.graph = function() {
+                graphWall.render();
+                $('.container').append(graphWall.$el);
+            };
+
             App.listenTo(App.vent, 'app:fullscreen', App.fullscreen);
             App.listenTo(App.vent, 'app:dashboard', App.dashboard);
+            App.listenTo(App.vent, 'app:graph', App.graph);
             var breadcrumbView = new views.BreadCrumbView({
                 App: App,
                 el: '.inknav'
