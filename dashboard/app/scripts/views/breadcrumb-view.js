@@ -8,7 +8,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         ui: {
             dashboardIcon: '.icon-dashboard',
             fullscreenIcon: '.icon-sitemap',
-            graphIcon: '.icon-barachart'
+            graphIcon: '.icon-bar-chart'
         },
         events: {
             'click span.bc-entry': 'switcher'

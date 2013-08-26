@@ -31,6 +31,7 @@ require.config({
         flotr2: 'vendor/flotr2.amd',
         raphael: 'vendor/raphael',
         humanize: 'vendor/humanize',
+        statemachine: '../bower_components/javascript-state-machine/state-machine',
         marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette'
     }
 });

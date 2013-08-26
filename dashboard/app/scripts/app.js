@@ -2,12 +2,13 @@
 /* jshint -W106 */
 
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'statemachine', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers, StateMachine) {
     /* Default Configuration */
     var config = {
         offline: true,
         'delta-osd-api': false
     };
+
     /* Default Configuration */
     var AppRouter = Backbone.Router.extend({
         routes: {
@@ -179,6 +180,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 App: App,
                 cluster: cluster.get('id')
             });
+            var graphWall = new GraphWall();
+
 
             viz.render().then(function() {
                 gaugesLayout.usage.show(gauge);
@@ -188,15 +191,28 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
 
             var toWorkBenchAnimation = animation.single('toWorkBenchAnim');
-            App.fullscreen = function() {
+            App.onentergraphmode = function() {
+                $('.row').css('visibility', 'hidden');
+                appRouter.navigate('graph');
+                graphWall.render();
+                $('.container').append(graphWall.$el);
+            };
+            App.onleavegraphmode = function() {
                 graphWall.close();
+                $('.row').css('visibility', 'visible');
+            };
+            App.onentervizmode = function(event, from) {
                 appRouter.navigate('workbench');
                 var d = $.Deferred();
-                var vent = App.vent;
                 var $body = $('body');
-                vent.trigger('gauges:disappear', function() {
+                var vent = App.vent;
+                if (from === 'dashmode') {
+                    vent.trigger('gauges:disappear', function() {
+                        d.resolve();
+                    });
+                } else {
                     d.resolve();
-                });
+                }
 
                 d.promise().then(function() {
                     $body.addClass('workbench-mode');
@@ -207,34 +223,36 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 });
             };
             var toDashboardAnimation = animation.single('toDashboardAnim');
-            App.dashboard = function() {
-                graphWall.close();
-                appRouter.navigate('dashboard');
-                var d = $.Deferred();
-                var vent = App.vent;
+            App.onleavevizmode = function(event, from, to) {
                 var $body = $('body');
+                var vent = App.vent;
                 $body.removeClass('workbench-mode');
-                toDashboardAnimation($body).then(function() {
+                var d = $.Deferred();
+                if (to === 'dashmode') {
+                    toDashboardAnimation($body).then(function() {
+                        vent.trigger('viz:dashboard', function() {
+                            d.resolve();
+                        });
+                    });
+
+                } else {
                     vent.trigger('viz:dashboard', function() {
                         d.resolve();
                     });
-                });
-
+                }
                 d.promise().then(function() {
                     vent.trigger('gauges:expand', function() {
                         vent.trigger('gauges:reappear');
                     });
                 });
             };
-
-            App.graph = function() {
-                graphWall.render();
-                $('.container').append(graphWall.$el);
+            App.onenterdashmode = function() {
+                appRouter.navigate('dashboard');
             };
 
-            App.listenTo(App.vent, 'app:fullscreen', App.fullscreen);
-            App.listenTo(App.vent, 'app:dashboard', App.dashboard);
-            App.listenTo(App.vent, 'app:graph', App.graph);
+            App.onleavedashmode = function() {
+            };
+
             var breadcrumbView = new views.BreadCrumbView({
                 App: App,
                 el: '.inknav'
@@ -250,7 +268,40 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
             appRouter.navigate('dashboard');
 
-            var graphWall = new GraphWall();
+            App.fsm = StateMachine.create({
+                initial: 'dashmode',
+                events: [{
+                    name: 'dashboard',
+                    from: ['vizmode', 'graphmode'],
+                    to: 'dashmode'
+                }, {
+                    name: 'dashboard',
+                    from: ['vizmode', 'graphmode'],
+                    to: 'dashmode'
+                }, {
+                    name: 'viz',
+                    from: ['dashmode', 'graphmode'],
+                    to: 'vizmode'
+                }, {
+                    name: 'graph',
+                    from: ['dashmode', 'vizmode'],
+                    to: 'graphmode'
+                }],
+                callbacks: {
+                    onentervizmode: App.onentervizmode,
+                    onleavevizmode: App.onleavevizmode,
+                    onentergraphmode: App.onentergraphmode,
+                    onleavegraphmode: App.onleavegraphmode,
+                    onenterdashmode: App.onenterdashmode,
+                    onleavedashmode: App.onleavedashmode
+                },
+            });
+
+            _.bindAll(App.fsm);
+
+            App.listenTo(App.vent, 'app:fullscreen', App.fsm.viz);
+            App.listenTo(App.vent, 'app:dashboard', App.fsm.dashboard);
+            App.listenTo(App.vent, 'app:graph', App.fsm.graph);
 
             // Global Exports
             window.inktank = {
