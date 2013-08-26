@@ -1,0 +1,14 @@
+{
+  "name": "backbone.babysitter",
+  "homepage": "https://github.com/marionettejs/backbone.babysitter",
+  "version": "0.0.6",
+  "_release": "0.0.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.6",
+    "commit": "49b2d401d3ee02021485512f2b089b8b97d1918d"
+  },
+  "_source": "git://github.com/marionettejs/backbone.babysitter.git",
+  "_target": "~0.0.6",
+  "_originalSource": "backbone.babysitter"
+}

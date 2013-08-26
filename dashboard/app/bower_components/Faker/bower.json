@@ -1,8 +1,0 @@
-{
-  "name": "Faker",
-  "version": "0.5.11",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/Marak/Faker.js"
-  }
-}

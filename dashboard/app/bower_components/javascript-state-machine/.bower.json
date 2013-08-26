@@ -1,0 +1,15 @@
+{
+  "name": "javascript-state-machine",
+  "homepage": "https://github.com/jakesgordon/javascript-state-machine",
+  "version": "2.2.0",
+  "_release": "2.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.2.0",
+    "commit": "33d62e6238c296cfb4ab4228692b575340fbbe50"
+  },
+  "_source": "git://github.com/jakesgordon/javascript-state-machine.git",
+  "_target": "~2.2.0",
+  "_originalSource": "javascript-state-machine",
+  "_direct": true
+}

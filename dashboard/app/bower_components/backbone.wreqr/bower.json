@@ -1,8 +1,0 @@
-{
-  "name": "backbone.wreqr",
-  "version": "0.2.0",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/marionettejs/backbone.wreqr.git"
-  }
-}
