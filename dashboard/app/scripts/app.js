@@ -13,7 +13,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
     var AppRouter = Backbone.Router.extend({
         routes: {
             'workbench': 'workbench',
-            'dashboard': 'dashboard'
+            'dashboard': 'dashboard',
+            'graph': 'graph'
         }
     });
     var appRouter = new AppRouter();
@@ -264,6 +265,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
             appRouter.on('route:dashboard', function() {
                 App.vent.trigger('app:dashboard');
+            });
+            appRouter.on('route:graph', function() {
+                App.vent.trigger('app:graph');
             });
 
             appRouter.navigate('dashboard');
