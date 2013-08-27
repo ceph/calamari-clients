@@ -279,10 +279,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     from: ['vizmode', 'graphmode'],
                     to: 'dashmode'
                 }, {
-                    name: 'dashboard',
-                    from: ['vizmode', 'graphmode'],
-                    to: 'dashmode'
-                }, {
                     name: 'viz',
                     from: ['dashmode', 'graphmode'],
                     to: 'vizmode'
