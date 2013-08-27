@@ -19,6 +19,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             return _.map(hosts, function(host) {
                 return fn(host);
             });
+        },
+        selectors: ['0-1', '0-2', '0-3', '1-1', '1-2', '1-3', '2-1', '2-2', '2-3'],
+        populateAll: function() {
+            var urls = this.makeHostUrls();
+            var self = this;
+            _.each(urls, function(url, index) {
+                var $graph = self.$('.graph' + self.selectors[index]);
+                $graph.append('<embed src=' + url + '></embed>');
+            });
         }
     });
 
