@@ -10,7 +10,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.baseUrl = gutils.makeBaseUrl('mira022.front.sepia.ceph.com:8080');
             this.cpuTargets = gutils.makeTargets(gutils.makeCPUTargets(['system', 'user', 'idle']));
-            this.heightWidth = gutils.makeHeightWidthParams(300, 200);
+            this.heightWidth = gutils.makeHeightWidthParams(282, 167);
             this.makeCPUGraphUrl = gutils.makeGraphURL('svg', this.baseUrl, this.heightWidth, this.cpuTargets);
         },
         makeHostUrls: function() {
@@ -26,7 +26,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var self = this;
             _.each(urls, function(url, index) {
                 var $graph = self.$('.graph' + self.selectors[index]);
-                $graph.append('<embed src=' + url + '></embed>');
+                $graph.html('<embed src=' + url + '></embed>');
             });
         }
     });
