@@ -39,6 +39,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
     var App, userMenu, clusterMenu;
     promise.then(function() {
         App = new Backbone.Marionette.Application();
+        App.ReqRes = new Backbone.Wreqr.RequestResponse();
         App.Config = config;
         userMenu = new UserDropDown({
             el: $('.usermenu'),
@@ -181,8 +182,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 App: App,
                 cluster: cluster.get('id')
             });
-            var graphWall = new GraphWall();
-
+            var graphWall = new GraphWall({
+                App: App
+            });
 
             viz.render().then(function() {
                 gaugesLayout.usage.show(gauge);
@@ -192,7 +194,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
 
             var toWorkBenchAnimation = animation.single('toWorkBenchAnim');
-            App.onentergraphmode = function(/*event, from, to, host, osd */) {
+            App.onentergraphmode = function( /*event, from, to, host, osd */ ) {
                 $('.row').css('visibility', 'hidden');
                 graphWall.render();
                 $('.container').append(graphWall.$el);
@@ -248,11 +250,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     });
                 });
             };
-            App.onenterdashmode = function() {
-            };
+            App.onenterdashmode = function() {};
 
-            App.onleavedashmode = function() {
-            };
+            App.onleavedashmode = function() {};
 
             var breadcrumbView = new views.BreadCrumbView({
                 App: App,
@@ -303,13 +303,19 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             _.bindAll(App.fsm);
 
             App.listenTo(App.vent, 'app:fullscreen', function() {
-                appRouter.navigate('workbench', { trigger: true });
+                appRouter.navigate('workbench', {
+                    trigger: true
+                });
             });
             App.listenTo(App.vent, 'app:dashboard', function() {
-                appRouter.navigate('dashboard', { trigger: true });
+                appRouter.navigate('dashboard', {
+                    trigger: true
+                });
             });
             App.listenTo(App.vent, 'app:graph', function() {
-                appRouter.navigate('graph/all', { trigger: true });
+                appRouter.navigate('graph/all', {
+                    trigger: true
+                });
             });
 
             // Global Exports

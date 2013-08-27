@@ -64,6 +64,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             obj.fadeInAnimation = animation.single('fadeInAnim');
             obj.fadeOutAnimation = animation.single('fadeOutAnim');
         },
+        getHosts: function() {
+            return _.uniq(this.collection.pluck('host'));
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.width = 17 * this.step;
@@ -77,7 +80,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.keyHandler = _.debounce(this.keyHandler, 250, true);
             this.screenSwitchHandler = _.debounce(this.screenSwitchHandler, 250, true);
 
+            // App Level Events
             Backbone.Marionette.bindEntityEvents(this, this.App.vent, Backbone.Marionette.getOption(this, 'appEvents'));
+
+            // App Level Request Responses
+            var self = this;
+            this.App.ReqRes.setHandler('get:hosts', function() {
+                return self.getHosts();
+            });
         },
         screenSwitchHandler: function() {
             if (this.state === 'dashboard') {

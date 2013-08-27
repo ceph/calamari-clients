@@ -17,7 +17,8 @@ define(['backbone', '../collections/osd-collection', 'faker'], function(Backbone
                     up: 1,
                     'in': 1,
                     up_from: 1,
-                    ip: Faker.Internet.ip()
+                    ip: Faker.Internet.ip(),
+                    host: Faker.Address.usState()
                 });
             }
             return c;
