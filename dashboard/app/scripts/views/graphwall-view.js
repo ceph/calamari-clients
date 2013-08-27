@@ -6,9 +6,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
     var GraphwallView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/graphwall-view.ejs'],
         className: 'graph-mode span12',
+        ui: {
+            'title': '.title'
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
-            this.baseUrl = gutils.makeBaseUrl('mira022.front.sepia.ceph.com:8080');
+            this.grahiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
+            this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.cpuTargets = gutils.makeTargets(gutils.makeCPUTargets(['system', 'user', 'idle']));
             this.heightWidth = gutils.makeHeightWidthParams(282, 167);
             this.makeCPUGraphUrl = gutils.makeGraphURL('svg', this.baseUrl, this.heightWidth, this.cpuTargets);
@@ -24,6 +28,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         populateAll: function() {
             var urls = this.makeHostUrls();
             var self = this;
+            this.ui.title.text('CPU Load for Cluster');
             _.each(urls, function(url, index) {
                 var $graph = self.$('.graph' + self.selectors[index]);
                 $graph.html('<embed src=' + url + '></embed>');

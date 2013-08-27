@@ -183,7 +183,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 cluster: cluster.get('id')
             });
             var graphWall = new GraphWall({
-                App: App
+                App: App,
+                graphiteHost: 'mira022.front.sepia.ceph.com:8080'
             });
 
             viz.render().then(function() {
