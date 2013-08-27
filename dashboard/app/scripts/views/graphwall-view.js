@@ -11,7 +11,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
-            this.grahiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
+            this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.cpuTargets = gutils.makeTargets(gutils.makeCPUTargets(['system', 'user', 'idle']));
             this.heightWidth = gutils.makeHeightWidthParams(282, 167);
