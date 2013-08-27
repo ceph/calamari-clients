@@ -201,7 +201,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             };
             App.ongraph = function(event, from, to, host, osd) {
                 console.log('ongraph>> host: ' + host + ' osd: ' + osd);
-                if (osd === 'all') {
+                if (host === 'all') {
                     graphWall.populateAll();
                 }
             };
