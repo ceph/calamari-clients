@@ -15,10 +15,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
+            this.AppRouter = Backbone.Marionette.getOption(this, 'AppRouter');
             _.bindAll(this, 'dashboardIcon', 'fullscreenIcon');
-            this.listenTo(this.App.vent, 'app:dashboard', this.dashboardIcon);
-            this.listenTo(this.App.vent, 'app:fullscreen', this.fullscreenIcon);
-            this.listenTo(this.App.vent, 'app:graph', this.graphIcon);
+            this.listenTo(this.AppRouter, 'route:dashboard', this.dashboardIcon);
+            this.listenTo(this.AppRouter, 'route:workbench', this.fullscreenIcon);
+            this.listenTo(this.AppRouter, 'route:graph', this.graphIcon);
         },
         dashboardIcon: function() {
             this.$('.bc-active').removeClass('bc-active');

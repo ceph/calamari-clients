@@ -14,7 +14,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         routes: {
             'workbench': 'workbench',
             'dashboard': 'dashboard',
-            'graph': 'graph'
+            'graph/:host(/:osd)': 'graph'
         }
     });
     var appRouter = new AppRouter();
@@ -192,18 +192,19 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
 
             var toWorkBenchAnimation = animation.single('toWorkBenchAnim');
-            App.onentergraphmode = function() {
+            App.onentergraphmode = function(/*event, from, to, host, osd */) {
                 $('.row').css('visibility', 'hidden');
-                appRouter.navigate('graph');
                 graphWall.render();
                 $('.container').append(graphWall.$el);
+            };
+            App.ongraph = function(event, from, to, host, osd) {
+                console.log('ongraph>> host: ' + host + ' osd: ' + osd);
             };
             App.onleavegraphmode = function() {
                 graphWall.close();
                 $('.row').css('visibility', 'visible');
             };
             App.onentervizmode = function(event, from) {
-                appRouter.navigate('workbench');
                 var d = $.Deferred();
                 var $body = $('body');
                 var vent = App.vent;
@@ -248,7 +249,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 });
             };
             App.onenterdashmode = function() {
-                appRouter.navigate('dashboard');
             };
 
             App.onleavedashmode = function() {
@@ -256,18 +256,20 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
             var breadcrumbView = new views.BreadCrumbView({
                 App: App,
+                AppRouter: appRouter,
                 el: '.inknav'
             });
             breadcrumbView.render();
 
             appRouter.on('route:workbench', function() {
-                App.vent.trigger('app:fullscreen');
+                App.fsm.viz();
             });
             appRouter.on('route:dashboard', function() {
-                App.vent.trigger('app:dashboard');
+                App.fsm.dashboard();
             });
-            appRouter.on('route:graph', function() {
-                App.vent.trigger('app:graph');
+            appRouter.on('route:graph', function(host, osd) {
+                console.log('router>> host: ' + host + ' osd: ' + osd);
+                App.fsm.graph(host, osd);
             });
 
             appRouter.navigate('dashboard');
@@ -284,7 +286,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     to: 'vizmode'
                 }, {
                     name: 'graph',
-                    from: ['dashmode', 'vizmode'],
+                    from: ['dashmode', 'vizmode', 'graphmode'],
                     to: 'graphmode'
                 }],
                 callbacks: {
@@ -293,15 +295,22 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     onentergraphmode: App.onentergraphmode,
                     onleavegraphmode: App.onleavegraphmode,
                     onenterdashmode: App.onenterdashmode,
-                    onleavedashmode: App.onleavedashmode
+                    onleavedashmode: App.onleavedashmode,
+                    ongraph: App.ongraph
                 },
             });
 
             _.bindAll(App.fsm);
 
-            App.listenTo(App.vent, 'app:fullscreen', App.fsm.viz);
-            App.listenTo(App.vent, 'app:dashboard', App.fsm.dashboard);
-            App.listenTo(App.vent, 'app:graph', App.fsm.graph);
+            App.listenTo(App.vent, 'app:fullscreen', function() {
+                appRouter.navigate('workbench', { trigger: true });
+            });
+            App.listenTo(App.vent, 'app:dashboard', function() {
+                appRouter.navigate('dashboard', { trigger: true });
+            });
+            App.listenTo(App.vent, 'app:graph', function() {
+                appRouter.navigate('graph/all', { trigger: true });
+            });
 
             // Global Exports
             window.inktank = {
