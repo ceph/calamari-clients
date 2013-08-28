@@ -15,10 +15,10 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
             };
         },
         makeOpLatencyTargets: function(targets) {
-            var template = _.template('servers.<%- args.hostname %>.CephCollector.ceph.osd-<%- args.osd %>.osd.<%- args.metric %>.last_interval_avg', undefined, { variable: 'args' });
+            var opLatencyTemplate = JST['app/scripts/templates/graphite/OpLatencyTarget.ejs'];
             return function(hostname, osd) {
                 return _.map(targets, function(metric) {
-                    return $.trim(template({
+                    return $.trim(opLatencyTemplate({
                         'metric': metric,
                         'hostname': hostname,
                         'osd': osd
