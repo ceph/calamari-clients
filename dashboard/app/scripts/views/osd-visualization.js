@@ -129,6 +129,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }).then(function() {
                 self.ui.viz.addClass('viz-fullscreen');
                 self.ui.filter.show();
+                self.App.vent.trigger('filter:update');
                 return self.fadeInAnimation(self.ui.filter);
             });
         },

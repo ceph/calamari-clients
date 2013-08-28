@@ -49,6 +49,9 @@ tspan:hover, circle:hover {
     padding: 5px 0 12px 10px;
 }
 .filter {
+    .label-hidden {
+        display: none;
+    }
     margin-right: 35px;
     @include user-select(none);	
     .label {

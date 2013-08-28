@@ -1,14 +1,14 @@
 /*global define*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-collection', 'models/filter-model', 'views/switcher-view', 'marionette'], function($, _, Backbone, JST, FilterCollection, FilterModel, SwitcherView) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-collection', 'models/filter-model', 'views/switcher-view', 'views/filter-label-view', 'marionette'], function($, _, Backbone, JST, FilterCollection, FilterModel, SwitcherView, FilterLabelView) {
     'use strict';
 
     /*
      * FilterView
      */
-    return Backbone.Marionette.ItemView.extend({
+    return Backbone.Marionette.CollectionView.extend({
         className: 'filter span2',
         template: JST['app/scripts/templates/filter.ejs'],
-        labelTemplate: JST['app/scripts/templates/filter-label.ejs'],
+        itemView: FilterLabelView,
         collection: new FilterCollection(),
         clickHandlerDisabled: false,
         events: {
@@ -124,11 +124,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 index: 'stale',
                 visible: false
             }]);
-            _.bindAll(this, 'postRender', 'vizUpdate', 'reset');
+            _.bindAll(this, 'postRender', 'vizUpdate', 'reset', 'updateCounts');
             this.listenTo(this, 'render', this.postRender);
             this.listenTo(this.collection, 'change', this.vizUpdate);
             this.listenTo(this.App.vent, 'viz:render', this.filterEnable);
             this.listenTo(this.App.vent, 'viz:dashboard', this.reset);
+            this.listenTo(this.App.vent, 'filter:update', this.updateCounts);
         },
         reset: function() {
             this.$('.label-disabled').removeClass('label-disabled');
@@ -145,26 +146,24 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 this.App.vent.trigger('viz:filter', this.collection);
             }
         },
+        updateCounts: function() {
+            var counts = this.App.ReqRes.request('get:osdcounts');
+            var collection = this.collection;
+            var children = this.children;
+            _.each(counts, function(value, key) {
+                var models = collection.where({category: 'osd', 'index': key});
+                var model = _.first(models);
+                if (model) {
+                    model.set('count', value, { silent: true });
+                    children.findByModel(model).render();
+                }
+            });
+        },
         postRender: function() {
             this.switcher = new SwitcherView({
                 el: this.$('.switcher')
             });
             this.switcher.render();
-            var counts = this.App.ReqRes.request('get:osdcounts');
-            var collection = this.collection;
-            _.each(counts, function(value, key) {
-                var models = collection.where({category: 'osd', 'index': key});
-                var model = _.first(models);
-                if (model) {
-                    model.set('count', value);
-                }
-            });
-            this.collection.each(function(m) {
-                var $ul = this.$('ul');
-                if (m.get('visible')) {
-                    $ul.append(this.labelTemplate(this.serializeModel(m)));
-                }
-            }, this);
         },
         serializeModel: function(model) {
             var data = model.toJSON();
