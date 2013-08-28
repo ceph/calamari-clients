@@ -14,6 +14,18 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 });
             };
         },
+        makeOpLatencyTargets: function(targets) {
+            var opLatencyTemplate = JST['app/scripts/templates/graphite/OpLatencyTarget.ejs'];
+            return function(hostname, osd) {
+                return _.map(targets, function(metric) {
+                    return $.trim(opLatencyTemplate({
+                        'metric': metric,
+                        'hostname': hostname,
+                        'osd': osd
+                    }));
+                });
+            };
+        },
         makeHeightWidthParams: function(width, height) {
             var template = _.template('width=<%- args.width %>&height=<%- args.height %>', undefined, {
                 variable: 'args'
@@ -48,8 +60,8 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
             };
         },
         makeGraphURL: function(format, baseUrlFn, heightWidthFn, targetsFn) {
-            return function(hostname) {
-                return baseUrlFn() + _.reduce([heightWidthFn(), targetsFn(hostname), 'format=' + format], function(memo, value) {
+            return function() {
+                return baseUrlFn() + _.reduce([heightWidthFn(), targetsFn.apply(this, arguments), 'format=' + format], function(memo, value) {
                     return memo + '&' + value;
                 });
             };

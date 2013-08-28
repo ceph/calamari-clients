@@ -15,7 +15,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.cpuTargets = gutils.makeTargets(gutils.makeCPUTargets(['system', 'user', 'idle']));
             this.heightWidth = gutils.makeHeightWidthParams(282, 167);
-            this.makeCPUGraphUrl = gutils.makeGraphURL('svg', this.baseUrl, this.heightWidth, this.cpuTargets);
+            this.makeCPUGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.cpuTargets);
+            this.osdOpLatencyTargets = gutils.makeTargets(gutils.makeOpLatencyTargets(['op_r_latency', 'op_w_latency', 'op_rw_latency']));
+            this.makeOpsLatencyGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.osdOpLatencyTargets);
         },
         makeHostUrls: function() {
             var hosts = this.App.ReqRes.request('get:hosts');
