@@ -10,10 +10,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
             'click': 'clickHandler'
         },
         ui: {
-            leftText: '.switcher-text-left',
-            left: '.switcher-left > .switcher-circle',
-            right: '.switcher-right > .switcher-circle',
-            rightText: '.switcher-text-right'
+            leftText: '.switcher-text-one',
+            left: '.switcher-one > .switcher-circle',
+            right: '.switcher-two > .switcher-circle',
+            rightText: '.switcher-text-two'
         },
         defaults: {
             state1: 'OSD',
@@ -24,7 +24,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
             var $active = this.$('.switcher-active');
             var self = this;
             if (this.current === 'OSD') {
-                this.slideRightAnimation($active).then(function() {
+                this.slidePositionOneAnimation($active).then(function() {
                     $active.removeClass('switcher-active');
                     self.ui.right.addClass('switcher-active');
                     self.ui.leftText.addClass('switcher-text-hidden');
@@ -32,7 +32,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
                     self.current = 'PG';
                 });
             } else {
-                this.slideLeftAnimation($active).then(function() {
+                this.slidePositionTwoAnimation($active).then(function() {
                     $active.removeClass('switcher-active');
                     self.ui.left.addClass('switcher-active');
                     self.ui.rightText.addClass('switcher-text-hidden');
@@ -45,8 +45,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
             return _.extend(this.defaults, this.options);
         },
         initialize: function() {
-            this.slideRightAnimation = animation.single('sliderRightAnim');
-            this.slideLeftAnimation = animation.single('sliderLeftAnim');
+            this.slidePositionTwoAnimation = animation.single('sliderUpAnim');
+            this.slidePositionOneAnimation = animation.single('sliderDownAnim');
             _.bindAll(this, 'clickHandler');
         }
     });

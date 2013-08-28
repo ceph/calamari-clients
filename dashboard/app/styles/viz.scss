@@ -120,35 +120,35 @@ $switcher-border: 2px;
 $switcher-bg-color: lighten($itgray, 20%);
 $switcher-bd-color: lighten($itgray, 10%);
 .switcher {
+	position: relative;
+	@include box-sizing(border-box);
 	margin: 0;
 	padding:0;
-	margin: 10px 0 30px;
-	@include box-sizing(border-box);
-	height: 32px;
 	vertical-align: middle;
+	margin-bottom: 20px;
 }
 .switcher-state {
-	display: inline-block;
-	min-width: 33px;
+	display: block;
+	max-width: 33px;
 	height: 100%;
 	text-align: center;
 }
-.switcher-left {
+.switcher-one {
 	padding-top: 3px;
 	background-color: $switcher-bg-color;
 	border-top: $switcher-border solid $switcher-bd-color;
-	border-bottom: $switcher-border solid $switcher-bd-color;
 	border-left: $switcher-border solid $switcher-bd-color;
+	border-right: $switcher-border solid $switcher-bd-color;
 	@include border-top-left-radius(100%);
-	@include border-bottom-left-radius(100%);
+	@include border-top-right-radius(100%);
 }
-.switcher-right {
+.switcher-two {
 	padding-top: 3px;
 	background-color: $switcher-bg-color;
-	border-top: $switcher-border solid $switcher-bd-color;
+	border-left: $switcher-border solid $switcher-bd-color;
 	border-bottom: $switcher-border solid $switcher-bd-color;
 	border-right: $switcher-border solid $switcher-bd-color;
-	@include border-top-right-radius(100%);
+	@include border-bottom-left-radius(100%);
 	@include border-bottom-right-radius(100%);
 }
 .switcher-circle {
@@ -168,11 +168,15 @@ $switcher-bd-color: lighten($itgray, 10%);
 .switcher-text-hidden {
 	visibility: hidden;
 }
-.switcher-text-left {
-	margin-right: 5px;
+.switcher-text-one {
+	position: absolute;
+	left:3em;
+	top: 0.5em;
 }
-.switcher-text-right {
-	margin-left: 5px;
+.switcher-text-two {
+	position: absolute;
+	left:3em;
+	bottom: 0.5em;
 }
 
 @include animate-fadeInDown($class: true);
@@ -283,19 +287,21 @@ text {
 .DialogInAnim {
     @include animation(growDialog 0.5s ease-in-out);
 }
-@include keyframes(switcherSliderRight) {
+@include keyframes(switcherSliderDown) {
+    0% {
+    }
     100% {
-        @include transform(translate(34px, 0px));
+        @include transform(translateY(34px));
     }
 }
-.sliderRightAnim {
-    @include animation(switcherSliderRight $shortTimer ease-out);
+.sliderDownAnim {
+    @include animation(switcherSliderDown $shortTimer ease-out);
 }
-@include keyframes(switcherSliderLeft) {
+@include keyframes(switcherSliderUp) {
     100% {
-        @include transform(translate(-34px, 0px));
+        @include transform(translateY(-34px));
     }
 }
-.sliderLeftAnim {
-    @include animation(switcherSliderLeft $shortTimer ease-out);
+.sliderUpAnim {
+    @include animation(switcherSliderUp $shortTimer ease-out);
 }
