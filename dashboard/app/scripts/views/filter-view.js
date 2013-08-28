@@ -150,6 +150,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 el: this.$('.switcher')
             });
             this.switcher.render();
+            var counts = this.App.ReqRes.request('get:osdcounts');
+            var collection = this.collection;
+            _.each(counts, function(value, key) {
+                var models = collection.where({category: 'osd', 'index': key});
+                var model = _.first(models);
+                if (model) {
+                    model.set('count', value);
+                }
+            });
             this.collection.each(function(m) {
                 var $ul = this.$('ul');
                 if (m.get('visible')) {

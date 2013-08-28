@@ -67,6 +67,28 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         getHosts: function() {
             return _.uniq(this.collection.pluck('host'));
         },
+        getOSDCounters: function() {
+            /* TODO write a single pass version of this */
+            return {
+                down: this.collection.where({
+                    'up': 0,
+                    'in': 0
+                }).length,
+                inup: this.collection.where({
+                    'up': 1,
+                    'in': 1
+                }).length,
+                outup: this.collection.where({
+                    'up': 1,
+                    'in': 0
+                }).length,
+                indown: this.collection.where({
+                    'up': 0,
+                    'in': 1
+                }).length,
+                
+            };
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.width = 17 * this.step;
@@ -87,6 +109,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var self = this;
             this.App.ReqRes.setHandler('get:hosts', function() {
                 return self.getHosts();
+            });
+            this.App.ReqRes.setHandler('get:osdcounts', function() {
+                return self.getOSDCounters();
             });
         },
         screenSwitchHandler: function() {
