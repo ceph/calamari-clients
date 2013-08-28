@@ -29,6 +29,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
         },
         selectors: ['0-1', '0-2', '0-3', '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3', '9-1', '9-2', '9-3', '10-1', '10-2', '10-3'],
+        imageLoader: function($el, url) {
+            setTimeout(function() {
+                $el.html('<i class="icon-spinner icon-spin icon-large icon-3x"></i>');
+                var image = new Image();
+                image.src = url;
+                image.onload = function() {
+                    $el.html(image);
+                };
+                image.onerror = function() {
+                    $el.html('<i class="icon-exclamation icon-large icon-3x"></i>');
+                };
+            }, 0);
+        },
         populateAll: function() {
             var urls = this.makeHostUrls();
             var self = this;
@@ -36,7 +49,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             _.each(urls, function(url, index) {
                 var $graph = self.$('.graph' + self.selectors[index]);
                 $graph.css('visibility', 'visible');
-                $graph.html('<img src=' + url + '>');
+                self.imageLoader($graph, url);
             });
         }
     });
