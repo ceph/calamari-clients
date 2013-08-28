@@ -33,7 +33,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.ui.title.text('CPU Load for Cluster');
             _.each(urls, function(url, index) {
                 var $graph = self.$('.graph' + self.selectors[index]);
-                $graph.html('<embed src=' + url + '></embed>');
+                $graph.html('<img src=' + url + '>');
             });
         }
     });
