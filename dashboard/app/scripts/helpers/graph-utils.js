@@ -2,30 +2,25 @@
 
 define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbone, JST) {
     'use strict';
-    return {
-        makeCPUTargets: function(targets) {
-            var cpuTargetTemplate = JST['app/scripts/templates/graphite/CPUTargets.ejs'];
-            return function(hostname) {
-                return _.map(targets, function(metric) {
-                    return $.trim(cpuTargetTemplate({
-                        metric: metric,
-                        hostname: hostname
-                    }));
-                });
-            };
-        },
-        makeOpLatencyTargets: function(targets) {
-            var opLatencyTemplate = JST['app/scripts/templates/graphite/OpLatencyTarget.ejs'];
+
+    function makeTargetTemplate(path) {
+        var template = JST[path];
+        return function(metrics) {
             return function(hostname, osd) {
-                return _.map(targets, function(metric) {
-                    return $.trim(opLatencyTemplate({
-                        'metric': metric,
-                        'hostname': hostname,
-                        'osd': osd
+                return _.map(metrics, function(metric) {
+                    return $.trim(template({
+                        metric: metric,
+                        hostname: hostname,
+                        osd: osd
                     }));
                 });
             };
-        },
+        };
+    }
+    return {
+        makeCPUTargets: makeTargetTemplate('app/scripts/templates/graphite/CPUTargets.ejs'),
+        makeOpLatencyTargets: makeTargetTemplate('app/scripts/templates/graphite/OSDOpLatencyTarget.ejs'),
+        makeFilestoreTargets: makeTargetTemplate('app/scripts/templates/graphite/OSDFilestoreTarget.ejs'),
         makeHeightWidthParams: function(width, height) {
             var template = _.template('width=<%- args.width %>&height=<%- args.height %>', undefined, {
                 variable: 'args'
