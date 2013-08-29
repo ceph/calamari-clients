@@ -198,8 +198,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 category: 'osd'
             });
             _.each(this.App.ReqRes.request('get:osdcounts'), function(value, key) {
-                var models = _.where(osdfilters, {
-                    'index': key
+                var models = _.filter(osdfilters, function(m) {
+                    return m.get('index') === key;
                 });
                 var model = _.first(models);
                 if (model) {
@@ -213,8 +213,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 return m.get('category') === 'osd';
             });
             _.each(this.App.ReqRes.request('get:pgcounts'), function(value, key) {
-                var models = _.where(pgfilters, {
-                    'index': key
+                var models = _.filter(pgfilters, function(m) {
+                    return m.get('index') === key;
                 });
                 var model = _.first(models);
                 if (model) {
