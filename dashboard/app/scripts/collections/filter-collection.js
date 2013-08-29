@@ -8,7 +8,8 @@ define([
     'use strict';
 
     var FilterCollection = Backbone.Collection.extend({
-        model: FilterModel
+        model: FilterModel,
+        idAttribute: 'index'
     });
 
     return FilterCollection;

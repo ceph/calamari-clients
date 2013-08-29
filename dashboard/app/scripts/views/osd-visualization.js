@@ -51,7 +51,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             if (this.App.Config['delta-osd-api'] && this.collection.length > 0) {
                 this.collection.update.apply(this.collection);
             } else {
-                this.collection.fetch();
+                var vent = this.App.vent;
+                this.collection.fetch().then(function() {
+                    // after collection update update the filter counts
+                    vent.trigger('filter:update');
+                });
             }
         },
         switchCluster: function(cluster) {

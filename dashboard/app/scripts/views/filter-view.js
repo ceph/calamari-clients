@@ -192,12 +192,28 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             }
         },
         updateOSDCounts: function() {
-            var counts = _.extend(this.App.ReqRes.request('get:pgcounts'), this.App.ReqRes.request('get:osdcounts'));
             var collection = this.collection;
             var children = this.children;
-            _.each(counts, function(value, key) {
-                var models = collection.where({
-                    category: 'osd',
+            var osdfilters = collection.where({
+                category: 'osd'
+            });
+            _.each(this.App.ReqRes.request('get:osdcounts'), function(value, key) {
+                var models = _.where(osdfilters, {
+                    'index': key
+                });
+                var model = _.first(models);
+                if (model) {
+                    model.set('count', value, {
+                        silent: true
+                    });
+                    children.findByModel(model).render();
+                }
+            });
+            var pgfilters = collection.reject(function(m) {
+                return m.get('category') === 'osd';
+            });
+            _.each(this.App.ReqRes.request('get:pgcounts'), function(value, key) {
+                var models = _.where(pgfilters, {
                     'index': key
                 });
                 var model = _.first(models);
