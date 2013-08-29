@@ -197,32 +197,42 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             var osdfilters = collection.where({
                 category: 'osd'
             });
-            _.each(this.App.ReqRes.request('get:osdcounts'), function(value, key) {
-                var models = _.filter(osdfilters, function(m) {
-                    return m.get('index') === key;
+            var osdcounts = this.App.ReqRes.request('get:osdcounts');
+            _.each(osdfilters, function(model) {
+                var counts = _.filter(osdcounts, function(value, key) {
+                    return model.get('index') === key;
                 });
-                var model = _.first(models);
-                if (model) {
-                    model.set('count', value, {
+                var count = _.first(counts);
+                if (count) {
+                    model.set('count', count.value, {
                         silent: true
                     });
-                    children.findByModel(model).render();
+                } else {
+                    model.set('count', 0, {
+                        silent: true
+                    });
                 }
+                children.findByModel(model).render();
             });
             var pgfilters = collection.reject(function(m) {
                 return m.get('category') === 'osd';
             });
-            _.each(this.App.ReqRes.request('get:pgcounts'), function(value, key) {
-                var models = _.filter(pgfilters, function(m) {
-                    return m.get('index') === key;
+            var pgcounts = this.App.ReqRes.request('get:pgcounts');
+            _.each(pgfilters, function(model) {
+                var counts = _.filter(pgcounts, function(value, key) {
+                    return model.get('index') === key;
                 });
-                var model = _.first(models);
-                if (model) {
-                    model.set('count', value, {
+                var count = _.first(counts);
+                if (count) {
+                    model.set('count', count.value, {
                         silent: true
                     });
-                    children.findByModel(model).render();
+                } else {
+                    model.set('count', 0, {
+                        silent: true
+                    });
                 }
+                children.findByModel(model).render();
             });
         },
         serializeModel: function(model) {
