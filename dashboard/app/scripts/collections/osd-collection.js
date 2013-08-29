@@ -19,6 +19,7 @@ define(['underscore', 'backbone', 'models/application-model'], function(_, Backb
         parse: function(response) {
             this.epoch = response.epoch;
             this.added_ms = response.added_ms;
+            this.pg_state_counts = response.pg_state_counts;
             if (response.osds) {
                 return response.osds;
             }
