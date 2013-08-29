@@ -133,8 +133,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         },
         reset: function() {
             this.$('.label-disabled').removeClass('label-disabled');
-            _.each(this.collection.where({ 'visible': true, 'enabled': false }), function(m) {
-                m.set('enabled', true, { silent: true });
+            _.each(this.collection.where({
+                'visible': true,
+                'enabled': false
+            }), function(m) {
+                m.set('enabled', true);
             });
         },
         filterEnable: function() {
@@ -151,10 +154,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             var collection = this.collection;
             var children = this.children;
             _.each(counts, function(value, key) {
-                var models = collection.where({category: 'osd', 'index': key});
+                var models = collection.where({
+                    category: 'osd',
+                    'index': key
+                });
                 var model = _.first(models);
                 if (model) {
-                    model.set('count', value, { silent: true });
+                    model.set('count', value, {
+                        silent: true
+                    });
                     children.findByModel(model).render();
                 }
             });
@@ -186,7 +194,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 index: index
             }));
             model.set('enabled', !model.get('enabled'));
-            $target.closest('li').replaceWith(this.labelTemplate(this.serializeModel(model)));
+            this.children.findByModel(model).render();
         }
     });
 });
