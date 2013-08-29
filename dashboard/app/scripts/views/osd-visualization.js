@@ -132,7 +132,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 self.ui.viz.addClass('viz-fullscreen');
                 self.ui.filterpanel.show();
                 self.App.vent.trigger('filter:update');
-                return self.fadeInAnimation(self.ui.filter);
+                return self.fadeInAnimation(self.ui.filterpanel);
             });
         },
         dashboard: function(callback) {
@@ -141,10 +141,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.$el.addClass('card').removeClass('workbench');
             var self = this;
             return this.vizMoveDownAnimation(this.$el, callback).then(function() {
-                self.fadeOutAnimation(self.ui.filter).then(function() {
-                    self.ui.filter.css('visibility', 'hidden');
+                self.fadeOutAnimation(self.ui.filterpanel).then(function() {
+                    self.ui.filterpanel.css('visibility', 'hidden');
                 }).then(function() {
-                    self.ui.filter.css('visibility', 'visible');
+                    self.ui.filterpanel.css('visibility', 'visible');
                 });
                 self.reset();
                 return self.vizSlideLeftAnimation(self.ui.viz);
@@ -360,7 +360,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 App: this.App,
                 el: this.ui.detail
             });
-            this.$filterPanel = new FilterView({
+            this.$filter = new FilterView({
                 App: this.App,
                 el: this.ui.filter
             }).render();

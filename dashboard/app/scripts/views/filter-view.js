@@ -55,77 +55,91 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'creating',
                 index: 'creating',
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'replaying',
                 index: 'replaying',
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'splitting',
                 index: 'splitting',
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'scrubbing',
                 index: 'scrubbing',
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'degraded',
                 index: 'degraded',
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'repair',
                 index: 'repair',
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'recovery',
                 index: 'recovery',
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'backfill',
                 index: 'backfill',
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'wait-backfill',
                 index: 'wait-backfill',
                 visible: false
             }, {
                 category: 'pg-warn',
+                labelState: 'warning',
                 label: 'remapped',
                 index: 'remapped',
                 visible: false
             }, {
                 category: 'pg-crit',
+                labelState: 'important',
                 label: 'down',
                 index: 'down',
                 visible: false
             }, {
                 category: 'pg-crit',
+                labelState: 'important',
                 label: 'peering',
                 index: 'peering',
                 visible: false
             }, {
                 category: 'pg-crit',
+                labelState: 'important',
                 label: 'incomplete',
                 index: 'incomplete',
                 visible: false
             }, {
                 category: 'pg-crit',
+                labelState: 'important',
                 label: 'stale',
                 index: 'stale',
                 visible: false
             }]);
             _.bindAll(this, 'vizUpdate', 'reset', 'updateOSDCounts');
-            this.listenTo(this.collection, 'change', this.vizUpdate);
+            this.listenTo(this.collection, 'change:enabled', this.vizUpdate);
             this.listenTo(this.App.vent, 'viz:render', this.filterEnable);
             this.listenTo(this.App.vent, 'viz:dashboard', this.reset);
             this.listenTo(this.App.vent, 'filter:update', this.updateOSDCounts);
@@ -133,9 +147,28 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             this.listenTo(this.App.vent, 'switcher:two', this.pgFilter);
         },
         osdFilter: function() {
+            var children = this.children;
+            this.collection.each(function(m) {
+                if (m.get('category') !== 'osd') {
+                    m.set('visible', false, {});
+                } else {
+                    m.set('visible', true, {});
+                }
+                children.findByModel(m).render();
+            });
             console.log('osd');
         },
         pgFilter: function() {
+            // TODO write a function to async load the counts and set them
+            var children = this.children;
+            this.collection.each(function(m) {
+                if (m.get('category') === 'osd') {
+                    m.set('visible', false, {});
+                } else {
+                    m.set('visible', true, {});
+                }
+                children.findByModel(m).render();
+            });
             console.log('pg');
         },
         reset: function() {

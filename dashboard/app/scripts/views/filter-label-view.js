@@ -14,18 +14,24 @@ define([
             this.listenTo(this.model, 'change:enabled', this.enabled);
             this.listenTo(this.model, 'change:visible', this.visible);
         },
+        isEnabled: function(model) {
+            return model.get('enabled');
+        },
+        isVisible: function(model) {
+            return model.get('visible');
+        },
         enabled: function() {
-            var fnName = this.model.get('enabled') ? 'removeClass' : 'addClass';
+            var fnName = this.isEnabled(this.model) ? 'removeClass' : 'addClass';
             this.$el[fnName].call(this.$el, 'label-disabled');
         },
         visible: function() {
-            var fnName = this.model.get('visible') ? 'removeClass' : 'addClass';
-            this.$el[fnName]('label-hidden');
+            var fnName = this.isVisible(this.model) ? 'removeClass' : 'addClass';
+            this.$el[fnName].call(this.$el, 'label-hidden');
         },
         className: function() {
             var classes = [];
-            classes.push(this.model.get('enabled') ? '' : 'label-disabled');
-            classes.push(this.model.get('visible') ? '' : 'label-hidden');
+            classes.push(this.isEnabled(this.model) ? '' : 'label-disabled');
+            classes.push(this.isVisible(this.model) ? '' : 'label-hidden');
             return classes.join(' ');
         },
         template: JST['app/scripts/templates/filter-label.ejs']
