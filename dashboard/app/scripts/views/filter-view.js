@@ -83,22 +83,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 label: 'degraded',
                 index: 'degraded',
                 visible: false
-            },
-                {
-                category: 'pg-warn',
-                labelState: 'warning',
-                label: 'inconsistent',
-                index: 'inconsistent',
-                visible: false
-            },
-                {
+            }, {
                 category: 'pg-warn',
                 labelState: 'warning',
                 label: 'repair',
                 index: 'repair',
                 visible: false
-            },
-                {
+            }, {
                 category: 'pg-warn',
                 labelState: 'warning',
                 label: 'recovering',
@@ -121,6 +112,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 labelState: 'warning',
                 label: 'remapped',
                 index: 'remapped',
+                visible: false
+            }, {
+                category: 'pg-crit',
+                labelState: 'important',
+                label: 'inconsistent',
+                index: 'inconsistent',
                 visible: false
             }, {
                 category: 'pg-crit',
