@@ -204,7 +204,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 });
                 var count = _.first(counts);
                 if (count) {
-                    model.set('count', count.value, {
+                    model.set('count', count[model.get('index')], {
                         silent: true
                     });
                 } else {
@@ -224,7 +224,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 });
                 var count = _.first(counts);
                 if (count) {
-                    model.set('count', count.value, {
+                    model.set('count', count[model.get('index')], {
                         silent: true
                     });
                 } else {
