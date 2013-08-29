@@ -10,8 +10,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         events: {
             'click .icon-remove': 'removeDialog'
         },
-        ui: {
-        },
+        ui: {},
         initialize: function(options) {
             this.replaceAnimation = animation.pair('fadeOutRightToLeftAnim', 'fadeInRightToLeftAnim');
             this.popInAnimation = animation.single('DialogInAnim');
@@ -26,6 +25,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 this.listenTo(this.App.vent, 'viz:dashboard', this.toDashboard);
                 this.listenTo(this.App.vent, 'escapekey', this.removeDialog);
             }
+        },
+        set: function(attr) {
+            this.model.clear({
+                silent: true
+            }).set(attr);
         },
         removeDialog: function() {
             if (this.state === 'fullscreen') {
@@ -53,12 +57,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
             }
             return this.removeDialog();
         },
-        statusLabel: [
-            'down',
-            'down/in',
-            'up/out',
-            'up/in'
-        ],
+        statusLabel: ['down', 'down/in', 'up/out', 'up/in'],
         serializeData: function() {
             var model = this.model.toJSON();
             var index = 0;

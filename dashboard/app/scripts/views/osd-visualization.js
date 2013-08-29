@@ -421,7 +421,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     //console.log(id);
                     if (_.isNumber(id)) {
                         // ignore circles and tspans without data
-                        this.$detailPanel.model.set(this.collection.get(id).attributes);
+                        this.$detailPanel.set(this.collection.get(id).attributes);
                     }
                     return;
                 }
