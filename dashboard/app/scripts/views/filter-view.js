@@ -137,7 +137,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 'visible': true,
                 'enabled': false
             }), function(m) {
-                m.set('enabled', true);
+                m.set('enabled', true, { silent: true });
             });
         },
         filterEnable: function() {
