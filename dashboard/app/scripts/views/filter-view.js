@@ -184,7 +184,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             if (this.clickHandlerDisabled) {
                 return;
             }
-            console.log('what');
             this.$('.label').addClass('busy');
             this.clickHandlerDisabled = true;
             var $target = $(evt.target);
