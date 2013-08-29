@@ -63,7 +63,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 category: 'pg-warn',
                 labelState: 'warning',
                 label: 'replaying',
-                index: 'replaying',
+                index: 'replay',
                 visible: false
             }, {
                 category: 'pg-warn',
@@ -83,17 +83,26 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 label: 'degraded',
                 index: 'degraded',
                 visible: false
-            }, {
+            },
+                {
+                category: 'pg-warn',
+                labelState: 'warning',
+                label: 'inconsistent',
+                index: 'inconsistent',
+                visible: false
+            },
+                {
                 category: 'pg-warn',
                 labelState: 'warning',
                 label: 'repair',
                 index: 'repair',
                 visible: false
-            }, {
+            },
+                {
                 category: 'pg-warn',
                 labelState: 'warning',
-                label: 'recovery',
-                index: 'recovery',
+                label: 'recovering',
+                index: 'recovering',
                 visible: false
             }, {
                 category: 'pg-warn',
