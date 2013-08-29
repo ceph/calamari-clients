@@ -30,6 +30,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
                     self.ui.leftText.addClass('switcher-text-hidden');
                     self.ui.rightText.removeClass('switcher-text-hidden');
                     self.current = 'PG';
+                    self.App.vent.trigger('switcher:two');
                 });
             } else {
                 this.slidePositionTwoAnimation($active).then(function() {
@@ -38,6 +39,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
                     self.ui.rightText.addClass('switcher-text-hidden');
                     self.ui.leftText.removeClass('switcher-text-hidden');
                     self.current = 'OSD';
+                    self.App.vent.trigger('switcher:one');
                 });
             }
         },
@@ -45,6 +47,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
             return _.extend(this.defaults, this.options);
         },
         initialize: function() {
+            this.App = Backbone.Marionette.getOption(this, 'App');
             this.slidePositionTwoAnimation = animation.single('sliderUpAnim');
             this.slidePositionOneAnimation = animation.single('sliderDownAnim');
             _.bindAll(this, 'clickHandler');

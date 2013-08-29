@@ -1,12 +1,12 @@
 /*global define*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-collection', 'models/filter-model', 'views/switcher-view', 'views/filter-label-view', 'marionette'], function($, _, Backbone, JST, FilterCollection, FilterModel, SwitcherView, FilterLabelView) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-collection', 'models/filter-model', 'views/filter-label-view', 'marionette'], function($, _, Backbone, JST, FilterCollection, FilterModel, FilterLabelView) {
     'use strict';
 
     /*
      * FilterView
      */
     return Backbone.Marionette.CollectionView.extend({
-        className: 'filter span2',
+        tagName: 'ul',
         template: JST['app/scripts/templates/filter.ejs'],
         itemView: FilterLabelView,
         collection: new FilterCollection(),
@@ -124,12 +124,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 index: 'stale',
                 visible: false
             }]);
-            _.bindAll(this, 'postRender', 'vizUpdate', 'reset', 'updateCounts');
-            this.listenTo(this, 'render', this.postRender);
+            _.bindAll(this, 'vizUpdate', 'reset', 'updateOSDCounts');
             this.listenTo(this.collection, 'change', this.vizUpdate);
             this.listenTo(this.App.vent, 'viz:render', this.filterEnable);
             this.listenTo(this.App.vent, 'viz:dashboard', this.reset);
-            this.listenTo(this.App.vent, 'filter:update', this.updateCounts);
+            this.listenTo(this.App.vent, 'filter:update', this.updateOSDCounts);
+            this.listenTo(this.App.vent, 'switcher:one', this.osdFilter);
+            this.listenTo(this.App.vent, 'switcher:two', this.pgFilter);
+        },
+        osdFilter: function() {
+            console.log('osd');
+        },
+        pgFilter: function() {
+            console.log('pg');
         },
         reset: function() {
             this.$('.label-disabled').removeClass('label-disabled');
@@ -137,7 +144,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 'visible': true,
                 'enabled': false
             }), function(m) {
-                m.set('enabled', true, { silent: true });
+                m.set('enabled', true, {
+                    silent: true
+                });
             });
         },
         filterEnable: function() {
@@ -149,7 +158,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 this.App.vent.trigger('viz:filter', this.collection);
             }
         },
-        updateCounts: function() {
+        updateOSDCounts: function() {
             var counts = this.App.ReqRes.request('get:osdcounts');
             var collection = this.collection;
             var children = this.children;
@@ -166,12 +175,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                     children.findByModel(model).render();
                 }
             });
-        },
-        postRender: function() {
-            this.switcher = new SwitcherView({
-                el: this.$('.switcher')
-            });
-            this.switcher.render();
         },
         serializeModel: function(model) {
             var data = model.toJSON();

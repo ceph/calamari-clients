@@ -1,6 +1,6 @@
 /*global define, Raphael*/
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/switcher-view', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, SwitcherView) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
@@ -15,6 +15,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'cardTitle': '.card-title',
             viz: '.viz',
             filter: '.filter',
+            filterpanel: '.filter-panel',
+            switcher: '.switcher',
             detail: '.detail-outer',
             spinner: '.icon-spinner'
         },
@@ -128,7 +130,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 return self.vizSlideRightAnimation(self.ui.viz);
             }).then(function() {
                 self.ui.viz.addClass('viz-fullscreen');
-                self.ui.filter.show();
+                self.ui.filterpanel.show();
                 self.App.vent.trigger('filter:update');
                 return self.fadeInAnimation(self.ui.filter);
             });
@@ -148,7 +150,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 return self.vizSlideLeftAnimation(self.ui.viz);
             }).then(function() {
                 self.ui.viz.removeClass('viz-fullscreen');
-                self.ui.filter.hide();
+                self.ui.filterpanel.hide();
             });
         },
         resetViews: function(collection, options) {
@@ -354,13 +356,17 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         render: function() {
             Backbone.Marionette.ItemView.prototype.render.apply(this);
             this.r = window.Raphael(this.ui.viz[0], this.w, this.h);
-            this.detailPanel = new OSDDetailView({
+            this.$detailPanel = new OSDDetailView({
                 App: this.App,
                 el: this.ui.detail
             });
-            this.filterPanel = new FilterView({
+            this.$filterPanel = new FilterView({
                 App: this.App,
                 el: this.ui.filter
+            }).render();
+            this.$switcher = new SwitcherView({
+                App: this.App,
+                el: this.ui.switcher
             }).render();
             var d = $.Deferred();
             this.drawGrid(d);
@@ -415,7 +421,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     //console.log(id);
                     if (_.isNumber(id)) {
                         // ignore circles and tspans without data
-                        this.detailPanel.model.set(this.collection.get(id).attributes);
+                        this.$detailPanel.model.set(this.collection.get(id).attributes);
                     }
                     return;
                 }
