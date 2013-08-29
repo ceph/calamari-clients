@@ -1,4 +1,5 @@
 /*global define, Raphael*/
+
 'use strict';
 define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/switcher-view', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, SwitcherView) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
@@ -91,6 +92,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 
             };
         },
+        getPGCounters: function() {
+            /*jshint camelcase: false */
+            return this.collection.pg_state_counts || {};
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.width = 17 * this.step;
@@ -114,6 +119,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             this.App.ReqRes.setHandler('get:osdcounts', function() {
                 return self.getOSDCounters();
+            });
+            this.App.ReqRes.setHandler('get:pgcounts', function() {
+                return self.getPGCounters();
             });
         },
         screenSwitchHandler: function() {

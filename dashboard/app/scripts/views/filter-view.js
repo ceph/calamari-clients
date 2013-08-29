@@ -192,7 +192,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             }
         },
         updateOSDCounts: function() {
-            var counts = this.App.ReqRes.request('get:osdcounts');
+            var counts = _.extend(this.App.ReqRes.request('get:pgcounts'), this.App.ReqRes.request('get:osdcounts'));
             var collection = this.collection;
             var children = this.children;
             _.each(counts, function(value, key) {
