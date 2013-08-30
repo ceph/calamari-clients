@@ -20,6 +20,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.makeOpsLatencyGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.osdOpLatencyTargets);
             this.journalOpsTargets = gutils.makeTargets(gutils.makeFilestoreTargets(['journal_ops', 'journal_wr']));
             this.makeJournalOpsGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.journalOpsTargets);
+            this.loadAvgTargets = gutils.makeTargets(gutils.makeLoadAvgTargets(['01', '05', '15']));
+            this.makeLoadAvgGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.loadAvgTargets);
+            this.memoryTargets = gutils.makeTargets(gutils.makeMemoryTargets(['Active', 'Buffers', 'Cached', 'MemFree']));
+            this.makeMemoryGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.memoryTargets);
         },
         makeHostUrls: function() {
             var hosts = this.App.ReqRes.request('get:hosts');
