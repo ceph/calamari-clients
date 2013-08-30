@@ -27,8 +27,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
                 this.slidePositionOneAnimation($active).then(function() {
                     $active.removeClass('switcher-active');
                     self.ui.right.addClass('switcher-active');
-                    self.ui.leftText.addClass('switcher-text-hidden');
-                    self.ui.rightText.removeClass('switcher-text-hidden');
                     self.current = 'PG';
                     self.App.vent.trigger('switcher:two');
                 });
@@ -36,8 +34,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
                 this.slidePositionTwoAnimation($active).then(function() {
                     $active.removeClass('switcher-active');
                     self.ui.left.addClass('switcher-active');
-                    self.ui.rightText.addClass('switcher-text-hidden');
-                    self.ui.leftText.removeClass('switcher-text-hidden');
                     self.current = 'OSD';
                     self.App.vent.trigger('switcher:one');
                 });
