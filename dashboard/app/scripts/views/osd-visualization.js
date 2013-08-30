@@ -436,11 +436,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         // ignore circles and tspans without data
                         var attr = _.clone(this.collection.get(id).attributes);
                         attr.clazz = 'detail-outer-bottom-right';
-                        if (el.attrs.x) {
+                        if (el.attrs.x || el.attrs.cx) {
                             var xthres = this.w / 2,
                                 ythres = this.h / 2;
-                            var ix = el.attrs.x,
-                                iy = el.attrs.y;
+                            var ix = el.attrs.x || el.attrs.cx,
+                                iy = el.attrs.y || el.attrs.cy;
                             if (ix > xthres && iy > ythres) {
                                 attr.clazz = 'detail-outer-top-left';
                             } else if (ix < xthres && iy > ythres) {
