@@ -26,10 +26,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.makeMemoryGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.memoryTargets);
         },
         makeHostUrls: function(fn) {
-            var hosts = this.App.ReqRes.request('get:hosts');
-            return _.map(hosts, function(host) {
-                return fn(host);
-            });
+            return function() {
+                var hosts = this.App.ReqRes.request('get:hosts');
+                return _.map(hosts, function(host) {
+                    return fn(host);
+                });
+            };
         },
         selectors: ['0-1', '0-2', '0-3', '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3', '9-1', '9-2', '9-3', '10-1', '10-2', '10-3'],
         imageLoader: function($el, url) {
@@ -45,8 +47,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 };
             }, 0);
         },
+        makeHostGraphUrl: function(host) {
+            return function() {
+                return [this.makeCPUGraphUrl(host), this.makeLoadAvgGraphUrl(host), this.makeMemoryGraphUrl(host)];
+            };
+        },
         populateAll: function(fn) {
-            var urls = this.makeHostUrls(fn);
+            var urls = fn.call(this);
             var self = this;
             this.ui.title.text('CPU Load for Cluster');
             _.each(urls, function(url, index) {

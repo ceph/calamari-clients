@@ -203,7 +203,12 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.ongraph = function(event, from, to, host, osd) {
                 console.log('ongraph>> host: ' + host + ' osd: ' + osd);
                 if (host === 'all') {
-                    graphWall.populateAll(graphWall.makeCPUGraphUrl);
+                    graphWall.populateAll(graphWall.makeHostUrls(graphWall.makeCPUGraphUrl));
+                } else {
+                    var hosts = App.ReqRes.request('get:hosts');
+                    if (_.contains(hosts, host)) {
+                        graphWall.populateAll(graphWall.makeHostGrapUrl(host));
+                    }
                 }
             };
             App.onleavegraphmode = function() {
