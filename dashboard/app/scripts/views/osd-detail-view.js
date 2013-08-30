@@ -89,11 +89,28 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
             if (this.state === 'fullscreen') {
                 this.ui.detail.html(this.template(this.serializeData()));
                 this.$el.removeClass('detail-outer-top-left detail-outer-top-right detail-outer-bottom-left detail-outer-bottom-right').addClass(this.model.get('clazz'));
+                var d = $.Deferred();
+                var self = this;
+                d.promise().then(function() {
+                    console.log('adding popover');
+                    var pools = self.model.get('pools');
+                    var $sign = self.$('.icon-info-sign');
+                    $sign.popover({
+                        title: 'Pool Membership',
+                        content: pools.join(', '),
+                        trigger: 'hover',
+                        container: 'body'
+                    });
+                });
                 if (this.isVisible()) {
-                    return this.replaceAnimation(this.ui.detail);
+                    return this.replaceAnimation(this.ui.detail, function() {
+                        d.resolve();
+                    });
                 } else {
                     this.show();
-                    return this.popInAnimation(this.ui.detail);
+                    return this.popInAnimation(this.ui.detail, function() {
+                        d.resolve();
+                    });
                 }
             }
         }
