@@ -71,6 +71,9 @@ ul.filter {
 	text-align: center;
 	margin-right: 5px;
     }
+    .count {
+	vertical-align: middle;
+    }
 }
 .workbench-mode {
     background-color: $itlightgray;
@@ -234,8 +237,7 @@ $switcher-bd-color: lighten($itgray, 10%);
      *background-color: #003bb3;
 }
 span.filter-opt-disable {
-    text-decoration: line-through;
-    color: $itgray;
+    opacity: 0.4;
 }
 
 @include animate-fadeInDown($class: true);
