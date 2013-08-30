@@ -87,9 +87,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             $('.objspace').text(totalObjSpace);
         });
         App.vent.listenTo(App.vent, 'navigate:graph', function(host) {
-            appRouter.navigate('graph/' + host, {
-                trigger: true
-            });
+            appRouter.navigate('graph/' + host);
         });
         /* Demo Code */
 
