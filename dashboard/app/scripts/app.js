@@ -86,9 +86,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');
             $('.objspace').text(totalObjSpace);
         });
-        App.vent.listenTo(App.vent, 'navigate:graph', function(host) {
-            appRouter.navigate('graph/' + host);
-        });
         /* Demo Code */
 
 
@@ -325,8 +322,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     trigger: true
                 });
             });
-            App.listenTo(App.vent, 'app:graph', function() {
-                appRouter.navigate('graph/all', {
+            App.listenTo(App.vent, 'app:graph', function(host) {
+                if (host === undefined) {
+                    host = 'all';
+                }
+                appRouter.navigate('graph/' + host, {
                     trigger: true
                 });
             });

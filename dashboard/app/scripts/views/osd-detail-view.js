@@ -28,7 +28,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
             }
         },
         goToGraph: function() {
-            this.App.vent.trigger('navigate:graph', this.model.get('host'));
+            this.App.vent.trigger('app:graph', this.model.get('host'));
         },
         set: function(attr) {
             this.model.clear({
