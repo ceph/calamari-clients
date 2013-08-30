@@ -25,9 +25,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.memoryTargets = gutils.makeTargets(gutils.makeMemoryTargets(['Active', 'Buffers', 'Cached', 'MemFree']));
             this.makeMemoryGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.memoryTargets);
         },
-        makeHostUrls: function() {
+        makeHostUrls: function(fn) {
             var hosts = this.App.ReqRes.request('get:hosts');
-            var fn = this.makeCPUGraphUrl;
             return _.map(hosts, function(host) {
                 return fn(host);
             });
@@ -46,8 +45,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 };
             }, 0);
         },
-        populateAll: function() {
-            var urls = this.makeHostUrls();
+        populateAll: function(fn) {
+            var urls = this.makeHostUrls(fn);
             var self = this;
             this.ui.title.text('CPU Load for Cluster');
             _.each(urls, function(url, index) {
