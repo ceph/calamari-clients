@@ -83,17 +83,13 @@ ul.filter {
 }
 $popover-height: 350;
 $popover-width: 200;
-$popover-top: 120;
-$popover-left: 0;
 .detail-outer-popover {
     display: block;
-    height: #{$popover-height + 30}px;
-    width: #{$popover-width + 210}px;
+    height: #{$popover-height}px;
+    width: #{$popover-width}px;
     overflow: hidden;
     text-overflow: hidden;
     position: absolute;
-    top: #{$popover-top}px;
-    left: #{$popover-left - 200}px;
 }
 .detail-popover {
     @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
@@ -102,10 +98,9 @@ $popover-left: 0;
     padding: 5px;
     background-color: rgba(255,255,255,0.7);
     position: absolute;
-    top: 0;
-    left: 200px;
-    height: #{$popover-height}px;
+    height: #{$popover-height - 20}px;
     width: #{$popover-width - 30}px;
+    margin: 0;
     z-index: 100;
     .icon-remove {
         cursor: pointer;
@@ -116,6 +111,24 @@ $popover-left: 0;
 	bottom: 5px;
         cursor: pointer;
     }
+}
+$detail-left-pos: 200px;
+$detail-top-pos: 25px;
+.detail-outer-top-left {
+    top: #{$detail-top-pos}px;
+    left: $detail-left-pos;
+}
+.detail-outer-top-right {
+    top: #{$detail-top-pos}px;
+    right: 0px;
+}
+.detail-outer-bottom-left {
+    bottom: 0px;
+    left: $detail-left-pos;
+}
+.detail-outer-bottom-right {
+    bottom: 0px;
+    right: 0px;
 }
 $switcher-border: 2px;
 $switcher-bg-color: lighten($itgray, 20%);
@@ -336,17 +349,17 @@ text {
 @include keyframes(growDialog) {
     0% {
 	    opacity: 0;
-	    left: -580px;
+	    left: -#{$popover-width}px;
     }
     30% { 
 	    opacity: 1;
     }
     100% {
-	    left: 200px;
+	    left: 0;
     }
 }
 .DialogInAnim {
-    @include animation(growDialog 0.5s ease-in-out);
+    @include animation(growDialog 0.25s ease-in-out);
 }
 @include keyframes(switcherSliderDown) {
     0% {

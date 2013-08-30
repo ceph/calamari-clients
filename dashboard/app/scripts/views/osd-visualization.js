@@ -93,7 +93,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     'up': 0,
                     'in': 1
                 }).length,
-                
+
             };
         },
         getPGCounters: function() {
@@ -428,12 +428,28 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 //console.log(x + ' / ' + y);
                 var el = this.r.getElementByPoint(x, y);
                 //console.log(el);
+                //console.log(el.attrs.x + ' / ' + el.attrs.y);
                 if (el) {
                     var id = el.data('modelid');
                     //console.log(id);
                     if (_.isNumber(id)) {
                         // ignore circles and tspans without data
-                        this.$detailPanel.set(this.collection.get(id).attributes);
+                        var attr = _.clone(this.collection.get(id).attributes);
+                        attr.clazz = 'detail-outer-bottom-right';
+                        if (el.attrs.x) {
+                            var xthres = this.w / 2,
+                                ythres = this.h / 2;
+                            var ix = el.attrs.x,
+                                iy = el.attrs.y;
+                            if (ix > xthres && iy > ythres) {
+                                attr.clazz = 'detail-outer-top-left';
+                            } else if (ix < xthres && iy > ythres) {
+                                attr.clazz = 'detail-outer-top-right';
+                            } else if (ix > xthres && iy < ythres) {
+                                attr.clazz = 'detail-outer-bottom-left';
+                            }
+                        }
+                        this.$detailPanel.set(attr);
                     }
                     return;
                 }

@@ -82,6 +82,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
             }
             if (this.state === 'fullscreen') {
                 this.ui.detail.html(this.template(this.serializeData()));
+                this.$el.removeClass('detail-outer-top-left detail-outer-top-right detail-outer-bottom-left detail-outer-bottom-right').addClass(this.model.get('clazz'));
                 if (this.isVisible()) {
                     return this.replaceAnimation(this.ui.detail);
                 } else {
