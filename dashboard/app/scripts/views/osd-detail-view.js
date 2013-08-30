@@ -27,7 +27,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 this.listenTo(this.App.vent, 'escapekey', this.removeDialog);
             }
         },
-        goToGraph: function() {
+        goToGraph: function(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
             this.App.vent.trigger('app:graph', this.model.get('host'));
         },
         set: function(attr) {
