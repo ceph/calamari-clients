@@ -207,7 +207,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 } else {
                     var hosts = App.ReqRes.request('get:hosts');
                     if (_.contains(hosts, host)) {
-                        graphWall.populateAll(graphWall.makeHostGrapUrl(host));
+                        graphWall.populateAll(graphWall.makeHostGraphUrl(host));
                     }
                 }
             };
