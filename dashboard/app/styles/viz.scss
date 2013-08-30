@@ -109,11 +109,17 @@ $popover-width: 200;
 	position: absolute;
 	right: 5px;
 	bottom: 5px;
-        cursor: pointer;
+        cursor: help;
+    }
+    .icon-cloud {
+	position: absolute;
+	right: 25px;
+	bottom: 5px;
+        cursor: help;
     }
     .icon-bar-chart {
 	position: absolute;
-	right: 25px;
+	right: 50px;
 	bottom: 5px;
         cursor: pointer;
     }

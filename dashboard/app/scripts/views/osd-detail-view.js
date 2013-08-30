@@ -97,12 +97,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 }
                 var self = this;
                 d.promise().then(function() {
-                    console.log('adding popover');
                     var pools = self.model.get('pools');
                     var $sign = self.$('.icon-info-sign');
                     $sign.popover({
                         title: 'Pool Membership',
                         content: pools.join(', '),
+                        trigger: 'hover',
+                        container: 'body',
+                        placement: placement
+                    });
+                    var pgs = self.model.get('pg_states') || [];
+                    var $cloud = self.$('.icon-cloud');
+                    $cloud.popover({
+                        title: 'PG States',
+                        content: _.flatten(pgs).join(', '),
                         trigger: 'hover',
                         container: 'body',
                         placement: placement
