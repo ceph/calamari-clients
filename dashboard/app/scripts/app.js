@@ -86,6 +86,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');
             $('.objspace').text(totalObjSpace);
         });
+        App.vent.listenTo(App.vent, 'navigate:graph', function(host) {
+            appRouter.navigate('graph/' + host, {
+                trigger: true
+            });
+        });
         /* Demo Code */
 
 

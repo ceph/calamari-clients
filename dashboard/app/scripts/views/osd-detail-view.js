@@ -8,7 +8,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         template: JST['app/scripts/templates/osd-details-full.ejs'],
         state: 'dashboard',
         events: {
-            'click .icon-remove': 'removeDialog'
+            'click .icon-remove': 'removeDialog',
+            'click .icon-bar-chart': 'goToGraph'
         },
         ui: {},
         initialize: function(options) {
@@ -25,6 +26,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 this.listenTo(this.App.vent, 'viz:dashboard', this.toDashboard);
                 this.listenTo(this.App.vent, 'escapekey', this.removeDialog);
             }
+        },
+        goToGraph: function() {
+            this.App.vent.trigger('navigate:graph', this.model.get('host'));
         },
         set: function(attr) {
             this.model.clear({
