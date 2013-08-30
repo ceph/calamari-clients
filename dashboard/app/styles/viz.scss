@@ -6,6 +6,7 @@
 @import 'compass/css3/border-radius';
 @import 'compass/css3/box-shadow';
 @import 'compass/css3/box-sizing';
+@import 'compass/css3/images';
 .viz {
     position: absolute;
     margin-top: 15px;
@@ -56,26 +57,19 @@ ul.filter {
     list-style: none;
     margin-left: 0;
 
-    .label-hidden {
+    .btn-hidden {
         display: none;
-    }
-    .label {
-        cursor: pointer;
     }
     .busy {
         cursor: wait;
     }
     li {
-        margin-top: 3px;
+        margin-top: 0;
     }
-    .label {
+    .btn {
         min-width: 7em;
 	text-align: center;
 	margin-right: 5px;
-    }
-    .label-disabled {
-        opacity: 0.5;
-	color: $itdarkgray;
     }
 }
 .workbench-mode {
@@ -181,6 +175,67 @@ $switcher-bd-color: lighten($itgray, 10%);
 	position: absolute;
 	left:3em;
 	bottom: 0.5em;
+}
+.btn-osd-ok {
+     color: #F3F4F4;
+     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+     background-color: #1C8C00;
+     *background-color: #1C8C00;
+     @include background(linear-gradient(top, #26BF00, #1C8C00));
+     background-repeat: repeat-x;
+     border-color: #1C8C00;
+     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+.btn-osd-ok:hover,
+.btn-osd-ok:active,
+.btn-osd-ok.active,
+.btn-osd-ok.disabled,
+.btn-osd-ok[disabled] {
+     color: #e8e6e6;
+     background-color: #1C8C00;
+     *background-color: #003bb3;
+}
+.btn-osd-warn {
+     color: #f3f4f4;
+     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+     background-color: #898C00;
+     *background-color: #898C00;
+     @include background(linear-gradient(top, #BBBF00, #898C00));
+     background-repeat: repeat-x;
+     border-color: #898C00;
+     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+.btn-osd-warn:hover,
+.btn-osd-warn:active,
+.btn-osd-warn.active,
+.btn-osd-warn.disabled,
+.btn-osd-warn[disabled] {
+     color: #f3f4f4;
+     background-color: #898C00;
+     *background-color: #003bb3;
+}
+.btn-osd-crit {
+     color: #EFE8E8;
+     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+     background-color: #8C0000;
+     *background-color: #8C0000;
+     @include background(linear-gradient(top, #BF0000, #8C0000));
+     background-repeat: repeat-x;
+     border-color: #8C0000;
+     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+.btn-osd-crit:hover,
+.btn-osd-crit:active,
+.btn-osd-crit.active,
+.btn-osd-crit.disabled,
+.btn-osd-crit[disabled] {
+     color: #f3f4f4;
+     background-color: #8C0000;
+     *background-color: #003bb3;
+}
+span.filter-opt-disable {
+    text-decoration: line-through;
+    color: $itgray;
 }
 
 @include animate-fadeInDown($class: true);

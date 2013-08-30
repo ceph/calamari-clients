@@ -4,7 +4,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
 
     function makePGStateTest(state) {
         return function(m) {
-            return m.get('pg_states')[state] !== undefined;
+            var pgs = m.get('pg_states');
+            if (pgs) {
+                return pgs[state] !== undefined;
+            }
+            return true;
         };
     }
     /*
@@ -18,7 +22,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         clickHandlerDisabled: false,
         state: 'osd',
         events: {
-            'click .label': 'clickHandler'
+            'click .btn': 'clickHandler'
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
@@ -31,21 +35,21 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             }, {
                 label: 'up/out',
                 index: 'outup',
-                labelState: 'warning',
+                labelState: 'warn',
                 match: function(m) {
                     return m.get('up') && !m.get('in');
                 }
             }, {
                 label: 'down/in',
                 index: 'indown',
-                labelState: 'warning',
+                labelState: 'warn',
                 match: function(m) {
                     return !m.get('up') && m.get('in');
                 }
             }, {
                 label: 'down',
                 index: 'down',
-                labelState: 'important',
+                labelState: 'crit',
                 match: function(m) {
                     return !m.get('in') && !m.get('up');
                 }
@@ -63,104 +67,104 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 match: makePGStateTest('clean')
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'creating',
                 index: 'creating',
                 visible: false,
                 match: makePGStateTest('creating')
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'replaying',
                 index: 'replay',
                 visible: false,
                 match: makePGStateTest('replaying')
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'splitting',
                 index: 'splitting',
                 visible: false,
                 match: makePGStateTest('splitting')
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'scrubbing',
                 index: 'scrubbing',
                 visible: false,
                 match: makePGStateTest('scrubbing')
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'degraded',
                 index: 'degraded',
                 visible: false,
                 match: makePGStateTest('degraded')
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'repair',
                 index: 'repair',
                 visible: false,
                 match: makePGStateTest('repair')
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'recovering',
                 index: 'recovering',
                 visible: false,
                 match: makePGStateTest('recovering')
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'backfill',
                 index: 'backfill',
                 visible: false
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'wait-backfill',
                 index: 'wait-backfill',
                 visible: false,
                 match: makePGStateTest('wait-backfill')
             }, {
                 category: 'pg',
-                labelState: 'warning',
+                labelState: 'warn',
                 label: 'remapped',
                 index: 'remapped',
                 visible: false,
                 match: makePGStateTest('remapped')
             }, {
                 category: 'pg',
-                labelState: 'important',
+                labelState: 'crit',
                 label: 'inconsistent',
                 index: 'inconsistent',
                 visible: false,
                 match: makePGStateTest('inconsistent')
             }, {
                 category: 'pg',
-                labelState: 'important',
+                labelState: 'crit',
                 label: 'down',
                 index: 'down',
                 visible: false,
                 match: makePGStateTest('down')
             }, {
                 category: 'pg',
-                labelState: 'important',
+                labelState: 'crit',
                 label: 'peering',
                 index: 'peering',
                 visible: false,
                 match: makePGStateTest('peering')
             }, {
                 category: 'pg',
-                labelState: 'important',
+                labelState: 'crit',
                 label: 'incomplete',
                 index: 'incomplete',
                 visible: false,
                 match: makePGStateTest('incomplete')
             }, {
                 category: 'pg',
-                labelState: 'important',
+                labelState: 'crit',
                 label: 'stale',
                 index: 'stale',
                 visible: false,
@@ -200,7 +204,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             });
         },
         reset: function() {
-            this.$('.label-disabled').removeClass('label-disabled');
+            this.$('.btn-disabled').removeClass('btn-disabled');
             _.each(this.collection.where({
                 'visible': true,
                 'enabled': false
@@ -211,7 +215,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             });
         },
         filterEnable: function() {
-            this.$('.label').removeClass('busy');
+            this.$('.btn').removeClass('busy');
             this.clickHandlerDisabled = false;
         },
         vizUpdate: function() {
@@ -265,16 +269,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         },
         serializeModel: function(model) {
             var data = model.toJSON();
-            if (!data.enabled) {
-                data.labelColor = 'label-disabled';
-            }
             return data;
         },
         clickHandler: function(evt) {
             if (this.clickHandlerDisabled) {
                 return;
             }
-            this.$('.label').addClass('busy');
+            this.$('.btn').addClass('busy');
             this.clickHandlerDisabled = true;
             var $target = $(evt.target);
             var index = $target.attr('data-filter');
@@ -283,7 +284,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 index: index
             }));
             model.set('enabled', !model.get('enabled'));
-            this.children.findByModel(model).render();
         }
     });
 });

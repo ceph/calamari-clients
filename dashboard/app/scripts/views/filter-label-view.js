@@ -13,6 +13,7 @@ define([
         initialize: function() {
             this.listenTo(this.model, 'change:enabled', this.enabled);
             this.listenTo(this.model, 'change:visible', this.visible);
+            this.listenTo(this, 'render', this.postRender);
         },
         isEnabled: function(model) {
             return model.get('enabled');
@@ -22,17 +23,16 @@ define([
         },
         enabled: function() {
             var fnName = this.isEnabled(this.model) ? 'removeClass' : 'addClass';
-            this.$el[fnName].call(this.$el, 'label-disabled');
+            var $count = this.$('.count');
+            $count[fnName].call($count, 'filter-opt-disable');
         },
         visible: function() {
             var fnName = this.isVisible(this.model) ? 'removeClass' : 'addClass';
-            this.$el[fnName].call(this.$el, 'label-hidden');
+            this.$el[fnName].call(this.$el, 'btn-hidden');
         },
-        className: function() {
-            var classes = [];
-            classes.push(this.isEnabled(this.model) ? '' : 'label-disabled');
-            classes.push(this.isVisible(this.model) ? '' : 'label-hidden');
-            return classes.join(' ');
+        postRender: function() {
+            this.enabled();
+            this.visible();
         },
         template: JST['app/scripts/templates/filter-label.ejs']
     });
