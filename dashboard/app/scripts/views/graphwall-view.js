@@ -52,10 +52,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 return [this.makeCPUGraphUrl(host), this.makeLoadAvgGraphUrl(host), this.makeMemoryGraphUrl(host)];
             };
         },
-        populateAll: function(fn) {
+        hideGraphs: function() {
+            this.$('.graph-card').css('visibility', 'hidden');
+        },
+        populateAll: function(title, fn) {
             var urls = fn.call(this);
             var self = this;
-            this.ui.title.text('CPU Load for Cluster');
+            this.ui.title.text(title);
             _.each(urls, function(url, index) {
                 var $graph = self.$('.graph' + self.selectors[index]);
                 $graph.css('visibility', 'visible');
