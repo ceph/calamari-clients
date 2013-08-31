@@ -10,6 +10,10 @@ define([
 
     var FilterLabelView = Backbone.Marionette.ItemView.extend({
         tagName: 'li',
+        ui: {
+            btn: '.btn',
+            count: '.count',
+        },
         initialize: function() {
             this.listenTo(this.model, 'change:enabled', this.enabled);
             this.listenTo(this.model, 'change:visible', this.visible);
@@ -23,8 +27,8 @@ define([
         },
         enabled: function() {
             var fnName = this.isEnabled(this.model) ? 'removeClass' : 'addClass';
-            var $count = this.$('.count');
-            $count[fnName].call($count, 'filter-opt-disable');
+            this.ui.count[fnName]('filter-opt-disable');
+            this.ui.btn[fnName]('active');
         },
         visible: function() {
             var fnName = this.isVisible(this.model) ? 'removeClass' : 'addClass';
