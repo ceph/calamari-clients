@@ -272,6 +272,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             return data;
         },
         clickHandler: function(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
             if (this.clickHandlerDisabled) {
                 return;
             }

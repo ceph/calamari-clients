@@ -26,6 +26,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 this.listenTo(this.App.vent, 'viz:dashboard', this.toDashboard);
                 this.listenTo(this.App.vent, 'escapekey', this.removeDialog);
             }
+            this.pgTemplate = this.makeStateTemplate('PGs');
         },
         goToGraph: function(evt) {
             evt.stopPropagation();
@@ -82,6 +83,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         hide: function() {
             return this.$el.css('display', 'none');
         },
+        /* Copied from status-view */
+        makeStateTemplate: function(entity) {
+            return function(states) {
+                return _.reduce(_.map(states, function(value, key) {
+                    return value + ' ' + entity + ' ' + key;
+                }), function(memo, string) {
+                    return memo + ',<br /> ' + string;
+                });
+            };
+        },
         render: function() {
             if (this.state === 'dashboard') {
                 return;
@@ -110,7 +121,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                     var $cloud = self.$('.icon-cloud');
                     $cloud.popover({
                         title: 'PG States',
-                        content: _.flatten(pgs).join(', '),
+                        content: self.pgTemplate(pgs),
+                        html: true,
                         trigger: 'hover',
                         container: 'body',
                         placement: placement
