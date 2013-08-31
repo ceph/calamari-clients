@@ -26,7 +26,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 this.listenTo(this.App.vent, 'viz:dashboard', this.toDashboard);
                 this.listenTo(this.App.vent, 'escapekey', this.removeDialog);
             }
-            this.pgTemplate = this.makeStateTemplate('PGs');
+            this.pgTemplate = this.maekEmptyObjectGuard(this.makeStateTemplate('PGs'));
         },
         goToGraph: function(evt) {
             evt.stopPropagation();
@@ -91,6 +91,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 }), function(memo, string) {
                     return memo + ',<br /> ' + string;
                 });
+            };
+        },
+        maekEmptyObjectGuard: function(fn) {
+            return function(obj) {
+                if (_.keys(obj).length) {
+                    return fn(obj);
+                }
+                return '';
             };
         },
         render: function() {
