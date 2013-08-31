@@ -108,7 +108,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 }
                 var self = this;
                 d.promise().then(function() {
-                    var pools = self.model.get('pools');
+                    var pools = self.model.get('pools') || [];
                     var $sign = self.$('.icon-info-sign');
                     $sign.popover({
                         title: 'Pool Membership',
@@ -117,7 +117,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                         container: 'body',
                         placement: placement
                     });
-                    var pgs = self.model.get('pg_states') || [];
+                    var pgs = self.model.get('pg_states') || {};
                     var $cloud = self.$('.icon-cloud');
                     $cloud.popover({
                         title: 'PG States',
