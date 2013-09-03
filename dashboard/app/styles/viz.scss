@@ -52,6 +52,10 @@ tspan:hover, circle:hover {
 .filter-panel {
     margin-right: 35px;
     @include user-select(none);	
+    .legend-pos {
+        margin-left: -15px;
+	text-transform: uppercase;
+    }
 }
 ul.filter {
     list-style: none;
