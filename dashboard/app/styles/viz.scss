@@ -209,13 +209,12 @@ $switcher-bd-color: lighten($itgray, 10%);
 	left:3em;
 	bottom: 0.5em;
 }
-.btn-osd-ok {
+.btn.btn-osd-ok {
      color: #F3F4F4;
      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
      background-color: #1C8C00;
      *background-color: #1C8C00;
-     @include background(linear-gradient(top, #26BF00, #1C8C00));
-     background-repeat: repeat-x;
+     @include background-image(linear-gradient(top, #26BF00, #1C8C00));
      border-color: #1C8C00;
      border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
@@ -228,13 +227,12 @@ $switcher-bd-color: lighten($itgray, 10%);
      background-color: #1C8C00;
      *background-color: #003bb3;
 }
-.btn-osd-warn {
+.btn.btn-osd-warn {
      color: #f3f4f4;
      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
      background-color: #898C00;
      *background-color: #898C00;
-     @include background(linear-gradient(top, #BBBF00, #898C00));
-     background-repeat: repeat-x;
+     @include background-image(linear-gradient(top, #BBBF00, #898C00));
      border-color: #898C00;
      border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
@@ -247,13 +245,12 @@ $switcher-bd-color: lighten($itgray, 10%);
      background-color: #898C00;
      *background-color: #003bb3;
 }
-.btn-osd-crit {
+.btn.btn-osd-crit {
      color: #EFE8E8;
      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
      background-color: #8C0000;
      *background-color: #8C0000;
-     @include background(linear-gradient(top, #BF0000, #8C0000));
-     background-repeat: repeat-x;
+     @include background-image(linear-gradient(top, #BF0000, #8C0000));
      border-color: #8C0000;
      border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
