@@ -189,6 +189,7 @@ $switcher-bd-color: lighten($itgray, 10%);
 	display: inline-block;
 	border-radius: 100%;
 	border: 1px solid $itdarkgray;
+	margin-bottom: 3px;
 }
 .switcher-active {
 	background-color: $itlightgray;
