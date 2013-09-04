@@ -217,51 +217,57 @@ $switcher-bd-color: lighten($itgray, 10%);
      @include background-image(linear-gradient(top, #26BF00, #1C8C00));
      border-color: #1C8C00;
      border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-}
-.btn-osd-ok:hover,
-.btn-osd-ok:active,
-.btn-osd-ok.active,
-.btn-osd-ok.disabled,
-.btn-osd-ok[disabled] {
-     color: #e8e6e6;
-     background-color: #1C8C00;
-     *background-color: #003bb3;
+     &:hover {
+         color: #e8e6e6;
+         background-color: #1C8C00;
+         *background-color: #003bb3;
+     }
+     &:active, &.active, &.disabled, &[disabled] {
+         color: black;
+         background-color: #1C8C00;
+         *background-color: #003bb3;
+	 opacity: .6;
+     }
 }
 .btn.btn-osd-warn {
-     color: #f3f4f4;
-     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-     background-color: #898C00;
-     *background-color: #898C00;
-     @include background-image(linear-gradient(top, #BBBF00, #898C00));
-     border-color: #898C00;
-     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-}
-.btn-osd-warn:hover,
-.btn-osd-warn:active,
-.btn-osd-warn.active,
-.btn-osd-warn.disabled,
-.btn-osd-warn[disabled] {
-     color: #f3f4f4;
-     background-color: #898C00;
-     *background-color: #003bb3;
+    color: #f3f4f4;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #898C00;
+    *background-color: #898C00;
+    @include background-image(linear-gradient(top, #BBBF00, #898C00));
+    border-color: #898C00;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    &:hover {
+        color: #f3f4f4;
+        background-color: #898C00;
+        *background-color: #003bb3;
+    }
+    &:active, &.active, &.disabled, &[disabled] {
+        color: black;
+        background-color: #898C00;
+        *background-color: #003bb3;
+	opacity: .6;
+    }
 }
 .btn.btn-osd-crit {
-     color: #EFE8E8;
-     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-     background-color: #8C0000;
-     *background-color: #8C0000;
-     @include background-image(linear-gradient(top, #BF0000, #8C0000));
-     border-color: #8C0000;
-     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-}
-.btn-osd-crit:hover,
-.btn-osd-crit:active,
-.btn-osd-crit.active,
-.btn-osd-crit.disabled,
-.btn-osd-crit[disabled] {
-     color: #f3f4f4;
-     background-color: #8C0000;
-     *background-color: #003bb3;
+    color: #EFE8E8;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #8C0000;
+    *background-color: #8C0000;
+    @include background-image(linear-gradient(top, #BF0000, #8C0000));
+    border-color: #8C0000;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    &:hover {
+        color: #f3f4f4;
+        background-color: #8C0000;
+        *background-color: #003bb3;
+    }
+    &:active, &.active, &.disabled, &[disabled] {
+        color: black;
+        background-color: #8C0000;
+        *background-color: #003bb3;
+	opacity: .6;
+    }
 }
 span.filter-opt-disable {
     opacity: 0.4;
