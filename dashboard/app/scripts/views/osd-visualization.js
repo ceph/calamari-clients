@@ -558,9 +558,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             console.log('enabled ' + pulsed.length);
             var self = this;
             this.collection.filter(function(value) {
-                if (value.views.pcircle) {
-                    value.views.pcircle.stop();
-                    value.views.pcircle.remove();
+                var views = value.views;
+                if (views.pcircle) {
+                    views.pcircle.stop();
+                    views.pcircle.remove();
+                    views.pcircle = null;
                 }
                 return _.find(pulsed, function(obj) {
                     if (_.isFunction(obj.get('match'))) {
@@ -570,7 +572,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         if (t) {
                             console.log('outline');
                             var attrs = value.views.circle.attrs;
-                            value.views.pcircle = self.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
+                            views.pcircle = self.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                                 'stroke': '#000'
                             }).animate(self.pulseAnimation.repeat('Infinity'));
                         }
