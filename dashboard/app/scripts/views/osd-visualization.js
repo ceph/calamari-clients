@@ -11,6 +11,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         originY: 0,
         step: 40,
         timer: null,
+        pulseTimer: null,
         state: 'dashboard',
         ui: {
             'cardTitle': '.card-title',
@@ -23,7 +24,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         events: {
             'click .viz': 'clickHandler',
-            'click': 'screenSwitchHandler'
+            'click': 'screenSwitchHandler',
+            'mouseenter circle, tspan': 'hoverHandler',
+            'mouseleave circle, tspan': 'unhoverHandler'
         },
         collectionEvents: {
             'add': 'addOSD',
@@ -421,7 +424,75 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             }
         },
+        unhoverHandler: function() {
+            var self = this;
+            if (this.pulseTimer === null) {
+                this.pulseTimer = setTimeout(function() {
+                    if (self.circle) {
+                        self.circle.stop().remove();
+                        self.circle = null;
+                        self.timer = null;
+                    }
+                }, 1500);
+            }
+        },
+        hoverHandler: function(evt) {
+            if (this.state === 'dashboard') {
+                return;
+            }
+            if (evt.target.nodeName === 'tspan' || evt.target.nodeName === 'circle') {
+                evt.stopPropagation();
+                evt.preventDefault();
+                var x = evt.clientX;
+                var y = evt.clientY;
+                // console.log(x + ' / ' + y);
+                var el = this.r.getElementByPoint(x, y);
+                //console.log(el);
+                //console.log(el.attrs.x + ' / ' + el.attrs.y);
+                if (el) {
+                    var id = el.data('modelid');
+                    if (this.pulseTimer) {
+                        clearTimeout(this.pulseTimer);
+                        this.pulseTimer = null;
+                    }
+                    if (this.circle && this.circle.data('modelid') === id) {
+                        return;
+                    }
+                    //console.log(id);
+                    if (_.isNumber(id)) {
+                        // ignore circles and tspans without data
+                        var circ = this.collection.get(id).views.circle;
+                        var attrs = circ.attrs;
+                        if (this.circle) {
+                            this.circle.remove();
+                            this.circle = null;
+                        }
+                        this.circle = this.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
+                            'stroke': '#000',
+                            'stroke-opacity': 1,
+                        });
+                        var a = Raphael.animation({
+                            r: 30,
+                            'stroke-opacity': 0,
+                        }, 1000, 'linear');
+                        this.circle.data('modelid', id);
+                        this.circle.stop().animate(a.repeat('Infinity'));
+                    }
+                    return;
+                }
+            }
+        },
         clickHandler: function(evt) {
+            if (this.state === 'dashboard') {
+                return;
+            }
+            if (this.circle) {
+                this.circle.attr({
+                    opacity: 0
+                }).stop().remove();
+            }
+            evt.stopPropagation();
+            evt.preventDefault();
             if (evt.target.nodeName === 'tspan' || evt.target.nodeName === 'circle') {
                 var x = evt.clientX;
                 var y = evt.clientY;

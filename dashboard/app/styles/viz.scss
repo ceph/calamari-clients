@@ -294,9 +294,6 @@ $medTimer: 0.25s;
 .fadeOutAnim {
   @include animation(fadeOut $shortTimer ease);
 }
-circle {
-       stroke: 'none';
-}
 $itapp-viz-text-color: $itdarkgray;
 $itapp-viz-vertical-slide-distance:  220;
 text {
