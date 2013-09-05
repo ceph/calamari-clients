@@ -280,6 +280,16 @@ module.exports = function (grunt) {
                     output: '<%= yeoman.docs %>'
                 }
             }
+        },
+        symlink: {
+            font: {
+                target: 'bower_components/font-awesome/font',
+                link: '<%= yeoman.app %>/font',
+                options: {
+                    overwrite: true,
+                    force: true
+                }
+            }
         }
     });
 
@@ -295,6 +305,7 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
+            'symlink',
             'clean:server',
             'coffee:dist',
             'createDefaultTemplate',
@@ -309,6 +320,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'clean:server',
+        'symlink',
         'coffee',
         'createDefaultTemplate',
         'jst',
@@ -319,6 +331,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
+        'symlink',
         'coffee',
         'createDefaultTemplate',
         'jst',
@@ -338,6 +351,7 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('default', [
         'jshint',
+        'symlink',
         'docco',
         'test',
         'build'
