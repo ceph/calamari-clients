@@ -560,10 +560,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
                 return _.find(pulsed, function(obj) {
                     if (_.isFunction(obj.get('match'))) {
-                        console.log(obj);
+                        //console.log(obj);
                         var t = obj.get('match')(value);
                         //console.log('matched ' + m.id + ' ' + t);
-                        if (t === 1) {
+                        if (t) {
                             console.log('outline');
                             var attrs = value.views.circle.attrs;
                             value.views.pcircle = self.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
