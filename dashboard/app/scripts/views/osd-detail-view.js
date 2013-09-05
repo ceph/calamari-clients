@@ -116,7 +116,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 }
                 var self = this;
                 d.promise().then(function() {
-                    var pools = self.model.get('pools') || [ 'N/A' ];
+                    var pools = self.model.get('pools') || [];
+                    if (pools.length === 0) {
+                        pools = [ 'N/A' ];
+                    }
                     var $sign = self.$('.icon-info-sign');
                     $sign.popover({
                         title: 'Pool Membership',
