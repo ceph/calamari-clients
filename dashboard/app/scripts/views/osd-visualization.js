@@ -42,7 +42,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'cluster:update': 'switchCluster',
             'viz:fullscreen': 'fullscreen',
             'viz:dashboard': 'dashboard',
-            'viz:filter': 'filter'
+            'viz:filter': 'filter',
+            'viz:pulse': 'pulse'
         },
         spinnerOn: function() {
             this.ui.spinner.css('visibility', 'visible');
@@ -543,6 +544,36 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 });
             }).then(function() {
                 vent.trigger('viz:render');
+            });
+        },
+        pulse: function(filterCol) {
+            var pulsed = filterCol.where({
+                pulse: true,
+                visible: true
+            });
+            console.log('enabled ' + pulsed.length);
+            var self = this;
+            this.collection.filter(function(value) {
+                if (value.views.pcircle) {
+                    value.views.pcircle.stop();
+                    value.views.pcircle.remove();
+                }
+                return _.find(pulsed, function(obj) {
+                    if (_.isFunction(obj.get('match'))) {
+                        console.log(obj);
+                        var t = obj.get('match')(value);
+                        //console.log('matched ' + m.id + ' ' + t);
+                        if (t === 1) {
+                            console.log('outline');
+                            var attrs = value.views.circle.attrs;
+                            value.views.pcircle = self.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
+                                'stroke': '#000'
+                            }).animate(self.pulseAnimation.repeat('Infinity'));
+                        }
+                        return t;
+                    }
+                    return false;
+                });
             });
         },
         reset: function() {

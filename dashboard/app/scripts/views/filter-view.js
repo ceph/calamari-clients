@@ -22,7 +22,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         clickHandlerDisabled: false,
         state: 'osd',
         events: {
-            'click .btn': 'clickHandler'
+            'click .btn': 'clickHandler',
+            'mouseenter .btn': 'osdPulse',
+            'mouseleave .btn': 'osdStopPulse'
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
@@ -172,6 +174,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             }]);
             _.bindAll(this, 'vizUpdate', 'reset', 'updateOSDCounts');
             this.listenTo(this.collection, 'change:enabled', this.vizUpdate);
+            this.listenTo(this.collection, 'change:pulse', this.vizPulse);
             this.listenTo(this.App.vent, 'viz:render', this.filterEnable);
             this.listenTo(this.App.vent, 'viz:dashboard', this.reset);
             this.listenTo(this.App.vent, 'filter:update', this.updateOSDCounts);
@@ -221,6 +224,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         vizUpdate: function() {
             if (this.App && this.App.vent) {
                 this.App.vent.trigger('viz:filter', this.collection);
+            }
+        },
+        vizPulse: function() {
+            console.log('pulse');
+            if (this.App && this.App.vent) {
+                this.App.vent.trigger('viz:pulse', this.collection);
             }
         },
         updateOSDCounts: function() {
@@ -286,6 +295,28 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 index: index
             }));
             model.set('enabled', !model.get('enabled'));
+        },
+        osdPulse: function(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            var $target = $(evt.target);
+            var index = $target.attr('data-filter');
+            var model = _.first(this.collection.where({
+                category: this.state,
+                index: index
+            }));
+            model.set('pulse', true);
+        },
+        osdStopPulse: function(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            var $target = $(evt.target);
+            var index = $target.attr('data-filter');
+            var model = _.first(this.collection.where({
+                category: this.state,
+                index: index
+            }));
+            model.set('pulse', false);
         }
     });
 });
