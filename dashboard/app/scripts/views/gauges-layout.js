@@ -12,7 +12,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         open: function(view) {
             this.$el.replaceWith(view.el);
             this.$el = view.$el;
-        },
+        }
     });
     return Backbone.Marionette.Layout.extend({
         className: 'row gauges',

@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'marionette', ], function($, _, Backbone, JST) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'marionette' ], function($, _, Backbone, JST) {
     'use strict';
 
     var GraphView = Backbone.Marionette.ItemView.extend({

@@ -307,7 +307,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     onenterdashmode: App.onenterdashmode,
                     onleavedashmode: App.onleavedashmode,
                     ongraph: App.ongraph
-                },
+                }
             });
 
             _.bindAll(App.fsm);

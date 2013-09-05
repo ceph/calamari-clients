@@ -9,7 +9,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
             visible: true,
             label: 'filter',
             enabled: true,
-            labelState: 'ok',
+            labelState: 'ok'
         }
     });
 

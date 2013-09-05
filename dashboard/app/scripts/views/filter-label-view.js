@@ -12,7 +12,7 @@ define([
         tagName: 'li',
         ui: {
             btn: '.btn',
-            count: '.count',
+            count: '.count'
         },
         initialize: function() {
             this.listenTo(this.model, 'change:enabled', this.enabled);

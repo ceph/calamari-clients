@@ -92,7 +92,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 indown: this.collection.where({
                     'up': 0,
                     'in': 1
-                }).length,
+                }).length
 
             };
         },
@@ -217,7 +217,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         }, {
             x: 40,
             y: 400
-        }, ],
+        } ],
         moveCircle: function(model, index) {
             var start = this.startPosition[Math.floor(Math.random() * 4)];
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
