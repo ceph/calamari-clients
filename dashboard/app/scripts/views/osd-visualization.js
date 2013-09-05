@@ -480,10 +480,15 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     //console.log(id);
                     if (_.isNumber(id)) {
                         // ignore circles and tspans without data
-                        var circle = this.collection.get(id).views.circle;
-                        // use the underlying circle element for initial dimensions
-                        this.removePulse();
-                        this.circle = this.addPulse(circle.attrs, id);
+                        var views = this.collection.get(id).views;
+                        if (views) {
+                            // use the underlying circle element for initial dimensions
+                            var circle = views.circle;
+                            if (circle) {
+                                this.removePulse();
+                                this.circle = this.addPulse(circle.attrs, id);
+                            }
+                        }
                     }
                     return;
                 }
