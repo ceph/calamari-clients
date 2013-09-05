@@ -575,10 +575,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         //console.log('matched ' + m.id + ' ' + t);
                         if (t) {
                             console.log('outline');
-                            var attrs = value.views.circle.attrs;
-                            views.pcircle = self.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
-                                'stroke': '#000'
-                            }).animate(self.pulseAnimation.repeat('Infinity'));
+                            if (value.views && value.views.circle) {
+                                var attrs = value.views.circle.attrs;
+                                views.pcircle = self.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
+                                    'stroke': '#000'
+                                }).animate(self.pulseAnimation.repeat('Infinity'));
+                            }
                         }
                         return t;
                     }
