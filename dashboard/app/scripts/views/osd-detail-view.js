@@ -98,7 +98,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 if (_.keys(obj).length) {
                     return fn(obj);
                 }
-                return '';
+                return 'N/A';
             };
         },
         render: function() {
@@ -116,7 +116,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 }
                 var self = this;
                 d.promise().then(function() {
-                    var pools = self.model.get('pools') || [];
+                    var pools = self.model.get('pools') || [ 'N/A' ];
                     var $sign = self.$('.icon-info-sign');
                     $sign.popover({
                         title: 'Pool Membership',

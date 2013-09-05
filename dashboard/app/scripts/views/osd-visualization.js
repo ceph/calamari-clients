@@ -560,7 +560,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 pulse: true,
                 visible: true
             });
-            console.log('enabled ' + pulsed.length);
             var self = this;
             this.collection.filter(function(value) {
                 var views = value.views;
@@ -570,11 +569,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
                 return _.find(pulsed, function(obj) {
                     if (_.isFunction(obj.get('match'))) {
-                        //console.log(obj);
                         var t = obj.get('match')(value);
-                        //console.log('matched ' + m.id + ' ' + t);
                         if (t) {
-                            console.log('outline');
                             if (value.views && value.views.circle) {
                                 var attrs = value.views.circle.attrs;
                                 views.pcircle = self.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
