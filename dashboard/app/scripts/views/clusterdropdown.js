@@ -11,7 +11,7 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'collections/cluster-co
             'menu': '.dropdown-menu'
         },
         events: {
-            'click .cluster': 'clusterHandler',
+            'click .cluster': 'clusterHandler'
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
