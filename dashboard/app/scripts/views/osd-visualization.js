@@ -220,7 +220,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         }, {
             x: 40,
             y: 400
-        } ],
+        }],
         moveCircle: function(model, index) {
             var start = this.startPosition[Math.floor(Math.random() * 4)];
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
@@ -324,6 +324,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return c.animate(aFn);
         },
         simulateUsedChanges: function() {
+            this.removePulse();
             var maxRed = 2;
             this.collection.each(function(m) {
                 var up = true;
@@ -347,6 +348,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.App.vent.trigger('status:healthwarn');
         },
         resetChanges: function() {
+            this.removePulse();
             this.collection.each(function(m) {
                 m.set({
                     'up': 1,
@@ -424,16 +426,27 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             }
         },
+        removePulse: function() {
+            if (this.circle) {
+                this.circle.stop().remove();
+                this.circle = null;
+                this.pulseTimer = null;
+            }
+        },
+        pulseAnimation: Raphael.animation({
+            r: 30,
+            'stroke-opacity': 0,
+        }, 1000, 'linear'),
+        addPulse: function(attrs, id) {
+            var circle = this.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
+                'stroke': '#000'
+            }).data('modelid', id).animate(this.pulseAnimation.repeat('Infinity'));
+            return circle;
+        },
         unhoverHandler: function() {
-            var self = this;
             if (this.pulseTimer === null) {
-                this.pulseTimer = setTimeout(function() {
-                    if (self.circle) {
-                        self.circle.stop().remove();
-                        self.circle = null;
-                        self.timer = null;
-                    }
-                }, 1500);
+                // install a remove hover timer if none exists
+                this.pulseTimer = setTimeout(this.removePulse, 1500);
             }
         },
         hoverHandler: function(evt) {
@@ -445,38 +458,27 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 evt.preventDefault();
                 var x = evt.clientX;
                 var y = evt.clientY;
-                // console.log(x + ' / ' + y);
                 var el = this.r.getElementByPoint(x, y);
-                //console.log(el);
-                //console.log(el.attrs.x + ' / ' + el.attrs.y);
                 if (el) {
                     var id = el.data('modelid');
                     if (this.pulseTimer) {
+                        // cancel the remove hover timer if we're
+                        // still active
                         clearTimeout(this.pulseTimer);
                         this.pulseTimer = null;
                     }
                     if (this.circle && this.circle.data('modelid') === id) {
+                        // ignore hover event if you are hovered over the
+                        // pulsing circle.
                         return;
                     }
                     //console.log(id);
                     if (_.isNumber(id)) {
                         // ignore circles and tspans without data
-                        var circ = this.collection.get(id).views.circle;
-                        var attrs = circ.attrs;
-                        if (this.circle) {
-                            this.circle.remove();
-                            this.circle = null;
-                        }
-                        this.circle = this.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
-                            'stroke': '#000',
-                            'stroke-opacity': 1,
-                        });
-                        var a = Raphael.animation({
-                            r: 30,
-                            'stroke-opacity': 0,
-                        }, 1000, 'linear');
-                        this.circle.data('modelid', id);
-                        this.circle.stop().animate(a.repeat('Infinity'));
+                        var circle = this.collection.get(id).views.circle;
+                        // use the underlying circle element for initial dimensions
+                        this.removePulse();
+                        this.circle = this.addPulse(circle.attrs, id);
                     }
                     return;
                 }
@@ -485,11 +487,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         clickHandler: function(evt) {
             if (this.state === 'dashboard') {
                 return;
-            }
-            if (this.circle) {
-                this.circle.attr({
-                    opacity: 0
-                }).stop().remove();
             }
             evt.stopPropagation();
             evt.preventDefault();
