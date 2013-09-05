@@ -177,7 +177,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         cleanupModelView: function(m) {
             if (m.views) {
-                var circle = m.views.circle;
+                var views = m.views;
+                var circle = views.circle;
                 circle.animate({
                     'opacity': 0,
                     'r': 0
@@ -185,6 +186,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     circle.remove();
                 });
                 m.views.text.remove();
+                if (views.pcircle) {
+                    views.pcircle.stop().remove();
+                }
                 m.views = null;
             }
         },
