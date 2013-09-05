@@ -176,8 +176,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.moveCircle(m, this.collection.indexOf(m));
         },
         cleanupModelView: function(m) {
-            if (m.views) {
-                var views = m.views;
+            var views = m.views;
+            if (views) {
                 var circle = views.circle;
                 circle.animate({
                     'opacity': 0,
@@ -559,9 +559,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var self = this;
             this.collection.filter(function(value) {
                 var views = value.views;
-                if (views.pcircle) {
-                    views.pcircle.stop();
-                    views.pcircle.remove();
+                if (views && views.pcircle) {
+                    views.pcircle.stop().remove();
                     views.pcircle = null;
                 }
                 return _.find(pulsed, function(obj) {
