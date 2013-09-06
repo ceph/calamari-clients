@@ -4,9 +4,14 @@
 'use strict';
 require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'statemachine', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers, StateMachine) {
     /* Default Configuration */
+    var origin = document.location.origin;
+    if (origin.lastIndexOf(';')) {
+        origin = origin.slice(0, origin.lastIndexOf(':'));
+    }
     var config = {
         offline: true,
-        'delta-osd-api': false
+        'delta-osd-api': false,
+        'graphite-host': origin
     };
 
     /* Default Configuration */
@@ -184,7 +189,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
             var graphWall = new GraphWall({
                 App: App,
-                graphiteHost: 'mira022.front.sepia.ceph.com:8080'
+                graphiteHost: config['graphite-host'] + ':8080'
             });
 
             viz.render().then(function() {
