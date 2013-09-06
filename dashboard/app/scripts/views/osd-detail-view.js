@@ -109,11 +109,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 this.ui.detail.html(this.template(this.serializeData()));
                 this.$el.removeClass('detail-outer-top-left detail-outer-top-right detail-outer-bottom-left detail-outer-bottom-right').addClass(this.model.get('clazz'));
                 var d = $.Deferred();
-                var placement = 'right';
-                if (this.model.get('clazz').indexOf('right') !== -1) {
-                    // make popver appear to the left if dialog is on right
-                    placement = 'left';
-                }
+                var placement = 'top';
                 var self = this;
                 d.promise().then(function() {
                     var pools = self.model.get('pools') || [];
