@@ -8,7 +8,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
     var config = {
         offline: true,
         'delta-osd-api': false,
-        'graphite-host': hostname
+        'graphite-host': hostname + ':8080'
     };
 
     /* Default Configuration */
@@ -186,7 +186,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
             var graphWall = new GraphWall({
                 App: App,
-                graphiteHost: config['graphite-host'] + ':8080'
+                graphiteHost: config['graphite-host']
             });
 
             viz.render().then(function() {
