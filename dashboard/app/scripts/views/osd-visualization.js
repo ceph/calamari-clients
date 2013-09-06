@@ -556,6 +556,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
         },
         pulse: function(filterCol) {
+            this.removePulse();
             var pulsed = filterCol.where({
                 pulse: true,
                 visible: true
