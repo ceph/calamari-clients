@@ -184,9 +184,15 @@ $g-width: 205px;
 .container {
     position: relative;
 }
+$bc-item-width: 52;
+$bc-height: 33;
+$bc-line-width: 40;
+$bc-width: $bc-height;
+$bc-margin: 3;
 .inknav {
     @include user-select(none);	
-    width: 223px;
+    display: inline-block;
+    max-width: #{(($bc-item-width *3) + ($bc-line-width)* 2) + 12}px;
     position: absolute;
     left: 0;
     right: 0;
@@ -194,9 +200,6 @@ $g-width: 205px;
     margin-right: auto;
     top: 4px;
 }
-$bc-height: 33;
-$bc-width: $bc-height;
-$bc-margin: 3;
 .bc-entry {
     margin: #{$bc-margin}px;
     text-align: center;
@@ -219,12 +222,12 @@ $bc-margin: 3;
     @include background(linear-gradient(top left, $itdarkgray, $itlightgray));
 }
 .bc-line {
-    height: 0;
+    height: 30px;
     border-top: 2px solid $itgray;
     display: inline-block;
     margin: 0;
     padding: 0;
-    width: 40px;
+    width: #{$bc-line-width}px;
 }
 .bc-active {
     color: $itdarkgray;
@@ -244,24 +247,28 @@ $bc-margin: 3;
     overflow: hidden;
     @include border-radius(100%);
     border: 2px solid $itgray;
-    margin: 0px;
+    margin: 0px auto;
     padding: 0px;
     cursor: pointer;
 }
 .bc-title {
-    position: absolute;
-    bottom: -15px;
     color: $itlightgray;
     font-size: 8px;
+    margin-top: -4px;
 }
 .bc-title-one {
-    left: -1px;
 }
 .bc-title-two {
-    left: 87px;
 }
 .bc-title-three {
-    left: 188px;
+}
+.bc-item {
+    text-align: center;
+    display: inline-block;
+    max-width: #{$bc-item-width}px;
+    min-width: #{$bc-item-width}px;
+    margin: 0 auto;
+    padding: 0;
 }
 @include animate-fadeIn($class: true);
 @include animate-fadeOut($class: true);
