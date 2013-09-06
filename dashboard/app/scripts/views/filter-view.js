@@ -227,7 +227,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             }
         },
         vizPulse: function() {
-            console.log('pulse');
             if (this.App && this.App.vent) {
                 this.App.vent.trigger('viz:pulse', this.collection);
             }
