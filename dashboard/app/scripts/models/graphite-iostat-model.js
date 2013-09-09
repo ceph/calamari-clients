@@ -2,21 +2,16 @@
 
 define([
     'underscore',
-    'backbone'
-], function (_, Backbone) {
+    'backbone',
+    'models/graphite-model'
+], function (_, Backbone, GraphiteModel) {
     'use strict';
 
-    var GraphiteCpuModel = Backbone.Model.extend({
-        url: '/api/graphite/iometrics',
-        parse: function(resp) {
-            return _.reduce(resp, function(memo, value) {
-                memo[value.text] = value.id;
-                return memo;
-            }, {});
-        },
-        defaults: {
+    var GraphiteIoModel = GraphiteModel.extend({
+        url: function() {
+            return this.graphiteHost + '/metrics/find?query=servers.' + this.host + '.iostat.*';
         }
     });
 
-    return GraphiteCpuModel;
+    return GraphiteIoModel;
 });
