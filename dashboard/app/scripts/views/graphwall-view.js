@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'marionette'], function($, _, Backbone, JST, gutils) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'models/application-model', 'marionette'], function($, _, Backbone, JST, gutils, models) {
     'use strict';
 
     var GraphwallView = Backbone.Marionette.ItemView.extend({
@@ -24,6 +24,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.makeLoadAvgGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.loadAvgTargets);
             this.memoryTargets = gutils.makeTargets(gutils.makeMemoryTargets(['Active', 'Buffers', 'Cached', 'MemFree']));
             this.makeMemoryGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.memoryTargets);
+            this.cpuTargetModels = new models.GraphiteCPUModel(undefined, { graphiteHost: this.graphiteHost });
+            this.ioTargetModels = new models.GraphiteIOModel(undefined, { graphiteHost: this.graphiteHost });
         },
         makeHostUrls: function(fn) {
             return function() {

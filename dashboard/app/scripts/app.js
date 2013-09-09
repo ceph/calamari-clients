@@ -8,7 +8,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
     var config = {
         offline: true,
         'delta-osd-api': false,
-        'graphite-host': hostname + ':8080'
+        'graphite-host': 'http://' + hostname + ':8080'
     };
 
     /* Default Configuration */
