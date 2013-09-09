@@ -35,7 +35,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
             };
         },
         makeBaseUrl: function(host) {
-            var template = _.template('<%- args.host %>/render/?', undefined, {
+            var template = _.template('<%= args.host %>/render/?', undefined, {
                 variable: 'args'
             });
             return function() {
