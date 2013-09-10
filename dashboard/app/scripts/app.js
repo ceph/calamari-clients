@@ -5,7 +5,7 @@
 require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'statemachine', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers, StateMachine) {
     /* Default Configuration */
     var hostname = document.location.hostname;
-    hostname = 'mira022.front.sepia.ceph.com';
+//    hostname = 'mira022.front.sepia.ceph.com';
     var config = {
         offline: true,
         'delta-osd-api': false,
