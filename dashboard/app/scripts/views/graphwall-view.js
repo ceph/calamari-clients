@@ -63,17 +63,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
         },
         makeCPUDetail: function(hostname) {
-            var model = this.cpuTargetModels;
-            var fn = this.makeCPUDetailGraphUrl;
+            return this.makePerHostGraphs(hostname, this.makeCPUDetailGraphUrl, this.cpuTargetModels);
+        },
+        makePerHostGraphs: function(hostname, fn, model) {
             var self = this;
             var deferred = $.Deferred();
             model.fetchMetrics(hostname).done(function() {
-                var list = model.cpuList();
+                var list = model.keys();
                 deferred.resolve(_.map(list, function(cpuid) {
                     return fn.call(self, hostname, cpuid);
                 }));
-            }).fail(function() {
-                deferred.reject();
+            }).fail(function(resp) {
+                deferred.reject(resp);
             });
             return deferred.promise();
         },
@@ -99,7 +100,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 };
             }, 0);
         },
-        makeHostGraphUrl: function(host) {
+        makeHostOverviewGraphUrl: function(host) {
             return function() {
                 return [this.makeCPUGraphUrl(host), this.makeLoadAvgGraphUrl(host), this.makeMemoryGraphUrl(host)];
             };

@@ -212,12 +212,15 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     graphWall.makeCPUDetail(host).then(function(result) {
                         graphWall.populateAll('Host ' + host + ' CPU Detail Host Graphs', function() {
                             return result;
+                        }).fail(function(result) {
+                            // TODO Handle errors gracefully
+                            console.log('failed! ', result);
                         });
                     });
                 } else {
                     hosts = App.ReqRes.request('get:hosts');
                     if (_.contains(hosts, host)) {
-                        graphWall.populateAll('Host Graphs for ' + host, graphWall.makeHostGraphUrl(host));
+                        graphWall.populateAll('Host Graphs for ' + host, graphWall.makeHostOverviewGraphUrl(host));
                     }
                 }
             };

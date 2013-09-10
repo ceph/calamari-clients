@@ -8,7 +8,7 @@ define(['underscore', 'backbone', 'models/graphite-model'], function(_, Backbone
             return this.graphiteHost + '/metrics/find?query=servers.' + this.host + '.iostat.*';
         },
         DriveRegexp: new RegExp('sd[a-z]$'),
-        listDevices: function() {
+        keys: function() {
             var re = this.DriveRegexp;
             return _.filter(_.map(this.attributes, function(v, k) {
                 return k;

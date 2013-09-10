@@ -7,7 +7,7 @@ define(['underscore', 'backbone', 'models/graphite-model', ], function(_, Backbo
         url: function() {
             return this.graphiteHost + '/metrics/find?query=servers.' + this.host + '.cpu.*';
         },
-        cpuList: function() {
+        keys: function() {
             return _.map(this.attributes, function(v, k) {
                 return k;
             });
