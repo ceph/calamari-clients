@@ -6,12 +6,12 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
     function makeTargetTemplate(path) {
         var template = JST[path];
         return function(metrics) {
-            return function(hostname, osd) {
+            return function(hostname, id) {
                 return _.map(metrics, function(metric) {
                     return $.trim(template({
                         metric: metric,
                         hostname: hostname,
-                        osd: osd
+                        id: id
                     }));
                 });
             };
