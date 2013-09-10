@@ -78,6 +78,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         getHosts: function() {
             return _.uniq(this.collection.pluck('host'));
         },
+        getOSDIdsByHost: function(host) {
+            return _.pluck(this.collection.filter(function(m) {
+                return m.get('host') === host;
+            }), 'id');
+        },
         getOSDCounters: function() {
             /* TODO write a single pass version of this */
             return {
@@ -130,6 +135,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             this.App.ReqRes.setHandler('get:pgcounts', function() {
                 return self.getPGCounters();
+            });
+            this.App.ReqRes.setHandler('get:osdids', function(host) {
+                return self.getOSDIdsByHost(host);
             });
         },
         screenSwitchHandler: function() {

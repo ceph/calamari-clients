@@ -90,10 +90,22 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             return this.makePerHostGraphs(hostname, this.makeHostDeviceRWAwaitGraphUrl, this.ioTargetModels);
         },
         makeHostDeviceDiskSpaceBytes: function(hostname) {
-            return this.makePerHostGraphs(hostname, this.makeDiskSpaceBytesGraphUrl, this.ioTargetModels);
+            var ids = this.App.ReqRes.request('get:osdids', hostname);
+            var model = {
+                keys: function() {
+                    return ids;
+                }
+            };
+            return this.makePerHostGraphs(hostname, this.makeDiskSpaceBytesGraphUrl, model);
         },
         makeHostDeviceDiskSpaceInodes: function(hostname) {
-            return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl , this.ioTargetModels);
+            var ids = this.App.ReqRes.request('get:osdids', hostname);
+            var model = {
+                keys: function() {
+                    return ids;
+                }
+            };
+            return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl , model);
         },
         makePerHostGraphs: function(hostname, fn, model) {
             var self = this;
