@@ -210,7 +210,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     graphWall.populateAll('CPU Load for Cluster', graphWall.makeHostUrls(graphWall.makeCPUGraphUrl));
                 } else if (osd === 'cpudetail') {
                     graphWall.makeCPUDetail(host).then(function(result) {
-                        graphWall.populateAll('Host ' + host + ' CPU Detail Host Graphs', result);
+                        graphWall.populateAll('Host ' + host + ' CPU Detail Host Graphs', function() {
+                            return result;
+                        });
                     });
                 } else {
                     hosts = App.ReqRes.request('get:hosts');
