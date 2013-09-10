@@ -236,7 +236,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                         // TODO Handle errors gracefully
                         console.log('failed! ', result);
                     });
-                } else if (osd === 'rwbytes') {
+                } else if (osd === 'rwawait') {
                     graphWall.makeHostDeviceRWAwait(host).then(function(result) {
                         graphWall.populateAll('Host ' + host + ' RW Await Per Device Graphs', function() {
                             return result;
