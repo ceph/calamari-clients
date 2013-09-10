@@ -68,10 +68,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var self = this;
             model.fetchMetrics(hostname).done(function() {
                 var list = model.cpuList();
-                var res = _.reduce(list, function(memo, cpumetric) {
-                    return memo.push(fn.call(self, hostname, cpumetric));
-                }, []);
-                console.log(res);
+                return _.map(list, function(cpuid) {
+                    return fn.call(self, hostname, cpuid);
+                });
             });
         },
         makeHostUrls: function(fn) {
