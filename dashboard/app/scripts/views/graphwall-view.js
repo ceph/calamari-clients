@@ -41,11 +41,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             metrics: ['Active', 'Buffers', 'Cached', 'MemFree'],
             fn: 'makeMemoryGraphUrl',
             util: 'makeMemoryTargets'
-        }, {
+        },
+            {
             metrics: ['read_byte_per_second', 'write_byte_per_second'],
             fn: 'makeHostDeviceRWBytesGraphUrl',
             util: 'makeIOStatIOPSTargets'
-        }, {
+        },
+            {
+            metrics: ['read_await', 'write_await'],
+            fn: 'makeHostDeviceRWAwaitGraphUrl',
+            util: 'makeIOStatIOPSTargets'
+        },
+            {
             metrics: ['iops'],
             fn: 'makeHostDeviceIOPSGraphUrl',
             util: 'makeIOStatIOPSTargets'
@@ -78,6 +85,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         makeHostDeviceRWBytes: function(hostname) {
             return this.makePerHostGraphs(hostname, this.makeHostDeviceRWBytesGraphUrl, this.ioTargetModels);
+        },
+        makeHostDeviceRWAwait: function(hostname) {
+            return this.makePerHostGraphs(hostname, this.makeHostDeviceRWAwaitGraphUrl, this.ioTargetModels);
         },
         makePerHostGraphs: function(hostname, fn, model) {
             var self = this;
