@@ -66,12 +66,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var model = this.cpuTargetModels;
             var fn = this.makeCPUDetailGraphUrl;
             var self = this;
+            var deferred = $.Deferred();
             model.fetchMetrics(hostname).done(function() {
                 var list = model.cpuList();
-                return _.map(list, function(cpuid) {
+                deferred.resolve(_.map(list, function(cpuid) {
                     return fn.call(self, hostname, cpuid);
-                });
+                }));
+            }).fail(function() {
+                deferred.reject();
             });
+            return deferred.promise();
         },
         makeHostUrls: function(fn) {
             return function() {
