@@ -41,18 +41,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             metrics: ['Active', 'Buffers', 'Cached', 'MemFree'],
             fn: 'makeMemoryGraphUrl',
             util: 'makeMemoryTargets'
-        },
-            {
+        }, {
             metrics: ['read_byte_per_second', 'write_byte_per_second'],
             fn: 'makeHostDeviceRWBytesGraphUrl',
             util: 'makeIOStatIOPSTargets'
-        },
-            {
+        }, {
             metrics: ['read_await', 'write_await'],
             fn: 'makeHostDeviceRWAwaitGraphUrl',
             util: 'makeIOStatIOPSTargets'
-        },
-            {
+        }, {
             metrics: ['iops'],
             fn: 'makeHostDeviceIOPSGraphUrl',
             util: 'makeIOStatIOPSTargets'
@@ -89,23 +86,27 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         makeHostDeviceRWAwait: function(hostname) {
             return this.makePerHostGraphs(hostname, this.makeHostDeviceRWAwaitGraphUrl, this.ioTargetModels);
         },
-        makeHostDeviceDiskSpaceBytes: function(hostname) {
-            var ids = this.App.ReqRes.request('get:osdids', hostname);
-            var model = {
+        getOSDIDs: function() {
+            // create a fake model that mimics the interfaces we need
+            var self = this;
+            return {
+                fetchMetrics: function(hostname) {
+                    var d = $.Deferred();
+                    setTimeout(function() {
+                        d.resolve(self.App.ReqRes.request('get:osdids', hostname));
+                    }, 0);
+                    return d.promise();
+                },
                 keys: function() {
-                    return ids;
+                    return this.ids;
                 }
             };
-            return this.makePerHostGraphs(hostname, this.makeDiskSpaceBytesGraphUrl, model);
+        },
+        makeHostDeviceDiskSpaceBytes: function(hostname) {
+            return this.makePerHostGraphs(hostname, this.makeDiskSpaceBytesGraphUrl, this.getOSDIDs());
         },
         makeHostDeviceDiskSpaceInodes: function(hostname) {
-            var ids = this.App.ReqRes.request('get:osdids', hostname);
-            var model = {
-                keys: function() {
-                    return ids;
-                }
-            };
-            return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl , model);
+            return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl, this.getOSDIDs());
         },
         makePerHostGraphs: function(hostname, fn, model) {
             var self = this;
