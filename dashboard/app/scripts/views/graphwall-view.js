@@ -62,7 +62,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 graphiteHost: this.graphiteHost
             });
         },
-        makeCPUDetail: function() {},
+        makeCPUDetail: function(hostname) {
+            var model = this.cpuTargetModels;
+            var fn = this.makeCPUDetailGraphUrl;
+            var self = this;
+            model.fetchMetrics(hostname).done(function() {
+                var list = model.cpuList();
+                var res = _.reduce(list, function(memo, cpumetric) {
+                    return memo.push(fn.call(self, hostname, cpumetric));
+                }, []);
+                console.log(res);
+            });
+        },
         makeHostUrls: function(fn) {
             return function() {
                 var hosts = this.App.ReqRes.request('get:hosts');

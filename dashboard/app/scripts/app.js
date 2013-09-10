@@ -205,10 +205,13 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.ongraph = function(event, from, to, host, osd) {
                 console.log('ongraph>> host: ' + host + ' osd: ' + osd);
                 graphWall.hideGraphs();
+                var hosts;
                 if (host === 'all') {
                     graphWall.populateAll('CPU Load for Cluster', graphWall.makeHostUrls(graphWall.makeCPUGraphUrl));
+                } else if (host === 'cpudetail') {
+                    graphWall.populateAll('CPU Details Host Graphs', graphWall.makeHostUrls(graphWall.makeCPUDetailGraphUrl));
                 } else {
-                    var hosts = App.ReqRes.request('get:hosts');
+                    hosts = App.ReqRes.request('get:hosts');
                     if (_.contains(hosts, host)) {
                         graphWall.populateAll('Host Graphs for ' + host, graphWall.makeHostGraphUrl(host));
                     }
