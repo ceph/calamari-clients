@@ -94,8 +94,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 var d = $.Deferred();
                 setTimeout(function() {
                     var resp = reqres.request('get:osdids', hostname);
+                    d.resolve(resp);
                     model.ids = resp;
-                    return resp;
                 }, 0);
                 return d.promise();
             };
