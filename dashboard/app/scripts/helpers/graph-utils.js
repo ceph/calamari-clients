@@ -19,6 +19,8 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
     }
     return {
         makeCPUTargets: makeTargetTemplate('app/scripts/templates/graphite/CPUTargets.ejs'),
+        makeCPUDetailedTargets: makeTargetTemplate('app/scripts/templates/graphite/CPUDetailedTargets.ejs'),
+        makeDiskSpaceTargets: makeTargetTemplate('app/scripts/templates/graphite/DiskSpaceTargets.ejs'),
         makeOpLatencyTargets: makeTargetTemplate('app/scripts/templates/graphite/OSDOpLatencyTarget.ejs'),
         makeFilestoreTargets: makeTargetTemplate('app/scripts/templates/graphite/OSDFilestoreTarget.ejs'),
         makeLoadAvgTargets: makeTargetTemplate('app/scripts/templates/graphite/LoadAvgTarget.ejs'),

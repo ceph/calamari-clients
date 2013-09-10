@@ -9,24 +9,60 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         ui: {
             'title': '.title'
         },
+        graphs: [{
+            metrics: ['byte_avail', 'byte_free', 'byte_used'],
+            fn: 'makeDiskSpaceBytesGraphUrl',
+            util: 'makeDiskSpaceTargets'
+        }, {
+            metrics: ['inodes_avail', 'inodes_free', 'inodes_used'],
+            fn: 'makeDiskSpaceInodesGraphUrl',
+            util: 'makeDiskSpaceTargets'
+        }, {
+            metrics: ['system', 'user', 'idle'],
+            fn: 'makeCPUGraphUrl',
+            util: 'makeCPUTargets'
+        }, {
+            metrics: ['system', 'user', 'nice', 'idle', 'iowait', 'irq', 'softirq', 'steal'],
+            fn: 'makeCPUDetailGraphUrl',
+            util: 'makeCPUDetailedTargets'
+        }, {
+            metrics: ['op_r_latency', 'op_w_latency', 'op_rw_latency'],
+            fn: 'makeOpsLatencyGraphUrl',
+            util: 'makeOpLatencyTargets'
+        }, {
+            metrics: ['journal_ops', 'journal_wr'],
+            fn: 'makeJournalOpsGraphUrl',
+            util: 'makeFilestoreTargets'
+        }, {
+            metrics: ['01', '05', '15'],
+            fn: 'makeLoadAvgGraphUrl',
+            util: 'makeLoadAvgTargets'
+        }, {
+            metrics: ['Active', 'Buffers', 'Cached', 'MemFree'],
+            fn: 'makeMemoryGraphUrl',
+            util: 'makeMemoryTargets'
+        }],
+        makeGraphFunctions: function(options) {
+            var targets = gutils.makeTargets(gutils[options.util](options.metrics));
+            this[options.fn] = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, targets);
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            this.cpuTargets = gutils.makeTargets(gutils.makeCPUTargets(['system', 'user', 'idle']));
-            this.makeCPUGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.cpuTargets);
-            this.osdOpLatencyTargets = gutils.makeTargets(gutils.makeOpLatencyTargets(['op_r_latency', 'op_w_latency', 'op_rw_latency']));
-            this.makeOpsLatencyGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.osdOpLatencyTargets);
-            this.journalOpsTargets = gutils.makeTargets(gutils.makeFilestoreTargets(['journal_ops', 'journal_wr']));
-            this.makeJournalOpsGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.journalOpsTargets);
-            this.loadAvgTargets = gutils.makeTargets(gutils.makeLoadAvgTargets(['01', '05', '15']));
-            this.makeLoadAvgGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.loadAvgTargets);
-            this.memoryTargets = gutils.makeTargets(gutils.makeMemoryTargets(['Active', 'Buffers', 'Cached', 'MemFree']));
-            this.makeMemoryGraphUrl = gutils.makeGraphURL('png', this.baseUrl, this.heightWidth, this.memoryTargets);
-            this.cpuTargetModels = new models.GraphiteCPUModel(undefined, { graphiteHost: this.graphiteHost });
-            this.ioTargetModels = new models.GraphiteIOModel(undefined, { graphiteHost: this.graphiteHost });
+
+            _.bindAll(this, 'makeGraphFunctions');
+            _.each(this.graphs, this.makeGraphFunctions);
+
+            this.cpuTargetModels = new models.GraphiteCPUModel(undefined, {
+                graphiteHost: this.graphiteHost
+            });
+            this.ioTargetModels = new models.GraphiteIOModel(undefined, {
+                graphiteHost: this.graphiteHost
+            });
         },
+        makeCPUDetail: function() {},
         makeHostUrls: function(fn) {
             return function() {
                 var hosts = this.App.ReqRes.request('get:hosts');
