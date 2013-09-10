@@ -88,19 +88,21 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         getOSDIDs: function() {
             // create a fake model that mimics the interfaces we need
-            var self = this;
-            return {
-                fetchMetrics: function(hostname) {
-                    var d = $.Deferred();
-                    setTimeout(function() {
-                        d.resolve(self.App.ReqRes.request('get:osdids', hostname));
-                    }, 0);
-                    return d.promise();
-                },
-                keys: function() {
-                    return this.ids;
-                }
+            var reqres = this.App.ReqRes;
+            var model = {};
+            model.fetchMetrics = function(hostname) {
+                var d = $.Deferred();
+                setTimeout(function() {
+                    var resp = reqres.request('get:osdids', hostname);
+                    model.ids = resp;
+                    return resp;
+                }, 0);
+                return d.promise();
             };
+            model.keys = function() {
+                return model.ids;
+            };
+            return model;
         },
         makeHostDeviceDiskSpaceBytes: function(hostname) {
             return this.makePerHostGraphs(hostname, this.makeDiskSpaceBytesGraphUrl, this.getOSDIDs());
