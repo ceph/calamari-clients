@@ -89,6 +89,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         makeHostDeviceRWAwait: function(hostname) {
             return this.makePerHostGraphs(hostname, this.makeHostDeviceRWAwaitGraphUrl, this.ioTargetModels);
         },
+        makeHostDeviceDiskSpaceBytes: function(hostname) {
+            return this.makePerHostGraphs(hostname, this.makeDiskSpaceBytesGraphUrl, this.ioTargetModels);
+        },
+        makeHostDeviceDiskSpaceInodes: function(hostname) {
+            return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl , this.ioTargetModels);
+        },
         makePerHostGraphs: function(hostname, fn, model) {
             var self = this;
             var deferred = $.Deferred();

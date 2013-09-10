@@ -245,6 +245,24 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                         // TODO Handle errors gracefully
                         console.log('failed! ', result);
                     });
+                } else if (osd === 'diskinodes') {
+                    graphWall.makeHostDeviceDiskSpaceInodes(host).then(function(result) {
+                        graphWall.populateAll('Host ' + host + ' DiskSpace Inodes Device Graphs', function() {
+                            return result;
+                        });
+                    }).fail(function(result) {
+                        // TODO Handle errors gracefully
+                        console.log('failed! ', result);
+                    });
+                } else if (osd === 'diskbytes') {
+                    graphWall.makeHostDeviceDiskSpaceBytes(host).then(function(result) {
+                        graphWall.populateAll('Host ' + host + ' DiskSpace Bytes Device Graphs', function() {
+                            return result;
+                        });
+                    }).fail(function(result) {
+                        // TODO Handle errors gracefully
+                        console.log('failed! ', result);
+                    });
                 } else {
                     hosts = App.ReqRes.request('get:hosts');
                     if (_.contains(hosts, host)) {
