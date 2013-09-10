@@ -217,6 +217,15 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                         // TODO Handle errors gracefully
                         console.log('failed! ', result);
                     });
+                } else if (osd === 'iops') {
+                    graphWall.makeHostDeviceIOPS(host).then(function(result) {
+                        graphWall.populateAll('Host ' + host + ' IOPS Per Device Graphs', function() {
+                            return result;
+                        });
+                    }).fail(function(result) {
+                        // TODO Handle errors gracefully
+                        console.log('failed! ', result);
+                    });
                 } else {
                     hosts = App.ReqRes.request('get:hosts');
                     if (_.contains(hosts, host)) {

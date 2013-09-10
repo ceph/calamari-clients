@@ -41,6 +41,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             metrics: ['Active', 'Buffers', 'Cached', 'MemFree'],
             fn: 'makeMemoryGraphUrl',
             util: 'makeMemoryTargets'
+        }, {
+            metrics: ['iops'],
+            fn: 'makeHostDeviceIOPSGraphUrl',
+            util: 'makeIOStatIOPSTargets'
         }],
         makeGraphFunctions: function(options) {
             var targets = gutils.makeTargets(gutils[options.util](options.metrics));
@@ -64,6 +68,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         makeCPUDetail: function(hostname) {
             return this.makePerHostGraphs(hostname, this.makeCPUDetailGraphUrl, this.cpuTargetModels);
+        },
+        makeHostDeviceIOPS: function(hostname) {
+            return this.makePerHostGraphs(hostname, this.makeHostDeviceIOPSGraphUrl, this.ioTargetModels);
         },
         makePerHostGraphs: function(hostname, fn, model) {
             var self = this;

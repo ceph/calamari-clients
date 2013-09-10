@@ -25,6 +25,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
         makeFilestoreTargets: makeTargetTemplate('app/scripts/templates/graphite/OSDFilestoreTarget.ejs'),
         makeLoadAvgTargets: makeTargetTemplate('app/scripts/templates/graphite/LoadAvgTarget.ejs'),
         makeMemoryTargets: makeTargetTemplate('app/scripts/templates/graphite/MemoryTarget.ejs'),
+        makeIOStatIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/IOStatIOPSTarget.ejs'),
         makeHeightWidthParams: function(width, height) {
             var template = _.template('width=<%- args.width %>&height=<%- args.height %>', undefined, {
                 variable: 'args'
