@@ -17,6 +17,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var $target = $(evt.target);
             var id = $target.attr('data-id');
             var route = 'graph/' + this.hostname + '/' + id;
+            if (id === 'overview') {
+                route = 'graph/' + this.hostname;
+            }
             console.log(route);
             this.AppRouter.navigate(route, {
                 trigger: true
