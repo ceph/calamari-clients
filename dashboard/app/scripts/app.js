@@ -187,6 +187,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
             var graphWall = new GraphWall({
                 App: App,
+                AppRouter: appRouter,
                 graphiteHost: config['graphite-host']
             });
 
@@ -234,8 +235,10 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 graphWall.hideGraphs();
                 var hosts;
                 if (host === 'all') {
+                    graphWall.hideButtons();
                     graphWall.populateAll('CPU Load for Cluster', graphWall.makeHostUrls(graphWall.makeCPUGraphUrl));
                 } else if (id !== undefined && id !== null) {
+                    graphWall.showButtons();
                     var graphEvent = App.graphEvents[id];
                     if (graphEvent !== undefined) {
                         graphWall[graphEvent.fn].call(graphWall, host).then(function(result) {
@@ -253,6 +256,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 } else {
                     hosts = App.ReqRes.request('get:hosts');
                     if (_.contains(hosts, host)) {
+                        graphWall.showButtons();
+                        graphWall.hostname = host;
                         graphWall.populateAll('Host Graphs for ' + host, graphWall.makeHostOverviewGraphUrl(host));
                     }
                 }

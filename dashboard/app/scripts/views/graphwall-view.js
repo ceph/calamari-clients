@@ -7,7 +7,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         template: JST['app/scripts/templates/graphwall-view.ejs'],
         className: 'graph-mode span12',
         ui: {
-            'title': '.title'
+            'title': '.title',
+            'buttons': '.btn-graph'
+        },
+        events: {
+            'click .btn-graph .btn': 'clickHandler'
+        },
+        clickHandler: function(evt) {
+            var $target = $(evt.target);
+            var id = $target.attr('data-id');
+            this.AppRouter.navigate('/graph/' + this.hostname + '/' + id, {
+                trigger: 'true'
+            });
         },
         graphs: [{
             metrics: ['byte_avail', 'byte_free', 'byte_used'],
@@ -60,6 +71,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
+            this.AppRouter = Backbone.Marionette.getOption(this, 'AppRouter');
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
@@ -110,8 +122,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         makeHostDeviceDiskSpaceInodes: function(hostname) {
             return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl, this.getOSDIDs());
         },
+        showButtons: function() {
+            this.ui.buttons.css('visibility','visible');
+        },
+        hideButtons: function() {
+            this.ui.buttons.css('visibility','hidden');
+        },
         makePerHostGraphs: function(hostname, fn, model) {
             var self = this;
+            this.hostname = hostname;
             var deferred = $.Deferred();
             model.fetchMetrics(hostname).done(function() {
                 var list = model.keys();
