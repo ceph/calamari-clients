@@ -16,7 +16,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         clickHandler: function(evt) {
             var $target = $(evt.target);
             var id = $target.attr('data-id');
-            this.AppRouter.navigate('graph/' + this.hostname + '/' + id, {
+            var route = 'graph/' + this.hostname + '/' + id;
+            console.log(route);
+            this.AppRouter.navigate(route, {
                 trigger: true
             });
         },
@@ -123,10 +125,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl, this.getOSDIDs());
         },
         showButtons: function() {
-            this.ui.buttons.css('visibility','visible');
+            this.ui.buttons.css('visibility', 'visible');
         },
         hideButtons: function() {
-            this.ui.buttons.css('visibility','hidden');
+            this.ui.buttons.css('visibility', 'hidden');
         },
         makePerHostGraphs: function(hostname, fn, model) {
             var self = this;
