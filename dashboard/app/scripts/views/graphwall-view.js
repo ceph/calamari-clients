@@ -94,17 +94,25 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         postRender: function() {
             this.delegateEvents(this.events);
         },
-        makeCPUDetail: function(hostname) {
+        makeCPUDetail: function(hostname, id) {
+            this.updateBtns(id);
             return this.makePerHostGraphs(hostname, this.makeCPUDetailGraphUrl, this.cpuTargetModels);
         },
-        makeHostDeviceIOPS: function(hostname) {
+        makeHostDeviceIOPS: function(hostname, id) {
+            this.updateBtns(id);
             return this.makePerHostGraphs(hostname, this.makeHostDeviceIOPSGraphUrl, this.ioTargetModels);
         },
-        makeHostDeviceRWBytes: function(hostname) {
+        makeHostDeviceRWBytes: function(hostname, id) {
+            this.updateBtns(id);
             return this.makePerHostGraphs(hostname, this.makeHostDeviceRWBytesGraphUrl, this.ioTargetModels);
         },
-        makeHostDeviceRWAwait: function(hostname) {
+        makeHostDeviceRWAwait: function(hostname, id) {
+            this.updateBtns(id);
             return this.makePerHostGraphs(hostname, this.makeHostDeviceRWAwaitGraphUrl, this.ioTargetModels);
+        },
+        updateBtns: function(id) {
+            this.ui.buttons.find('.btn').removeClass('active');
+            this.ui.buttons.find('[data-id="'+id+'"]').addClass('active');
         },
         getOSDIDs: function() {
             // create a fake model that mimics the interfaces we need
@@ -124,10 +132,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             };
             return model;
         },
-        makeHostDeviceDiskSpaceBytes: function(hostname) {
+        makeHostDeviceDiskSpaceBytes: function(hostname, id) {
+            this.updateBtns(id);
             return this.makePerHostGraphs(hostname, this.makeDiskSpaceBytesGraphUrl, this.getOSDIDs());
         },
-        makeHostDeviceDiskSpaceInodes: function(hostname) {
+        makeHostDeviceDiskSpaceInodes: function(hostname, id) {
+            this.updateBtns(id);
             return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl, this.getOSDIDs());
         },
         showButtons: function() {

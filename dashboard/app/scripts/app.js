@@ -241,7 +241,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     graphWall.showButtons();
                     var graphEvent = App.graphEvents[id];
                     if (graphEvent !== undefined) {
-                        graphWall[graphEvent.fn].call(graphWall, host).then(function(result) {
+                        graphWall[graphEvent.fn].call(graphWall, host, id).then(function(result) {
                             graphWall.populateAll(graphEvent.title({
                                 host: host
                             }), function() {
@@ -257,6 +257,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     hosts = App.ReqRes.request('get:hosts');
                     if (_.contains(hosts, host)) {
                         graphWall.showButtons();
+                        graphWall.updateBtns('overview');
                         graphWall.hostname = host;
                         graphWall.populateAll('Host Graphs for ' + host, graphWall.makeHostOverviewGraphUrl(host));
                     }
