@@ -82,8 +82,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
             _.bindAll(this, 'makeGraphFunctions', 'postRender');
 
-            this.listenTo(this, 'render', this.postRender);
-
             _.each(this.graphs, this.makeGraphFunctions);
 
             this.cpuTargetModels = new models.GraphiteCPUModel(undefined, {
@@ -134,6 +132,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         showButtons: function() {
             this.ui.buttons.css('visibility', 'visible');
+            this.postRender();
         },
         hideButtons: function() {
             this.ui.buttons.css('visibility', 'hidden');
