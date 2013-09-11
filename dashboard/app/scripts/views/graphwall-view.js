@@ -16,8 +16,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         clickHandler: function(evt) {
             var $target = $(evt.target);
             var id = $target.attr('data-id');
-            this.AppRouter.navigate('/graph/' + this.hostname + '/' + id, {
-                trigger: 'true'
+            this.AppRouter.navigate('graph/' + this.hostname + '/' + id, {
+                trigger: true
             });
         },
         graphs: [{
