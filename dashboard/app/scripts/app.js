@@ -235,7 +235,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 var hosts;
                 if (host === 'all') {
                     graphWall.populateAll('CPU Load for Cluster', graphWall.makeHostUrls(graphWall.makeCPUGraphUrl));
-                } else if (id !== undefined) {
+                } else if (id !== undefined && id !== null) {
                     var graphEvent = App.graphEvents[id];
                     if (graphEvent !== undefined) {
                         graphWall[graphEvent.fn].call(graphWall, host).then(function(result) {
