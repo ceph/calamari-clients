@@ -5,7 +5,7 @@
 require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'statemachine', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers, StateMachine) {
     /* Default Configuration */
     var hostname = document.location.hostname;
-//    hostname = 'mira022.front.sepia.ceph.com';
+    //    hostname = 'mira022.front.sepia.ceph.com';
     var config = {
         offline: true,
         'delta-osd-api': false,
@@ -203,66 +203,53 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 graphWall.render();
                 $('.container').append(graphWall.$el);
             };
-            App.ongraph = function(event, from, to, host, osd) {
-                console.log('ongraph>> host: ' + host + ' osd: ' + osd);
+            App.graphEvents = {
+                'cpudetail': {
+                    fn: 'makeCPUDetail',
+                    title: _.template('Host <%- host %> CPU Detail Host Graphs')
+                },
+                'iops': {
+                    fn: 'makeHostDeviceIOPS',
+                    title: _.template('Host <%- host %> IOPS Per Device Graphs')
+                },
+                'rwbytes': {
+                    fn: 'makeHostDeviceRWBytes',
+                    title: _.template('Host <%- host %> RW Bytes/Sec Per Device Graphs')
+                },
+                'rwawait': {
+                    fn: 'makeHostDeviceRWAwait',
+                    title: _.template('Host <%- host %> RW Await Per Device Graphs')
+                },
+                'diskinodes': {
+                    fn: 'makeHostDeviceDiskSpaceInodes',
+                    title: _.template('Host <%- host %> DiskSpace Inodes Device Graphs')
+                },
+                'diskbytes': {
+                    fn: 'makeHostDeviceDiskSpaceBytes',
+                    title: _.template('Host <%- host %> DiskSpace Bytes Device Graphs')
+                }
+            };
+            App.ongraph = function(event, from, to, host, id) {
+                console.log('ongraph>> host: ' + host + ' device id: ' + id);
                 graphWall.hideGraphs();
                 var hosts;
                 if (host === 'all') {
                     graphWall.populateAll('CPU Load for Cluster', graphWall.makeHostUrls(graphWall.makeCPUGraphUrl));
-                } else if (osd === 'cpudetail') {
-                    graphWall.makeCPUDetail(host).then(function(result) {
-                        graphWall.populateAll('Host ' + host + ' CPU Detail Host Graphs', function() {
-                            return result;
+                } else if (id !== undefined) {
+                    var graphEvent = App.graphEvents[id];
+                    if (graphEvent !== undefined) {
+                        graphWall[graphEvent.fn].call(graphWall, host).then(function(result) {
+                            graphWall.populateAll(graphEvent.title({
+                                host: host
+                            }), function() {
+                                return result;
+                            });
+                        }).fail(function(result) {
+                            // TODO Handle errors gracefully
+                            console.log('failed! ', result);
                         });
-                    }).fail(function(result) {
-                        // TODO Handle errors gracefully
-                        console.log('failed! ', result);
-                    });
-                } else if (osd === 'iops') {
-                    graphWall.makeHostDeviceIOPS(host).then(function(result) {
-                        graphWall.populateAll('Host ' + host + ' IOPS Per Device Graphs', function() {
-                            return result;
-                        });
-                    }).fail(function(result) {
-                        // TODO Handle errors gracefully
-                        console.log('failed! ', result);
-                    });
-                } else if (osd === 'rwbytes') {
-                    graphWall.makeHostDeviceRWBytes(host).then(function(result) {
-                        graphWall.populateAll('Host ' + host + ' RW Bytes/Sec Per Device Graphs', function() {
-                            return result;
-                        });
-                    }).fail(function(result) {
-                        // TODO Handle errors gracefully
-                        console.log('failed! ', result);
-                    });
-                } else if (osd === 'rwawait') {
-                    graphWall.makeHostDeviceRWAwait(host).then(function(result) {
-                        graphWall.populateAll('Host ' + host + ' RW Await Per Device Graphs', function() {
-                            return result;
-                        });
-                    }).fail(function(result) {
-                        // TODO Handle errors gracefully
-                        console.log('failed! ', result);
-                    });
-                } else if (osd === 'diskinodes') {
-                    graphWall.makeHostDeviceDiskSpaceInodes(host).then(function(result) {
-                        graphWall.populateAll('Host ' + host + ' DiskSpace Inodes Device Graphs', function() {
-                            return result;
-                        });
-                    }).fail(function(result) {
-                        // TODO Handle errors gracefully
-                        console.log('failed! ', result);
-                    });
-                } else if (osd === 'diskbytes') {
-                    graphWall.makeHostDeviceDiskSpaceBytes(host).then(function(result) {
-                        graphWall.populateAll('Host ' + host + ' DiskSpace Bytes Device Graphs', function() {
-                            return result;
-                        });
-                    }).fail(function(result) {
-                        // TODO Handle errors gracefully
-                        console.log('failed! ', result);
-                    });
+                        return;
+                    }
                 } else {
                     hosts = App.ReqRes.request('get:hosts');
                     if (_.contains(hosts, host)) {
