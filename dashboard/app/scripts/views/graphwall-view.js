@@ -80,8 +80,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
+            _.bindAll(this, 'makeGraphFunctions', 'postRender');
 
-            _.bindAll(this, 'makeGraphFunctions');
+            this.listenTo(this, 'render', this.postRender);
+
             _.each(this.graphs, this.makeGraphFunctions);
 
             this.cpuTargetModels = new models.GraphiteCPUModel(undefined, {
@@ -90,6 +92,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.ioTargetModels = new models.GraphiteIOModel(undefined, {
                 graphiteHost: this.graphiteHost
             });
+        },
+        postRender: function() {
+            this.delegateEvents(this.events);
         },
         makeCPUDetail: function(hostname) {
             return this.makePerHostGraphs(hostname, this.makeCPUDetailGraphUrl, this.cpuTargetModels);
