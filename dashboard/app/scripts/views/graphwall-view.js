@@ -74,8 +74,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             fn: 'makeHostNetworkTXRXBytesGraphURL',
             util: 'makeNetworkTargets'
         }, {
-            metrics: ['rx_packets', 'rx_drop', 'rx_errors', 'tx_packets', 'tx_drop', 'tx_errors'],
+            metrics: ['tx_packets', 'rx_packets'],
             fn: 'makeHostNetworkTXRXPacketsGraphURL',
+            util: 'makeNetworkTargets'
+        }, {
+            metrics: ['tx_errors', 'rx_errors'],
+            fn: 'makeHostNetworkTXRXErrorsGraphURL',
+            util: 'makeNetworkTargets'
+        }, {
+            metrics: ['tx_drop', 'rx_drop'],
+            fn: 'makeHostNetworkTXRXDropGraphURL',
             util: 'makeNetworkTargets'
         }],
         makeGraphFunctions: function(options) {
@@ -157,7 +165,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         makeHostNetworkPacketsMetrics: function(hostname, id) {
             this.updateBtns(id);
-            return this.makePerHostGraphs(hostname, this.makeHostNetworkTXRXPacketsGraphURL, this.netTargetModels);
+
+            return this.makePerHostGraphs(hostname, this.makeHostNetworkOverviewGraphUrl(), this.netTargetModels);
+        },
+        makeHostNetworkOverviewGraphUrl: function() {
+            var self = this;
+            return function(hostname, id) {
+                return [self.makeHostNetworkTXRXPacketsGraphURL(hostname, id), self.makeHostNetworkTXRXErrorsGraphURL(hostname, id), self.makeHostNetworkTXRXDropGraphURL(hostname, id)];
+            };
         },
         showButtons: function() {
             this.ui.buttons.css('visibility', 'visible');
