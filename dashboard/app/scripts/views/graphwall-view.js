@@ -69,6 +69,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             metrics: ['iops'],
             fn: 'makeHostDeviceIOPSGraphUrl',
             util: 'makeIOStatIOPSTargets'
+        }, {
+            metrics: ['rx_byte', 'tx_byte'],
+            fn: 'makeHostNetworkTXRXBytesGraphURL',
+            util: 'makeNetworkTargets'
+        }, {
+            metrics: ['rx_packets', 'rx_drop', 'rx_errors', 'tx_packets', 'tx_drop', 'tx_errors'],
+            fn: 'makeHostNetworkTXRXPacketsGraphURL',
+            util: 'makeNetworkTargets'
         }],
         makeGraphFunctions: function(options) {
             var targets = gutils.makeTargets(gutils[options.util](options.metrics));
@@ -88,6 +96,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 graphiteHost: this.graphiteHost
             });
             this.ioTargetModels = new models.GraphiteIOModel(undefined, {
+                graphiteHost: this.graphiteHost
+            });
+            this.netTargetModels = new models.GraphiteNetModel(undefined, {
                 graphiteHost: this.graphiteHost
             });
         },
@@ -112,7 +123,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         updateBtns: function(id) {
             this.ui.buttons.find('.btn').removeClass('active');
-            this.ui.buttons.find('[data-id="'+id+'"]').addClass('active');
+            this.ui.buttons.find('[data-id="' + id + '"]').addClass('active');
         },
         getOSDIDs: function() {
             // create a fake model that mimics the interfaces we need
@@ -140,6 +151,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.updateBtns(id);
             return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl, this.getOSDIDs());
         },
+        makeHostNetworkBytesMetrics: function(hostname, id) {
+            this.updateBtns(id);
+            return this.makePerHostGraphs(hostname, this.makeHostNetworkTXRXBytesGraphURL, this.netTargetModels);
+        },
+        makeHostNetworkPacketsMetrics: function(hostname, id) {
+            this.updateBtns(id);
+            return this.makePerHostGraphs(hostname, this.makeHostNetworkTXRXPacketsGraphURL, this.netTargetModels);
+        },
         showButtons: function() {
             this.ui.buttons.css('visibility', 'visible');
             this.postRender();
@@ -153,8 +172,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var deferred = $.Deferred();
             model.fetchMetrics(hostname).done(function() {
                 var list = model.keys();
-                deferred.resolve(_.map(list, function(cpuid) {
-                    return fn.call(self, hostname, cpuid);
+                deferred.resolve(_.map(list, function(id) {
+                    return fn.call(self, hostname, id);
                 }));
             }).fail(function(resp) {
                 deferred.reject(resp);

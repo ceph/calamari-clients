@@ -228,6 +228,14 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 'diskbytes': {
                     fn: 'makeHostDeviceDiskSpaceBytes',
                     title: _.template('Host <%- host %> DiskSpace Bytes Device Graphs')
+                },
+                'netpackets': {
+                    fn: 'makeHostNetworkPacketsMetrics',
+                    title: _.template('Host <%- host %> Network Interface Packets TX/RX Graphs')
+                },
+                'netbytes': {
+                    fn: 'makeHostNetworkBytesMetrics',
+                    title: _.template('Host <%- host %> Network Interface Bytes TX/RX Graphs')
                 }
             };
             App.ongraph = function(event, from, to, host, id) {
