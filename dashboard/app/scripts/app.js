@@ -5,7 +5,7 @@
 require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'statemachine', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers, StateMachine) {
     /* Default Configuration */
     var hostname = document.location.hostname;
-    //    hostname = 'mira022.front.sepia.ceph.com';
+//    hostname = 'mira022.front.sepia.ceph.com';
     var config = {
         offline: true,
         'delta-osd-api': false,
@@ -207,35 +207,35 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.graphEvents = {
                 'cpudetail': {
                     fn: 'makeCPUDetail',
-                    title: _.template('Host <%- host %> CPU Detail Host Graphs')
+                    title: _.template('Host <%- host %> CPU Detail Host')
                 },
                 'iops': {
                     fn: 'makeHostDeviceIOPS',
-                    title: _.template('Host <%- host %> IOPS Per Device Graphs')
+                    title: _.template('Host <%- host %> IOPS Per Device')
                 },
                 'rwbytes': {
                     fn: 'makeHostDeviceRWBytes',
-                    title: _.template('Host <%- host %> RW Bytes/Sec Per Device Graphs')
+                    title: _.template('Host <%- host %> RW Bytes/Sec Per Device')
                 },
                 'rwawait': {
                     fn: 'makeHostDeviceRWAwait',
-                    title: _.template('Host <%- host %> RW Await Per Device Graphs')
+                    title: _.template('Host <%- host %> RW Await Per Device')
                 },
                 'diskinodes': {
                     fn: 'makeHostDeviceDiskSpaceInodes',
-                    title: _.template('Host <%- host %> DiskSpace Inodes Device Graphs')
+                    title: _.template('Host <%- host %> DiskSpace Inodes Device')
                 },
                 'diskbytes': {
                     fn: 'makeHostDeviceDiskSpaceBytes',
-                    title: _.template('Host <%- host %> DiskSpace Bytes Device Graphs')
+                    title: _.template('Host <%- host %> DiskSpace Bytes Device')
                 },
                 'netpackets': {
                     fn: 'makeHostNetworkPacketsMetrics',
-                    title: _.template('Host <%- host %> Network Interface Packets TX/RX Graphs')
+                    title: _.template('Host <%- host %> Network Interface Packets TX/RX')
                 },
                 'netbytes': {
                     fn: 'makeHostNetworkBytesMetrics',
-                    title: _.template('Host <%- host %> Network Interface Bytes TX/RX Graphs')
+                    title: _.template('Host <%- host %> Network Interface Bytes TX/RX')
                 }
             };
             App.ongraph = function(event, from, to, host, id) {
@@ -253,7 +253,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                             graphWall.populateAll(graphEvent.title({
                                 host: host
                             }), function() {
-                                return result;
+                                return _.flatten(result);
                             });
                         }).fail(function(result) {
                             // TODO Handle errors gracefully

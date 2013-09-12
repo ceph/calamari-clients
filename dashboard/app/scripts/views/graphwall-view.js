@@ -166,9 +166,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         makeHostNetworkPacketsMetrics: function(hostname, id) {
             this.updateBtns(id);
 
-            return this.makePerHostGraphs(hostname, this.makeHostNetworkOverviewGraphUrl(), this.netTargetModels);
+            return this.makePerHostGraphs(hostname, this.makeNetworkPacketsOverviewGraphURL(), this.netTargetModels);
         },
-        makeHostNetworkOverviewGraphUrl: function() {
+        makeNetworkPacketsOverviewGraphURL: function() {
             var self = this;
             return function(hostname, id) {
                 return [self.makeHostNetworkTXRXPacketsGraphURL(hostname, id), self.makeHostNetworkTXRXErrorsGraphURL(hostname, id), self.makeHostNetworkTXRXDropGraphURL(hostname, id)];

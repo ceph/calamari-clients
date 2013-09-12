@@ -1,12 +1,20 @@
 <h1 class='title'>WALL-O-GRAPHS</h1>
+<div class="btn-toolbar">
 <div style='visibility: hidden;' class='btn-graph btn-group' data-toggle='buttons-radio'>
     <button type='button' data-id='overview' class='btn btn-primary active'>Overview</button>
     <button type='button' data-id='cpudetail' class='btn btn-primary'>All CPUs</button>
-    <button type='button' data-id='rwbytes' class='btn btn-primary'>OSD RW Bytes</button>
-    <button type='button' data-id='rwawait' class='btn btn-primary'>OSD RW Await</button>
-    <button type='button' data-id='iops' class='btn btn-primary'>OSD IOPS</button>
-    <button type='button' data-id='diskbytes' class='btn btn-primary'>Diskspace Bytes</button>
-    <button type='button' data-id='diskinodes' class='btn btn-primary'>Diskspace Inodes</button>
+</div>
+<div style='visibility: hidden;' class='btn-graph btn-group' data-toggle='buttons-radio'>
+    <button type='button' data-id='rwbytes' class='btn btn-primary'><i class='icon-hdd'></i> RW Bytes</button>
+    <button type='button' data-id='rwawait' class='btn btn-primary'><i class='icon-hdd'></i> RWAwait</button>
+    <button type='button' data-id='iops' class='btn btn-primary'><i class='icon-hdd'></i> IOPS</button>
+    <button type='button' data-id='diskbytes' class='btn btn-primary'><i class='icon-file'></i> Bytes</button>
+    <button type='button' data-id='diskinodes' class='btn btn-primary'><i class='icon-file'></i> Inodes</button>
+</div>
+<div style='visibility: hidden;' class='btn-graph btn-group' data-toggle='buttons-radio'>
+    <button type='button' data-id='netbytes' class='btn btn-primary'><i class='icon-sitemap'></i> TX/RX Bytes</button>
+    <button type='button' data-id='netpackets' class='btn btn-primary'><i class='icon-sitemap'></i> TX/RX Packets</button>
+</div>
 </div>
 <div class='row'>
     <div class='card span6 graph-card graph0-1'></div>
