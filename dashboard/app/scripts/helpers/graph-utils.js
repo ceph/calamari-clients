@@ -38,6 +38,18 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 });
             };
         },
+        makeColorListParams: function(list) {
+            var template = _.template('colorList=<%- args.list %>', undefined, {
+                variable: 'args'
+            });
+            var colorList = list.join(',');
+            var result = template({
+                list: colorList
+            });
+            return function() {
+                return _.identity(result);
+            };
+        },
         makeBaseUrl: function(host) {
             var template = _.template('<%= args.host %>/render/?', undefined, {
                 variable: 'args'
@@ -61,8 +73,9 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
             };
         },
         makeGraphURL: function(format, baseUrlFn, heightWidthFn, targetsFn) {
+            var self = this;
             return function() {
-                return baseUrlFn() + _.reduce([heightWidthFn(), targetsFn.apply(this, arguments), 'format=' + format], function(memo, value) {
+                return baseUrlFn() + _.reduce([heightWidthFn(), 'fgcolor=black&bgcolor=white', self.makeColorListParams(['7fc97f','beaed4','fdc086','386cb0','f0027f','bf5b17','666666'])(), targetsFn.apply(this, arguments), 'format=' + format], function(memo, value) {
                     return memo + '&' + value;
                 });
             };
