@@ -1,5 +1,6 @@
 @import 'inktank_colors';
 @import 'compass/css3';
+@import 'compass/utilities';
 
 .graph-mode {
     color: $itlightgray;
@@ -38,4 +39,8 @@
 .it-graph-controls {
 	text-align: center;
 	margin-top: 55px;
+}
+.btn.it-btn-left {
+	@include border-top-left-radius(4px);
+	@include border-bottom-left-radius(4px);
 }
