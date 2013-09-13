@@ -175,11 +175,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             };
         },
         showButtons: function() {
-            this.ui.buttons.css('visibility', 'visible');
+            this.ui.buttons.slideDown();
             this.postRender();
         },
         hideButtons: function() {
-            this.ui.buttons.css('visibility', 'hidden');
+            this.ui.buttons.slideUp();
         },
         makePerHostGraphs: function(hostname, fn, model) {
             var self = this;
