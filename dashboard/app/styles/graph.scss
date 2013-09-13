@@ -16,6 +16,25 @@
 
 .graph-card {
 	height: 284px;
-	margin-top: 20px;
+	margin-top: 25px;
 	visibility: hidden;
+}
+
+.graph-title {
+	color: $itlightgray;
+	top: -23px;
+	font-size: 16px;
+	text-align: center;
+	width: 100%;
+	text-transform: Capitalize;
+	display: inline-block;
+	position: absolute;
+}
+
+.graph-title-system {
+	margin-left: 46px;
+}
+
+.it-graph-controls {
+	margin-top: 30px;
 }

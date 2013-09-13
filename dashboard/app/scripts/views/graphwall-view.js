@@ -8,7 +8,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         className: 'graph-mode span12',
         ui: {
             'title': '.title',
-            'buttons': '.btn-graph'
+            'buttons': '.btn-toolbar'
         },
         events: {
             'click .btn-graph .btn': 'clickHandler'
