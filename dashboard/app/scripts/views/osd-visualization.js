@@ -520,7 +520,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var x = evt.clientX;
             var y = evt.clientY;
             //console.log(x + ' / ' + y);
-            var el = this.r.getElementByPoint(x, y);
+            var el = this.paper.getElementByPoint(x, y);
             //console.log(el);
             //console.log(el.attrs.x + ' / ' + el.attrs.y);
             if (el) {
