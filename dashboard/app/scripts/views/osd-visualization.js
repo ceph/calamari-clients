@@ -139,6 +139,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.App.ReqRes.setHandler('get:osdids', function(host) {
                 return self.getOSDIdsByHost(host);
             });
+            this.render = _.wrap(this.render, this.renderWrapper);
         },
         screenSwitchHandler: function() {
             if (this.state === 'dashboard') {
@@ -180,11 +181,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         resetViews: function(collection, options) {
             _.each(options.previousModels, this.cleanupModelView);
         },
-        addOSD: function(m) {
-            this.moveCircle(m, this.collection.indexOf(m));
+        addOSD: function(model) {
+            this.moveCircle(model, this.collection.indexOf(model));
         },
-        cleanupModelView: function(m) {
-            var views = m.views;
+        cleanupModelView: function(model) {
+            var views = model.views;
             if (views) {
                 var circle = views.circle;
                 circle.animate({
@@ -193,11 +194,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }, 250, 'easeIn', function() {
                     circle.remove();
                 });
-                m.views.text.remove();
+                model.views.text.remove();
                 if (views.pcircle) {
                     views.pcircle.stop().remove();
                 }
-                m.views = null;
+                model.views = null;
             }
         },
         removeOSD: function(m) {
@@ -209,12 +210,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         drawGrid: function(d) {
             var path = Rs.calcGrid(this.originX, this.originY, this.width, this.height, this.step);
-            var path1 = this.r.path('M0,0').attr({
+            var path1 = this.paper.path('M0,0').attr({
                 'stroke-width': 1,
                 'stroke': '#5e6a71',
                 'opacity': 0.40
             });
-            this.drawLegend(this.r, 285, 475);
+            this.drawLegend(285, 475);
             var anim = Raphael.animation({
                 path: path,
                 callback: d.resolve
@@ -237,7 +238,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         moveCircle: function(model, index) {
             var start = this.startPosition[Math.floor(Math.random() * 4)];
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
-            this.animateCircleTraversal(this.r, start.x, start.y, 8, pos.nx, pos.ny, model);
+            this.animateCircleTraversal(start.x, start.y, 8, pos.nx, pos.ny, model);
         },
         calculatePositions: function(filterFn) {
             var coll = this.collection.models;
@@ -255,7 +256,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             _.each(coll, this.moveCircle);
             return d.promise();
         },
-        legendCircle: function(r, originX, originY, index) {
+        legendCircle: function(originX, originY, index) {
             // Helper method to draw circles for use as legends beneath viz.
             var srctext = ['down', 'up/out', 'down/in', 'up/in'];
             var srcstate = [{
@@ -273,12 +274,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }];
             var percent = [1, 0.66, 0.66, 0.4];
 
-            var m = new Models.OSDModel(_.extend(srcstate[index], {
+            var model = new Models.OSDModel(_.extend(srcstate[index], {
                 capacity: 1024,
                 used: percent[index] * 1024
             }));
-            var c = r.circle(originX, originY, 16 * m.getPercentage()).attr({
-                fill: m.getColor(),
+            var c = this.paper.circle(originX, originY, 16 * model.getPercentage()).attr({
+                fill: model.getColor(),
                 stroke: 'none',
                 'cursor': 'default',
                 opacity: 0
@@ -287,23 +288,23 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 opacity: 1
             }, 250, 'easeOut');
             var text = srctext[index];
-            r.text(originX, originY + 23, text).attr({
+            this.paper.text(originX, originY + 23, text).attr({
                 'cursor': 'default',
                 'font-size': '12px',
                 'font-family': 'ApexSansLight'
             });
             return c.animate(aFn);
         },
-        drawLegend: function(r, originX, originY) {
+        drawLegend: function(originX, originY) {
             // Calls legend circle to place in viz.
             var xp = originX,
                 i;
             for (i = 0; i < 4; i += 1, xp += 50) {
-                this.legendCircle(r, xp, originY, i);
+                this.legendCircle(xp, originY, i);
             }
         },
-        animateCircleTraversal: function(r, originX, originY, radius, destX, destY, model) {
-            var c = r.circle(originX, originY, 20 * model.getPercentage()).attr({
+        animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
+            var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
                 fill: model.getColor(),
                 stroke: 'none'
             });
@@ -317,7 +318,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     cx: destX,
                     cy: destY
                 }, 333, 'easeIn', function() {
-                    t = r.text(destX, destY - 1, model.id).attr({
+                    t = this.paper.text(destX, destY - 1, model.id).attr({
                         font: '',
                         stroke: '',
                         fill: '',
@@ -383,9 +384,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             clearTimeout(this.timer);
             this.timer = null;
         },
-        render: function() {
-            Backbone.Marionette.ItemView.prototype.render.apply(this);
-            this.r = window.Raphael(this.ui.viz[0], this.w, this.h);
+        renderWrapper: function(func) {
+            func();
+            this.paper = window.Raphael(this.ui.viz[0], this.w, this.h);
             this.$detailPanel = new OSDDetailView({
                 App: this.App,
                 el: this.ui.detail
@@ -451,7 +452,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'stroke-opacity': 0,
         }, 1000, 'linear'),
         addPulse: function(attrs, id) {
-            var circle = this.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
+            var circle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                 'stroke': '#000'
             }).data('modelid', id).animate(this.pulseAnimation.repeat('Infinity'));
             return circle;
@@ -462,44 +463,49 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 this.pulseTimer = setTimeout(this.removePulse, 1500);
             }
         },
+        areTheDOMWereLookingFor: function(evt) {
+            var nodeName = evt.target.nodeName;
+            return nodeName === 'tspan' || nodeName === 'circle';
+        },
         hoverHandler: function(evt) {
             if (this.state === 'dashboard') {
                 return;
             }
-            if (evt.target.nodeName === 'tspan' || evt.target.nodeName === 'circle') {
-                evt.stopPropagation();
-                evt.preventDefault();
-                var x = evt.clientX;
-                var y = evt.clientY;
-                var el = this.r.getElementByPoint(x, y);
-                if (el) {
-                    var id = el.data('modelid');
-                    if (this.pulseTimer) {
-                        // cancel the remove hover timer if we're
-                        // still active
-                        clearTimeout(this.pulseTimer);
-                        this.pulseTimer = null;
-                    }
-                    if (this.circle && this.circle.data('modelid') === id) {
-                        // ignore hover event if you are hovered over the
-                        // pulsing circle.
-                        return;
-                    }
-                    //console.log(id);
-                    if (_.isNumber(id)) {
-                        // ignore circles and tspans without data
-                        var views = this.collection.get(id).views;
-                        if (views) {
-                            // use the underlying circle element for initial dimensions
-                            var circle = views.circle;
-                            if (circle) {
-                                this.removePulse();
-                                this.circle = this.addPulse(circle.attrs, id);
-                            }
-                        }
-                    }
+            if (!this.areTheDOMWereLookingFor(evt)) {
+                return;
+            }
+            evt.stopPropagation();
+            evt.preventDefault();
+            var x = evt.clientX;
+            var y = evt.clientY;
+            var el = this.paper.getElementByPoint(x, y);
+            if (el) {
+                var id = el.data('modelid');
+                if (this.pulseTimer) {
+                    // cancel the remove hover timer if we're
+                    // still active
+                    clearTimeout(this.pulseTimer);
+                    this.pulseTimer = null;
+                }
+                if (this.circle && this.circle.data('modelid') === id) {
+                    // ignore hover event if you are hovered over the
+                    // pulsing circle.
                     return;
                 }
+                //console.log(id);
+                if (_.isNumber(id)) {
+                    // ignore circles and tspans without data
+                    var views = this.collection.get(id).views;
+                    if (views) {
+                        // use the underlying circle element for initial dimensions
+                        var circle = views.circle;
+                        if (circle) {
+                            this.removePulse();
+                            this.circle = this.addPulse(circle.attrs, id);
+                        }
+                    }
+                }
+                return;
             }
         },
         clickHandler: function(evt) {
@@ -508,37 +514,38 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
             evt.stopPropagation();
             evt.preventDefault();
-            if (evt.target.nodeName === 'tspan' || evt.target.nodeName === 'circle') {
-                var x = evt.clientX;
-                var y = evt.clientY;
-                //console.log(x + ' / ' + y);
-                var el = this.r.getElementByPoint(x, y);
-                //console.log(el);
-                //console.log(el.attrs.x + ' / ' + el.attrs.y);
-                if (el) {
-                    var id = el.data('modelid');
-                    //console.log(id);
-                    if (_.isNumber(id)) {
-                        // ignore circles and tspans without data
-                        var attr = _.clone(this.collection.get(id).attributes);
-                        attr.clazz = 'detail-outer-bottom-right';
-                        if (el.attrs.x || el.attrs.cx) {
-                            var xthres = this.w / 2,
-                                ythres = this.h / 2;
-                            var ix = el.attrs.x || el.attrs.cx,
-                                iy = el.attrs.y || el.attrs.cy;
-                            if (ix > xthres && iy > ythres) {
-                                attr.clazz = 'detail-outer-top-left';
-                            } else if (ix < xthres && iy > ythres) {
-                                attr.clazz = 'detail-outer-top-right';
-                            } else if (ix > xthres && iy < ythres) {
-                                attr.clazz = 'detail-outer-bottom-left';
-                            }
+            if (!this.areTheDOMWereLookingFor(evt)) {
+                return;
+            }
+            var x = evt.clientX;
+            var y = evt.clientY;
+            //console.log(x + ' / ' + y);
+            var el = this.r.getElementByPoint(x, y);
+            //console.log(el);
+            //console.log(el.attrs.x + ' / ' + el.attrs.y);
+            if (el) {
+                var id = el.data('modelid');
+                //console.log(id);
+                if (_.isNumber(id)) {
+                    // ignore circles and tspans without data
+                    var attr = _.clone(this.collection.get(id).attributes);
+                    attr.clazz = 'detail-outer-bottom-right';
+                    if (el.attrs.x || el.attrs.cx) {
+                        var xthres = this.w / 2,
+                            ythres = this.h / 2;
+                        var ix = el.attrs.x || el.attrs.cx,
+                            iy = el.attrs.y || el.attrs.cy;
+                        if (ix > xthres && iy > ythres) {
+                            attr.clazz = 'detail-outer-top-left';
+                        } else if (ix < xthres && iy > ythres) {
+                            attr.clazz = 'detail-outer-top-right';
+                        } else if (ix > xthres && iy < ythres) {
+                            attr.clazz = 'detail-outer-bottom-left';
                         }
-                        this.$detailPanel.set(attr);
                     }
-                    return;
+                    this.$detailPanel.set(attr);
                 }
+                return;
             }
         },
         filter: function(filterCol) {
@@ -582,7 +589,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         if (t) {
                             if (value.views && value.views.circle) {
                                 var attrs = value.views.circle.attrs;
-                                views.pcircle = self.r.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
+                                views.pcircle = self.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                                     'stroke': '#000'
                                 }).animate(self.pulseAnimation.repeat('Infinity'));
                             }
