@@ -137,37 +137,42 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 this.App.vent.trigger('app:fullscreen');
             }
         },
+        toFullscreenTransitionOne: function() {
+            return this.vizSlideRightAnimation(this.ui.viz);
+        },
+        toFullscreenTransitionTwo: function() {
+            var ui = this.ui;
+            ui.viz.addClass('viz-fullscreen');
+            ui.filterpanel.show();
+            this.App.vent.trigger('filter:update');
+            return this.fadeInAnimation(ui.filterpanel);
+        },
         fullscreen: function(callback) {
             this.state = 'fullscreen';
             this.ui.cardTitle.text('OSD Workbench');
             this.$el.removeClass('card').addClass('workbench');
-            var self = this;
-            return this.vizMoveUpAnimation(this.$el, callback).then(function() {
-                return self.vizSlideRightAnimation(self.ui.viz);
+            return this.vizMoveUpAnimation(this.$el, callback).then(this.toFullscreenTransitionOne).then(this.toFullscreenTransitionTwo);
+        },
+        toDashboardTransitionOne: function() {
+            var ui = this.ui;
+            this.fadeOutAnimation(ui.filterpanel).then(function() {
+                ui.filterpanel.css('visibility', 'hidden');
             }).then(function() {
-                self.ui.viz.addClass('viz-fullscreen');
-                self.ui.filterpanel.show();
-                self.App.vent.trigger('filter:update');
-                return self.fadeInAnimation(self.ui.filterpanel);
+                ui.filterpanel.css('visibility', 'visible');
             });
+            this.reset();
+            return this.vizSlideLeftAnimation(ui.viz);
+        },
+        toDashboardTransitionTwo: function() {
+            var ui = this.ui;
+            ui.viz.removeClass('viz-fullscreen');
+            ui.filterpanel.hide();
         },
         dashboard: function(callback) {
             this.state = 'dashboard';
             this.ui.cardTitle.text('OSD Status');
             this.$el.addClass('card').removeClass('workbench');
-            var self = this;
-            return this.vizMoveDownAnimation(this.$el, callback).then(function() {
-                self.fadeOutAnimation(self.ui.filterpanel).then(function() {
-                    self.ui.filterpanel.css('visibility', 'hidden');
-                }).then(function() {
-                    self.ui.filterpanel.css('visibility', 'visible');
-                });
-                self.reset();
-                return self.vizSlideLeftAnimation(self.ui.viz);
-            }).then(function() {
-                self.ui.viz.removeClass('viz-fullscreen');
-                self.ui.filterpanel.hide();
-            });
+            return this.vizMoveDownAnimation(this.$el, callback).then(this.toDashboardTransitionOne).then(this.toDashboardTransitionTwo);
         },
         resetViews: function(collection, options) {
             _.each(options.previousModels, this.cleanupModelView);
@@ -291,7 +296,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var xp = originX;
             _.each(_.range(4), function(index) {
                 this.legendCircle(xp, originY, index);
-                xp +=50;
+                xp += 50;
             }, this);
         },
         animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
