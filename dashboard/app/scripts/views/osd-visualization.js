@@ -115,6 +115,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.height = 11 * this.step;
             this.w = 720;
             this.h = 520;
+            this.threshx = this.w / 2;
+            this.threshy = this.h / 2;
             _.bindAll(this);
 
             this.setupAnimations(this);
@@ -126,57 +128,55 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             Backbone.Marionette.bindEntityEvents(this, this.App.vent, Backbone.Marionette.getOption(this, 'appEvents'));
 
             // App Level Request Responses
-            var self = this;
-            this.App.ReqRes.setHandler('get:hosts', function() {
-                return self.getHosts();
-            });
-            this.App.ReqRes.setHandler('get:osdcounts', function() {
-                return self.getOSDCounters();
-            });
-            this.App.ReqRes.setHandler('get:pgcounts', function() {
-                return self.getPGCounters();
-            });
-            this.App.ReqRes.setHandler('get:osdids', function(host) {
-                return self.getOSDIdsByHost(host);
-            });
+            this.App.ReqRes.setHandler('get:hosts', this.getHosts);
+            this.App.ReqRes.setHandler('get:osdcounts', this.getOSDCounters);
+            this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
+            this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
             this.render = _.wrap(this.render, this.renderWrapper);
+            this.hoverHandler = this.makeSVGEventHandlerFunc(this.hoverHandlerCore);
+            this.clickHandler = this.makeSVGEventHandlerFunc(this.clickHandlerCore);
         },
         screenSwitchHandler: function() {
             if (this.state === 'dashboard') {
                 this.App.vent.trigger('app:fullscreen');
             }
         },
+        toFullscreenTransitionOne: function() {
+            return this.vizSlideRightAnimation(this.ui.viz);
+        },
+        toFullscreenTransitionTwo: function() {
+            var ui = this.ui;
+            ui.viz.addClass('viz-fullscreen');
+            ui.filterpanel.show();
+            this.App.vent.trigger('filter:update');
+            return this.fadeInAnimation(ui.filterpanel);
+        },
         fullscreen: function(callback) {
             this.state = 'fullscreen';
             this.ui.cardTitle.text('OSD Workbench');
             this.$el.removeClass('card').addClass('workbench');
-            var self = this;
-            return this.vizMoveUpAnimation(this.$el, callback).then(function() {
-                return self.vizSlideRightAnimation(self.ui.viz);
+            return this.vizMoveUpAnimation(this.$el, callback).then(this.toFullscreenTransitionOne).then(this.toFullscreenTransitionTwo);
+        },
+        toDashboardTransitionOne: function() {
+            var ui = this.ui;
+            this.fadeOutAnimation(ui.filterpanel).then(function() {
+                ui.filterpanel.css('visibility', 'hidden');
             }).then(function() {
-                self.ui.viz.addClass('viz-fullscreen');
-                self.ui.filterpanel.show();
-                self.App.vent.trigger('filter:update');
-                return self.fadeInAnimation(self.ui.filterpanel);
+                ui.filterpanel.css('visibility', 'visible');
             });
+            this.reset();
+            return this.vizSlideLeftAnimation(ui.viz);
+        },
+        toDashboardTransitionTwo: function() {
+            var ui = this.ui;
+            ui.viz.removeClass('viz-fullscreen');
+            ui.filterpanel.hide();
         },
         dashboard: function(callback) {
             this.state = 'dashboard';
             this.ui.cardTitle.text('OSD Status');
             this.$el.addClass('card').removeClass('workbench');
-            var self = this;
-            return this.vizMoveDownAnimation(this.$el, callback).then(function() {
-                self.fadeOutAnimation(self.ui.filterpanel).then(function() {
-                    self.ui.filterpanel.css('visibility', 'hidden');
-                }).then(function() {
-                    self.ui.filterpanel.css('visibility', 'visible');
-                });
-                self.reset();
-                return self.vizSlideLeftAnimation(self.ui.viz);
-            }).then(function() {
-                self.ui.viz.removeClass('viz-fullscreen');
-                self.ui.filterpanel.hide();
-            });
+            return this.vizMoveDownAnimation(this.$el, callback).then(this.toDashboardTransitionOne).then(this.toDashboardTransitionTwo);
         },
         resetViews: function(collection, options) {
             _.each(options.previousModels, this.cleanupModelView);
@@ -194,7 +194,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }, 250, 'easeIn', function() {
                     circle.remove();
                 });
-                model.views.text.remove();
+                views.text.remove();
                 if (views.pcircle) {
                     views.pcircle.stop().remove();
                 }
@@ -297,11 +297,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         drawLegend: function(originX, originY) {
             // Calls legend circle to place in viz.
-            var xp = originX,
-                i;
-            for (i = 0; i < 4; i += 1, xp += 50) {
-                this.legendCircle(xp, originY, i);
-            }
+            var xp = originX;
+            _.each(_.range(4), function(index) {
+                this.legendCircle(xp, originY, index);
+                xp += 50;
+            }, this);
         },
         animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
             var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
@@ -441,9 +441,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
         },
         removePulse: function() {
-            if (this.circle) {
-                this.circle.stop().remove();
-                this.circle = null;
+            if (this.pulseCircle) {
+                this.pulseCircle.stop().remove();
+                this.pulseCircle = null;
                 this.pulseTimer = null;
             }
         },
@@ -467,86 +467,78 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var nodeName = evt.target.nodeName;
             return nodeName === 'tspan' || nodeName === 'circle';
         },
-        hoverHandler: function(evt) {
-            if (this.state === 'dashboard') {
+        hoverHandlerCore: function(el, id) {
+            if (this.pulseTimer) {
+                // cancel the remove hover timer if we're
+                // still active
+                clearTimeout(this.pulseTimer);
+                this.pulseTimer = null;
+            }
+            if (this.pulseCircle && this.pulseCircle.data('modelid') === id) {
+                // ignore hover event if you are hovered over the
+                // pulsing circle.
                 return;
             }
-            if (!this.areTheDOMWereLookingFor(evt)) {
-                return;
-            }
-            evt.stopPropagation();
-            evt.preventDefault();
-            var x = evt.clientX;
-            var y = evt.clientY;
-            var el = this.paper.getElementByPoint(x, y);
-            if (el) {
-                var id = el.data('modelid');
-                if (this.pulseTimer) {
-                    // cancel the remove hover timer if we're
-                    // still active
-                    clearTimeout(this.pulseTimer);
-                    this.pulseTimer = null;
-                }
-                if (this.circle && this.circle.data('modelid') === id) {
-                    // ignore hover event if you are hovered over the
-                    // pulsing circle.
-                    return;
-                }
-                //console.log(id);
-                if (_.isNumber(id)) {
-                    // ignore circles and tspans without data
-                    var views = this.collection.get(id).views;
-                    if (views) {
-                        // use the underlying circle element for initial dimensions
-                        var circle = views.circle;
-                        if (circle) {
-                            this.removePulse();
-                            this.circle = this.addPulse(circle.attrs, id);
-                        }
+            //console.log(id);
+            if (_.isNumber(id)) {
+                // ignore circles and tspans without data
+                var views = this.collection.get(id).views;
+                if (views) {
+                    // use the underlying circle element for initial dimensions
+                    var circle = views.circle;
+                    if (circle) {
+                        this.removePulse();
+                        this.pulseCircle = this.addPulse(circle.attrs, id);
                     }
                 }
-                return;
             }
         },
-        clickHandler: function(evt) {
-            if (this.state === 'dashboard') {
-                return;
-            }
-            evt.stopPropagation();
-            evt.preventDefault();
-            if (!this.areTheDOMWereLookingFor(evt)) {
-                return;
-            }
-            var x = evt.clientX;
-            var y = evt.clientY;
-            //console.log(x + ' / ' + y);
-            var el = this.paper.getElementByPoint(x, y);
-            //console.log(el);
-            //console.log(el.attrs.x + ' / ' + el.attrs.y);
-            if (el) {
-                var id = el.data('modelid');
-                //console.log(id);
-                if (_.isNumber(id)) {
-                    // ignore circles and tspans without data
-                    var attr = _.clone(this.collection.get(id).attributes);
-                    attr.clazz = 'detail-outer-bottom-right';
-                    if (el.attrs.x || el.attrs.cx) {
-                        var xthres = this.w / 2,
-                            ythres = this.h / 2;
-                        var ix = el.attrs.x || el.attrs.cx,
-                            iy = el.attrs.y || el.attrs.cy;
-                        if (ix > xthres && iy > ythres) {
-                            attr.clazz = 'detail-outer-top-left';
-                        } else if (ix < xthres && iy > ythres) {
-                            attr.clazz = 'detail-outer-top-right';
-                        } else if (ix > xthres && iy < ythres) {
-                            attr.clazz = 'detail-outer-bottom-left';
-                        }
+        dialogPlacement: ['detail-outer-bottom-right', 'detail-outer-top-left', 'detail-outer-top-right', 'detail-outer-bottom-left'],
+        clickHandlerCore: function(el, id) {
+            if (_.isNumber(id)) {
+                // ignore circles and tspans without data
+                var mAttr = this.collection.get(id).attributes;
+                mAttr.clazz = this.dialogPlacement[0];
+                var placement = 0;
+                var eAttr = el.attrs;
+                if (eAttr.x || eAttr.cx) {
+                    var ix = eAttr.x || eAttr.cx,
+                        iy = eAttr.y || eAttr.cy;
+                    if (ix > this.threshx && iy > this.threshy) {
+                        placement = 1;
+                    } else if (ix < this.threshx && iy > this.threshy) {
+                        placement = 2;
+                    } else if (ix > this.threshx && iy < this.threshy) {
+                        placement = 3;
                     }
-                    this.$detailPanel.set(attr);
                 }
-                return;
+                mAttr.clazz = this.dialogPlacement[placement];
+                this.$detailPanel.set(mAttr);
             }
+        },
+        makeSVGEventHandlerFunc: function(func) {
+            // create a SVG event handler function template
+            return function(evt) {
+                if (this.state === 'dashboard') {
+                    return;
+                }
+                evt.stopPropagation();
+                evt.preventDefault();
+                if (!this.areTheDOMWereLookingFor(evt)) {
+                    return;
+                }
+                var x = evt.clientX;
+                var y = evt.clientY;
+                //console.log(x + ' / ' + y);
+                var el = this.paper.getElementByPoint(x, y);
+                //console.log(el);
+                //console.log(el.attrs.x + ' / ' + el.attrs.y);
+                if (el) {
+                    var id = el.data('modelid');
+                    //console.log(id);
+                    func.call(this, el, id);
+                }
+            };
         },
         filter: function(filterCol) {
             var enabled = filterCol.where({
@@ -576,10 +568,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 pulse: true,
                 visible: true
             });
-            var self = this;
             this.collection.filter(function(value) {
                 var views = value.views;
-                if (views && views.pcircle) {
+                if (!views) {
+                    return;
+                }
+                if (views.pcircle) {
                     views.pcircle.stop().remove();
                     views.pcircle = null;
                 }
@@ -587,18 +581,18 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     if (_.isFunction(obj.get('match'))) {
                         var t = obj.get('match')(value);
                         if (t) {
-                            if (value.views && value.views.circle) {
-                                var attrs = value.views.circle.attrs;
-                                views.pcircle = self.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
+                            if (views.circle) {
+                                var attrs = views.circle.attrs;
+                                views.pcircle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                                     'stroke': '#000'
-                                }).animate(self.pulseAnimation.repeat('Infinity'));
+                                }).animate(this.pulseAnimation.repeat('Infinity'));
                             }
                         }
                         return t;
                     }
                     return false;
-                });
-            });
+                }, this);
+            }, this);
         },
         reset: function() {
             this.resetViews(null, {
