@@ -131,6 +131,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
             this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
             this.render = _.wrap(this.render, this.renderWrapper);
+            this.hoverHandler = this.makeSVGEventHandlerFunc(this.hoverHandlerCore);
+            this.clickHandler = this.makeSVGEventHandlerFunc(this.clickHandlerCore);
         },
         screenSwitchHandler: function() {
             if (this.state === 'dashboard') {
@@ -463,86 +465,76 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var nodeName = evt.target.nodeName;
             return nodeName === 'tspan' || nodeName === 'circle';
         },
-        hoverHandler: function(evt) {
-            if (this.state === 'dashboard') {
+        hoverHandlerCore: function(el, id) {
+            if (this.pulseTimer) {
+                // cancel the remove hover timer if we're
+                // still active
+                clearTimeout(this.pulseTimer);
+                this.pulseTimer = null;
+            }
+            if (this.pulseCircle && this.pulseCircle.data('modelid') === id) {
+                // ignore hover event if you are hovered over the
+                // pulsing circle.
                 return;
             }
-            if (!this.areTheDOMWereLookingFor(evt)) {
-                return;
-            }
-            evt.stopPropagation();
-            evt.preventDefault();
-            var x = evt.clientX;
-            var y = evt.clientY;
-            var el = this.paper.getElementByPoint(x, y);
-            if (el) {
-                var id = el.data('modelid');
-                if (this.pulseTimer) {
-                    // cancel the remove hover timer if we're
-                    // still active
-                    clearTimeout(this.pulseTimer);
-                    this.pulseTimer = null;
-                }
-                if (this.pulseCircle && this.pulseCircle.data('modelid') === id) {
-                    // ignore hover event if you are hovered over the
-                    // pulsing circle.
-                    return;
-                }
-                //console.log(id);
-                if (_.isNumber(id)) {
-                    // ignore circles and tspans without data
-                    var views = this.collection.get(id).views;
-                    if (views) {
-                        // use the underlying circle element for initial dimensions
-                        var circle = views.circle;
-                        if (circle) {
-                            this.removePulse();
-                            this.pulseCircle = this.addPulse(circle.attrs, id);
-                        }
+            //console.log(id);
+            if (_.isNumber(id)) {
+                // ignore circles and tspans without data
+                var views = this.collection.get(id).views;
+                if (views) {
+                    // use the underlying circle element for initial dimensions
+                    var circle = views.circle;
+                    if (circle) {
+                        this.removePulse();
+                        this.pulseCircle = this.addPulse(circle.attrs, id);
                     }
                 }
-                return;
             }
         },
-        clickHandler: function(evt) {
-            if (this.state === 'dashboard') {
-                return;
-            }
-            evt.stopPropagation();
-            evt.preventDefault();
-            if (!this.areTheDOMWereLookingFor(evt)) {
-                return;
-            }
-            var x = evt.clientX;
-            var y = evt.clientY;
-            //console.log(x + ' / ' + y);
-            var el = this.paper.getElementByPoint(x, y);
-            //console.log(el);
-            //console.log(el.attrs.x + ' / ' + el.attrs.y);
-            if (el) {
-                var id = el.data('modelid');
-                //console.log(id);
-                if (_.isNumber(id)) {
-                    // ignore circles and tspans without data
-                    var attr = _.clone(this.collection.get(id).attributes);
-                    attr.clazz = 'detail-outer-bottom-right';
-                    if (el.attrs.x || el.attrs.cx) {
-                        var xthres = this.w / 2,
-                            ythres = this.h / 2;
-                        var ix = el.attrs.x || el.attrs.cx,
-                            iy = el.attrs.y || el.attrs.cy;
-                        if (ix > xthres && iy > ythres) {
-                            attr.clazz = 'detail-outer-top-left';
-                        } else if (ix < xthres && iy > ythres) {
-                            attr.clazz = 'detail-outer-top-right';
-                        } else if (ix > xthres && iy < ythres) {
-                            attr.clazz = 'detail-outer-bottom-left';
-                        }
+        clickHandlerCore: function(el, id) {
+            if (_.isNumber(id)) {
+                // ignore circles and tspans without data
+                var attr = _.clone(this.collection.get(id).attributes);
+                attr.clazz = 'detail-outer-bottom-right';
+                if (el.attrs.x || el.attrs.cx) {
+                    var xthres = this.w / 2,
+                        ythres = this.h / 2;
+                    var ix = el.attrs.x || el.attrs.cx,
+                        iy = el.attrs.y || el.attrs.cy;
+                    if (ix > xthres && iy > ythres) {
+                        attr.clazz = 'detail-outer-top-left';
+                    } else if (ix < xthres && iy > ythres) {
+                        attr.clazz = 'detail-outer-top-right';
+                    } else if (ix > xthres && iy < ythres) {
+                        attr.clazz = 'detail-outer-bottom-left';
                     }
-                    this.$detailPanel.set(attr);
                 }
-                return;
+                this.$detailPanel.set(attr);
             }
+        },
+        makeSVGEventHandlerFunc: function(func) {
+            // create a SVG event handler function template
+            return function(evt) {
+                if (this.state === 'dashboard') {
+                    return;
+                }
+                evt.stopPropagation();
+                evt.preventDefault();
+                if (!this.areTheDOMWereLookingFor(evt)) {
+                    return;
+                }
+                var x = evt.clientX;
+                var y = evt.clientY;
+                //console.log(x + ' / ' + y);
+                var el = this.paper.getElementByPoint(x, y);
+                //console.log(el);
+                //console.log(el.attrs.x + ' / ' + el.attrs.y);
+                if (el) {
+                    var id = el.data('modelid');
+                    //console.log(id);
+                    func.call(this, el, id);
+                }
+            };
         },
         filter: function(filterCol) {
             var enabled = filterCol.where({
