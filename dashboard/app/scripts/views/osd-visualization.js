@@ -194,7 +194,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }, 250, 'easeIn', function() {
                     circle.remove();
                 });
-                model.views.text.remove();
+                views.text.remove();
                 if (views.pcircle) {
                     views.pcircle.stop().remove();
                 }
@@ -570,7 +570,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             this.collection.filter(function(value) {
                 var views = value.views;
-                if (views && views.pcircle) {
+                if (!views) {
+                    return;
+                }
+                if (views.pcircle) {
                     views.pcircle.stop().remove();
                     views.pcircle = null;
                 }
@@ -578,8 +581,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     if (_.isFunction(obj.get('match'))) {
                         var t = obj.get('match')(value);
                         if (t) {
-                            if (value.views && value.views.circle) {
-                                var attrs = value.views.circle.attrs;
+                            if (views.circle) {
+                                var attrs = views.circle.attrs;
                                 views.pcircle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                                     'stroke': '#000'
                                 }).animate(this.pulseAnimation.repeat('Infinity'));
