@@ -387,7 +387,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         renderWrapper: function(func) {
             func();
             this.paper = window.Raphael(this.ui.viz[0], this.w, this.h);
-            this.circleTemplate = this.paper.circle(0, 0, 0);
             this.$detailPanel = new OSDDetailView({
                 App: this.App,
                 el: this.ui.detail
@@ -451,7 +450,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         pulseAnimation: Raphael.animation({
             r: 30,
             'stroke-opacity': 0,
-        }, 1000, 'linear').repeat('Infinity'),
+        }, 1000, 'linear').repeat(2),
         addPulse: function(attrs, id) {
             var circle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                 'stroke': '#000'
@@ -569,7 +568,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 pulse: true,
                 visible: true
             });
-            this.collection.filter(function(value) {
+            this.collection.each(function(value) {
                 var views = value.views;
                 if (!views) {
                     return;
@@ -583,15 +582,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         var t = obj.get('match')(value);
                         if (t) {
                             if (views.circle) {
-                                var attrs = views.circle.attrs;
                                 if (views.pcircle) {
                                     views.pcircle.show();
                                 } else {
-                                    views.pcircle = this.circleTemplate.clone().attr({
-                                        cx: attrs.cx,
-                                        cy: attrs.cy,
-                                        r: attrs.r + 1,
-                                        'stroke': '#000'
+                                    views.pcircle = views.circle.clone().attr({
+                                        r: views.circle.attrs.r + 1,
+                                        'stroke': '#000',
+                                        'fill': 'none'
                                     }).animate(this.pulseAnimation);
                                 }
 
