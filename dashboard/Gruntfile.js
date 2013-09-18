@@ -28,16 +28,16 @@ module.exports = function (grunt) {
         watch: {
             coffee: {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
-                tasks: ['coffee:dist']
+                tasks: ['newer:coffee:dist']
             },
             coffeeTest: {
                 files: ['test/spec/{,*/}*.coffee'],
-                tasks: ['coffee:test']
+                tasks: ['newer:coffee:test']
             },
             compass: {
                 config: 'config.rb',
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-                tasks: ['compass']
+                tasks: ['newer:compass']
             },
             livereload: {
                 files: [
@@ -53,7 +53,7 @@ module.exports = function (grunt) {
                     '<%= yeoman.app %>/scripts/templates/*.ejs',
                     '<%= yeoman.app %>/scripts/templates/graphite/*.ejs',
                 ],
-                tasks: ['jst']
+                tasks: ['newer:jst']
             }
         },
         connect: {
