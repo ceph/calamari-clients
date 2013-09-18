@@ -450,11 +450,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         pulseAnimation: Raphael.animation({
             r: 30,
             'stroke-opacity': 0,
-        }, 1000, 'linear'),
+        }, 1000, 'linear').repeat('Infinity'),
         addPulse: function(attrs, id) {
             var circle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                 'stroke': '#000'
-            }).data('modelid', id).animate(this.pulseAnimation.repeat('Infinity'));
+            }).data('modelid', id).animate(this.pulseAnimation);
             return circle;
         },
         unhoverHandler: function() {
@@ -585,7 +585,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                                 var attrs = views.circle.attrs;
                                 views.pcircle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                                     'stroke': '#000'
-                                }).animate(this.pulseAnimation.repeat('Infinity'));
+                                }).animate(this.pulseAnimation);
                             }
                         }
                         return t;
