@@ -437,9 +437,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
         },
         removePulse: function() {
-            if (this.circle) {
-                this.circle.stop().remove();
-                this.circle = null;
+            if (this.pulseCircle) {
+                this.pulseCircle.stop().remove();
+                this.pulseCircle = null;
                 this.pulseTimer = null;
             }
         },
@@ -483,7 +483,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     clearTimeout(this.pulseTimer);
                     this.pulseTimer = null;
                 }
-                if (this.circle && this.circle.data('modelid') === id) {
+                if (this.pulseCircle && this.pulseCircle.data('modelid') === id) {
                     // ignore hover event if you are hovered over the
                     // pulsing circle.
                     return;
@@ -497,7 +497,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         var circle = views.circle;
                         if (circle) {
                             this.removePulse();
-                            this.circle = this.addPulse(circle.attrs, id);
+                            this.pulseCircle = this.addPulse(circle.attrs, id);
                         }
                     }
                 }
