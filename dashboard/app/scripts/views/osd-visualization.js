@@ -196,7 +196,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 });
                 views.text.remove();
                 if (views.pcircle) {
-                    views.pcircle.stop().remove();
+                    views.pcircle.stop().hide();
                 }
                 model.views = null;
             }
@@ -387,6 +387,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         renderWrapper: function(func) {
             func();
             this.paper = window.Raphael(this.ui.viz[0], this.w, this.h);
+            this.circleTemplate = this.paper.circle(0, 0, 0);
             this.$detailPanel = new OSDDetailView({
                 App: this.App,
                 el: this.ui.detail
@@ -442,7 +443,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         removePulse: function() {
             if (this.pulseCircle) {
-                this.pulseCircle.stop().remove();
+                this.pulseCircle.stop().hide();
                 this.pulseCircle = null;
                 this.pulseTimer = null;
             }
@@ -574,7 +575,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     return;
                 }
                 if (views.pcircle) {
-                    views.pcircle.stop().remove();
+                    views.pcircle.stop().hide();
                     views.pcircle = null;
                 }
                 return _.find(pulsed, function(obj) {
@@ -583,9 +584,17 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         if (t) {
                             if (views.circle) {
                                 var attrs = views.circle.attrs;
-                                views.pcircle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
-                                    'stroke': '#000'
-                                }).animate(this.pulseAnimation);
+                                if (views.pcircle) {
+                                    views.pcircle.show();
+                                } else {
+                                    views.pcircle = this.circleTemplate.clone().attr({
+                                        cx: attrs.cx,
+                                        cy: attrs.cy,
+                                        r: attrs.r + 1,
+                                        'stroke': '#000'
+                                    }).animate(this.pulseAnimation);
+                                }
+
                             }
                         }
                         return t;
