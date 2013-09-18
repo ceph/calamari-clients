@@ -126,19 +126,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             Backbone.Marionette.bindEntityEvents(this, this.App.vent, Backbone.Marionette.getOption(this, 'appEvents'));
 
             // App Level Request Responses
-            var self = this;
-            this.App.ReqRes.setHandler('get:hosts', function() {
-                return self.getHosts();
-            });
-            this.App.ReqRes.setHandler('get:osdcounts', function() {
-                return self.getOSDCounters();
-            });
-            this.App.ReqRes.setHandler('get:pgcounts', function() {
-                return self.getPGCounters();
-            });
-            this.App.ReqRes.setHandler('get:osdids', function(host) {
-                return self.getOSDIdsByHost(host);
-            });
+            this.App.ReqRes.setHandler('get:hosts', this.getHosts);
+            this.App.ReqRes.setHandler('get:osdcounts', this.getOSDCounters);
+            this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
+            this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
             this.render = _.wrap(this.render, this.renderWrapper);
         },
         screenSwitchHandler: function() {
@@ -297,11 +288,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         drawLegend: function(originX, originY) {
             // Calls legend circle to place in viz.
-            var xp = originX,
-                i;
-            for (i = 0; i < 4; i += 1, xp += 50) {
-                this.legendCircle(xp, originY, i);
-            }
+            var xp = originX;
+            _.each(_.range(4), function(index) {
+                this.legendCircle(xp, originY, index);
+                xp +=50;
+            }, this);
         },
         animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
             var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
@@ -576,7 +567,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 pulse: true,
                 visible: true
             });
-            var self = this;
             this.collection.filter(function(value) {
                 var views = value.views;
                 if (views && views.pcircle) {
@@ -589,16 +579,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         if (t) {
                             if (value.views && value.views.circle) {
                                 var attrs = value.views.circle.attrs;
-                                views.pcircle = self.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
+                                views.pcircle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                                     'stroke': '#000'
-                                }).animate(self.pulseAnimation.repeat('Infinity'));
+                                }).animate(this.pulseAnimation.repeat('Infinity'));
                             }
                         }
                         return t;
                     }
                     return false;
-                });
-            });
+                }, this);
+            }, this);
         },
         reset: function() {
             this.resetViews(null, {
