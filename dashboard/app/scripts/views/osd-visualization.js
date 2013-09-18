@@ -240,7 +240,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
             this.animateCircleTraversal(start.x, start.y, 8, pos.nx, pos.ny, model);
         },
-        calculatePositions: function(filterFn) {
+        renderOSDViews: function(filterFn) {
             var coll = this.collection.models;
             if (filterFn) {
                 coll = _.filter(coll, filterFn);
@@ -403,7 +403,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.drawGrid(d);
             var p = d.promise();
             var vent = this.App.vent;
-            p.then(this.calculatePositions).then(function() {
+            p.then(this.renderOSDViews).then(function() {
                 vent.trigger('viz:render');
             });
             return p;
@@ -549,7 +549,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 previousModels: this.collection.models
             });
             var vent = this.App.vent;
-            return this.calculatePositions(function(m) {
+            return this.renderOSDViews(function(m) {
                 return _.find(enabled, function(obj) {
                     if (_.isFunction(obj.get('match'))) {
                         var t = obj.get('match')(m);
@@ -599,7 +599,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 previousModels: this.collection.models
             });
             var vent = this.App.vent;
-            return this.calculatePositions().then(function() {
+            return this.renderOSDViews().then(function() {
                 vent.trigger('viz:render');
             });
         }
