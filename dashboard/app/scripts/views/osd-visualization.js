@@ -115,6 +115,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.height = 11 * this.step;
             this.w = 720;
             this.h = 520;
+            this.threshx = this.w / 2;
+            this.threshy = this.h / 2;
             _.bindAll(this);
 
             this.setupAnimations(this);
@@ -491,25 +493,27 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             }
         },
+        dialogPlacement: ['detail-outer-bottom-right', 'detail-outer-top-left', 'detail-outer-top-right', 'detail-outer-bottom-left'],
         clickHandlerCore: function(el, id) {
             if (_.isNumber(id)) {
                 // ignore circles and tspans without data
-                var attr = _.clone(this.collection.get(id).attributes);
-                attr.clazz = 'detail-outer-bottom-right';
-                if (el.attrs.x || el.attrs.cx) {
-                    var xthres = this.w / 2,
-                        ythres = this.h / 2;
-                    var ix = el.attrs.x || el.attrs.cx,
-                        iy = el.attrs.y || el.attrs.cy;
-                    if (ix > xthres && iy > ythres) {
-                        attr.clazz = 'detail-outer-top-left';
-                    } else if (ix < xthres && iy > ythres) {
-                        attr.clazz = 'detail-outer-top-right';
-                    } else if (ix > xthres && iy < ythres) {
-                        attr.clazz = 'detail-outer-bottom-left';
+                var mAttr = this.collection.get(id).attributes;
+                mAttr.clazz = this.dialogPlacement[0];
+                var placement = 0;
+                var eAttr = el.attrs;
+                if (eAttr.x || eAttr.cx) {
+                    var ix = eAttr.x || eAttr.cx,
+                        iy = eAttr.y || eAttr.cy;
+                    if (ix > this.threshx && iy > this.threshy) {
+                        placement = 1;
+                    } else if (ix < this.threshx && iy > this.threshy) {
+                        placement = 2;
+                    } else if (ix > this.threshx && iy < this.threshy) {
+                        placement = 3;
                     }
                 }
-                this.$detailPanel.set(attr);
+                mAttr.clazz = this.dialogPlacement[placement];
+                this.$detailPanel.set(mAttr);
             }
         },
         makeSVGEventHandlerFunc: function(func) {
