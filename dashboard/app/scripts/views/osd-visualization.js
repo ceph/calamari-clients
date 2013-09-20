@@ -195,6 +195,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     circle.remove();
                 });
                 views.text.remove();
+                if (views.square) {
+                    views.square.remove();
+                    model.set('adj', null);
+                }
                 if (views.pcircle) {
                     views.pcircle.stop().hide();
                 }
@@ -243,14 +247,24 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
             this.animateCircleTraversal(start.x, start.y, 8, pos.nx, pos.ny, model);
         },
+        hex: function(value) {
+            var hex = '00' + value.toString(16);
+            return hex.substr(hex.length - 2, hex.length);
+        },
         criteria: function(model) {
-            return model.get('host') + model.get('osd');
+            return model.get('host') + this.hex(model.get('osd'));
         },
         isAdjacent: function(index1, index2) {
             var cola = index1.id % 16;
             var rowa = Math.floor(index1.id / 16);
             var colb = index2.id % 16;
             var rowb = Math.floor(index2.id / 16);
+            if (rowa + 1 === rowb && cola === colb) {
+                // below
+                index1.adj = 4;
+                index2.adj = 1;
+                return true;
+            }
             if (rowa === rowb && colb === cola + 1) {
                 // to right
                 index1.adj = 2;
@@ -261,12 +275,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 //to left
                 index1.adj = 8;
                 index2.adj = 2;
-                return true;
-            }
-            if (rowa + 1 === rowb && cola === colb) {
-                // below
-                index1.adj = 4;
-                index2.adj = 1;
                 return true;
             }
             return false;
@@ -326,8 +334,63 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 osd.set('group', group);
                 lastElem = arrItem;
             });
-            _.each(_.pluck(arr, 'osd'), this.moveCircle);
+            coll = _.map(_.pluck(arr, 'osd'), function(model, index) {
+                var adj = model.get('adj');
+                if (this.checkCorners(adj)) {
+                    var losd, ladj;
+                    //console.log(model.get('osd') + ' check ' + adj);
+                    if (this.below(adj)) {
+                        /*jshint bitwise: false */
+                        adj = adj ^ 4;
+                        model.set('adj', adj);
+                        losd = arr[index + 16].osd;
+                        ladj = losd.get('adj');
+                        ladj |= 16;
+                        losd.set('adj', ladj);
+                        //console.log('below ' + losd.get('osd') + ' ' + losd.get('adj'));
+                    }
+                    if (this.above(adj)) {
+                        /*jshint bitwise: false */
+                        adj = adj ^ 1;
+                        model.set('adj', adj);
+                        losd = arr[index - 16].osd;
+                        ladj = losd.get('adj');
+                        ladj |= 32;
+                        losd.set('adj', ladj);
+                        //console.log('above ' + losd.get('osd') + ' ' + losd.get('adj'));
+                    }
+                }
+                return model;
+            }, this);
+            _.each(coll, this.moveCircle, this);
             return d.promise();
+        },
+        checkCorners: function(adj) {
+            return (adj && adj === 3 || adj === 9 || adj === 12 || adj === 6);
+        },
+        above: function(adj) {
+            /*jshint bitwise: false */
+            return (adj & 1) === 1;
+        },
+        left: function(adj) {
+            /*jshint bitwise: false */
+            return (adj & 2) === 2;
+        },
+        below: function(adj) {
+            /*jshint bitwise: false */
+            return (adj & 4) === 4;
+        },
+        right: function(adj) {
+            /*jshint bitwise: false */
+            return (adj & 8) === 8;
+        },
+        corner1: function(adj) {
+            /*jshint bitwise: false */
+            return (adj & 16) === 16;
+        },
+        corner2: function(adj) {
+            /*jshint bitwise: false */
+            return (adj & 32) === 32;
         },
         legendCircle: function(originX, originY, index) {
             // Helper method to draw circles for use as legends beneath viz.
@@ -384,34 +447,42 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return 'hsb(' + 1.0 / (index / 360) + ', 0.70, 0.95)';
         },
         animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
-            /*jshint bitwise: false */
-            var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
-                fill: this.getColor(model),
-                stroke: 'none'
-            });
             var adj = model.get('adj');
             var sqox = 18;
             var sqoy = 18;
             var sqh = 36;
             var sqw = 36;
-            if ((adj & 1) === 1) {
+            if (this.above(adj)) {
                 sqh += 2;
                 sqoy += 2;
             }
-            if ((adj & 2) === 2) {
+            if (this.left(adj)) {
                 sqw += 2;
             }
-            if ((adj & 4) === 4) {
+            if (this.below(adj)) {
                 sqh += 2;
             }
-            if ((adj & 8) === 8) {
+            if (this.right(adj)) {
                 sqox += 2;
                 sqw += 2;
             }
+            if (this.corner1(adj)) {
+                sqh += 2;
+                sqoy += 2;
+            }
+            //console.log(model.get('osd') + ' adj ' + adj);
+            if (this.corner2(adj)) {
+                sqh += 2;
+            }
             var sq = this.paper.rect(destX - sqox, destY - sqoy, sqw, sqh).attr({
-//                'fill': this.getColor(model),
-                opacity: '1',
+                'fill': this.getColor(model),
+                opacity: '0.4',
                 'stroke': this.getColor(model)
+            });
+            sq.data('modelid', model.id);
+            var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
+                fill: model.getColor(model),
+                stroke: 'none'
             });
             c.data('modelid', model.id);
             var t;
@@ -437,7 +508,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     model.views = {
                         circle: c,
                         text: t,
-                        sq: sq
+                        square: sq
                     };
                 });
             });
