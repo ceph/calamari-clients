@@ -236,9 +236,40 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             y: 400
         }],
         moveCircle: function(model, index) {
+            if (model === null) {
+                return;
+            }
             var start = this.startPosition[Math.floor(Math.random() * 4)];
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
             this.animateCircleTraversal(start.x, start.y, 8, pos.nx, pos.ny, model);
+        },
+        criteria: function(model) {
+            return model.get('host') + model.get('osd');
+        },
+        isAdjacent: function(index1, index2) {
+            var cola = index1.id % 16;
+            var rowa = Math.floor(index1.id / 16);
+            var colb = index2.id % 16;
+            var rowb = Math.floor(index2.id / 16);
+            if (rowa === rowb && colb === cola + 1) {
+                // to right
+                index1.adj = 2;
+                index2.adj = 8;
+                return true;
+            }
+            if (rowa === rowb && colb === cola - 1) {
+                //to left
+                index1.adj = 8;
+                index2.adj = 2;
+                return true;
+            }
+            if (rowa + 1 === rowb && cola === colb) {
+                // below
+                index1.adj = 4;
+                index2.adj = 1;
+                return true;
+            }
+            return false;
         },
         renderOSDViews: function(filterFn) {
             var coll = this.collection.models;
@@ -249,11 +280,53 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var d = $.Deferred();
             var last = _.last(coll);
             if (last) {
+                // add deferred to last model so we can
+                // signal rendering is done.
                 last.deferred = d;
             } else {
                 d.resolve();
             }
-            _.each(coll, this.moveCircle);
+            // TODO Add another stage here for position sorting which takes the
+            // first list and creates a new list with gaps in the list
+            // then it should render correctly.
+            coll = _.sortBy(coll, this.criteria);
+            var arr = _.map(_.range(160), function(value) {
+                return {
+                    id: value,
+                    osd: null,
+                    adj: 0
+                };
+            });
+            var lastElem = null;
+            var self = this;
+            var group = 1;
+            var adj;
+            _.each(coll, function(osd) {
+                var arrItem = _.find(arr, function(elem) {
+                    if (lastElem === null && elem.osd === null) {
+                        return true;
+                    }
+                    return elem.osd === null && self.isAdjacent(lastElem, elem);
+                });
+                arrItem.osd = osd;
+                if (lastElem) {
+                    if (lastElem.osd.get('host') !== osd.get('host')) {
+                        group += 2.5;
+                    } else {
+                        if (lastElem.adj) {
+                            adj = lastElem.osd.get('adj') || 0;
+                            lastElem.osd.set('adj', lastElem.adj + adj);
+                        }
+                        if (arrItem.adj) {
+                            adj = osd.get('adj') || 0;
+                            osd.set('adj', arrItem.adj + adj);
+                        }
+                    }
+                }
+                osd.set('group', group);
+                lastElem = arrItem;
+            });
+            _.each(_.pluck(arr, 'osd'), this.moveCircle);
             return d.promise();
         },
         legendCircle: function(originX, originY, index) {
@@ -303,10 +376,42 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 xp += 50;
             }, this);
         },
+        getColor: function(model) {
+            var m = this.collection.findWhere({
+                host: model.get('host')
+            });
+            var index = m.get('group') || 1;
+            return 'hsb(' + 1.0 / (index / 360) + ', 0.70, 0.95)';
+        },
         animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
+            /*jshint bitwise: false */
             var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
-                fill: model.getColor(),
+                fill: this.getColor(model),
                 stroke: 'none'
+            });
+            var adj = model.get('adj');
+            var sqox = 18;
+            var sqoy = 18;
+            var sqh = 36;
+            var sqw = 36;
+            if ((adj & 1) === 1) {
+                sqh += 2;
+                sqoy += 2;
+            }
+            if ((adj & 2) === 2) {
+                sqw += 2;
+            }
+            if ((adj & 4) === 4) {
+                sqh += 2;
+            }
+            if ((adj & 8) === 8) {
+                sqox += 2;
+                sqw += 2;
+            }
+            var sq = this.paper.rect(destX - sqox, destY - sqoy, sqw, sqh).attr({
+//                'fill': this.getColor(model),
+                opacity: '1',
+                'stroke': this.getColor(model)
             });
             c.data('modelid', model.id);
             var t;
@@ -331,7 +436,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     }
                     model.views = {
                         circle: c,
-                        text: t
+                        text: t,
+                        sq: sq
                     };
                 });
             });
