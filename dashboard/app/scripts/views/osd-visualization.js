@@ -446,7 +446,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var index = m.get('group') || 1;
             return 'hsb(' + 1.0 / (index / 360) + ', 0.17, 0.8)';
         },
-        animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
+        addBackgroundSquare: function(destX, destY, model) {
             var adj = model.get('adj');
             var sqox = 18;
             var sqoy = 18;
@@ -480,6 +480,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 'stroke': this.getColor(model)
             });
             sq.data('modelid', model.id);
+            return sq;
+        },
+        animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
+            var sq = this.addBackgroundSquare(destX, destY, model);
             var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
                 fill: model.getColor(model),
                 stroke: 'none'
