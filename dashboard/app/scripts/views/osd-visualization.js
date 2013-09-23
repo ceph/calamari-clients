@@ -23,10 +23,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             spinner: '.icon-spinner'
         },
         events: {
-            'click .viz': 'clickHandler',
+            'click .viz': 'osdClickHandler',
             'click': 'screenSwitchHandler',
-            'mouseenter circle, tspan': 'hoverHandler',
-            'mouseleave circle, tspan': 'unhoverHandler'
+            'mouseenter circle, tspan, rect': 'osdHoverHandler',
+            'mouseleave circle, tspan, rect': 'osdUnhoverHandler',
+            //            'mouseenter rect': 'hostGroupHoverHandler',
+            //            'mouseleave rect': 'hostGroupUnhoverHandler',
         },
         collectionEvents: {
             'add': 'addOSD',
@@ -133,8 +135,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
             this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
             this.render = _.wrap(this.render, this.renderWrapper);
-            this.hoverHandler = this.makeSVGEventHandlerFunc(this.hoverHandlerCore);
-            this.clickHandler = this.makeSVGEventHandlerFunc(this.clickHandlerCore);
+            this.osdHoverHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, [this.osdHoverHandlerCore, this.hostGroupHoverHandlerCore]);
+            this.osdClickHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, this.osdClickHandlerCore);
         },
         screenSwitchHandler: function() {
             if (this.state === 'dashboard') {
@@ -444,7 +446,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 host: model.get('host')
             });
             var index = m.get('group') || 1;
-            return 'hsb(' + 1.0 / (index / 360) + ', 0.70, 0.95)';
+            return 'hsb(' + 1.0 / (index / 360) + ', 0.17, 0.8)';
         },
         animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
             var adj = model.get('adj');
@@ -634,17 +636,21 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }).data('modelid', id).animate(this.pulseAnimation);
             return circle;
         },
-        unhoverHandler: function() {
+        osdUnhoverHandler: function() {
             if (this.pulseTimer === null) {
                 // install a remove hover timer if none exists
                 this.pulseTimer = setTimeout(this.removePulse, 1500);
             }
+            this.hostGroupUnhoverHandler();
         },
-        areTheDOMWereLookingFor: function(evt) {
+        isOsdElement: function(evt) {
             var nodeName = evt.target.nodeName;
-            return nodeName === 'tspan' || nodeName === 'circle';
+            return nodeName === 'tspan' || nodeName === 'circle' || nodeName === 'rect';
         },
-        hoverHandlerCore: function(el, id) {
+        isHostGroupElement: function(evt) {
+            return evt.target.nodeName === 'rect';
+        },
+        osdHoverHandlerCore: function(el, id) {
             if (this.pulseTimer) {
                 // cancel the remove hover timer if we're
                 // still active
@@ -658,7 +664,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
             //console.log(id);
             if (_.isNumber(id)) {
-                // ignore circles and tspans without data
                 var views = this.collection.get(id).views;
                 if (views) {
                     // use the underlying circle element for initial dimensions
@@ -670,8 +675,37 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             }
         },
+        hostGroup: null,
+        hostGroupTimer: null,
+        hostGroupHoverHandlerCore: function(el, id) {
+            if (_.isNumber(id)) {
+                var model = this.collection.get(id);
+                if (model.views) {
+                    // use the underlying circle element for initial dimensions
+                    if (this.hostGroupTimer) {
+                        clearTimeout(this.hostGroupTimer);
+                        this.hostGroupTimer = null;
+                    }
+                    var hostGroup = model.get('host');
+                    if (this.hostGroup === hostGroup) {
+                        return;
+                    }
+                    $('.viz').tooltip('destroy').tooltip({
+                        title: hostGroup
+                    }).tooltip('show');
+                    this.hostGroup = hostGroup;
+                }
+            }
+        },
+        hostGroupUnhoverHandler: function() {
+            var self = this;
+            this.hostGroupTimer = setTimeout(function() {
+                $('.viz').tooltip('destroy');
+                self.hostGroup = null;
+            }, 1000);
+        },
         dialogPlacement: ['detail-outer-bottom-right', 'detail-outer-top-left', 'detail-outer-top-right', 'detail-outer-bottom-left'],
-        clickHandlerCore: function(el, id) {
+        osdClickHandlerCore: function(el, id) {
             if (_.isNumber(id)) {
                 // ignore circles and tspans without data
                 var mAttr = this.collection.get(id).attributes;
@@ -693,7 +727,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 this.$detailPanel.set(mAttr);
             }
         },
-        makeSVGEventHandlerFunc: function(func) {
+        makeSVGEventHandlerFunc: function(testFn, handlerFn) {
             // create a SVG event handler function template
             return function(evt) {
                 if (this.state === 'dashboard') {
@@ -701,7 +735,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
                 evt.stopPropagation();
                 evt.preventDefault();
-                if (!this.areTheDOMWereLookingFor(evt)) {
+                if (!testFn(evt)) {
                     return;
                 }
                 var x = evt.clientX;
@@ -713,7 +747,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 if (el) {
                     var id = el.data('modelid');
                     //console.log(id);
-                    func.call(this, el, id);
+                    if (_.isFunction(handlerFn)) {
+                        handlerFn = [handlerFn];
+                    }
+                    _.each(handlerFn, function(fn) {
+                        fn.call(this, el, id);
+                    }, this);
                 }
             };
         },
