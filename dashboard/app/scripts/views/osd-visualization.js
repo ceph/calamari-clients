@@ -26,9 +26,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'click .viz': 'osdClickHandler',
             'click': 'screenSwitchHandler',
             'mouseenter circle, tspan, rect': 'osdHoverHandler',
-            'mouseleave circle, tspan, rect': 'osdUnhoverHandler',
-            //            'mouseenter rect': 'hostGroupHoverHandler',
-            //            'mouseleave rect': 'hostGroupUnhoverHandler',
+            'mouseleave circle, tspan, rect': 'osdUnhoverHandler'
         },
         collectionEvents: {
             'add': 'addOSD',
@@ -202,7 +200,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     model.set('adj', null);
                 }
                 if (views.pcircle) {
-                    views.pcircle.stop().hide();
+                    views.pcircle.stop().remove();
                 }
                 model.views = null;
             }
