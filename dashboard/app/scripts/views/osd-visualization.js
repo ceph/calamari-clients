@@ -111,8 +111,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
-            this.width = 17 * this.step;
-            this.height = 11 * this.step;
+            this.columns = 16;
+            this.rows = 10;
+            this.width = (this.columns + 1) * this.step;
+            this.height = (this.rows + 1) * this.step;
             this.w = 720;
             this.h = 520;
             this.threshx = this.w / 2;
@@ -197,7 +199,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 views.text.remove();
                 if (views.square) {
                     views.square.remove();
-                    model.set('adj', null);
+                    model.set('neighborMap', null);
                 }
                 if (views.pcircle) {
                     views.pcircle.stop().remove();
@@ -254,27 +256,27 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         criteria: function(model) {
             return model.get('host') + this.hex(model.get('osd'));
         },
-        isAdjacent: function(index1, index2) {
-            var cola = index1.id % 16;
-            var rowa = Math.floor(index1.id / 16);
-            var colb = index2.id % 16;
-            var rowb = Math.floor(index2.id / 16);
-            if (rowa + 1 === rowb && cola === colb) {
+        isAdjacent: function(posA, posB) {
+            var colA = posA.id % this.columns;
+            var rowA = Math.floor(posA.id / this.columns);
+            var colB = posB.id % this.columns;
+            var rowB = Math.floor(posB.id / this.columns);
+            if (rowA + 1 === rowB && colA === colB) {
                 // below
-                index1.adj = 4;
-                index2.adj = 1;
+                posA.neighborMap = 4;
+                posB.neighborMap = 1;
                 return true;
             }
-            if (rowa === rowb && colb === cola + 1) {
+            if (rowA === rowB && colB === colA + 1) {
                 // to right
-                index1.adj = 2;
-                index2.adj = 8;
+                posA.neighborMap = 2;
+                posB.neighborMap = 8;
                 return true;
             }
-            if (rowa === rowb && colb === cola - 1) {
+            if (rowA === rowB && colB === colA - 1) {
                 //to left
-                index1.adj = 8;
-                index2.adj = 2;
+                posA.neighborMap = 8;
+                posB.neighborMap = 2;
                 return true;
             }
             return false;
@@ -302,13 +304,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 return {
                     id: value,
                     osd: null,
-                    adj: 0
+                    neighborMap: 0
                 };
             });
             var lastElem = null;
             var self = this;
             var group = 1;
-            var adj;
+            var neighborMap;
             _.each(coll, function(osd) {
                 var arrItem = _.find(arr, function(elem) {
                     if (lastElem === null && elem.osd === null) {
@@ -321,13 +323,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     if (lastElem.osd.get('host') !== osd.get('host')) {
                         group += 2.5;
                     } else {
-                        if (lastElem.adj) {
-                            adj = lastElem.osd.get('adj') || 0;
-                            lastElem.osd.set('adj', lastElem.adj + adj);
+                        if (lastElem.neighborMap) {
+                            neighborMap = lastElem.osd.get('neighborMap') || 0;
+                            lastElem.osd.set('neighborMap', lastElem.neighborMap + neighborMap);
                         }
-                        if (arrItem.adj) {
-                            adj = osd.get('adj') || 0;
-                            osd.set('adj', arrItem.adj + adj);
+                        if (arrItem.neighborMap) {
+                            neighborMap = osd.get('neighborMap') || 0;
+                            osd.set('neighborMap', arrItem.neighborMap + neighborMap);
                         }
                     }
                 }
@@ -335,29 +337,31 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 lastElem = arrItem;
             });
             coll = _.map(_.pluck(arr, 'osd'), function(model, index) {
-                var adj = model.get('adj');
-                if (this.checkCorners(adj)) {
-                    var losd, ladj;
-                    //console.log(model.get('osd') + ' check ' + adj);
-                    if (this.below(adj)) {
+                var neighborMap = model.get('neighborMap');
+                if (this.isACorner(neighborMap)) {
+                    var losd, lneighborMap;
+                    //console.log(model.get('osd') + ' check ' + neighborMap);
+                    if (this.below(neighborMap)) {
+                        // this is a corner piece with adjancency below
                         /*jshint bitwise: false */
-                        adj = adj ^ 4;
-                        model.set('adj', adj);
+                        neighborMap = neighborMap ^ 4;
+                        model.set('neighborMap', neighborMap);
                         losd = arr[index + 16].osd;
-                        ladj = losd.get('adj');
-                        ladj |= 16;
-                        losd.set('adj', ladj);
-                        //console.log('below ' + losd.get('osd') + ' ' + losd.get('adj'));
+                        lneighborMap = losd.get('neighborMap');
+                        lneighborMap |= 16;
+                        losd.set('neighborMap', lneighborMap);
+                        //console.log('below ' + losd.get('osd') + ' ' + losd.get('neighborMap'));
                     }
-                    if (this.above(adj)) {
+                    if (this.above(neighborMap)) {
+                        // this is a corner piece with adjancency above
                         /*jshint bitwise: false */
-                        adj = adj ^ 1;
-                        model.set('adj', adj);
+                        neighborMap = neighborMap ^ 1;
+                        model.set('neighborMap', neighborMap);
                         losd = arr[index - 16].osd;
-                        ladj = losd.get('adj');
-                        ladj |= 32;
-                        losd.set('adj', ladj);
-                        //console.log('above ' + losd.get('osd') + ' ' + losd.get('adj'));
+                        lneighborMap = losd.get('neighborMap');
+                        lneighborMap |= 32;
+                        losd.set('neighborMap', lneighborMap);
+                        //console.log('above ' + losd.get('osd') + ' ' + losd.get('neighborMap'));
                     }
                 }
                 return model;
@@ -365,32 +369,38 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             _.each(coll, this.moveCircle, this);
             return d.promise();
         },
-        checkCorners: function(adj) {
-            return (adj && adj === 3 || adj === 9 || adj === 12 || adj === 6);
+        // Is this square a corner piece?
+        isACorner: function(neighborMap) {
+            return (neighborMap && neighborMap === 3 || neighborMap === 9 || neighborMap === 12 || neighborMap === 6);
         },
-        above: function(adj) {
+        // Adjacent host group square above
+        above: function(neighborMap) {
             /*jshint bitwise: false */
-            return (adj & 1) === 1;
+            return (neighborMap & 1) === 1;
         },
-        left: function(adj) {
+        // Adjacent host group square to left
+        left: function(neighborMap) {
             /*jshint bitwise: false */
-            return (adj & 2) === 2;
+            return (neighborMap & 2) === 2;
         },
-        below: function(adj) {
+        // Adjacent host group square below
+        below: function(neighborMap) {
             /*jshint bitwise: false */
-            return (adj & 4) === 4;
+            return (neighborMap & 4) === 4;
         },
-        right: function(adj) {
+        // Adjacent host group square to right 
+        right: function(neighborMap) {
             /*jshint bitwise: false */
-            return (adj & 8) === 8;
+            return (neighborMap & 8) === 8;
         },
-        corner1: function(adj) {
+        // Corner case 1 - host square above
+        corner1: function(neighborMap) {
             /*jshint bitwise: false */
-            return (adj & 16) === 16;
+            return (neighborMap & 16) === 16;
         },
-        corner2: function(adj) {
+        corner2: function(neighborMap) {
             /*jshint bitwise: false */
-            return (adj & 32) === 32;
+            return (neighborMap & 32) === 32;
         },
         legendCircle: function(originX, originY, index) {
             // Helper method to draw circles for use as legends beneath viz.
@@ -447,31 +457,31 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return 'hsb(' + 1.0 / (index / 360) + ', 0.17, 0.8)';
         },
         addBackgroundSquare: function(destX, destY, model) {
-            var adj = model.get('adj');
-            var sqox = 18;
-            var sqoy = 18;
-            var sqh = 36;
-            var sqw = 36;
-            if (this.above(adj)) {
+            var neighborMap = model.get('neighborMap'),
+                sqox = 18,
+                sqoy = 18,
+                sqh = 36,
+                sqw = 36;
+            if (this.above(neighborMap)) {
                 sqh += 2;
                 sqoy += 2;
             }
-            if (this.left(adj)) {
+            if (this.left(neighborMap)) {
                 sqw += 2;
             }
-            if (this.below(adj)) {
+            if (this.below(neighborMap)) {
                 sqh += 2;
             }
-            if (this.right(adj)) {
+            if (this.right(neighborMap)) {
+                sqw += 2;
                 sqox += 2;
-                sqw += 2;
             }
-            if (this.corner1(adj)) {
+            if (this.corner1(neighborMap)) {
                 sqh += 2;
                 sqoy += 2;
             }
-            //console.log(model.get('osd') + ' adj ' + adj);
-            if (this.corner2(adj)) {
+            //console.log(model.get('osd') + ' neighborMap ' + neighborMap);
+            if (this.corner2(neighborMap)) {
                 sqh += 2;
             }
             var sq = this.paper.rect(destX - sqox, destY - sqoy, sqw, sqh).attr({
