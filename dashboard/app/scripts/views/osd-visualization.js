@@ -137,6 +137,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.render = _.wrap(this.render, this.renderWrapper);
             this.osdHoverHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, [this.osdHoverHandlerCore, this.hostGroupHoverHandlerCore]);
             this.osdClickHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, this.osdClickHandlerCore);
+            this.setBelowCornerBits = this.makeNeighborMapAdjuster(4, 16);
+            this.setAboveCornerBits = this.makeNeighborMapAdjuster(1, 32);
         },
         screenSwitchHandler: function() {
             if (this.state === 'dashboard') {
@@ -337,31 +339,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 lastElem = arrItem;
             });
             coll = _.map(_.pluck(arr, 'osd'), function(model, index) {
-                var neighborMap = model.get('neighborMap');
-                if (this.isACorner(neighborMap)) {
-                    var losd, lneighborMap;
+                var neighbors = model.get('neighborMap');
+                if (this.isACornerBasedOn(neighbors)) {
                     //console.log(model.get('osd') + ' check ' + neighborMap);
-                    if (this.below(neighborMap)) {
+                    if (this.hasBelow(neighbors)) {
                         // this is a corner piece with adjancency below
-                        /*jshint bitwise: false */
-                        neighborMap = neighborMap ^ 4;
-                        model.set('neighborMap', neighborMap);
-                        losd = arr[index + 16].osd;
-                        lneighborMap = losd.get('neighborMap');
-                        lneighborMap |= 16;
-                        losd.set('neighborMap', lneighborMap);
-                        //console.log('below ' + losd.get('osd') + ' ' + losd.get('neighborMap'));
+                        this.setBelowCornerBits(model, arr[index + this.columns].osd);
                     }
-                    if (this.above(neighborMap)) {
+                    if (this.hasAbove(neighbors)) {
                         // this is a corner piece with adjancency above
-                        /*jshint bitwise: false */
-                        neighborMap = neighborMap ^ 1;
-                        model.set('neighborMap', neighborMap);
-                        losd = arr[index - 16].osd;
-                        lneighborMap = losd.get('neighborMap');
-                        lneighborMap |= 32;
-                        losd.set('neighborMap', lneighborMap);
-                        //console.log('above ' + losd.get('osd') + ' ' + losd.get('neighborMap'));
+                        this.setAboveCornerBits(model, arr[index - this.columns].osd);
                     }
                 }
                 return model;
@@ -369,36 +356,48 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             _.each(coll, this.moveCircle, this);
             return d.promise();
         },
+        // set and clear neighborMap bits on two OSD models
+        makeNeighborMapAdjuster: function(clearBit, setBit) {
+            /*jshint bitwise: false */
+            return function(modelA, modelB) {
+                var neighbors = modelA.get('neighborMap') ^ clearBit;
+                modelA.set('neighborMap', neighbors);
+                var lneighbors = modelB.get('neighborMap');
+                lneighbors |= setBit;
+                modelB.set('neighborMap', lneighbors);
+                //console.log('above ' + losd.get('osd') + ' ' + losd.get('neighborMap'));
+            };
+        },
         // Is this square a corner piece?
-        isACorner: function(neighborMap) {
+        isACornerBasedOn: function(neighborMap) {
             return (neighborMap && neighborMap === 3 || neighborMap === 9 || neighborMap === 12 || neighborMap === 6);
         },
         // Adjacent host group square above
-        above: function(neighborMap) {
+        hasAbove: function(neighborMap) {
             /*jshint bitwise: false */
             return (neighborMap & 1) === 1;
         },
         // Adjacent host group square to left
-        left: function(neighborMap) {
+        hasLeft: function(neighborMap) {
             /*jshint bitwise: false */
             return (neighborMap & 2) === 2;
         },
         // Adjacent host group square below
-        below: function(neighborMap) {
+        hasBelow: function(neighborMap) {
             /*jshint bitwise: false */
             return (neighborMap & 4) === 4;
         },
         // Adjacent host group square to right 
-        right: function(neighborMap) {
+        hasRight: function(neighborMap) {
             /*jshint bitwise: false */
             return (neighborMap & 8) === 8;
         },
         // Corner case 1 - host square above
-        corner1: function(neighborMap) {
+        isCornerAbove: function(neighborMap) {
             /*jshint bitwise: false */
             return (neighborMap & 16) === 16;
         },
-        corner2: function(neighborMap) {
+        isCornerBelow: function(neighborMap) {
             /*jshint bitwise: false */
             return (neighborMap & 32) === 32;
         },
@@ -457,31 +456,31 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return 'hsb(' + 1.0 / (index / 360) + ', 0.17, 0.8)';
         },
         addBackgroundSquare: function(destX, destY, model) {
-            var neighborMap = model.get('neighborMap'),
+            var neighbors = model.get('neighborMap'),
                 sqox = 18,
                 sqoy = 18,
                 sqh = 36,
                 sqw = 36;
-            if (this.above(neighborMap)) {
+            if (this.hasAbove(neighbors)) {
                 sqh += 2;
                 sqoy += 2;
             }
-            if (this.left(neighborMap)) {
+            if (this.hasLeft(neighbors)) {
                 sqw += 2;
             }
-            if (this.below(neighborMap)) {
+            if (this.hasBelow(neighbors)) {
                 sqh += 2;
             }
-            if (this.right(neighborMap)) {
+            if (this.hasRight(neighbors)) {
                 sqw += 2;
                 sqox += 2;
             }
-            if (this.corner1(neighborMap)) {
+            if (this.isCornerAbove(neighbors)) {
                 sqh += 2;
                 sqoy += 2;
             }
             //console.log(model.get('osd') + ' neighborMap ' + neighborMap);
-            if (this.corner2(neighborMap)) {
+            if (this.isCornerBelow(neighbors)) {
                 sqh += 2;
             }
             var sq = this.paper.rect(destX - sqox, destY - sqoy, sqw, sqh).attr({
