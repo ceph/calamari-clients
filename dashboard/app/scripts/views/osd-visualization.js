@@ -13,6 +13,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         timer: null,
         pulseTimer: null,
         state: 'dashboard',
+        customSort: true,
         ui: {
             'cardTitle': '.card-title',
             viz: '.viz',
@@ -298,10 +299,15 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             } else {
                 d.resolve();
             }
-            // TODO Add another stage here for position sorting which takes the
-            // first list and creates a new list with gaps in the list
-            // then it should render correctly.
+            if (this.customSort) {
+                coll = this.sortByHostGroup(coll);
+            }
+            _.each(coll, this.moveCircle, this);
+            return d.promise();
+        },
+        sortByHostGroup: function(coll) {
             coll = _.sortBy(coll, this.criteria);
+            // create grid representation
             var arr = _.map(_.range(160), function(value) {
                 return {
                     id: value,
@@ -309,36 +315,39 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     neighborMap: 0
                 };
             });
-            var lastElem = null;
+            var prevPos = null;
             var self = this;
-            var group = 1;
+            var group = 1; // used as input to Hue value
             var neighborMap;
+            // Group all OSDs by Host and calculate the neighbor map
+            // for each position
             _.each(coll, function(osd) {
-                var arrItem = _.find(arr, function(elem) {
-                    if (lastElem === null && elem.osd === null) {
+                var nextPos = _.find(arr, function(curPos) {
+                    if (prevPos === null && curPos.osd === null) {
                         return true;
                     }
-                    return elem.osd === null && self.isAdjacent(lastElem, elem);
+                    return curPos.osd === null && self.isAdjacent(prevPos, curPos);
                 });
-                arrItem.osd = osd;
-                if (lastElem) {
-                    if (lastElem.osd.get('host') !== osd.get('host')) {
+                nextPos.osd = osd;
+                if (prevPos) {
+                    if (prevPos.osd.get('host') !== osd.get('host')) {
                         group += 2.5;
                     } else {
-                        if (lastElem.neighborMap) {
-                            neighborMap = lastElem.osd.get('neighborMap') || 0;
-                            lastElem.osd.set('neighborMap', lastElem.neighborMap + neighborMap);
+                        // update neighbor maps
+                        if (prevPos.neighborMap) {
+                            neighborMap = prevPos.osd.get('neighborMap') || 0;
+                            prevPos.osd.set('neighborMap', prevPos.neighborMap + neighborMap);
                         }
-                        if (arrItem.neighborMap) {
+                        if (nextPos.neighborMap) {
                             neighborMap = osd.get('neighborMap') || 0;
-                            osd.set('neighborMap', arrItem.neighborMap + neighborMap);
+                            osd.set('neighborMap', nextPos.neighborMap + neighborMap);
                         }
                     }
                 }
                 osd.set('group', group);
-                lastElem = arrItem;
+                prevPos = nextPos;
             });
-            coll = _.map(_.pluck(arr, 'osd'), function(model, index) {
+            return _.map(_.pluck(arr, 'osd'), function(model, index) {
                 var neighbors = model.get('neighborMap');
                 if (this.isACornerBasedOn(neighbors)) {
                     //console.log(model.get('osd') + ' check ' + neighborMap);
@@ -353,8 +362,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
                 return model;
             }, this);
-            _.each(coll, this.moveCircle, this);
-            return d.promise();
         },
         // set and clear neighborMap bits on two OSD models
         makeNeighborMapAdjuster: function(clearBit, setBit) {
@@ -492,7 +499,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return sq;
         },
         animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
-            var sq = this.addBackgroundSquare(destX, destY, model);
+            var sq = null;
+            if (this.customSort) {
+                sq = this.addBackgroundSquare(destX, destY, model);
+            }
             var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
                 fill: model.getColor(model),
                 stroke: 'none'
