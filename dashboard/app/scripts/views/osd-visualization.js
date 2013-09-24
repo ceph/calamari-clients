@@ -1,7 +1,7 @@
 /*global define, Raphael*/
 
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/switcher-view', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, SwitcherView) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/switcher-view', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, SwitcherView) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
@@ -13,6 +13,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         timer: null,
         pulseTimer: null,
         state: 'dashboard',
+        curHostGroup: null,
+        hostGroupTimer: null,
+        customSort: false,
         ui: {
             'cardTitle': '.card-title',
             viz: '.viz',
@@ -23,10 +26,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             spinner: '.icon-spinner'
         },
         events: {
-            'click .viz': 'clickHandler',
+            'click .viz': 'osdClickHandler',
             'click': 'screenSwitchHandler',
-            'mouseenter circle, tspan': 'hoverHandler',
-            'mouseleave circle, tspan': 'unhoverHandler'
+            'mouseenter circle, tspan, rect': 'osdHoverHandler',
+            'mouseleave circle, tspan, rect': 'osdUnhoverHandler'
         },
         collectionEvents: {
             'add': 'addOSD',
@@ -43,7 +46,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'viz:fullscreen': 'fullscreen',
             'viz:dashboard': 'dashboard',
             'viz:filter': 'filter',
-            'viz:pulse': 'pulse'
+            'viz:pulse': 'pulse',
+            'viz:togglehostgroup': 'toggleHostGroup'
+        },
+        toggleHostGroup: function() {
+            this.customSort = !this.customSort;
+            this.reset();
         },
         spinnerOn: function() {
             this.ui.spinner.css('visibility', 'visible');
@@ -111,8 +119,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
-            this.width = 17 * this.step;
-            this.height = 11 * this.step;
+            this.columns = 16;
+            this.rows = 10;
+            this.width = (this.columns + 1) * this.step;
+            this.height = (this.rows + 1) * this.step;
             this.w = 720;
             this.h = 520;
             this.threshx = this.w / 2;
@@ -133,8 +143,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
             this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
             this.render = _.wrap(this.render, this.renderWrapper);
-            this.hoverHandler = this.makeSVGEventHandlerFunc(this.hoverHandlerCore);
-            this.clickHandler = this.makeSVGEventHandlerFunc(this.clickHandlerCore);
+            this.osdHoverHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, [this.osdHoverHandlerCore, this.hostGroupHoverHandlerCore]);
+            this.osdClickHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, this.osdClickHandlerCore);
+            this.setBelowCornerBits = this.makeNeighborMapAdjuster(4, 16);
+            this.setAboveCornerBits = this.makeNeighborMapAdjuster(1, 32);
         },
         screenSwitchHandler: function() {
             if (this.state === 'dashboard') {
@@ -195,6 +207,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     circle.remove();
                 });
                 views.text.remove();
+                if (views.square) {
+                    views.square.remove();
+                    model.set('neighborMap', null);
+                }
                 if (views.pcircle) {
                     views.pcircle.stop().remove();
                 }
@@ -236,11 +252,46 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             y: 400
         }],
         moveCircle: function(model, index) {
+            if (model === null) {
+                return;
+            }
             var start = this.startPosition[Math.floor(Math.random() * 4)];
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
             this.animateCircleTraversal(start.x, start.y, 8, pos.nx, pos.ny, model);
         },
-        calculatePositions: function(filterFn) {
+        hex: function(value) {
+            var hex = '00' + value.toString(16);
+            return hex.substr(hex.length - 2, hex.length);
+        },
+        criteria: function(model) {
+            return model.get('host') + this.hex(model.get('osd'));
+        },
+        isAdjacent: function(posA, posB) {
+            var colA = posA.id % this.columns;
+            var rowA = Math.floor(posA.id / this.columns);
+            var colB = posB.id % this.columns;
+            var rowB = Math.floor(posB.id / this.columns);
+            if (rowA + 1 === rowB && colA === colB) {
+                // below
+                posA.neighborMap = 4;
+                posB.neighborMap = 1;
+                return true;
+            }
+            if (rowA === rowB && colB === colA + 1) {
+                // to right
+                posA.neighborMap = 2;
+                posB.neighborMap = 8;
+                return true;
+            }
+            if (rowA === rowB && colB === colA - 1) {
+                //to left
+                posA.neighborMap = 8;
+                posB.neighborMap = 2;
+                return true;
+            }
+            return false;
+        },
+        renderOSDViews: function(filterFn) {
             var coll = this.collection.models;
             if (filterFn) {
                 coll = _.filter(coll, filterFn);
@@ -249,12 +300,125 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var d = $.Deferred();
             var last = _.last(coll);
             if (last) {
+                // add deferred to last model so we can
+                // signal rendering is done.
                 last.deferred = d;
             } else {
                 d.resolve();
             }
-            _.each(coll, this.moveCircle);
+            if (this.customSort) {
+                coll = this.viewByHostGroup(coll);
+            }
+            _.each(coll, this.moveCircle, this);
             return d.promise();
+        },
+        viewByHostGroup: function(coll) {
+            coll = _.sortBy(coll, this.criteria);
+            // create grid representation
+            var arr = _.map(_.range(this.columns * this.rows), function(value) {
+                return {
+                    id: value,
+                    osd: null,
+                    neighborMap: 0
+                };
+            });
+            var prevPos = null;
+            var self = this;
+            var group = 1; // used as input to Hue value
+            var neighborMap;
+            // Group all OSDs by Host and calculate the neighbor map
+            // for each position
+            _.each(coll, function(osd) {
+                var nextPos = _.find(arr, function(curPos) {
+                    if (prevPos === null && curPos.osd === null) {
+                        return true;
+                    }
+                    return curPos.osd === null && self.isAdjacent(prevPos, curPos);
+                });
+                nextPos.osd = osd;
+                if (prevPos) {
+                    if (prevPos.osd.get('host') !== osd.get('host')) {
+                        group += 2.5;
+                    } else {
+                        // update neighbor maps
+                        if (prevPos.neighborMap) {
+                            neighborMap = prevPos.osd.get('neighborMap') || 0;
+                            prevPos.osd.set('neighborMap', prevPos.neighborMap + neighborMap);
+                        }
+                        if (nextPos.neighborMap) {
+                            neighborMap = osd.get('neighborMap') || 0;
+                            osd.set('neighborMap', nextPos.neighborMap + neighborMap);
+                        }
+                    }
+                }
+                osd.set('group', group);
+                prevPos = nextPos;
+            });
+            return _.map(_.pluck(_.filter(arr, function(obj) {
+                return obj && obj.osd !== null;
+            }), 'osd'), function(model, index) {
+                var neighbors = model.get('neighborMap');
+                if (this.isACornerBasedOn(neighbors)) {
+                    //console.log(model.get('osd') + ' check ' + neighborMap);
+                    if (this.hasBelow(neighbors)) {
+                        // this is a corner piece with adjancency below
+                        this.setBelowCornerBits(model, arr[index + this.columns].osd);
+                    }
+                    if (this.hasAbove(neighbors)) {
+                        // this is a corner piece with adjancency above
+                        this.setAboveCornerBits(model, arr[index - this.columns].osd);
+                    }
+                }
+                return model;
+            }, this);
+        },
+        // set and clear neighborMap bits on two OSD models
+        makeNeighborMapAdjuster: function(clearBit, setBit) {
+            /*jshint bitwise: false */
+            return function(modelA, modelB) {
+                if (!modelA || !modelB) {
+                    return;
+                }
+                var neighbors = modelA.get('neighborMap') ^ clearBit;
+                modelA.set('neighborMap', neighbors);
+                var lneighbors = modelB.get('neighborMap');
+                lneighbors |= setBit;
+                modelB.set('neighborMap', lneighbors);
+                //console.log('above ' + losd.get('osd') + ' ' + losd.get('neighborMap'));
+            };
+        },
+        // Is this square a corner piece?
+        isACornerBasedOn: function(neighborMap) {
+            return (neighborMap && neighborMap === 3 || neighborMap === 9 || neighborMap === 12 || neighborMap === 6);
+        },
+        // Adjacent host group square above
+        hasAbove: function(neighborMap) {
+            /*jshint bitwise: false */
+            return (neighborMap & 1) === 1;
+        },
+        // Adjacent host group square to left
+        hasLeft: function(neighborMap) {
+            /*jshint bitwise: false */
+            return (neighborMap & 2) === 2;
+        },
+        // Adjacent host group square below
+        hasBelow: function(neighborMap) {
+            /*jshint bitwise: false */
+            return (neighborMap & 4) === 4;
+        },
+        // Adjacent host group square to right 
+        hasRight: function(neighborMap) {
+            /*jshint bitwise: false */
+            return (neighborMap & 8) === 8;
+        },
+        // Corner case 1 - host square above
+        isCornerAbove: function(neighborMap) {
+            /*jshint bitwise: false */
+            return (neighborMap & 16) === 16;
+        },
+        isCornerBelow: function(neighborMap) {
+            /*jshint bitwise: false */
+            return (neighborMap & 32) === 32;
         },
         legendCircle: function(originX, originY, index) {
             // Helper method to draw circles for use as legends beneath viz.
@@ -303,9 +467,56 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 xp += 50;
             }, this);
         },
+        getColor: function(model) {
+            var m = this.collection.findWhere({
+                host: model.get('host')
+            });
+            var index = m.get('group') || 1;
+            return 'hsb(' + 1.0 / (index / 360) + ', 0.17, 0.8)';
+        },
+        addBackgroundSquare: function(destX, destY, model) {
+            var neighbors = model.get('neighborMap'),
+                sqox = 18,
+                sqoy = 18,
+                sqh = 36,
+                sqw = 36;
+            if (this.hasAbove(neighbors)) {
+                sqh += 2;
+                sqoy += 2;
+            }
+            if (this.hasLeft(neighbors)) {
+                sqw += 2;
+            }
+            if (this.hasBelow(neighbors)) {
+                sqh += 2;
+            }
+            if (this.hasRight(neighbors)) {
+                sqw += 2;
+                sqox += 2;
+            }
+            if (this.isCornerAbove(neighbors)) {
+                sqh += 2;
+                sqoy += 2;
+            }
+            //console.log(model.get('osd') + ' neighborMap ' + neighborMap);
+            if (this.isCornerBelow(neighbors)) {
+                sqh += 2;
+            }
+            var sq = this.paper.rect(destX - sqox, destY - sqoy, sqw, sqh).attr({
+                'fill': this.getColor(model),
+                opacity: '0.6',
+                'stroke': this.getColor(model)
+            });
+            sq.data('modelid', model.id);
+            return sq;
+        },
         animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
+            var sq = null;
+            if (this.customSort) {
+                sq = this.addBackgroundSquare(destX, destY, model);
+            }
             var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
-                fill: model.getColor(),
+                fill: model.getColor(model),
                 stroke: 'none'
             });
             c.data('modelid', model.id);
@@ -331,7 +542,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     }
                     model.views = {
                         circle: c,
-                        text: t
+                        text: t,
+                        square: sq
                     };
                 });
             });
@@ -403,7 +615,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.drawGrid(d);
             var p = d.promise();
             var vent = this.App.vent;
-            p.then(this.calculatePositions).then(function() {
+            var toggleFn = this.toggleHostGroup;
+            this.$('.viz-controls').bootstrapSwitch().on('switch-change', function(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+                toggleFn();
+            });
+            p.then(this.renderOSDViews).then(function() {
                 vent.trigger('viz:render');
             });
             return p;
@@ -442,7 +660,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         removePulse: function() {
             if (this.pulseCircle) {
-                this.pulseCircle.stop().remove();
+                this.pulseCircle.stop().hide();
                 this.pulseCircle = null;
                 this.pulseTimer = null;
             }
@@ -450,24 +668,28 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         pulseAnimation: Raphael.animation({
             r: 30,
             'stroke-opacity': 0,
-        }, 1000, 'linear'),
+        }, 1000, 'linear').repeat(2),
         addPulse: function(attrs, id) {
             var circle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
                 'stroke': '#000'
-            }).data('modelid', id).animate(this.pulseAnimation.repeat('Infinity'));
+            }).data('modelid', id).animate(this.pulseAnimation);
             return circle;
         },
-        unhoverHandler: function() {
+        osdUnhoverHandler: function() {
             if (this.pulseTimer === null) {
                 // install a remove hover timer if none exists
                 this.pulseTimer = setTimeout(this.removePulse, 1500);
             }
+            this.hostGroupUnhoverHandler();
         },
-        areTheDOMWereLookingFor: function(evt) {
+        isOsdElement: function(evt) {
             var nodeName = evt.target.nodeName;
-            return nodeName === 'tspan' || nodeName === 'circle';
+            return nodeName === 'tspan' || nodeName === 'circle' || nodeName === 'rect';
         },
-        hoverHandlerCore: function(el, id) {
+        isHostGroupElement: function(evt) {
+            return evt.target.nodeName === 'rect';
+        },
+        osdHoverHandlerCore: function(el, id) {
             if (this.pulseTimer) {
                 // cancel the remove hover timer if we're
                 // still active
@@ -481,7 +703,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
             //console.log(id);
             if (_.isNumber(id)) {
-                // ignore circles and tspans without data
                 var views = this.collection.get(id).views;
                 if (views) {
                     // use the underlying circle element for initial dimensions
@@ -493,8 +714,38 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             }
         },
+        hostGroupHoverHandlerCore: function(el, id) {
+            if (!this.customSort) {
+                return;
+            }
+            if (_.isNumber(id)) {
+                var model = this.collection.get(id);
+                if (model.views) {
+                    // use the underlying circle element for initial dimensions
+                    if (this.hostGroupTimer) {
+                        clearTimeout(this.hostGroupTimer);
+                        this.hostGroupTimer = null;
+                    }
+                    var hostGroup = model.get('host');
+                    if (this.curHostGroup === hostGroup) {
+                        return;
+                    }
+                    $('.viz').tooltip('destroy').tooltip({
+                        title: hostGroup
+                    }).tooltip('show');
+                    this.curHostGroup = hostGroup;
+                }
+            }
+        },
+        hostGroupUnhoverHandler: function() {
+            var self = this;
+            this.hostGroupTimer = setTimeout(function() {
+                $('.viz').tooltip('destroy');
+                self.hostGroup = null;
+            }, 1000);
+        },
         dialogPlacement: ['detail-outer-bottom-right', 'detail-outer-top-left', 'detail-outer-top-right', 'detail-outer-bottom-left'],
-        clickHandlerCore: function(el, id) {
+        osdClickHandlerCore: function(el, id) {
             if (_.isNumber(id)) {
                 // ignore circles and tspans without data
                 var mAttr = this.collection.get(id).attributes;
@@ -516,7 +767,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 this.$detailPanel.set(mAttr);
             }
         },
-        makeSVGEventHandlerFunc: function(func) {
+        makeSVGEventHandlerFunc: function(testFn, handlerFn) {
             // create a SVG event handler function template
             return function(evt) {
                 if (this.state === 'dashboard') {
@@ -524,7 +775,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
                 evt.stopPropagation();
                 evt.preventDefault();
-                if (!this.areTheDOMWereLookingFor(evt)) {
+                if (!testFn(evt)) {
                     return;
                 }
                 var x = evt.clientX;
@@ -536,7 +787,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 if (el) {
                     var id = el.data('modelid');
                     //console.log(id);
-                    func.call(this, el, id);
+                    if (_.isFunction(handlerFn)) {
+                        handlerFn = [handlerFn];
+                    }
+                    _.each(handlerFn, function(fn) {
+                        fn.call(this, el, id);
+                    }, this);
                 }
             };
         },
@@ -549,7 +805,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 previousModels: this.collection.models
             });
             var vent = this.App.vent;
-            return this.calculatePositions(function(m) {
+            return this.renderOSDViews(function(m) {
                 return _.find(enabled, function(obj) {
                     if (_.isFunction(obj.get('match'))) {
                         var t = obj.get('match')(m);
@@ -568,13 +824,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 pulse: true,
                 visible: true
             });
-            this.collection.filter(function(value) {
+            this.collection.each(function(value) {
                 var views = value.views;
                 if (!views) {
                     return;
                 }
                 if (views.pcircle) {
-                    views.pcircle.stop().remove();
+                    views.pcircle.stop().hide();
                     views.pcircle = null;
                 }
                 return _.find(pulsed, function(obj) {
@@ -582,10 +838,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         var t = obj.get('match')(value);
                         if (t) {
                             if (views.circle) {
-                                var attrs = views.circle.attrs;
-                                views.pcircle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
-                                    'stroke': '#000'
-                                }).animate(this.pulseAnimation.repeat('Infinity'));
+                                if (views.pcircle) {
+                                    views.pcircle.show();
+                                } else {
+                                    views.pcircle = views.circle.clone().attr({
+                                        r: views.circle.attrs.r + 1,
+                                        'stroke': '#000',
+                                        'fill': 'none'
+                                    }).animate(this.pulseAnimation);
+                                }
+
                             }
                         }
                         return t;
@@ -599,7 +861,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 previousModels: this.collection.models
             });
             var vent = this.App.vent;
-            return this.calculatePositions().then(function() {
+            return this.renderOSDViews().then(function() {
                 vent.trigger('viz:render');
             });
         }
