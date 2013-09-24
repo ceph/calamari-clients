@@ -315,7 +315,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         viewByHostGroup: function(coll) {
             coll = _.sortBy(coll, this.criteria);
             // create grid representation
-            var arr = _.map(_.range(160), function(value) {
+            var arr = _.map(_.range(coll.length), function(value) {
                 return {
                     id: value,
                     osd: null,
