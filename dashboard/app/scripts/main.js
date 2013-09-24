@@ -16,6 +16,9 @@ require.config({
         },
         raphael: {
             exports: 'Raphael'
+        },
+        'bootstrap-switch': {
+            deps: ['bootstrap']
         }
     },
     paths: {
@@ -31,6 +34,7 @@ require.config({
         flotr2: 'vendor/flotr2.amd',
         raphael: 'vendor/raphael',
         humanize: 'vendor/humanize',
+        'bootstrap-switch': '../bower_components/bootstrap-switch/static/js/bootstrap-switch',
         statemachine: '../bower_components/javascript-state-machine/state-machine',
         marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette'
     }

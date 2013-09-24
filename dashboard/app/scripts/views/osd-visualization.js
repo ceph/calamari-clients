@@ -1,7 +1,7 @@
 /*global define, Raphael*/
 
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/switcher-view', 'raphael', 'marionette'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, SwitcherView) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/switcher-view', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, SwitcherView) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
@@ -13,7 +13,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         timer: null,
         pulseTimer: null,
         state: 'dashboard',
-        customSort: true,
+        curHostGroup: null,
+        hostGroupTimer: null,
+        customSort: false,
         ui: {
             'cardTitle': '.card-title',
             viz: '.viz',
@@ -44,7 +46,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'viz:fullscreen': 'fullscreen',
             'viz:dashboard': 'dashboard',
             'viz:filter': 'filter',
-            'viz:pulse': 'pulse'
+            'viz:pulse': 'pulse',
+            'viz:togglehostgroup': 'toggleHostGroup'
+        },
+        toggleHostGroup: function() {
+            this.customSort = !this.customSort;
+            this.reset();
         },
         spinnerOn: function() {
             this.ui.spinner.css('visibility', 'visible');
@@ -300,12 +307,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 d.resolve();
             }
             if (this.customSort) {
-                coll = this.sortByHostGroup(coll);
+                coll = this.viewByHostGroup(coll);
             }
             _.each(coll, this.moveCircle, this);
             return d.promise();
         },
-        sortByHostGroup: function(coll) {
+        viewByHostGroup: function(coll) {
             coll = _.sortBy(coll, this.criteria);
             // create grid representation
             var arr = _.map(_.range(160), function(value) {
@@ -492,7 +499,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
             var sq = this.paper.rect(destX - sqox, destY - sqoy, sqw, sqh).attr({
                 'fill': this.getColor(model),
-                opacity: '0.4',
+                opacity: '0.6',
                 'stroke': this.getColor(model)
             });
             sq.data('modelid', model.id);
@@ -603,6 +610,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.drawGrid(d);
             var p = d.promise();
             var vent = this.App.vent;
+            var toggleFn = this.toggleHostGroup;
+            this.$('.viz-controls').bootstrapSwitch().on('switch-change', function(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+                toggleFn();
+            });
             p.then(this.renderOSDViews).then(function() {
                 vent.trigger('viz:render');
             });
@@ -696,9 +709,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             }
         },
-        hostGroup: null,
-        hostGroupTimer: null,
         hostGroupHoverHandlerCore: function(el, id) {
+            if (!this.customSort) {
+                return;
+            }
             if (_.isNumber(id)) {
                 var model = this.collection.get(id);
                 if (model.views) {
@@ -708,13 +722,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                         this.hostGroupTimer = null;
                     }
                     var hostGroup = model.get('host');
-                    if (this.hostGroup === hostGroup) {
+                    if (this.curHostGroup === hostGroup) {
                         return;
                     }
                     $('.viz').tooltip('destroy').tooltip({
                         title: hostGroup
                     }).tooltip('show');
-                    this.hostGroup = hostGroup;
+                    this.curHostGroup = hostGroup;
                 }
             }
         },
