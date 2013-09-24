@@ -315,7 +315,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         viewByHostGroup: function(coll) {
             coll = _.sortBy(coll, this.criteria);
             // create grid representation
-            var arr = _.map(_.range(coll.length), function(value) {
+            var arr = _.map(_.range(this.columns * this.rows), function(value) {
                 return {
                     id: value,
                     osd: null,
@@ -374,6 +374,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         makeNeighborMapAdjuster: function(clearBit, setBit) {
             /*jshint bitwise: false */
             return function(modelA, modelB) {
+                if (!modelA || !modelB) {
+                    return;
+                }
                 var neighbors = modelA.get('neighborMap') ^ clearBit;
                 modelA.set('neighborMap', neighbors);
                 var lneighbors = modelB.get('neighborMap');
