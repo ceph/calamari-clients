@@ -354,7 +354,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 osd.set('group', group);
                 prevPos = nextPos;
             });
-            return _.map(_.pluck(arr, 'osd'), function(model, index) {
+            return _.map(_.pluck(_.filter(arr, function(obj) {
+                return obj && obj.osd !== null;
+            }), 'osd'), function(model, index) {
                 var neighbors = model.get('neighborMap');
                 if (this.isACornerBasedOn(neighbors)) {
                     //console.log(model.get('osd') + ' check ' + neighborMap);
