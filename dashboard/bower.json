@@ -17,7 +17,8 @@
     "backbone.marionette": "~1.0.4",
     "backbone.babysitter": "~0.0.6",
     "Faker": "~0.5.11",
-    "javascript-state-machine": "~2.2.0"
+    "javascript-state-machine": "~2.2.0",
+    "bootstrap-switch": "latest"
   },
   "devDependencies": {}
 }
