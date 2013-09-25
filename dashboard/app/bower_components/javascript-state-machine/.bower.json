@@ -10,6 +10,5 @@
   },
   "_source": "git://github.com/jakesgordon/javascript-state-machine.git",
   "_target": "~2.2.0",
-  "_originalSource": "javascript-state-machine",
-  "_direct": true
+  "_originalSource": "javascript-state-machine"
 }
