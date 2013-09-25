@@ -616,10 +616,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var p = d.promise();
             var vent = this.App.vent;
             var toggleFn = this.toggleHostGroup;
-            this.$('.viz-controls').bootstrapSwitch().on('switch-change click', function(evt) {
+            this.$('.viz-controls').bootstrapSwitch().on('switch-change', function() {
+                toggleFn();
+            }).on('click', function(evt) {
                 evt.stopPropagation();
                 evt.preventDefault();
-                toggleFn();
             });
             p.then(this.renderOSDViews).then(function() {
                 vent.trigger('viz:render');
