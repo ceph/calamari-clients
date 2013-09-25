@@ -37,7 +37,7 @@ module.exports = function (grunt) {
             compass: {
                 config: 'config.rb',
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-                tasks: ['newer:compass']
+                tasks: ['compass']
             },
             livereload: {
                 files: [
@@ -53,7 +53,7 @@ module.exports = function (grunt) {
                     '<%= yeoman.app %>/scripts/templates/*.ejs',
                     '<%= yeoman.app %>/scripts/templates/graphite/*.ejs',
                 ],
-                tasks: ['newer:jst']
+                tasks: ['jst']
             }
         },
         connect: {

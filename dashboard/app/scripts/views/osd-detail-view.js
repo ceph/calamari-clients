@@ -9,7 +9,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         state: 'dashboard',
         events: {
             'click .icon-remove': 'removeDialog',
-            'click .icon-bar-chart': 'goToGraph'
+            'click .graph-button': 'goToGraph'
         },
         ui: {},
         initialize: function(options) {
