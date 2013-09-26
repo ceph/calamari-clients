@@ -106,7 +106,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'postRender', 'renderHostSelector');
+            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector');
 
             _.each(this.graphs, this.makeGraphFunctions);
 
@@ -119,9 +119,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.netTargetModels = new models.GraphiteNetModel(undefined, {
                 graphiteHost: this.graphiteHost
             });
-            this.listenTo(this, 'render', this.renderHostSelector);
+            this.render = _.wrap(this.render, this.renderWrapper);
         },
-        postRender: function() {
+        // Wrap render so we can augment it with ui elements and
+        // redelegate events on new ui elements
+        renderWrapper: function(fn) {
+            fn.call(this);
+            this.renderHostSelector();
             this.delegateEvents(this.events);
         },
         makeCPUDetail: function(hostname, id) {
@@ -187,7 +191,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         showButtons: function() {
             this.ui.buttons.css('visibility', 'visible');
-            this.postRender();
         },
         hideButtons: function() {
             this.ui.buttons.css('visibility', 'hidden');
