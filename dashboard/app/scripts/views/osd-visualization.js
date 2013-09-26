@@ -49,9 +49,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'viz:pulse': 'pulse',
             'viz:togglehostgroup': 'toggleHostGroup'
         },
-        toggleHostGroup: function() {
+        toggleHostGroup: function(callback) {
             this.customSort = !this.customSort;
-            this.reset();
+            this.reset(callback);
         },
         spinnerOn: function() {
             this.ui.spinner.css('visibility', 'visible');
@@ -616,8 +616,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var p = d.promise();
             var vent = this.App.vent;
             var toggleFn = this.toggleHostGroup;
-            this.$('.viz-controls').bootstrapSwitch().on('switch-change', function() {
-                toggleFn();
+            var $toggle = this.$('.viz-controls').bootstrapSwitch();
+            $toggle.on('switch-change', function() {
+                var d = $.Deferred();
+                $toggle.bootstrapSwitch('setActive', false);
+                toggleFn(function() {
+                    d.resolve();
+                });
+                d.done(function() {
+                    $toggle.bootstrapSwitch('setActive', true);
+                });
             }).on('click', function(evt) {
                 evt.stopPropagation();
                 evt.preventDefault();
@@ -857,12 +865,15 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }, this);
             }, this);
         },
-        reset: function() {
+        reset: function(callback) {
             this.resetViews(null, {
                 previousModels: this.collection.models
             });
             var vent = this.App.vent;
             return this.renderOSDViews().then(function() {
+                if (callback) {
+                    callback.call(this);
+                }
                 vent.trigger('viz:render');
             });
         }
