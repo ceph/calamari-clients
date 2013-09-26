@@ -8,10 +8,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         className: 'graph-mode span12',
         ui: {
             'title': '.title',
-            'buttons': '.btn-toolbar'
+            'buttons': '.btn-toolbar',
+            'hosts': '.hosts-select'
         },
         events: {
-            'click .btn-graph .btn': 'clickHandler'
+            'click .btn-graph .btn': 'clickHandler',
+            'change .hosts-select select': 'hostChangeHandler'
+        },
+        hostChangeHandler: function(evt) {
+            var target = evt.target;
+            var $el = $(target.options[target.selectedIndex]);
+            var host = $el.attr('value');
+            this.AppRouter.navigate('graph/' + host, {
+                trigger: true
+            });
         },
         clickHandler: function(evt) {
             var $target = $(evt.target);
@@ -20,7 +30,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             if (id === 'overview') {
                 route = 'graph/' + this.hostname;
             }
-            console.log(route);
+            //console.log(route);
             this.AppRouter.navigate(route, {
                 trigger: true
             });
@@ -96,7 +106,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'postRender');
+            _.bindAll(this, 'makeGraphFunctions', 'postRender', 'renderHostSelector');
 
             _.each(this.graphs, this.makeGraphFunctions);
 
@@ -109,6 +119,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.netTargetModels = new models.GraphiteNetModel(undefined, {
                 graphiteHost: this.graphiteHost
             });
+            this.listenTo(this, 'render', this.renderHostSelector);
         },
         postRender: function() {
             this.delegateEvents(this.events);
@@ -175,11 +186,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             };
         },
         showButtons: function() {
-            this.ui.buttons.slideDown();
+            this.ui.buttons.css('visibility', 'visible');
             this.postRender();
         },
         hideButtons: function() {
-            this.ui.buttons.slideUp();
+            this.ui.buttons.css('visibility', 'hidden');
         },
         makePerHostGraphs: function(hostname, fn, model) {
             var self = this;
@@ -202,6 +213,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     return fn(host);
                 });
             };
+        },
+        selectTemplate: _.template('<select name="hosts"><option value="all" selected>Cluster</option><%= list %></select>'),
+        optionTemplate: _.template('<option value="<%- args.host %>"><%- args.host %></option>"', null, { variable: 'args' }),
+        renderHostSelector: function() {
+            var hosts = this.App.ReqRes.request('get:hosts');
+            var opts = _.reduce(hosts, function(memo, host) {
+                return memo + this.optionTemplate({
+                    host: host
+                });
+            }, null, this);
+            var $el = this.ui.hosts;
+            $el.html(this.selectTemplate({
+                list: opts
+            }));
         },
         selectors: ['0-1', '0-2', '1-1', '1-2', '2-1', '2-2', '3-1', '3-2', '4-1', '4-2', '5-1', '5-2', '6-1', '6-2', '7-1', '7-2', '8-1', '8-2'],
         imageLoader: function($el, url) {

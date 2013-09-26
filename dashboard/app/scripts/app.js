@@ -239,7 +239,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 }
             };
             App.ongraph = function(event, from, to, host, id) {
-                console.log('ongraph>> host: ' + host + ' device id: ' + id);
+                //console.log('ongraph>> host: ' + host + ' device id: ' + id);
                 graphWall.hideGraphs();
                 var hosts;
                 if (host === 'all') {
