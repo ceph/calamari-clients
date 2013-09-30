@@ -3,18 +3,18 @@
 define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health-model', 'models/status-model', 'marionette'], function($, _, Backbone, UsageModel, HealthModel, StatusModel) {
     'use strict';
 
-    function newPoller(eventPrefix) {
+    function newPoller(eventPrefix, context) {
         var fnName = eventPrefix + 'Poller',
             timerName = eventPrefix + 'Timer',
             modelName = eventPrefix + 'Model';
+        var self = context;
+        var App = context.App;
+        _.each(['request', 'sync', 'error'], function(event) {
+            this.listenTo(this[modelName], event, function() {
+                App.vent.trigger(eventPrefix + ':' + event);
+            });
+        }, context);
         return function() {
-            var self = this;
-            var App = this.App;
-            _.each(['request', 'sync', 'error'], function(event) {
-                this.listenTo(this[modelName], event, function() {
-                    App.vent.trigger(eventPrefix + ':' + event);
-                });
-            }, this);
             var delay = this[timerName] === null ? 0 : this.delay;
             this[timerName] = setTimeout(function() {
                 self[modelName].fetch({
@@ -65,9 +65,9 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                 cluster: this.cluster
             });
 
-            this.healthPoller = newPoller('health');
-            this.usagePoller = newPoller('usage');
-            this.statusPoller = newPoller('status');
+            this.healthPoller = newPoller('health', this);
+            this.usagePoller = newPoller('usage', this);
+            this.statusPoller = newPoller('status', this);
             this.updateEvent = newEventEmitter('updateEvent', 'updateTimer', 'osd:update');
             this.listenTo(this.App.vent, 'cluster:update', this.updateModels);
             _.bindAll(this, 'stop', 'updateModels', 'start');
