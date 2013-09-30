@@ -2,45 +2,47 @@
 
 define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health-model', 'models/status-model', 'marionette'], function($, _, Backbone, UsageModel, HealthModel, StatusModel) {
     'use strict';
-    var newFetcher = function(fnName, timerName, modelName, eventPrefix) {
-            return function() {
-                var self = this;
-                self.listenTo(self[modelName], 'request', function() {
-                    self.App.vent.trigger(eventPrefix + ':request');
+
+    function newPoller(eventPrefix) {
+        var fnName = eventPrefix + 'Poller',
+            timerName = eventPrefix + 'Timer',
+            modelName = eventPrefix + 'Model';
+        return function() {
+            var self = this;
+            var triggerFn = this.App.vent.trigger;
+            _.each(['request', 'sync', 'error'], function(event) {
+                this.listenTo(this[modelName], event, function() {
+                    triggerFn(eventPrefix + ':' + event);
                 });
-                self.listenTo(self[modelName], 'sync', function() {
-                    self.App.vent.trigger(eventPrefix + ':sync');
+            }, this);
+            var delay = this[timerName] === null ? 0 : this.delay;
+            this[timerName] = setTimeout(function() {
+                self[modelName].fetch({
+                    success: function(model /*, response, options*/ ) {
+                        triggerFn(eventPrefix + ':update', model);
+                        self[timerName] = self[fnName].apply(self);
+                    },
+                    error: function(model, response) {
+                        console.log(response);
+                        self[timerName] = self[fnName].apply(self);
+                    }
                 });
-                self.listenTo(self[modelName], 'error', function() {
-                    self.App.vent.trigger(eventPrefix + ':error');
-                });
-                var delay = this[timerName] === null ? 0 : this.delay;
-                this[timerName] = setTimeout(function() {
-                    self[modelName].fetch({
-                        success: function(model /*, response, options*/ ) {
-                            self.App.vent.trigger(eventPrefix + ':update', model);
-                            self[timerName] = self[fnName].apply(self);
-                        },
-                        error: function(model, response) {
-                            console.log(response);
-                            self[timerName] = self[fnName].apply(self);
-                        }
-                    });
-                }, delay);
-                return this[timerName];
-            };
+            }, delay);
+            return this[timerName];
         };
-    var newEventEmitter = function(fnName, timerName, eventName) {
-            return function() {
-                var self = this;
-                var delay = this[timerName] === null ? 0 : this.delay;
-                this[timerName] = setTimeout(function() {
-                    self.App.vent.trigger(eventName);
-                    self[timerName] = self[fnName].apply(self);
-                }, delay);
-                return this[timerName];
-            };
+    }
+
+    function newEventEmitter(fnName, timerName, eventName) {
+        return function() {
+            var self = this;
+            var delay = this[timerName] === null ? 0 : this.delay;
+            this[timerName] = setTimeout(function() {
+                self.App.vent.trigger(eventName);
+                self[timerName] = self[fnName].apply(self);
+            }, delay);
+            return this[timerName];
         };
+    }
     return Backbone.Marionette.ItemView.extend({
         usageTimer: null,
         usageModel: null,
@@ -63,35 +65,37 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                 cluster: this.cluster
             });
 
-            this.fetchHealth = newFetcher('fetchHealth', 'healthTimer', 'healthModel', 'health');
-            this.fetchUsage = newFetcher('fetchUsage', 'usageTimer', 'usageModel', 'usage');
-            this.fetchStatus = newFetcher('fetchStatus', 'statusTimer', 'statusModel', 'status');
+            this.healthPoller = newPoller('health');
+            this.usagePoller = newPoller('usage');
+            this.statusPoller = newPoller('status');
             this.updateEvent = newEventEmitter('updateEvent', 'updateTimer', 'osd:update');
             this.listenTo(this.App.vent, 'cluster:update', this.updateModels);
             _.bindAll(this, 'stop', 'updateModels', 'start');
+            this.models = ['health', 'usage', 'status'];
+            this.timers = ['health', 'usage', 'status', 'update'];
+            this.pollers = ['healthPoller', 'usagePoller', 'statusPoller', 'updateEvent'];
         },
+        // Cluster ID has changed. Update pollers.
         updateModels: function(cluster) {
-            this.healthModel.set('cluster', cluster.id);
-            this.usageModel.set('cluster', cluster.id);
-            this.statusModel.set('cluster', cluster.id);
+            _.each(this.models, function(model) {
+                this[model + 'Model'].set('cluster', cluster.id);
+            }, this);
             this.stop();
             this.start();
         },
+        // Restart Poller functions
         start: function() {
-            this.fetchHealth();
-            this.fetchUsage();
-            this.fetchStatus();
-            this.updateEvent();
+            _.each(this.pollers, function(poller) {
+                this[poller].call(this);
+            }, this);
         },
+        // Stop and Remove All Currently running Pollers
         stop: function() {
-            clearTimeout(this.healthTimer);
-            this.healthTimer = null;
-            clearTimeout(this.usageTimer);
-            this.usageTimer = null;
-            clearTimeout(this.statusTimer);
-            this.statusTimer = null;
-            clearTimeout(this.updateTimer);
-            this.updateTimer = null;
+            _.each(this.timers, function(timer) {
+                var id = this[timer + 'Timer'];
+                clearTimeout(id);
+                this[timer + 'Timer'] = null;
+            }, this);
         }
     });
 });
