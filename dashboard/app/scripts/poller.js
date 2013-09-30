@@ -9,17 +9,17 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             modelName = eventPrefix + 'Model';
         return function() {
             var self = this;
-            var triggerFn = this.App.vent.trigger;
+            var App = this.App;
             _.each(['request', 'sync', 'error'], function(event) {
                 this.listenTo(this[modelName], event, function() {
-                    triggerFn(eventPrefix + ':' + event);
+                    App.vent.trigger(eventPrefix + ':' + event);
                 });
             }, this);
             var delay = this[timerName] === null ? 0 : this.delay;
             this[timerName] = setTimeout(function() {
                 self[modelName].fetch({
                     success: function(model /*, response, options*/ ) {
-                        triggerFn(eventPrefix + ':update', model);
+                        App.vent.trigger(eventPrefix + ':update', model);
                         self[timerName] = self[fnName].apply(self);
                     },
                     error: function(model, response) {
