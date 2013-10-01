@@ -21,7 +21,8 @@ require.config({
             deps: ['bootstrap']
         },
         'noty': {
-            deps: ['jquery']
+            deps: ['jquery'],
+            exports: 'noty'
         },
         'notylayout': {
             deps: ['noty']

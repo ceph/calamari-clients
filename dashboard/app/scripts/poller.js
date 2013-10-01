@@ -1,4 +1,4 @@
-/*global define*/
+/* global define */
 
 define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health-model', 'models/status-model', 'marionette'], function($, _, Backbone, UsageModel, HealthModel, StatusModel) {
     'use strict';
@@ -17,15 +17,19 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         return function() {
             var delay = this[timerName] === null ? 0 : this.delay;
             this[timerName] = setTimeout(function() {
+                //var rtt = performance.now();
                 self[modelName].fetch({
                     success: function(model /*, response, options*/ ) {
+                        //console.log(eventPrefix + ' request took ' + (performance.now() - rtt) + ' ms');
                         App.vent.trigger(eventPrefix + ':update', model);
                         self[timerName] = self[fnName].apply(self);
                     },
                     error: function(model, response) {
-                        console.log(response);
+                        console.log(eventPrefix + '/error: ' + response.statusText);
+                        App.vent.trigger('app:neterror', eventPrefix, response);
                         self[timerName] = self[fnName].apply(self);
-                    }
+                    },
+                    timeout: self.timeout
                 });
             }, delay);
             return this[timerName];
@@ -52,6 +56,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         statusTimer: null,
         updateTimer: null,
         delay: 20000,
+        timeout: 3000,
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.cluster = Backbone.Marionette.getOption(this, 'cluster');
