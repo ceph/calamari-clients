@@ -16,6 +16,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         curHostGroup: null,
         hostGroupTimer: null,
         customSort: false,
+        delay: 20000,
+        timeout: 3000,
         ui: {
             'cardTitle': '.card-title',
             viz: '.viz',
@@ -59,12 +61,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         spinnerOff: function() {
             this.ui.spinner.css('visibility', 'hidden');
         },
+        fetchError: function(collection, response) {
+            console.log('osd' + '/error: ' + response.statusText);
+            this.App.vent.trigger('app:neterror', 'osd', response);
+        },
         updateCollection: function() {
             if (this.App.Config['delta-osd-api'] && this.collection.length > 0) {
                 this.collection.update.apply(this.collection);
             } else {
                 var vent = this.App.vent;
-                this.collection.fetch().then(function() {
+                this.collection.fetch({
+                    timeout: this.timeout,
+                    error: this.fetchError
+                }).then(function() {
                     // after collection update update the filter counts
                     vent.trigger('filter:update');
                 });
@@ -119,6 +128,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
+            if (this.App.Config) {
+                this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.timeout;
+            }
             this.columns = 16;
             this.rows = 10;
             this.width = (this.columns + 1) * this.step;
