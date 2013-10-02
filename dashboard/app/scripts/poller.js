@@ -59,6 +59,10 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         timeout: 3000,
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
+            if (this.App.Config) {
+                this.delay = Backbone.Marionette.getOption(this.App.Config, 'long-polling-interval-ms') || this.delay;
+                this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.timeout;
+            }
             this.cluster = Backbone.Marionette.getOption(this, 'cluster');
             this.healthModel = new HealthModel({
                 cluster: this.cluster
