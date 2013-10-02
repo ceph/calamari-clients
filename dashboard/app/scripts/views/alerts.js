@@ -13,7 +13,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.listenTo(this.App.vent, 'app:neterror', this.neterrorHandler);
-            _.each(['timeout', 'sessionExpired', 'serverError', 'parserError'], function(fnName) {
+            _.each(['timeout', 'sessionExpired', 'serverError', 'unexpectedError', 'parserError'], function(fnName) {
                 this[fnName] = _.throttle(this[fnName], this.throttleMs);
             }, this);
             this.timeout = _.after(this.throttleCount, this.timeout);
@@ -50,6 +50,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             this.warning(msg);
         },
         serverError: function(msg, xhr) {
+            msg.text = this.serverErrorTemplate(xhr);
+            this.error(msg);
+        },
+        unexpectedError: function(msg, xhr) {
             msg.text = this.unexpectedErrorTemplate(xhr);
             this.error(msg);
         },
