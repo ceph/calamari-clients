@@ -22,8 +22,9 @@ define(['jquery', 'underscore'], function($, _) {
     // @param class2 - css class of animation 2
     // @returns jQuery promise
     function pair(clazzA, clazzB) {
+        var animA = single(clazzA), animB = single(clazzB);
         return function($selector, fn1, fn2) {
-            return single(clazzA)($selector, fn1).then(single(clazzB)($selector, fn2));
+            return animA.call(this, $selector, fn1).then(animB.call(this, $selector, fn2));
         };
     }
 
