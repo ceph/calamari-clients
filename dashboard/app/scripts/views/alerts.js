@@ -4,8 +4,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
     'use strict';
 
     var AlertsView = Backbone.Marionette.ItemView.extend({
-        serverErrorTemplate: _.template('Server Error (<%- statusCode %>) <%- responseText %>. Please contact Administrator.'),
-        unexpectedErrorTemplate: _.template('Unexpected Error (<%- statusCode %>)<%- responseText %>. Please contact Administrator.'),
+        serverErrorTemplate: _.template('Server Error (<%- status %>) <%- responseText %>. Please contact Administrator.'),
+        unexpectedErrorTemplate: _.template('Unexpected Error (<%- status %>)<%- responseText %>. Please contact Administrator.'),
         parserErrorTemplate: _.template('Error decoding <%- source %> response from server. Please contact Administrator.'),
         template: JST['app/scripts/templates/alerts.ejs'],
         throttleMs: 10000,
