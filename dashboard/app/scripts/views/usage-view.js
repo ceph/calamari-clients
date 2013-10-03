@@ -60,7 +60,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
                 lines: 10,
                 percentColors: [
                     [0.0, '#1ae61a'],
-                    [0.50, '#e6e619'],
+                    [0.60, '#e6e619'],
                     [1.0, '#e61919']
                 ],
                 generateGradient: true,
