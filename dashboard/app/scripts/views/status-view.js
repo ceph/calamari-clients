@@ -95,7 +95,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.model.set(model.attributes);
         },
         updateTimer: function() {
-            this.ui.subText.text(humanize.relativeTime(this.model.get('added_ms') / 1000));
+            this.ui.subText.text(humanize.relativeTime(this.model.get('cluster_update_time_unix') / 1000));
             this.timer = setTimeout(this.updateTimer, 1000);
         },
         updateView: function(model) {
@@ -111,7 +111,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             this.ui.okpg.text(pg.ok);
             this.ui.warnpg.text(pg.warn);
             this.ui.failpg.text(pg.crit);
-            this.ui.subText.text(humanize.relativeTime(model.get('added_ms') / 1000));
+            this.ui.subText.text(humanize.relativeTime(model.get('cluster_update_time_unix') / 1000));
             (function(self, m) {
                 setTimeout(function() {
                     self.addPGStateInfo.call(self, m.getPGStates());
