@@ -16,6 +16,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             _.each(['timeout', 'sessionExpired', 'serverError', 'unexpectedError', 'parserError'], function(fnName) {
                 this[fnName] = _.throttle(this[fnName], this.throttleMs);
             }, this);
+            this.sessionExpired = _.once(this.sessionExpired);
             this.timeout = _.after(this.throttleCount, this.timeout);
             _.bindAll(this, 'neterrorHandler');
         },
@@ -44,7 +45,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
                 text: 'Login',
                 onClick: function($noty) {
                     $noty.close();
-                    window.location = '/login';
+                    window.location = '/login/';
                 }
             }];
             this.warning(msg);
