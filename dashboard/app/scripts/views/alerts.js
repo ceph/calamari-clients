@@ -71,21 +71,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             if (errorType === 'timeout') {
                 return this.timeout(msg);
             }
-            if (errorType === 'error') {
-                if (xhr.status === 401) {
-                    return this.sessionExpired(msg);
-                }
-                if (xhr.status >= 500) {
-                    return this.serverError(msg, xhr);
-                }
-                return this.unexpectedError(msg, xhr);
-            }
             // parsererror doesn't seem to work consistently
             if (errorType === 'parsererror' || (xhr.status === 200 && errorType === 'OK')) {
                 return this.parserError(msg, _.extend({
                     source: source
                 }, xhr));
             }
+            if (xhr.status === 403) {
+                return this.sessionExpired(msg);
+            }
+            if (xhr.status >= 500) {
+                return this.serverError(msg, xhr);
+            }
+            return this.unexpectedError(msg, xhr);
         }
     });
 
