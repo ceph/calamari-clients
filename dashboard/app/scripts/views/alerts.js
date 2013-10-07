@@ -13,7 +13,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.listenTo(this.App.vent, 'app:neterror', this.neterrorHandler);
-            _.each(['timeout', 'sessionExpired', 'serverError', 'unexpectedError', 'parserError'], function(fnName) {
+            _.each(['timeout', 'serverError', 'unexpectedError', 'parserError'], function(fnName) {
                 this[fnName] = _.throttle(this[fnName], this.throttleMs);
             }, this);
             this.sessionExpired = _.once(this.sessionExpired);
