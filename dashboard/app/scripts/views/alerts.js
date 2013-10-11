@@ -10,15 +10,42 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         template: JST['app/scripts/templates/alerts.ejs'],
         throttleMs: 10000,
         throttleCount: 3,
+        krakenFailThreshold: 1000 * 60 * 15,
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.listenTo(this.App.vent, 'app:neterror', this.neterrorHandler);
+            this.listenTo(this.App.vent, 'krakenHeartBeat:update', this.heartBeat);
             _.each(['timeout', 'serverError', 'unexpectedError', 'parserError'], function(fnName) {
                 this[fnName] = _.throttle(this[fnName], this.throttleMs);
             }, this);
             this.sessionExpired = _.once(this.sessionExpired);
             this.timeout = _.after(this.throttleCount, this.timeout);
-            _.bindAll(this, 'neterrorHandler');
+            _.bindAll(this, 'neterrorHandler', 'heartBeat');
+        },
+        heartBeat: function(model) {
+            if (model) {
+                var attrs = model.attributes;
+                //jshint camelcase: false
+                if (attrs) {
+                    var now = Date.now();
+                    var deltaAttemptMs = now - attrs.cluster_update_attempt_time_unix;
+                    var deltaSuccessMs = now - attrs.cluster_update_time_unix;
+                    // If time since last success exceeds threshold we
+                    // have a problem with kraken
+                    if (deltaSuccessMs > this.krakenFailThreshold) {
+                        var msg = _.extend({}, this.notyDefaults);
+                        if (deltaAttemptMs > deltaSuccessMs) {
+                            // if last attempt is older than last success
+                            // then it's likely kraken has failed
+                            this.clusterUpdateTimeout(msg);
+                        } else {
+                            // kraken's still trying, we suspect cluster
+                            // API communication issues
+                            this.clusterAPITimeout(msg);
+                        }
+                    }
+                }
+            }
         },
         notyDefaults: {
             layout: 'top',
@@ -37,6 +64,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             this.timeoutCount++;
             this.error(msg);
             console.log('timeout count ' + this.timeoutCount);
+        },
+        clusterUpdateTimeout: function(msg) {
+            msg.text = 'Cluster Updates Are Stale. ICE update process may have failed.';
+            this.warning(msg);
+        },
+        clusterAPITimeout: function(msg) {
+            msg.text = 'Cluster Updates Are Stale. Cluster isn\'t responding to ICE requests.';
+            this.warning(msg);
         },
         sessionExpired: function(msg) {
             msg.text = 'Session Has Timed Out. Please Login again.';
