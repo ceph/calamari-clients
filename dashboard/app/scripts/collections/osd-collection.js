@@ -7,7 +7,7 @@ define(['underscore', 'backbone', 'models/application-model'], function(_, Backb
     var OSDCollection = Backbone.Collection.extend({
         cluster: 1,
         epoch: 1,
-        added_ms: 0,
+        cluster_update_time_unix: 0,
         url: function() {
             return '/api/v1/cluster/' + this.cluster + '/osd';
         },
@@ -18,7 +18,7 @@ define(['underscore', 'backbone', 'models/application-model'], function(_, Backb
         },
         parse: function(response) {
             this.epoch = response.epoch;
-            this.added_ms = response.added_ms;
+            this.cluster_update_time_unix = response.cluster_update_time_unix;
             this.pg_state_counts = response.pg_state_counts;
             if (response.osds) {
                 return response.osds;

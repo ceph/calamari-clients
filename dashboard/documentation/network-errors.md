@@ -29,19 +29,19 @@ To avoid duplicating network code, most of the network code is dependent on **Ba
 Models
 ------
 
-model | subsystem | api | desc
-------|-----------|-----
+model | subsystem | api | desc |
+------|-----------|-------------
 graphite-net-model| graphite | TBD |
 graphite-cpu-model| graphite | TBD |
-health-model | calamari | api/v1/cluster/{id}/health
-status-model | calamari | api/v1/cluster/{id}/health_counters
-usage-model | calamari | api/v1/cluster/{id}/space
+health-model | calamari | api/v1/cluster/{id}/health | |
+status-model | calamari | api/v1/cluster/{id}/health_counters | |
+usage-model | calamari | api/v1/cluster/{id}/space | |
 
 
 Collections
 -----------
 
-collection | subsystem | api | desc
+collection | subsystem | api | desc|
 -----------|-----------|-----|------
-cluster-collection | calamari | api/v1/cluster
-osd-collection | calamari | api/v1/cluster/{id}/osd
+cluster-collection | calamari | api/v1/cluster| |
+osd-collection | calamari | api/v1/cluster/{id}/osd| |

@@ -18,7 +18,8 @@
     "backbone.babysitter": "~0.0.6",
     "Faker": "~0.5.11",
     "javascript-state-machine": "~2.2.0",
-    "bootstrap-switch": "latest"
+    "bootstrap-switch": "latest",
+    "noty": "~2.1.0"
   },
   "devDependencies": {}
 }

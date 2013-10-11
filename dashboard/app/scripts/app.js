@@ -1,15 +1,15 @@
 /*global require */
-/* jshint -W106 */
-
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'statemachine', 'marionette', 'bootstrap'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers, StateMachine) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'statemachine', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers, StateMachine) {
     /* Default Configuration */
     var hostname = document.location.hostname;
     //hostname = 'mira022.front.sepia.ceph.com';
     var config = {
         offline: true,
         'delta-osd-api': false,
-        'graphite-host': 'http://' + hostname + ':8080'
+        'graphite-host': 'http://' + hostname + ':8080',
+        'api-request-timeout-ms': 3000,
+        'long-polling-interval-ms': 20000
     };
 
     /* Default Configuration */
@@ -78,6 +78,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             var settings = {
                 cluster: 1,
                 space: {
+                    /* jshint -W106 */
                     free_bytes: totalCapacity * ONE_GIGABYTE,
                     capacity_bytes: totalCapacity * ONE_GIGABYTE,
                     used_bytes: totalUsed * ONE_GIGABYTE
@@ -181,6 +182,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             clusterDeferred.resolve(clusterMenu.collection.at(0));
         });
         clusterDeferred.promise().done(function(cluster) {
+            var alertsView = new views.AlertsView({ App: App });
+
             var poller = new Poller({
                 App: App,
                 cluster: cluster.get('id')
@@ -389,7 +392,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     trigger: true
                 });
             });
-
             // Global Exports
             window.inktank = {
                 App: App,
@@ -403,6 +405,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 StatusView: statusView,
                 UserMenu: userMenu,
                 Viz: viz,
+                Alerts: alertsView,
                 models: models,
                 helpers: helpers
             };

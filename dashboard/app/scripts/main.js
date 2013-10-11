@@ -19,11 +19,24 @@ require.config({
         },
         'bootstrap-switch': {
             deps: ['bootstrap']
+        },
+        'noty': {
+            deps: ['jquery'],
+            exports: 'noty'
+        },
+        'notylayout': {
+            deps: ['noty']
+        },
+        'notytheme': {
+            deps: ['notylayout']
         }
     },
     paths: {
         faker: '../bower_components/Faker/Faker',
         jquery: '../bower_components/jquery/jquery',
+        noty: '../bower_components/noty/js/noty/jquery.noty',
+        notylayout: '../bower_components/noty/js/noty/layouts/top',
+        notytheme: '../bower_components/noty/js/noty/themes/default',
         backbone: '../bower_components/backbone-amd/backbone',
         underscore: '../bower_components/underscore-amd/underscore',
         bootstrap: 'vendor/bootstrap',
