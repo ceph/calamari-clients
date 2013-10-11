@@ -66,11 +66,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             console.log('timeout count ' + this.timeoutCount);
         },
         clusterUpdateTimeout: function(msg) {
-            msg.text = 'Cluster Updates Are Stale. ICE update process may have failed.';
+            msg.text = 'Cluster Updates Are Stale. Calamari update process may have failed.';
             this.warning(msg);
         },
         clusterAPITimeout: function(msg) {
-            msg.text = 'Cluster Updates Are Stale. Cluster isn\'t responding to ICE requests.';
+            msg.text = 'Cluster Updates Are Stale. Cluster isn\'t responding to Calamari requests.';
             this.warning(msg);
         },
         sessionExpired: function(msg) {
