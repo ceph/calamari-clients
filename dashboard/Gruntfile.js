@@ -290,6 +290,13 @@ module.exports = function (grunt) {
                     force: true
                 }
             }
+        },
+        'git-describe': {
+            options: {
+                'failOnError': false
+            },
+            'git.js': {
+            }
         }
     });
 
@@ -333,6 +340,7 @@ module.exports = function (grunt) {
         'clean:dist',
         'symlink',
         'coffee',
+        'saveRevision',
         'createDefaultTemplate',
         'jst',
         'compass:dist',
@@ -356,4 +364,11 @@ module.exports = function (grunt) {
         'test',
         'build'
     ]);
+    grunt.registerTask('saveRevision', function() {
+        grunt.event.once('git-describe', function(rev) {
+            grunt.log.writeln('Git Revision: ' + rev);
+            grunt.file.write('app/scripts/git.js', '/*global define */ define([], function() { \'use strict\'; return { \'git-commit\': \'' + rev + '\' }; });');
+        });
+        grunt.task.run('git-describe');
+    });
 };

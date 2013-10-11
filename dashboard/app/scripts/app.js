@@ -1,6 +1,6 @@
 /*global require */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'statemachine', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers, StateMachine) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown', 'views/clusterdropdown', 'helpers/animation', 'views/graphwall-view', 'helpers/graph-utils', 'statemachine', 'gitcommit', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, animation, GraphWall, helpers, StateMachine, gitcommit) {
     /* Default Configuration */
     var hostname = document.location.hostname;
     //hostname = 'mira022.front.sepia.ceph.com';
@@ -407,7 +407,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 Viz: viz,
                 Alerts: alertsView,
                 models: models,
-                helpers: helpers
+                helpers: helpers,
+                commit: gitcommit['git-commit']
             };
         });
         /* Defer Visualization startup to after loading the cluster metadata */
