@@ -18,8 +18,8 @@ define(['underscore', 'backbone'], function(_, Backbone) {
         },
         defaults: {
             cluster: 1,
-            added: '',
-            added_ms: Date.now(),
+            cluster_update_time: '',
+            cluster_update_time_unix: Date.now(),
             report: {
                 overall_status: 'HEALTH_OK',
                 detail: [],

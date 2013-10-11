@@ -17,7 +17,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
         },
         defaults: {
             'cluster': 1,
-            'added_ms': Date.now(),
+            'cluster_update_time_unix': Date.now(),
             'mon': {
                 'ok': {
                     count: 0

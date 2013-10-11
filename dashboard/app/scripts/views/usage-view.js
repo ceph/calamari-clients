@@ -58,8 +58,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             this.opts = {};
             _.extend(this.opts, {
                 lines: 10,
-                colorStart: '#80d2dc',
-                colorStop: '#55aeba',
+                percentColors: [
+                    [0.0, '#1ae61a'],
+                    [0.60, '#e6e619'],
+                    [1.0, '#e61919']
+                ],
                 generateGradient: true,
                 highDpiSupport: false
             });
@@ -75,7 +78,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             this.gauge.set(0);
             this.gauge.maxValue = 100;
             this.gauge.minValue = 0;
-            this.ui.canvas.css({'height':'', 'width':''});
+            this.ui.canvas.css({
+                'height': '',
+                'width': ''
+            });
             this.triggerMethod('item:postrender', this);
             this.listenTo(this.App.vent, 'usage:request', function() {
                 self.ui.spinner.css('visibility', 'visible');

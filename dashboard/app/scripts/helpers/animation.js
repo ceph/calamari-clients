@@ -1,7 +1,7 @@
 /*global define, Modernizr*/
 
 'use strict';
-define(['jquery'], function($) {
+define(['jquery', 'underscore'], function($, _) {
     var animationEndEventNames = {
         'WebkitAnimation': 'webkitAnimationEnd',
         'MozAnimation': 'animationEnd',
@@ -21,34 +21,10 @@ define(['jquery'], function($) {
     // @param class1 - css class of animation 1
     // @param class2 - css class of animation 2
     // @returns jQuery promise
-    function pair(class1, class2) {
+    function pair(clazzA, clazzB) {
+        var animA = single(clazzA), animB = single(clazzB);
         return function($selector, fn1, fn2) {
-            var d = $.Deferred();
-            var resolver = function(evt) {
-                    evt.stopPropagation();
-                    d.resolve();
-                };
-            $selector.on(animationEndEvent, resolver);
-            var self = this;
-            $selector.addClass(class1);
-            return d.promise().then(function() {
-                if (fn1) {
-                    fn1.apply(self);
-                }
-                $selector.off(animationEndEvent, resolver).removeClass(class1);
-                d = $.Deferred();
-                resolver = function(evt) {
-                    evt.stopPropagation();
-                    d.resolve();
-                };
-                $selector.on(animationEndEvent, resolver).addClass(class2);
-                return d.promise();
-            }).then(function() {
-                $selector.removeClass(class2).off(animationEndEvent, resolver);
-                if (fn2) {
-                    fn2.apply(self);
-                }
-            });
+            return animA.call(this, $selector, fn1).then(animB.call(this, $selector, fn2));
         };
     }
 
@@ -59,13 +35,14 @@ define(['jquery'], function($) {
                     evt.stopPropagation();
                     d.resolve();
                 };
-            $selector.on(animationEndEvent, resolver);
             var self = this;
+            $selector.on(animationEndEvent, resolver);
             $selector.addClass(class1);
             return d.promise().then(function() {
                 $selector.off(animationEndEvent, resolver).removeClass(class1);
-                if (fn1) {
-                    fn1.apply(self);
+                if (_.isFunction(fn1)) {
+                    var args = _.toArray(arguments);
+                    fn1.apply(self, args);
                 }
             });
         };

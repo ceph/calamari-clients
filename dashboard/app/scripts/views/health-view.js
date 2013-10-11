@@ -54,14 +54,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             });
         },
         updateTimer: function() {
-            this.ui.subText.text(humanize.relativeTime(this.model.get('added_ms') / 1000));
+            this.ui.subText.text(humanize.relativeTime(this.model.get('cluster_update_time_unix') / 1000));
             this.timer = setTimeout(this.updateTimer, 1000);
         },
         // Demo Code
         // ---------
         _ok: function() {
             this.model.set({
-                added_ms: Date.now() - 1000,
+                cluster_update_time_unix: Date.now() - 1000,
                 report: {
                     overall_status: 'HEALTH_OK'
                 }
@@ -71,7 +71,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         // ---------
         _warn: function() {
             this.model.set({
-                added_ms: Date.now() - 1000,
+                cluster_update_time_unix: Date.now() - 1000,
                 report: {
                     overall_status: 'HEALTH_WARN'
                 }
@@ -83,7 +83,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         serializeData: function() {
             var model = this.model.toJSON();
             var clazz = '',
-                subtext = humanize.relativeTime(model.added_ms / 1000),
+                subtext = humanize.relativeTime(model.cluster_update_time_unix / 1000),
                 healthText = '';
             switch (model.report.overall_status) {
             case 'HEALTH_WARN':
