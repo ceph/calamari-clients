@@ -49,7 +49,8 @@ require.config({
         humanize: 'vendor/humanize',
         'bootstrap-switch': '../bower_components/bootstrap-switch/static/js/bootstrap-switch',
         statemachine: '../bower_components/javascript-state-machine/state-machine',
-        marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette'
+        marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
+        gitcommit: 'git'
     }
 });
 

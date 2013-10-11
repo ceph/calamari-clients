@@ -29,7 +29,8 @@
     "grunt-cli": "~0.1.9",
     "yo": "~1.0.0",
     "generator-backbone": "~0.1.9",
-    "grunt-newer": "~0.5.1"
+    "grunt-newer": "~0.5.1",
+    "grunt-git-describe": "~2.3.2"
   },
   "engines": {
     "node": ">=0.8.0"
