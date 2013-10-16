@@ -57,11 +57,11 @@ $third-row-height: 120px;
     color: $itapp-standard-font-color;
     background-color: $itapp-card-color;
     @include box-shadow(0 2px 4px rgba(0,0,0,.2));
-    @include box-sizing(border-box);
-    @include border-radius($itapp-card-border-radius);
-    padding: 9px;
-    margin-top: 10px;
-    margin-bottom: 0;
+//    @include box-sizing(border-box);
+//    @include border-radius($itapp-card-border-radius);
+//    padding: 9px;
+//    margin-top: 10px;
+//    margin-bottom: 0;
 }
 
 .gauge {
@@ -74,7 +74,7 @@ $third-row-height: 120px;
 $hr-width: 210px;
 hr.style-two {
     border: 0;
-    margin: 8px 0 8px 0;
+//    margin: 8px 0 8px 0;
     height: 1px;
     background: #ccc;
 }
