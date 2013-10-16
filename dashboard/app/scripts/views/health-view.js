@@ -8,7 +8,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
      *  Health of the cluster widget
      */
     return Backbone.Marionette.ItemView.extend({
-        className: 'gauge card span3 health',
+        className: 'gauge card col-md-2 col-sm-3 health',
         template: JST['app/scripts/templates/health.ejs'],
         title: 'health',
         timer: null,
