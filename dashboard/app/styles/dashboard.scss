@@ -18,7 +18,7 @@ body {
     font-style: normal;
 }
 
-$itapp-card-height: 210px;
+$itapp-card-height: 240;
 $second-row-height: 600px;
 $third-row-height: 120px;
 
@@ -32,6 +32,7 @@ $third-row-height: 120px;
         border: 1px solid darken($itdarkred, 15%);
     }
 }
+
 .navbar .nav > li > a {
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
@@ -54,27 +55,32 @@ $third-row-height: 120px;
 }
 
 .card {
+    position: relative;
     color: $itapp-standard-font-color;
     background-color: $itapp-card-color;
     @include box-shadow(0 2px 4px rgba(0,0,0,.2));
-//    @include box-sizing(border-box);
-//    @include border-radius($itapp-card-border-radius);
-//    padding: 9px;
-//    margin-top: 10px;
-//    margin-bottom: 0;
+    @include box-sizing(border-box);
+    @include border-radius($itapp-card-border-radius);
+    width: 100%;
+    padding: 9px;
+    margin-top: 16px;
+}
+
+.custom-gutter {
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 .gauge {
-    position: relative;
-    min-height: $itapp-card-height;
+    min-height: #{$itapp-card-height}px;
     text-align: left;
     line-height: 1.25;
 }
 
-$hr-width: 210px;
+$hr-width: auto;
 hr.style-two {
     border: 0;
-//    margin: 8px 0 8px 0;
+    margin: 8px 0 8px 0;
     height: 1px;
     background: #ccc;
 }
@@ -87,10 +93,10 @@ table.metrics tr td:first-child {
     color: $itapp-subtext-font-color;
 }
 .table.metrics td, .table.metrics th {
-    line-height: 20px;
+    line-height: 1em;
 }
 table.metrics td {
-    width: 100px;
+    width: auto;
 }
 table.metric td:last-child {
 }
@@ -151,18 +157,17 @@ span.subtext {
 .table tr:first-child > th, .table tr:first-child > td {
     border-top: 0px;
 }
-$g-width: 205px;
 .usage-canvas {
-    max-width: $g-width;
-    max-height: $itapp-card-height;
+    max-height: #{$itapp-card-height}px;
+    max-width: #{$itapp-card-height}px;
     box-sizing: border-box;
     padding: 0;
-    margin: 0;
+    margin: 0 auto 0 auto;
 }
 .mytext {
-	margin: 10px auto 0 auto;
+	margin: 0 auto 0 auto;
 	text-align: center;
-	font-size: 20px;
+	font-size: 2rem;
 }
 @mixin textalert($color) {
        color: $color;
