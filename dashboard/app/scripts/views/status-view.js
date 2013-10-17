@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
     'use strict';
 
     return Backbone.Marionette.ItemView.extend({
-        className: 'gauge card status',
+        className: 'gauge card status status-color',
         template: JST['app/scripts/templates/status.ejs'],
         statusTemplate: JST['app/scripts/templates/status-icon.ejs'],
         title: 'status',
