@@ -186,11 +186,13 @@ span.subtext {
 		display: block;
 		left: 0;
 		bottom: 0;
-		padding: 0 0 110px 65px;
+		padding: 0 0 95px 30px;
+		font-size: 4.5rem;
 		position: absolute;
 	}
 	@include breakpoint(screen-xs) {
 	    padding: 0 0 9px 9px;
+	    font-size: 2.5rem;
 	}
 }
 @mixin textalert($color) {
