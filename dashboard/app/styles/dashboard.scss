@@ -1,6 +1,9 @@
 @import 'animate';
-@import 'compass/css3';
+@import 'compass/css3/border-radius';
+@import 'compass/css3/box-shadow';
+@import 'compass/css3/box-sizing';
 @import 'compass/css3/images';
+@import 'compass/css3/user-interface';
 @import 'inktank_colors';
 @import 'bootstrap3_vars';
 
@@ -30,9 +33,10 @@ $third-row-height: 120px;
     @include border-radius(3px);
     @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
     border: 1px solid darken($itdarkred, 15%);
+    width: 100%;
 }
 
-.navbar .nav > li > a {
+.navbar .navbar-nav > li > a {
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
 	:hover {
@@ -40,7 +44,7 @@ $third-row-height: 120px;
 		text-shadow: 0 1px 0 $itlightgray;
 	}
 }
-.navbar .nav li.dropdown.open > .dropdown-toggle {
+.navbar .navbar-nav li.dropdown.open > .dropdown-toggle {
         @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
 }
 .dropdown-menu {
@@ -232,7 +236,7 @@ $bc-margin: 3;
     top: 4px;
 }
 .bc-entry {
-    margin: #{$bc-margin}px;
+    margin: #{$bc-margin - 2}px;
     text-align: center;
     vertical-align: middle;
     display: inline-block;
@@ -285,7 +289,7 @@ $bc-margin: 3;
 .bc-title {
     color: $itlightgray;
     font-size: 8px;
-    margin-top: -4px;
+    margin-top: 0;
 }
 .bc-title-one {
 }
