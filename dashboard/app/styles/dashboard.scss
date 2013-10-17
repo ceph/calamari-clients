@@ -2,6 +2,7 @@
 @import 'compass/css3';
 @import 'compass/css3/images';
 @import 'inktank_colors';
+@import 'bootstrap3_vars';
 
 $itapp-background-color: $itdarkgray;
 $itapp-card-color: $itlightgray;
@@ -62,6 +63,9 @@ $third-row-height: 120px;
     width: 100%;
     padding: 9px;
     margin-top: 16px;
+    @include breakpoint(screen-xs) {
+	min-width: 200px;
+    }
 }
 
 .custom-gutter {
@@ -166,11 +170,28 @@ span.subtext {
     box-sizing: border-box;
     padding: 0;
     margin: 0 auto 0 auto;
+    @include breakpoint(screen-sm) {
+	display: block;
+	position: absolute;
+	margin: 0;
+	right: 0;
+	top: 50px;
+    }
 }
 .mytext {
 	margin: 0 auto 0 auto;
 	text-align: center;
 	font-size: 2rem;
+	@include breakpoint(screen-sm) {
+		display: block;
+		left: 0;
+		bottom: 0;
+		padding: 0 0 110px 65px;
+		position: absolute;
+	}
+	@include breakpoint(screen-xs) {
+	    padding: 0 0 9px 9px;
+	}
 }
 @mixin textalert($color) {
        color: $color;
