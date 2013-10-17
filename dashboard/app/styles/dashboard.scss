@@ -7,7 +7,7 @@ $itapp-background-color: $itdarkgray;
 $itapp-card-color: $itlightgray;
 $itapp-font-family: 'ApexSansMedium';
 $itapp-standard-font-color: $itdarkgray;
-$itapp-card-border-radius: 3px;
+$itapp-card-border-radius: 1px;
 $itapp-card-box-shadow-color: #5e6a71;
 $itapp-subtext-font-color: $itgray;
 $itapp-card-title-font-color: $itdarkred;
@@ -24,13 +24,11 @@ $third-row-height: 120px;
 
 .navbar {
     margin-bottom:0;
-    .navbar-inner {
-    	min-height: 58px;
-        @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
-        @include border-radius(3px);
-        @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
-        border: 1px solid darken($itdarkred, 15%);
-    }
+    min-height: 58px;
+    @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+    @include border-radius(3px);
+    @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
+    border: 1px solid darken($itdarkred, 15%);
 }
 
 .navbar .nav > li > a {
@@ -77,11 +75,16 @@ $third-row-height: 120px;
     line-height: 1.25;
 }
 
+$color-width: 5px;
+
 $hr-width: auto;
 hr.style-two {
+    display: none;
     border: 0;
-    margin: 8px 0 8px 0;
-    height: 1px;
+    margin: 0 0 0 0;
+    height: 3px;
+    width: 33%;
+    right: 0;
     background: #ccc;
 }
 .card-title {
