@@ -1,0 +1,39 @@
+// Media queries breakpoints
+// --------------------------------------------------
+
+// Extra small screen / phone
+$screen-xs:                  480px !default;
+$screen-phone:               $screen-xs !default;
+
+// Small screen / tablet
+$screen-sm:                  768px !default;
+$screen-tablet:              $screen-sm !default;
+
+// Medium screen / desktop
+$screen-md:                  992px !default;
+$screen-desktop:             $screen-md !default;
+
+// Large screen / wide desktop
+$screen-lg:                  1200px !default;
+$screen-lg-desktop:          $screen-lg !default;
+
+// So media queries don't overlap when required, provide a maximum
+$screen-xs-max:              ($screen-sm - 1) !default;
+$screen-sm-max:              ($screen-md - 1) !default;
+$screen-md-max:              ($screen-lg - 1) !default;
+
+// @see http://css-tricks.com/media-queries-sass-3-2-and-codekit
+@mixin breakpoint($point) {
+	@if $point == screen-xs {
+		@media (max-width: $screen-xs-max) { @content; }
+	}
+	@else if $point == screen-sm {
+		@media (max-width: $screen-sm-max) { @content; }
+	}
+	@else if $point == screen-md {
+		@media (max-width: $screen-md-max) { @content; }
+	}
+	@else {
+		@media (min-width: $screen-lg) { @content; }
+	}
+}
