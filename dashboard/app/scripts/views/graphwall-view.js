@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
 
     var GraphwallView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/graphwall-view.ejs'],
-        className: 'graph-mode span12',
+        className: 'graph-mode',
         ui: {
             'title': '.title',
             'buttons': '.btn-toolbar',
@@ -217,7 +217,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 });
             };
         },
-        selectTemplate: _.template('<select name="hosts"><option value="all" selected>Cluster</option><%= list %></select>'),
+        selectTemplate: _.template('<select class="form-control" name="hosts"><option value="all" selected>Cluster</option><%= list %></select>'),
         optionTemplate: _.template('<option value="<%- args.host %>"><%- args.host %></option>"', null, { variable: 'args' }),
         renderHostSelector: function() {
             var hosts = this.App.ReqRes.request('get:hosts');
