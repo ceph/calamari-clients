@@ -60,6 +60,7 @@ tspan:hover, circle:hover {
 ul.filter {
     list-style: none;
     margin-left: 0;
+    padding-left: 0;
 
     .btn-hidden {
         display: none;
@@ -71,7 +72,7 @@ ul.filter {
         margin-top: 0;
     }
     .btn {
-        min-width: 8.25em;
+        min-width: 6.75em;
 	text-align: left;
 	margin-right: 5px;
     }
