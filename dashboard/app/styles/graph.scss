@@ -66,6 +66,7 @@
 }
 .btn-group {
 	>.btn.it-btn-left.btn-primary,
+	>.btn.it-btn-left.btn-primary.hidden-xs,
 	>.btn.it-btn-left.btn-primary.visible-xs {
 	    @include border-top-left-radius(4px);
 	    @include border-bottom-left-radius(4px);
