@@ -1,7 +1,7 @@
-    <li class="dropdown">
-    <a class="admin-menu dropdown-toggle" role="button" data-toggle="dropdown" href="#"><%- username %> <i class='icon-user'></i></a>
+<li class='dropdown'>
+    <a class="admin-menu dropdown-toggle" role="button" data-toggle="dropdown" href="#"><i class='icon-user icon-large'></i> <%- username %> <i class='icon-caret-down icon-large'></i></a>
     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-        <li><a class='settings' tabindex="-1" href="#"><span class='ddicon'><i class='<%- settingsIcon %>'></i></span><%- settingsLabel %></a></li>
-        <li><a class='logout' tabindex="-1" href="#"><span class='ddicon'><i class='<%- logoutIcon %>'></i></span><%- logoutLabel %></a></li>
+        <li role='presentation'><a role='menuitem' class='settings' tabindex="-1" href="#"><span class='ddicon'><i class='<%- settingsIcon %>'></i></span><%- settingsLabel %></a></li>
+        <li role='presentation'><a role='menuitem' class='logout' tabindex="-1" href="#"><span class='ddicon'><i class='<%- logoutIcon %>'></i></span><%- logoutLabel %></a></li>
     </ul>
-    </li>
+</li>

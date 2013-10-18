@@ -3,8 +3,8 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'marionette'], function
     'use strict';
     var UserDropDown = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/userdropdown.ejs'],
-        tagName: 'ul',
-        className: 'nav pull-right',
+        tagName: 'div',
+        className: 'nav navbar-nav navbar-right',
         events: {
             'click .logout': 'logout',
             'click .settings': 'settings'
