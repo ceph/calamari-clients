@@ -17,11 +17,15 @@
     <!-- endbuild -->
   </head>
   <body>
-    <div class="navbar hidden-xs">
-        <a class="navbar-brand" href="http://www.inktank.com"><img src="images/logo.png" alt="Inktank Logo"/></a>
+    <div class="nav navbar hidden-xs" role='navigation'>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="http://www.inktank.com"><img src="images/logo.png" alt="Inktank Logo"/></a>
+        </div>
         <ul style='display:none;' class="navbar-nav clustermenu"></ul>
         <div class='inknav'></div>
-        <ul class="navbar-nav pull-right usermenu"></ul>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right usermenu"></ul>
+        </div>
     </div>
     <div class="container">
       <div class="row gauges">

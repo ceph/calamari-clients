@@ -39,13 +39,12 @@ $third-row-height: 120px;
 .navbar .navbar-nav > li > a {
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
-	:hover {
-		color: $itlightgray;
-		text-shadow: 0 1px 0 $itlightgray;
-	}
-}
-.navbar .navbar-nav li.dropdown.open > .dropdown-toggle {
         @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+	&:hover {
+		color: darken($itlightgray, 15%);
+	}
+	&:active {
+	}
 }
 .dropdown-menu {
 	background-color: $itlightgray;
