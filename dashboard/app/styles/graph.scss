@@ -1,4 +1,6 @@
 @import 'inktank_colors';
+@import 'inktank_fonts';
+@import 'bootstrap3_vars';
 @import 'compass/css3/border-radius';
 @import 'compass/css3/box-shadow';
 @import 'compass/css3/box-sizing';
@@ -6,7 +8,10 @@
 
 .graph-mode {
     color: $itlightgray;
-    position: absolute;
+    font-family: 'ApexSansMedium';
+    h1 {
+    	font-family: 'ApexSansLight';
+    }
     top: 5px;
     left: 0;
     margin: 0;
@@ -25,30 +30,48 @@
 
 .graph-title {
 	color: $itlightgray;
-	top: -23px;
+	top: -1.5em;
+	left: 0;
 	font-size: 16px;
 	text-align: center;
 	width: 100%;
 	text-transform: Capitalize;
 	display: inline-block;
 	position: absolute;
+	margin: 0 auto 0 auto;
 }
 
 .graph-title-system {
-	margin-left: 46px;
-}
-
-.it-graph-controls {
-	text-align: center;
-	margin-top: 30px;
-	margin-left: 30px;
-	display: inline-block;
+	margin-left: 2.5em;
+	@include breakpoint(screen-sm) {
+		margin-left: 0.7em;
+	}
 }
 .hosts-select {
 	display: inline-block;
-	vertical-align: bottom;
+	margin-top: 1.03em;
+	@include breakpoint(screen-sm) {
+		margin-top: 1.1em;
+	}
 }
-.btn.it-btn-left {
-	@include border-top-left-radius(4px);
-	@include border-bottom-left-radius(4px);
+.it-graph-controls {
+	text-align: center;
+	margin-top: 1.2em;
+	margin-left: 0;
+	display: inline-block;
+	@include breakpoint(screen-xs) {
+		margin-top: 10px;
+		display: block;
+	}
+}
+.btn-group {
+	>.btn.it-btn-left.btn-primary,
+	>.btn.it-btn-left.btn-primary.visible-xs {
+	    @include border-top-left-radius(4px);
+	    @include border-bottom-left-radius(4px);
+	}
+	>.btn.it-btn-right.btn-primary.visible-xs {
+	    @include border-top-right-radius(4px);
+	    @include border-bottom-right-radius(4px);
+	}
 }

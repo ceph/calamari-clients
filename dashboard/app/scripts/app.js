@@ -148,6 +148,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             'a_year_ago': '1y',
             'years_ago': 'y'
         });
+        /*
         views.NotificationCardView.view.setElement($('.notifications')).render();
         views.NotificationCardView.collection.add(
         [{
@@ -171,6 +172,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             timestamp: humanize.time(),
             priority: 1
         }]);
+        */
         /* Widget Setup */
 
         /* Defer Visualization startup to after loading the cluster metadata */
@@ -204,7 +206,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
             var toWorkBenchAnimation = animation.single('toWorkBenchAnim');
             App.onentergraphmode = function( /*event, from, to, host, osd */ ) {
-                $('.row').css('visibility', 'hidden');
+                $('.row').css('display', 'none');
                 graphWall.render();
                 $('.container').append(graphWall.$el);
             };
@@ -277,7 +279,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             };
             App.onleavegraphmode = function() {
                 graphWall.close();
-                $('.row').css('visibility', 'visible');
+                $('.row').css('display', 'block');
             };
             App.onentervizmode = function(event, from) {
                 var d = $.Deferred();
