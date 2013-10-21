@@ -16,18 +16,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             $switch.on('switch-change', function() {
                 var d = $.Deferred();
                 $switch.bootstrapSwitch('setActive', false);
-                if (this.current === 'OSD') {
-                    setTimeout(function() {
-                        self.App.vent.trigger('switcher:two');
-                        self.current = 'PG';
-                        d.resolve();
-                    }, 0);
+                if (self.current === 'OSD') {
+                    self.App.vent.trigger('switcher:two', d);
+                    self.current = 'PG';
                 } else {
-                    setTimeout(function() {
-                        self.App.vent.trigger('switcher:one');
-                        self.current = 'OSD';
-                        d.resolve();
-                    }, 0);
+                    self.App.vent.trigger('switcher:one', d);
+                    self.current = 'OSD';
                 }
                 d.done(function() {
                     $switch.bootstrapSwitch('setActive', true);

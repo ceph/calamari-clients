@@ -181,7 +181,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             this.listenTo(this.App.vent, 'switcher:one', this.osdFilter);
             this.listenTo(this.App.vent, 'switcher:two', this.pgFilter);
         },
-        osdFilter: function() {
+        osdFilter: function(deferred) {
             this.state = 'osd';
             var children = this.children;
             this.collection.each(function(m) {
@@ -192,8 +192,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 }
                 children.findByModel(m).render();
             });
+            if (deferred) {
+                deferred.resolve();
+            }
         },
-        pgFilter: function() {
+        pgFilter: function(deferred) {
             // TODO write a function to async load the counts and set them
             this.state = 'pg';
             var children = this.children;
@@ -205,6 +208,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 }
                 children.findByModel(m).render();
             });
+            if (deferred) {
+                deferred.resolve();
+            }
         },
         reset: function() {
             this.$('.btn-disabled').removeClass('btn-disabled');
