@@ -823,7 +823,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             };
         },
-        filter: function(filterCol) {
+        filter: function(filterCol, deferred) {
             var enabled = filterCol.where({
                 enabled: true,
                 visible: true
@@ -842,6 +842,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     return false;
                 });
             }).then(function() {
+                if (deferred) {
+                    deferred.resolve();
+                }
                 vent.trigger('viz:render');
             });
         },

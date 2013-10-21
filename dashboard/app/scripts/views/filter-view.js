@@ -22,9 +22,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         clickHandlerDisabled: false,
         state: 'osd',
         events: {
-            'click .btn': 'clickHandler',
-            'mouseenter .btn': 'osdPulse',
-            'mouseleave .btn': 'osdStopPulse'
+            'mouseenter .make-switch': 'osdPulse',
+            'mouseleave .make-switch': 'osdStopPulse'
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
@@ -173,9 +172,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 match: makePGStateTest('stale')
             }]);
             _.bindAll(this, 'vizUpdate', 'reset', 'updateOSDCounts');
-            this.listenTo(this.collection, 'change:enabled', this.vizUpdate);
+            this.vent = new Backbone.Wreqr.EventAggregator();
+            this.itemViewOptions = {
+                vent: this.vent
+            };
+            //this.listenTo(this.collection, 'change:enabled', this.vizUpdate);
+            this.listenTo(this.vent, 'filter', this.vizUpdate);
             this.listenTo(this.collection, 'change:pulse', this.vizPulse);
-            this.listenTo(this.App.vent, 'viz:render', this.filterEnable);
             this.listenTo(this.App.vent, 'viz:dashboard', this.reset);
             this.listenTo(this.App.vent, 'filter:update', this.updateOSDCounts);
             this.listenTo(this.App.vent, 'switcher:one', this.osdFilter);
@@ -183,15 +186,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         },
         osdFilter: function(deferred) {
             this.state = 'osd';
-            var children = this.children;
             this.collection.each(function(m) {
                 if (m.get('category') !== 'osd') {
                     m.set('visible', false, {});
                 } else {
                     m.set('visible', true, {});
                 }
-                children.findByModel(m).render();
             });
+            this.render();
             if (deferred) {
                 deferred.resolve();
             }
@@ -199,15 +201,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         pgFilter: function(deferred) {
             // TODO write a function to async load the counts and set them
             this.state = 'pg';
-            var children = this.children;
             this.collection.each(function(m) {
                 if (m.get('category') === 'osd') {
                     m.set('visible', false, {});
                 } else {
                     m.set('visible', true, {});
                 }
-                children.findByModel(m).render();
             });
+            this.render();
             if (deferred) {
                 deferred.resolve();
             }
@@ -223,13 +224,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 });
             });
         },
-        filterEnable: function() {
-            this.$('.btn').removeClass('busy');
-            this.clickHandlerDisabled = false;
-        },
-        vizUpdate: function() {
+        vizUpdate: function(deferred) {
             if (this.App && this.App.vent) {
-                this.App.vent.trigger('viz:filter', this.collection);
+                this.App.vent.trigger('viz:filter', this.collection, deferred);
             }
         },
         vizPulse: function() {
@@ -239,7 +236,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         },
         updateOSDCounts: function() {
             var collection = this.collection;
-            var children = this.children;
             var osdfilters = collection.where({
                 category: 'osd'
             });
@@ -250,15 +246,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 });
                 var count = _.first(counts);
                 if (count) {
-                    model.set('count', count, {
-                        silent: true
-                    });
+                    model.set('count', count, {});
                 } else {
-                    model.set('count', 0, {
-                        silent: true
-                    });
+                    model.set('count', 0, {});
                 }
-                children.findByModel(model).render();
             });
             var pgfilters = collection.reject(function(m) {
                 return m.get('category') === 'osd';
@@ -270,42 +261,21 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 });
                 var count = _.first(counts);
                 if (count) {
-                    model.set('count', count, {
-                        silent: true
-                    });
+                    model.set('count', count, {});
                 } else {
-                    model.set('count', 0, {
-                        silent: true
-                    });
+                    model.set('count', 0, {});
                 }
-                children.findByModel(model).render();
             });
         },
         serializeModel: function(model) {
             var data = model.toJSON();
             return data;
         },
-        clickHandler: function(evt) {
-            evt.stopPropagation();
-            evt.preventDefault();
-            if (this.clickHandlerDisabled) {
-                return;
-            }
-            this.$('.btn').addClass('busy');
-            this.clickHandlerDisabled = true;
-            var $target = $(evt.target);
-            var index = $target.attr('data-filter');
-            var model = _.first(this.collection.where({
-                category: this.state,
-                index: index
-            }));
-            model.set('enabled', !model.get('enabled'));
-        },
         osdPulse: function(evt) {
             evt.stopPropagation();
             evt.preventDefault();
             var $target = $(evt.target);
-            var index = $target.attr('data-filter');
+            var index = $target.closest('.make-switch').attr('data-filter');
             var model = _.first(this.collection.where({
                 category: this.state,
                 index: index
@@ -316,7 +286,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             evt.stopPropagation();
             evt.preventDefault();
             var $target = $(evt.target);
-            var index = $target.attr('data-filter');
+            var index = $target.closest('.make-switch').attr('data-filter');
             var model = _.first(this.collection.where({
                 category: this.state,
                 index: index

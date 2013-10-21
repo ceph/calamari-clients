@@ -49,6 +49,7 @@ tspan:hover, circle:hover {
     font-family:'Andale Mono';
     padding: 5px 0 12px 10px;
 }
+$left-adjust: -5px;
 .filter-panel {
     margin-right: 35px;
     @include user-select(none);	
@@ -56,12 +57,25 @@ tspan:hover, circle:hover {
         margin-left: -15px;
 	text-transform: uppercase;
     }
+    .switcher, .sort {
+        margin-left: $left-adjust;
+    }
 }
 ul.filter {
     list-style: none;
-    margin-left: 0;
+    margin-left: $left-adjust;
+    min-width: 10.5em;
 
-    .btn-hidden {
+    >div {
+	border-bottom: 1px solid rgba(0,0,0,0.2);	
+        >label {
+          display: inline-block;
+	  line-height: 0.6;
+	  font-weight: normal;
+        }
+    }
+
+    .hidden {
         display: none;
     }
     .busy {
@@ -70,13 +84,9 @@ ul.filter {
     li {
         margin-top: 0;
     }
-    .btn {
-        min-width: 8.25em;
+    .make-switch {
+        min-width: 4em;
 	text-align: left;
-	margin-right: 5px;
-    }
-    .count {
-	vertical-align: middle;
     }
 }
 .workbench-mode {
@@ -144,129 +154,6 @@ $detail-top-pos: 25px;
 .detail-outer-bottom-right {
     bottom: 0px;
     right: 0px;
-}
-$switcher-border: 2px;
-$switcher-bg-color: lighten($itgray, 20%);
-$switcher-bd-color: lighten($itgray, 10%);
-.switcher {
-	position: relative;
-	@include box-sizing(border-box);
-	margin: 0;
-	padding:0;
-	vertical-align: middle;
-	margin-bottom: 20px;
-}
-.switcher-state {
-	display: block;
-	max-width: 33px;
-	height: 100%;
-	text-align: center;
-}
-.switcher-one {
-	padding-top: 3px;
-	background-color: $switcher-bg-color;
-	border-top: $switcher-border solid $switcher-bd-color;
-	border-left: $switcher-border solid $switcher-bd-color;
-	border-right: $switcher-border solid $switcher-bd-color;
-	@include border-top-left-radius(100%);
-	@include border-top-right-radius(100%);
-}
-.switcher-two {
-	padding-top: 3px;
-	background-color: $switcher-bg-color;
-	border-left: $switcher-border solid $switcher-bd-color;
-	border-bottom: $switcher-border solid $switcher-bd-color;
-	border-right: $switcher-border solid $switcher-bd-color;
-	@include border-bottom-left-radius(100%);
-	@include border-bottom-right-radius(100%);
-}
-.switcher-circle {
-    	@include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
-	visibility: hidden;
-	min-height: 27px;
-	min-width: 27px;
-	display: inline-block;
-	border-radius: 100%;
-	border: 1px solid $itdarkgray;
-	margin-bottom: 3px;
-}
-.switcher-active {
-	background-color: $itlightgray;
-	visibility: visible;
-	color: $itdarkgray;
-}
-.switcher-text-hidden {
-	visibility: hidden;
-}
-.switcher-text-one {
-	position: absolute;
-	left:3em;
-	top: 0.5em;
-}
-.switcher-text-two {
-	position: absolute;
-	left:3em;
-	bottom: 0.5em;
-}
-.btn.btn-osd-ok {
-     color: #F3F4F4;
-     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-     background-color: #1C8C00;
-     *background-color: #1C8C00;
-     @include background-image(linear-gradient(top, #26BF00, #1C8C00));
-     border-color: #1C8C00;
-     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-     &:hover {
-         color: #e8e6e6;
-         background-color: #1C8C00;
-         *background-color: #003bb3;
-     }
-     &:active, &.active, &.disabled, &[disabled] {
-         color: black;
-         background-color: #1C8C00;
-         *background-color: #003bb3;
-	 opacity: .6;
-     }
-}
-.btn.btn-osd-warn {
-    color: #f3f4f4;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    background-color: #898C00;
-    *background-color: #898C00;
-    @include background-image(linear-gradient(top, #BBBF00, #898C00));
-    border-color: #898C00;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-    &:hover {
-        color: #f3f4f4;
-        background-color: #898C00;
-        *background-color: #003bb3;
-    }
-    &:active, &.active, &.disabled, &[disabled] {
-        color: black;
-        background-color: #898C00;
-        *background-color: #003bb3;
-	opacity: .6;
-    }
-}
-.btn.btn-osd-crit {
-    color: #EFE8E8;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    background-color: #8C0000;
-    *background-color: #8C0000;
-    @include background-image(linear-gradient(top, #BF0000, #8C0000));
-    border-color: #8C0000;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-    &:hover {
-        color: #f3f4f4;
-        background-color: #8C0000;
-        *background-color: #003bb3;
-    }
-    &:active, &.active, &.disabled, &[disabled] {
-        color: black;
-        background-color: #8C0000;
-        *background-color: #003bb3;
-	opacity: .6;
-    }
 }
 span.filter-opt-disable {
     opacity: 0.4;
