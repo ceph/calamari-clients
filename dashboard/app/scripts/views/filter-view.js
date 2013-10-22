@@ -188,30 +188,36 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             this.state = 'osd';
             this.collection.each(function(m) {
                 if (m.get('category') !== 'osd') {
-                    m.set('visible', false, {});
+                    m.set({
+                        'visible': false,
+                        'enabled': true
+                    });
                 } else {
-                    m.set('visible', true, {});
+                    m.set({
+                        'visible': true,
+                        'enabled': true
+                    });
                 }
             });
-            this.render();
-            if (deferred) {
-                deferred.resolve();
-            }
+            this.vizUpdate(deferred);
         },
         pgFilter: function(deferred) {
             // TODO write a function to async load the counts and set them
             this.state = 'pg';
             this.collection.each(function(m) {
                 if (m.get('category') === 'osd') {
-                    m.set('visible', false, {});
+                    m.set({
+                        'visible': false,
+                        'enabled': true
+                    });
                 } else {
-                    m.set('visible', true, {});
+                    m.set({
+                        'visible': true,
+                        'enabled': true
+                    });
                 }
             });
-            this.render();
-            if (deferred) {
-                deferred.resolve();
-            }
+            this.vizUpdate(deferred);
         },
         reset: function() {
             this.$('.btn-disabled').removeClass('btn-disabled');

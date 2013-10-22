@@ -34,7 +34,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             this.getSwitch().bootstrapSwitch('setState', enabled, true /* skip emit change event */);
         },
         visible: function() {
-            if (!this.isVisible(this.model)) {
+            if (this.isVisible(this.model)) {
+                this.$el.show();
+            } else {
                 this.$el.hide();
             }
         },
