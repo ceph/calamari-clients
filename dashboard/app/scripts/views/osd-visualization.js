@@ -49,11 +49,18 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'viz:dashboard': 'dashboard',
             'viz:filter': 'filter',
             'viz:pulse': 'pulse',
-            'viz:togglehostgroup': 'toggleHostGroup'
         },
-        toggleHostGroup: function(callback) {
+        toggleSortOrder: function(deferred) {
             this.customSort = !this.customSort;
-            this.reset(callback);
+            if (this.filterCol) {
+                this.filter(this.filterCol, deferred);
+                return;
+            }
+            this.reset(function() {
+                if (deferred && deferred.resolve) {
+                    deferred.resolve();
+                }
+            });
         },
         spinnerOn: function() {
             this.ui.spinner.css('visibility', 'visible');
@@ -633,14 +640,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.drawGrid(d);
             var p = d.promise();
             var vent = this.App.vent;
-            var toggleFn = this.toggleHostGroup;
+            var toggleSortOrder = this.toggleSortOrder;
             var $toggle = this.$('.viz-controls').bootstrapSwitch();
             $toggle.on('switch-change', function() {
                 var d = $.Deferred();
                 $toggle.bootstrapSwitch('setActive', false);
-                toggleFn(function() {
-                    d.resolve();
-                });
+                toggleSortOrder(d);;
                 d.done(function() {
                     $toggle.bootstrapSwitch('setActive', true);
                 });
@@ -824,6 +829,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             };
         },
         filter: function(filterCol, deferred) {
+            this.filterCol = filterCol;
             var enabled = filterCol.where({
                 enabled: true,
                 visible: true
@@ -891,6 +897,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 previousModels: this.collection.models
             });
             var vent = this.App.vent;
+            this.filterCol = null;
             return this.renderOSDViews().then(function() {
                 if (callback) {
                     callback.call(this);
