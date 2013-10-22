@@ -840,6 +840,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var vent = this.App.vent;
             return this.renderOSDViews(function(m) {
                 return _.find(enabled, function(obj) {
+                    if (obj.get('category') !== 'osd' && m.isDown()) {
+                        return true;
+                    }
                     if (_.isFunction(obj.get('match'))) {
                         var t = obj.get('match')(m);
                         //console.log('matched ' + m.id + ' ' + t);
