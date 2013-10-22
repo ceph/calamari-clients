@@ -6,7 +6,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
     var FilterLabelView = Backbone.Marionette.ItemView.extend({
         tagName: 'div',
         ui: {
-            'btn': '.make-switch'
+            'toggle': '.make-switch'
+        },
+        getSwitch: function() {
+            return this.$('.make-switch');
         },
         initialize: function() {
             this.listenTo(this.model, 'change:enabled', this.enabled);
@@ -18,7 +21,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             _.bindAll(this, 'switchDisabled', 'switchEnabled');
         },
         updateCount: function(model) {
-            this.$('.make-switch label').text(model.get('count'));
+            this.getSwitch().find('label').text(model.get('count'));
         },
         isEnabled: function(model) {
             return model.get('enabled');
@@ -27,9 +30,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             return model.get('visible');
         },
         enabled: function() {
-            var fnName = this.isEnabled(this.model) ? 'removeClass' : 'addClass';
-            //            this.ui.count[fnName]('filter-opt-disable');
-            this.ui.btn[fnName]('active');
+            if (this.isEnabled(this.model)) {
+                
+            }
         },
         visible: function() {
             if (!this.isVisible(this.model)) {
@@ -37,15 +40,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             }
         },
         switchDisabled: function() {
-            var $switch = this.$('.make-switch');
-            $switch.bootstrapSwitch('setActive', false);
+            this.getSwitch().bootstrapSwitch('setActive', false);
         },
         switchEnabled: function() {
-            var $switch = this.$('.make-switch');
-            $switch.bootstrapSwitch('setActive', true);
+            this.getSwitch().bootstrapSwitch('setActive', true);
         },
         postRender: function() {
-            var $switch = this.$('.make-switch').attr({
+            var $switch = this.getSwitch().attr({
                 'data-on': 'success',
                 'data-off': 'danger'
             });
