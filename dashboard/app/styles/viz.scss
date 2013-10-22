@@ -64,7 +64,7 @@ $left-adjust: -5px;
 ul.filter {
     list-style: none;
     margin-left: $left-adjust;
-    min-width: 10.5em;
+    min-width: 11em;
 
     >div {
 	border-bottom: 1px solid rgba(0,0,0,0.2);	
@@ -158,7 +158,25 @@ $detail-top-pos: 25px;
 span.filter-opt-disable {
     opacity: 0.4;
 }
-
+.filter .has-switch span.switch-primary {
+    @include background-image(linear-gradient(top, #26BF00, #1C8C00));
+}
+.filter .has-switch span.switch-right.switch-info {
+    @include background-image(linear-gradient(top, darken(#26BF00, 10%), darken(#1C8C00, 10%)));
+}
+.filter .has-switch span.switch-success {
+    @include background-image(linear-gradient(top, #BBBF00, #898C00));
+}
+.filter .has-switch span.switch-right.switch-warning {
+    @include background-image(linear-gradient(top, darken(#BBBF00, 10%), darken(#898C00, 10%)));
+}
+.filter .has-switch span.switch-danger {
+    @include background-image(linear-gradient(top, #BF0000, #8C0000));
+}
+.filter .has-switch span.switch-right {
+    color: #fff;
+    @include background-image(linear-gradient(top, darken(#BF0000, 10%), darken(#8C0000, 10%)));
+}
 @include animate-fadeInDown($class: true);
 @include animate-fadeOutUp($class: true);
 @include animate-fadeIn($class: true);

@@ -50,10 +50,30 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
         switchEnabled: function() {
             this.getSwitch().bootstrapSwitch('setActive', true);
         },
+        stateColorMap: {
+            'up/out': ['success', 'warning'],
+            'down/in': ['success', 'warning'],
+            'creating': ['success', 'warning'],
+            'replaying': ['success', 'warning'],
+            'splitting': ['success', 'warning'],
+            'scrubbing': ['success', 'warning'],
+            'degraded': ['success', 'warning'],
+            'repair': ['success', 'warning'],
+            'recovering': ['success', 'warning'],
+            'backfill': ['success', 'warning'],
+            'wait-backfill': ['success', 'warning'],
+            'remapped': ['success', 'warning'],
+            'inconsistent': ['danger', 'default'],
+            'down': ['danger', 'default'],
+            'peering': ['danger', 'default'],
+            'incomplete': ['danger', 'default'],
+            'stale': ['danger', 'default']
+        },
         postRender: function() {
+            var colors = this.stateColorMap[this.model.get('label')] || ['primary', 'info'];
             var $switch = this.getSwitch().attr({
-                'data-on': 'success',
-                'data-off': 'danger'
+                'data-on': colors[0],
+                'data-off': colors[1]
             });
             var self = this;
             $switch.bootstrapSwitch('destroy');
