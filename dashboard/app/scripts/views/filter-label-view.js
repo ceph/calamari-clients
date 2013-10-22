@@ -21,7 +21,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             _.bindAll(this, 'switchDisabled', 'switchEnabled');
         },
         updateCount: function(model) {
-            this.getSwitch().find('label').text(model.get('count'));
+            var count = '-';
+            if (model) {
+                count = model.get('count');
+            }
+            this.getSwitch().find('label').text(count);
         },
         isEnabled: function(model) {
             return model.get('enabled');
@@ -31,7 +35,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
         },
         enabled: function() {
             var enabled = this.isEnabled(this.model);
-            this.getSwitch().bootstrapSwitch('setState', enabled, true /* skip emit change event */);
+            this.getSwitch().bootstrapSwitch('setState', enabled, true /* skip emit change event */ );
         },
         visible: function() {
             if (this.isVisible(this.model)) {
@@ -67,6 +71,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             });
             this.visible();
             this.enabled();
+            this.updateCount();
         },
         template: JST['app/scripts/templates/filter-label.ejs']
     });

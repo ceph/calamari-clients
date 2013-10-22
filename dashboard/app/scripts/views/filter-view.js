@@ -240,7 +240,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 if (count) {
                     model.set('count', count, {});
                 } else {
-                    model.set('count', '0', {});
+                    model.set('count', 0, {});
                 }
             });
             var pgfilters = collection.reject(function(m) {
