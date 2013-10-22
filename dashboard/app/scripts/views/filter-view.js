@@ -187,17 +187,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
         osdFilter: function(deferred) {
             this.state = 'osd';
             this.collection.each(function(m) {
-                if (m.get('category') !== 'osd') {
-                    m.set({
-                        'visible': false,
-                        'enabled': true
-                    });
-                } else {
-                    m.set({
-                        'visible': true,
-                        'enabled': true
-                    });
-                }
+                m.set({
+                    'visible': m.get('category') === 'osd',
+                    'enabled': true
+                });
             });
             this.vizUpdate(deferred);
         },
@@ -205,17 +198,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
             // TODO write a function to async load the counts and set them
             this.state = 'pg';
             this.collection.each(function(m) {
-                if (m.get('category') === 'osd') {
-                    m.set({
-                        'visible': false,
-                        'enabled': true
-                    });
-                } else {
-                    m.set({
-                        'visible': true,
-                        'enabled': true
-                    });
-                }
+                m.set({
+                    'visible': m.get('category') === 'pg',
+                    'enabled': true
+                });
             });
             this.vizUpdate(deferred);
         },
