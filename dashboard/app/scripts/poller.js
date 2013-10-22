@@ -67,6 +67,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             if (this.App.Config) {
                 this.delay = Backbone.Marionette.getOption(this.App.Config, 'long-polling-interval-ms') || this.delay;
                 this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.timeout;
+                this.disableNetworkChecks = Backbone.Marionette.getOption(this.App.Config, 'disable-network-checks') || false;
             }
             this.cluster = Backbone.Marionette.getOption(this, 'cluster');
             this.healthModel = new HealthModel({
@@ -85,9 +86,11 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             this.healthPoller = newPoller('health', this);
             this.usagePoller = newPoller('usage', this);
             this.statusPoller = newPoller('status', this);
-            this.krakenHeartBeatPoller = newPoller('krakenHeartBeat', this, {
-                delay: this.heartBeatDelay
-            });
+            if (!this.disableNetworkChecks) {
+                this.krakenHeartBeatPoller = newPoller('krakenHeartBeat', this, {
+                    delay: this.heartBeatDelay
+                });
+            }
             this.updateEvent = newEventEmitter('updateEvent', 'updateTimer', 'osd:update');
             this.listenTo(this.App.vent, 'cluster:update', this.updateModels);
             _.bindAll(this, 'stop', 'updateModels', 'start');
@@ -106,7 +109,9 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         // Restart Poller functions
         start: function() {
             _.each(this.pollers, function(poller) {
-                this[poller].call(this);
+                if (_.isFunction(this[poller])) {
+                    this[poller].call(this);
+                }
             }, this);
         },
         // Stop and Remove All Currently running Pollers

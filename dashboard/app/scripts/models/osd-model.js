@@ -35,9 +35,12 @@ define(['underscore', 'backbone', 'raphael'], function(_, Backbone) {
             // TODO: this watcher probably needs to be virtual.
             // It should ignore changes on things we're not currently
             // interested in
-            _.bindAll(this, '_getStatus', '_getUsedPercentage', 'updateSize', 'getColor');
+            _.bindAll(this, '_getStatus', '_getUsedPercentage', 'updateSize', 'getColor', 'isDown');
             this.listenTo(this, 'change:up change:in', this.updateSize);
             this.listenTo(this, 'change', this.showChange);
+        },
+        isDown: function() {
+            return this.get('up') === 0 && this.get('in') === 0;
         },
         _getStatus: function() {
             // Internal method - looks at the OSD state

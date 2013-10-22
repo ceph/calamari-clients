@@ -1,7 +1,7 @@
 /*global define, Raphael*/
 
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/switcher-view', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, SwitcherView) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/filterBy', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, FilterByView) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
@@ -49,11 +49,18 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'viz:dashboard': 'dashboard',
             'viz:filter': 'filter',
             'viz:pulse': 'pulse',
-            'viz:togglehostgroup': 'toggleHostGroup'
         },
-        toggleHostGroup: function(callback) {
+        toggleSortOrder: function(deferred) {
             this.customSort = !this.customSort;
-            this.reset(callback);
+            if (this.filterCol) {
+                this.filter(this.filterCol, deferred);
+                return;
+            }
+            this.reset(function() {
+                if (deferred && deferred.resolve) {
+                    deferred.resolve();
+                }
+            });
         },
         spinnerOn: function() {
             this.ui.spinner.css('visibility', 'visible');
@@ -619,7 +626,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 App: this.App,
                 el: this.ui.filter
             }).render();
+            /*
             this.$switcher = new SwitcherView({
+                App: this.App,
+                el: this.ui.switcher
+            }).render();
+            */
+            this.$switcher = new FilterByView({
                 App: this.App,
                 el: this.ui.switcher
             }).render();
@@ -627,14 +640,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.drawGrid(d);
             var p = d.promise();
             var vent = this.App.vent;
-            var toggleFn = this.toggleHostGroup;
+            var toggleSortOrder = this.toggleSortOrder;
             var $toggle = this.$('.viz-controls').bootstrapSwitch();
             $toggle.on('switch-change', function() {
                 var d = $.Deferred();
                 $toggle.bootstrapSwitch('setActive', false);
-                toggleFn(function() {
-                    d.resolve();
-                });
+                toggleSortOrder(d);;
                 d.done(function() {
                     $toggle.bootstrapSwitch('setActive', true);
                 });
@@ -817,7 +828,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             };
         },
-        filter: function(filterCol) {
+        filter: function(filterCol, deferred) {
+            this.filterCol = filterCol;
             var enabled = filterCol.where({
                 enabled: true,
                 visible: true
@@ -828,6 +840,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var vent = this.App.vent;
             return this.renderOSDViews(function(m) {
                 return _.find(enabled, function(obj) {
+                    if (obj.get('category') !== 'osd' && m.isDown()) {
+                        return true;
+                    }
                     if (_.isFunction(obj.get('match'))) {
                         var t = obj.get('match')(m);
                         //console.log('matched ' + m.id + ' ' + t);
@@ -836,6 +851,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     return false;
                 });
             }).then(function() {
+                if (deferred) {
+                    deferred.resolve();
+                }
                 vent.trigger('viz:render');
             });
         },
@@ -882,6 +900,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 previousModels: this.collection.models
             });
             var vent = this.App.vent;
+            this.filterCol = null;
             return this.renderOSDViews().then(function() {
                 if (callback) {
                     callback.call(this);
