@@ -30,9 +30,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             return model.get('visible');
         },
         enabled: function() {
-            if (this.isEnabled(this.model)) {
-                
-            }
+            var enabled = this.isEnabled(this.model);
+            this.getSwitch().bootstrapSwitch('setState', enabled, true /* skip emit change event */);
         },
         visible: function() {
             if (!this.isVisible(this.model)) {
@@ -65,6 +64,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
                 evt.preventDefault();
             });
             this.visible();
+            this.enabled();
         },
         template: JST['app/scripts/templates/filter-label.ejs']
     });
