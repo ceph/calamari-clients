@@ -360,9 +360,9 @@ module.exports = function (grunt) {
         'saveRevision',
         'jshint',
         'symlink',
-        'docco',
         'test',
-        'build'
+        'build',
+        'docs'
     ]);
     grunt.registerTask('saveRevision', function() {
         grunt.event.once('git-describe', function(rev) {
