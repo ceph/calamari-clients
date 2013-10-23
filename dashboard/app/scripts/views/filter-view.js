@@ -211,9 +211,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'collections/filter-col
                 'visible': true,
                 'enabled': false
             }), function(m) {
-                m.set('enabled', true, {
-                    silent: true
-                });
+                m.set('enabled', true);
             });
         },
         vizUpdate: function(deferred) {
