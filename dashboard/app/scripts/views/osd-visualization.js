@@ -48,7 +48,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'viz:fullscreen': 'fullscreen',
             'viz:dashboard': 'dashboard',
             'viz:filter': 'filter',
-            'viz:pulse': 'pulse',
+            'viz:pulse': 'pulse'
         },
         toggleSortOrder: function(deferred) {
             this.customSort = !this.customSort;
@@ -645,7 +645,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             $toggle.on('switch-change', function() {
                 var d = $.Deferred();
                 $toggle.bootstrapSwitch('setActive', false);
-                toggleSortOrder(d);;
+                toggleSortOrder(d);
                 d.done(function() {
                     $toggle.bootstrapSwitch('setActive', true);
                 });
@@ -699,7 +699,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         pulseAnimation: Raphael.animation({
             r: 30,
-            'stroke-opacity': 0,
+            'stroke-opacity': 0
         }, 1000, 'linear').repeat(2),
         addPulse: function(attrs, id) {
             var circle = this.paper.circle(attrs.cx, attrs.cy, attrs.r + 1).attr({
