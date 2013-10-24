@@ -366,6 +366,8 @@ module.exports = function (grunt) {
     grunt.registerTask('saveRevision', function() {
         grunt.event.once('git-describe', function(rev) {
             grunt.log.writeln('Git Revision: ' + rev);
+            /* jshint -W024 */
+            grunt.file.delete('app/scripts/git.js');
             grunt.file.write('app/scripts/git.js', '/* jshint -W105 */\n/* global define */\ndefine([], function() { \'use strict\'; return { \'git-commit\': \'' + rev + '\' }; });');
         });
         grunt.task.run('git-describe');
