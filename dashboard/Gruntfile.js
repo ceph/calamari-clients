@@ -312,6 +312,7 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
+            'saveRevision',
             'symlink',
             'clean:server',
             'coffee:dist',
