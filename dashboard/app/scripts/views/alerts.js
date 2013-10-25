@@ -20,6 +20,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             }, this);
             this.sessionExpired = _.once(this.sessionExpired);
             this.timeout = _.after(this.throttleCount, this.timeout);
+            this.clusterUpdateTimeout = _.throttle(this.clusterUpdateTimeout, this.krakenFailThreshold);
+            this.clusterAPITimeout = _.throttle(this.clusterAPITimeout, this.krakenFailThreshold);
             _.bindAll(this, 'neterrorHandler', 'heartBeat');
         },
         heartBeat: function(model) {
