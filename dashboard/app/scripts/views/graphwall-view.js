@@ -234,14 +234,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         selectors: ['0-1', '0-2', '1-1', '1-2', '2-1', '2-2', '3-1', '3-2', '4-1', '4-2', '5-1', '5-2', '6-1', '6-2', '7-1', '7-2', '8-1', '8-2'],
         imageLoader: function($el, url) {
             setTimeout(function() {
-                $el.html('<i class="icon-spinner icon-spin icon-large icon-3x"></i>');
+                $el.html('<i class="fa fa-spinner fa-spin fa-lg fa-3x"></i>');
                 var image = new Image();
                 image.src = url;
                 image.onload = function() {
                     $el.html(image);
                 };
                 image.onerror = function() {
-                    $el.html('<i class="icon-exclamation icon-large icon-3x"></i>');
+                    $el.html('<i class="fa fa-exclamation-triangle fa-lg fa-3x"></i>');
                 };
             }, 0);
         },

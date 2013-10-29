@@ -17,9 +17,9 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'marionette'], function
             this.model = new Model();
             this.model.set({
                 username: '',
-                settingsIcon: 'icon-gears',
+                settingsIcon: 'fa fa-cogs',
                 settingsLabel: 'Settings',
-                logoutIcon: 'icon-power-off',
+                logoutIcon: 'fa fa-power-off',
                 logoutLabel: 'Logout'
             });
             this.listenTo(this.model, 'change', this.render);

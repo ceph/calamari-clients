@@ -18,7 +18,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             totalused: '.totalused',
             totalcap: '.totalcap',
             canvas: '.usage-canvas',
-            spinner: '.icon-spinner'
+            spinner: '.fa-spinner'
         },
         modelEvents: {
             'change': 'updateView'

@@ -14,13 +14,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', '../models/
             var className = '';
             switch (model.priority) {
             case 0:
-                className = 'icon-ok-sign ok';
+                className = 'fa-check-circle-o ok';
                 break;
             case 1:
-                className = 'icon-warning-sign warn';
+                className = 'fa-warning';
                 break;
             case 2:
-                className = 'icon-exclamation-sign fail';
+                className = 'fa-exclamation-circle fail';
                 break;
             default:
                 className = '';

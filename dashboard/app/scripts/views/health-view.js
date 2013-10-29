@@ -16,7 +16,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             cardTitle: '.card-title',
             healthText: '.health-text',
             subText: '.subtext',
-            spinner: '.icon-spinner'
+            spinner: '.fa-spinner'
         },
         modelEvents: {
             'change': 'updateView'

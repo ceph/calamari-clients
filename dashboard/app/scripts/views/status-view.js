@@ -31,7 +31,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             okmon: '.ok-mon',
             warnmon: '.warn-mon',
             failmon: '.fail-mon',
-            spinner: '.icon-spinner'
+            spinner: '.fa-spinner'
         },
         modelEvents: {
             'change': 'updateView'
@@ -66,12 +66,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             var PGStatesTemplate = this.makeStateTemplate('PGs'),
                 OSDStatesTemplate = this.makeStateTemplate('OSDs'),
                 MONStatesTemplate = this.makeStateTemplate('MONs'),
-                pgwarn = this.makeStateInfoView(this.makeStatusTemplate('PG Warn Status', 'icon-question-sign icon-large warn'), PGStatesTemplate, '.warn'),
-                pgcrit = this.makeStateInfoView(this.makeStatusTemplate('PG Critical Status', 'icon-question-sign icon-large fail'), PGStatesTemplate, '.fail'),
-                osdwarn = this.makeStateInfoView(this.makeStatusTemplate('OSD Warn Status', 'icon-question-sign icon-large warn'), OSDStatesTemplate, '.warn'),
-                osdcrit = this.makeStateInfoView(this.makeStatusTemplate('OSD Critical Status', 'icon-question-sign icon-large fail'), OSDStatesTemplate, '.fail'),
-                monwarn = this.makeStateInfoView(this.makeStatusTemplate('MON Warn Status', 'icon-question-sign icon-large warn'), MONStatesTemplate, '.warn'),
-                moncrit = this.makeStateInfoView(this.makeStatusTemplate('MON Critical Status', 'icon-question-sign icon-large fail'), MONStatesTemplate, '.fail');
+                pgwarn = this.makeStateInfoView(this.makeStatusTemplate('PG Warn Status', 'fa fa-question-circle fa-lg warn'), PGStatesTemplate, '.warn'),
+                pgcrit = this.makeStateInfoView(this.makeStatusTemplate('PG Critical Status', 'fa fa-question-circle fa-lg fail'), PGStatesTemplate, '.fail'),
+                osdwarn = this.makeStateInfoView(this.makeStatusTemplate('OSD Warn Status', 'fa fa-question-circle fa-lg warn'), OSDStatesTemplate, '.warn'),
+                osdcrit = this.makeStateInfoView(this.makeStatusTemplate('OSD Critical Status', 'fa-question-circle fa-lg fail'), OSDStatesTemplate, '.fail'),
+                monwarn = this.makeStateInfoView(this.makeStatusTemplate('MON Warn Status', 'fa-question-circle fa-lg warn'), MONStatesTemplate, '.warn'),
+                moncrit = this.makeStateInfoView(this.makeStatusTemplate('MON Critical Status', 'fa-question-circle fa-lg fail'), MONStatesTemplate, '.fail');
 
             var self = this;
             this.listenToOnce(this, 'render', function() {

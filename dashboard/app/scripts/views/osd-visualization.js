@@ -25,7 +25,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             filterpanel: '.filter-panel',
             switcher: '.switcher',
             detail: '.detail-outer',
-            spinner: '.icon-spinner'
+            spinner: '.fa-spinner'
         },
         events: {
             'click .viz': 'osdClickHandler',
@@ -680,13 +680,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
             if (keyCode === 32) /* space */
             {
-                var $spinner = $('.icon-spinner');
+                var $spinner = $('.fa-spinner');
                 if (this.timer === null) {
                     this.startSimulation();
-                    $spinner.closest('i').addClass('.icon-spin').show();
+                    $spinner.closest('i').addClass('.fa-spin').show();
                 } else {
                     this.stopSimulation();
-                    $spinner.closest('i').removeClass('.icon-spin').hide();
+                    $spinner.closest('i').removeClass('.fa-spin').hide();
                 }
             }
         },

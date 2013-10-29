@@ -6,9 +6,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
     var BreadcrumbView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/breadcrumb.ejs'],
         ui: {
-            dashboardIcon: '.icon-dashboard',
-            fullscreenIcon: '.icon-sitemap',
-            graphIcon: '.icon-bar-chart'
+            dashboardIcon: '.fa-tachometer',
+            fullscreenIcon: '.fa-sitemap',
+            graphIcon: '.fa-bar-chart-o'
         },
         events: {
             'click span.bc-entry': 'switcher'

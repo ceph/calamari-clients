@@ -11,7 +11,7 @@
     "modernizr": "~2.6.2",
     "bean": "~1.0.4",
     "raphael": "~2.1.0",
-    "font-awesome": "~3.2.1",
+    "font-awesome": "~4.0.0",
     "backbone.wreqr": "~0.2.0",
     "humanize": "~0.0.7",
     "backbone.marionette": "~1.0.4",

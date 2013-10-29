@@ -246,7 +246,7 @@ module.exports = function (grunt) {
                         '*.{ico,txt}',
                         '.htaccess',
                         'images/{,*/}*.{webp,gif}',
-                        'font/*'
+                        'fonts/*'
                     ]
                 }, {
                     expand: true,
@@ -282,9 +282,9 @@ module.exports = function (grunt) {
             }
         },
         symlink: {
-            font: {
-                target: 'bower_components/font-awesome/font',
-                link: '<%= yeoman.app %>/font',
+            fonts: {
+                target: 'bower_components/font-awesome/fonts',
+                link: '<%= yeoman.app %>/fonts',
                 options: {
                     overwrite: true,
                     force: true
