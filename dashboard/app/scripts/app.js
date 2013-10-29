@@ -10,7 +10,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         'graphite-host': 'http://' + hostname + ':8080',
         'api-request-timeout-ms': 3000,
         'long-polling-interval-ms': 20000,
-        'disable-network-checks': false
+        'disable-network-checks': false,
+        'enable-demo-mode': false
     };
 
     /* Default Configuration */
@@ -120,21 +121,18 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         gaugesLayout.status.show(statusView);
 
         var collection;
-        if (config.offline) {
-            collection = Generate.osds(160);
-        } else {
-            collection = new Collection([], {});
-        }
+        collection = config.offline ? Generate.osds(160) : new Collection([], {});
         var viz = new views.OSDVisualization({
             App: App,
             collection: collection,
             el: '.raphael-one'
         });
 
-        $('body').on('keyup', function(evt) {
-            App.vent.trigger('keyup', evt);
-        });
-
+        if (config['enable-demo-mode']) {
+            $('body').on('keyup', function(evt) {
+                App.vent.trigger('keyup', evt);
+            });
+        }
 
         _.extend(humanize.catalog, {
             'about_a_minute_ago': '1m',
@@ -183,7 +181,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             clusterDeferred.resolve(clusterMenu.collection.at(0));
         });
         clusterDeferred.promise().done(function(cluster) {
-            var alertsView = new views.AlertsView({ App: App });
+            var alertsView = new views.AlertsView({
+                App: App
+            });
 
             var poller = new Poller({
                 App: App,
