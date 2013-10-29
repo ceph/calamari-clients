@@ -222,7 +222,7 @@ $bc-item-width: 52;
 $bc-height: 33;
 $bc-line-width: 40;
 $bc-width: $bc-height;
-$bc-margin: 3;
+$bc-margin: 4;
 .inknav {
     @include user-select(none);	
     display: inline-block;
