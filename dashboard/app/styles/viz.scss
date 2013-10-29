@@ -65,7 +65,7 @@ ul.filter {
     list-style: none;
     margin-left: $left-adjust;
     min-width: 11em;
-
+    padding: 0;
     >div {
 	border-bottom: 1px solid rgba(0,0,0,0.2);	
         >label {
