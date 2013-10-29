@@ -99,11 +99,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             el: '.gauges'
         });
         gaugesLayout.render();
-        var healthView = new views.HealthView({
-            App: App,
-            model: new models.HealthModel({})
-        });
-        gaugesLayout.health.show(healthView);
+//        var healthView = new views.HealthView({
+//            App: App,
+//            model: new models.HealthModel({})
+//        });
+//        gaugesLayout.health.show(healthView);
         var gauge = new views.UsageView({
             App: App,
             model: new models.UsageModel({}),
@@ -113,11 +113,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.vent.trigger('updateTotals');
         });
 
-        var statusView = new views.StatusView({
-            App: App,
-            model: new models.StatusModel({})
-        });
-        gaugesLayout.status.show(statusView);
+//        var statusView = new views.StatusView({
+//            App: App,
+//            model: new models.StatusModel({})
+//        });
+//        gaugesLayout.status.show(statusView);
 
         var collection;
         if (config.offline) {
