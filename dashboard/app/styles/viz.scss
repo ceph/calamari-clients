@@ -116,16 +116,16 @@ $popover-width: 200;
     width: #{$popover-width - 30}px;
     margin: 0;
     z-index: 100;
-    .icon-remove {
+    .fa-times {
         cursor: pointer;
     }
-    .icon-info-sign {
+    .fa-info-sign-o {
 	position: absolute;
 	right: 5px;
 	bottom: 5px;
         cursor: help;
     }
-    .icon-cloud {
+    .fa-cloud {
 	position: absolute;
 	right: 25px;
 	bottom: 5px;
