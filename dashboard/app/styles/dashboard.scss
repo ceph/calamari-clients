@@ -168,8 +168,8 @@ span.subtext {
     border-top: 0px;
 }
 .usage-canvas {
-    max-height: #{$itapp-card-height}px;
-    max-width: #{$itapp-card-height}px;
+    min-height: #{$itapp-card-height/2}px;
+    max-width: #{$itapp-card-height - 30}px;
     box-sizing: border-box;
     padding: 0;
     margin: 0 auto 0 auto;
@@ -180,9 +180,14 @@ span.subtext {
 	right: 0;
 	top: 50px;
     }
+    @include breakpoint(screen-lg) {
+    	min-height: #{$itapp-card-height/1.8}px;
+    	max-width: #{$itapp-card-height}px;
+	margin-left: 20px;
+    }
 }
 .mytext {
-	margin: 0 auto 0 auto;
+	margin: 15px auto 0 auto;
 	text-align: center;
 	font-size: 2rem;
 	@include breakpoint(screen-sm) {
