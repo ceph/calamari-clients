@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette'], function($, _, Backbone, JST, humanize) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/animation', 'marionette'], function($, _, Backbone, JST, humanize, animation) {
     'use strict';
 
     var OsdView = Backbone.Marionette.ItemView.extend({
@@ -57,11 +57,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             this.timeoutId = setTimeout(this.carousel, this.timeoutMs);
         },
         initialize: function() {
-            _.bindAll(this, 'set', 'updateModel', 'updateView', 'carousel', 'stopCarousel', 'changeCarousel');
+            _.bindAll(this, 'set', 'updateModel', 'updateView', 'carousel', 'stopCarousel', 'changeCarousel', 'disappear', 'reappear', 'expand', 'collapse');
             this.model = new Backbone.Model();
+            this.disappearAnimation = animation.single('fadeOutUpAnim');
+            this.reappearAnimation = animation.single('fadeInDownAnim');
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
                 this.listenTo(this.App.vent, 'status:update', this.set);
+                this.listenTo(this.App.vent, 'gauges:disappear', this.disappear);
+                this.listenTo(this.App.vent, 'gauges:reappear', this.reappear);
+                this.listenTo(this.App.vent, 'gauges:collapse', this.collapse);
+                this.listenTo(this.App.vent, 'gauges:expand', this.expand);
             }
             this.timeoutId = setTimeout(this.carousel, this.timeoutMs);
             var self = this;
@@ -75,6 +81,30 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
                     }, 250);
                 });
             });
+        },
+        expand: function(callback) {
+            this.$el.css('display', 'block');
+            if (callback) {
+                callback.apply(this);
+            }
+        },
+        collapse: function(callback) {
+            this.$el.css('display', 'none');
+            if (callback) {
+                callback.apply(this);
+            }
+        },
+        disappear: function(callback) {
+            return this.disappearAnimation(this.$el, function() {
+                this.$el.css('visibility', 'hidden');
+                if (callback) {
+                    callback.apply(this);
+                }
+            });
+        },
+        reappear: function(callback) {
+            this.$el.css('visibility', 'visible');
+            return this.reappearAnimation(this.$el, callback);
         },
         set: function(model) {
             this.model.set(model.attributes.osd);
