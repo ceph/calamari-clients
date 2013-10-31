@@ -107,6 +107,10 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App: App
         });
         gaugesLayout.mon.show(monView);
+        var pgView = new views.PgView({
+            App: App
+        });
+        gaugesLayout.pg.show(pgView);
         var gauge = new views.UsageView({
             App: App,
             model: new models.UsageModel({}),

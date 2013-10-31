@@ -22,7 +22,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
                 this.listenTo(this.App.vent, 'gauges:collapse', this.collapse);
                 this.listenTo(this.App.vent, 'gauges:expand', this.expand);
             }
-            this.timeoutId = setTimeout(this.carousel, this.timeoutMs);
             var self = this;
             this.listenToOnce(this, 'render', function() {
                 self.listenTo(self.App.vent, 'status:request', function() {
