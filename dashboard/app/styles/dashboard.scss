@@ -229,6 +229,9 @@ span.subtext {
 .osd-hidden {
     display: none;
 }
+.mon-state {
+    margin-top: 40px;
+}
 .warn {
        @include textalert(orange);
 }

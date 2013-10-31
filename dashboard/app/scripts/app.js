@@ -103,11 +103,10 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App: App
         });
         gaugesLayout.osd.show(osdView);
-//        var healthView = new views.HealthView({
-//            App: App,
-//            model: new models.HealthModel({})
-//        });
-//        gaugesLayout.health.show(healthView);
+        var monView = new views.MonView({
+            App: App
+        });
+        gaugesLayout.mon.show(monView);
         var gauge = new views.UsageView({
             App: App,
             model: new models.UsageModel({}),
@@ -409,6 +408,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 GraphWallView: graphWall,
                 Poller: poller,
                 OsdView: osdView,
+                MonView: monView,
                 UserMenu: userMenu,
                 Viz: viz,
                 Alerts: alertsView,

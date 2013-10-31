@@ -1,7 +1,7 @@
 /*global define */
 'use strict';
 
-define(['views/notification-card-view', 'views/notification-collection-view', 'views/notification-item-view', 'views/osd-detail-view', 'views/osd-visualization', 'views/usage-view', 'views/gauges-layout', 'views/breadcrumb-view', 'views/alerts', 'views/osd-view'], function(noticard, noticoll, notiitem, osddetail, osdviz, usage, gauges, breadcrumb, alerts, osd) {
+define(['views/notification-card-view', 'views/notification-collection-view', 'views/notification-item-view', 'views/osd-detail-view', 'views/osd-visualization', 'views/usage-view', 'views/gauges-layout', 'views/breadcrumb-view', 'views/alerts', 'views/osd-view', 'views/mon-view'], function(noticard, noticoll, notiitem, osddetail, osdviz, usage, gauges, breadcrumb, alerts, osd, mon) {
     return {
         NotificationCardView: noticard,
         NotificationCollectionView: noticoll,
@@ -12,6 +12,7 @@ define(['views/notification-card-view', 'views/notification-collection-view', 'v
         GaugesLayout: gauges,
         BreadCrumbView: breadcrumb,
         AlertsView: alerts,
-        OsdView: osd
+        OsdView: osd,
+        MonView: mon
     };
 });

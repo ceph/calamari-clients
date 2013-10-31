@@ -22,7 +22,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
                 selector: '.osd',
                 regionType: CustomRegion
             },
-            status: {
+            mon: {
                 selector: '.mon',
                 regionType: CustomRegion
             },
