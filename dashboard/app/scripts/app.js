@@ -120,12 +120,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.vent.trigger('updateTotals');
         });
 
-//        var statusView = new views.StatusView({
-//            App: App,
-//            model: new models.StatusModel({})
-//        });
-//        gaugesLayout.status.show(statusView);
-
         var collection;
         if (config.offline) {
             collection = Generate.osds(160);
@@ -413,6 +407,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 Poller: poller,
                 OsdView: osdView,
                 MonView: monView,
+                PgView: pgView,
                 UserMenu: userMenu,
                 Viz: viz,
                 Alerts: alertsView,

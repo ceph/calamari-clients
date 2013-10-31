@@ -165,7 +165,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 this.ui.osdOne.removeClass('osd-hidden');
                 this.ui.osdThree.removeClass('osd-hidden');
             }
-            this.model.set('total', total);
+            this.model.set('total', total, { silent: true });
             this.updateView();
         }
     });
