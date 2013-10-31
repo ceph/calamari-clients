@@ -69,6 +69,9 @@ $third-row-height: 120px;
     @include breakpoint(screen-xs) {
 	min-width: 200px;
     }
+    h1, h2, h3, h4, h5, h6 {
+        font-family: ApexSansMedium;
+    }
 }
 
 .custom-gutter {
@@ -206,6 +209,25 @@ span.subtext {
 @mixin textalert($color) {
        color: $color;
        opacity: 0.95;
+}
+.osd-count {
+    margin-top: 40px;
+    font-size: 4em;
+    color: $itdarkgray;
+}
+.osd-total {
+   position: absolute; 
+   bottom: 10px;
+   right: 10px;
+}
+.osd-dots {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  left: 0;
+}
+.osd-hidden {
+    display: none;
 }
 .warn {
        @include textalert(orange);
@@ -367,9 +389,11 @@ $timeSlow: 1s;
       }
       50% {
         @include transform(perspective(400px) rotateY(90deg));
+	color: $itlightgray;
       }
       100% {
         @include transform(perspective(400px) rotateY(180deg));
+	color: $itlightgray;
       }
     }
   }
@@ -398,5 +422,5 @@ $timeSlow: 1s;
 @include animate-flipAwayY($class: true);
 @include animate-flipBackY($class: true);
 .card:hover {
-    @include animation(flipAwayY $timeMed ease);
+//   @include animation(flipAwayY $timeMed ease-in);
 }

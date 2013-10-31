@@ -18,12 +18,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         className: 'row gauges',
         template: JST['app/scripts/templates/gauges.ejs'],
         regions: {
-            health: {
-                selector: '.health',
+            osd: {
+                selector: '.osd',
                 regionType: CustomRegion
             },
             status: {
-                selector: '.status',
+                selector: '.mon',
+                regionType: CustomRegion
+            },
+            pg: {
+                selector: '.pg',
                 regionType: CustomRegion
             },
             usage: {

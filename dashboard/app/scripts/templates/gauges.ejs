@@ -1,7 +1,6 @@
     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter">
-        <div class="gauge card mon">
-            <h1>OSD</h1>
-                31< 33 
+        <div class="gauge card osd">
+            <span class='card-title'>OSD</span>
         </div>
     </div>
     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter">
@@ -10,12 +9,16 @@
     </div>
     <div class="clearfix visible-sm visible-xs"></div>
     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter">
-        <div class="gauge card osd">
-            <h1>MON</h1>
+        <div class="gauge card mon">
+            <span class='card-title'>MON</span>
+            <span style='visibility: hidden;' class='fa fa-spinner fa-spin'></span>
+            <center><h2 class='osd-text fail'>QUORUM</h2></center>
+            <center><h3 class='fail'>1 of 5</h3></center>
         </div>
     </div>
     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter">
         <div class="gauge card pg">
-            <h1>PG</h1>
+            <span class='card-title'>PG</span>
+            <span style='visibility: hidden;' class='fa fa-spinner fa-spin'></span>
         </div>
     </div>
