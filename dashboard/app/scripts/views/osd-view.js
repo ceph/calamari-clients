@@ -18,25 +18,52 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             spinner: '.fa-spinner'
         },
         timeoutMs: 3000,
+        timeoutId: null,
         state: ['one'],
         position: 0,
         count: 1,
+        events: {
+            'mouseenter': 'stopCarousel',
+            'mouseleave': 'carousel',
+            'click .osd-dot': 'changeCarousel'
+        },
+        stopCarousel: function(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            if (this.timeoutId !== null) {
+                clearTimeout(this.timeoutId);
+                this.timeoutId = null;
+            }
+        },
+        changeCarousel: function(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            var $tgt = $(evt.target);
+            var state = 'one';
+            if ($tgt.hasClass('osd-two')) {
+                state = 'two';
+            } else if ($tgt.hasClass('osd-three')) {
+                state = 'three';
+            }
+            this.position = _.indexOf(this.state, state);
+            this.updateView();
+        },
         modelEvents: {
             'change': 'updateModel'
         },
         carousel: function() {
             this.position = (this.position + 1) % this.count;
             this.updateView();
-            setTimeout(this.carousel, this.timeoutMs);
+            this.timeoutId = setTimeout(this.carousel, this.timeoutMs);
         },
         initialize: function() {
-            _.bindAll(this, 'set', 'updateModel', 'updateView', 'carousel');
+            _.bindAll(this, 'set', 'updateModel', 'updateView', 'carousel', 'stopCarousel', 'changeCarousel');
             this.model = new Backbone.Model();
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
                 this.listenTo(this.App.vent, 'status:update', this.set);
             }
-            setTimeout(this.carousel, this.timeoutMs);
+            this.timeoutId = setTimeout(this.carousel, this.timeoutMs);
             var self = this;
             this.listenToOnce(this, 'render', function() {
                 self.listenTo(self.App.vent, 'status:request', function() {
@@ -66,7 +93,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'marionette
             if (attr.length === 0) {
                 return;
             }
-            console.log(attr);
             this.ui.osdCount.removeClass('ok fail warn');
             this.ui.osdState.removeClass('ok fail warn');
             this.$('.fa-dot-circle-o').removeClass('fa-dot-circle-o').addClass('fa-circle-o');
