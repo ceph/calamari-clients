@@ -22,7 +22,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'h
             this.model.set('total', total, {
                 silent: true
             });
-            this.updateView();
+            setTimeout(this.updateView, 0);
         },
         updateView: function() {
             var attr = this.model.attributes;

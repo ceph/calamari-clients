@@ -232,6 +232,19 @@ span.subtext {
 .mon-state {
     margin-top: 40px;
 }
+.pg-state {
+  margin-top: 40px;
+}
+.pg-count {
+}
+.pg-count-top {
+  display: inline-block;
+  margin-bottom: 5px;
+}
+.pg-count-bottom {
+  font-size: 0.8em;
+  text-transform: capitalize;
+}
 .warn {
        @include textalert(orange);
 }

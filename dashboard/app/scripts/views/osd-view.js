@@ -46,7 +46,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 state = 'three';
             }
             this.position = _.indexOf(this.state, state);
-            this.updateView();
+            setTimeout(this.updateView, 0);
         },
         modelEvents: {
             'change': 'updateModel'
