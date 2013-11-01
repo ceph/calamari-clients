@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'h
 
     var MonView = Backbone.Marionette.ItemView.extend({
         className: 'gauge card mon',
-        template: JST['app/scripts/templates/mon-view.ejs'],
+        template: JST['app/scripts/templates/mon.ejs'],
         countTemplate: _.template('<%- count %> of <%- total %>'),
         ui: {
             'spinner': '.fa-spinner',
@@ -101,7 +101,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'h
         reappear: function(callback) {
             this.$el.css('visibility', 'visible');
             return this.reappearAnimation(this.$el, callback);
-        },
+        }
     });
 
     return MonView;

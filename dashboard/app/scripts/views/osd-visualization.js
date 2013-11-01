@@ -1,7 +1,7 @@
 /*global define, Raphael*/
 
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/filterBy', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, FilterByView) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/filterBy-view', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, FilterByView) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {

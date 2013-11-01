@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
 
     var OsdView = Backbone.Marionette.ItemView.extend({
         className: 'gauge card osd',
-        template: JST['app/scripts/templates/osd-view.ejs'],
+        template: JST['app/scripts/templates/osd.ejs'],
         countTemplate: _.template('<%- count %>'),
         totalTemplate: _.template('<%- total %> Total'),
         ui: {

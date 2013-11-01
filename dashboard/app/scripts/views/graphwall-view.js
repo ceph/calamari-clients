@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
     'use strict';
 
     var GraphwallView = Backbone.Marionette.ItemView.extend({
-        template: JST['app/scripts/templates/graphwall-view.ejs'],
+        template: JST['app/scripts/templates/graphwall.ejs'],
         className: 'graph-mode',
         ui: {
             'title': '.title',

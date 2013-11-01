@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'm
 
     var PgView = Backbone.Marionette.ItemView.extend({
         className: 'gauge card pg',
-        template: JST['app/scripts/templates/pg-view.ejs'],
+        template: JST['app/scripts/templates/pg.ejs'],
         ui: {
             'spinner': '.fa-spinner'
         },
