@@ -93,9 +93,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
         updateView: function(model) {
             var attr = model.toJSON();
             var space = attr.space;
-            var used = humanize.filesize(space.used_bytes);
+            var used = humanize.filesize(space.used_bytes, undefined, 1);
             used = used.replace(' ', '');
-            var total = humanize.filesize(space.capacity_bytes);
+            var total = humanize.filesize(space.capacity_bytes, undefined, 1);
             total = total.replace(' ', '');
             this.ui.totalused.text(used);
             this.ui.totalcap.text(total);
