@@ -246,6 +246,39 @@ span.subtext {
   font-size: 0.8em;
   text-transform: capitalize;
 }
+.osd-histogram {
+}
+.osd-histogram-svg {
+    position: absolute;
+    bottom: 15px;
+    left: 25px;
+    //border: 1px solid red;
+    @include breakpoint(screen-lg) {
+    	left: 30px;
+    }
+}
+.osd-lines {
+    fill: none;
+    stroke: $itdarkgray;
+}
+.osd-histogram-count {
+    position: absolute;
+    right: 10px;
+    top: 50px;
+    font-size: 3em;
+}
+.osd-histogram-ok {
+    fill: $itosdok;
+}
+.osd-histogram-warn {
+    fill: $itosdwarn;
+}
+.osd-histogram-critical {
+    fill: $itosdcritical;
+}
+.osd-count-text {
+    font-size: 1em;
+}
 .warn {
        @include textalert(orange);
 }
