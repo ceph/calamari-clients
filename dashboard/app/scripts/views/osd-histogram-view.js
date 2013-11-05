@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'], function($, _, Backbone, JST, snap) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, snap, gaugeHelper) {
     'use strict';
 
     var OsdHistogramView = Backbone.Marionette.ItemView.extend({
@@ -10,7 +10,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'
             'change': 'modelChanged'
         },
         ui: {
-            count: '.osd-histogram-count'
+            count: '.osd-histogram-count',
+            spinner: '.fa-spinner'
         },
         initialize: function() {
             _.bindAll(this, 'modelChanged', 'animateBar', 'initCanvas', 'set');
@@ -24,6 +25,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'
                 'warn': 0,
                 'critical': 0
             });
+            gaugeHelper(this, 'status');
         },
         svg: {},
         set: function(model) {
