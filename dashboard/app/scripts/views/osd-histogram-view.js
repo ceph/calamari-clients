@@ -14,12 +14,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             spinner: '.fa-spinner'
         },
         initialize: function() {
-            _.bindAll(this, 'modelChanged', 'animateBar', 'initCanvas', 'set');
+            _.bindAll(this, 'modelChanged', 'animateBar', 'initSVG', 'set');
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
                 this.listenTo(this.App.vent, 'status:update', this.set);
             }
-            this.listenToOnce(this, 'render', this.initCanvas);
+            this.listenToOnce(this, 'render', this.initSVG);
             this.model = new Backbone.Model({
                 'ok': 0,
                 'warn': 0,
@@ -36,13 +36,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 critical: attr.critical.count,
             });
         },
-        animateBar: function(svgEl, svgText, percentage, text, offset) {
+        animationMs: 1000,
+        easing: mina.bounce,
+        animateBar: function(svgBar, svgText, percentage, text, offset) {
             var y = 10 + 100 - percentage;
             var height = percentage;
-            svgEl.animate({
+            svgBar.animate({
                 y: y,
                 height: height
-            }, 250);
+            }, this.animationMs, this.easing);
             svgText.attr({
                 text: text
             });
@@ -69,39 +71,54 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 count += critical;
             }
             this.ui.count.text(count);
+            var svg = this.svg;
+            var legendX = this.legendX;
             if (_.isNumber(ok)) {
-                this.animateBar(this.svg.ok, this.svg.okcount, this.percentage(ok, count), ok.toString(), 12);
+                this.animateBar(svg.ok, svg.okcount, this.percentage(ok, count), ok.toString(), legendX[0]);
             }
             if (_.isNumber(warn)) {
-                this.animateBar(this.svg.warn, this.svg.warncount, this.percentage(warn, count), warn.toString(), 47);
+                this.animateBar(svg.warn, svg.warncount, this.percentage(warn, count), warn.toString(), legendX[1]);
             }
             if (_.isNumber(critical)) {
-                this.animateBar(this.svg.critical, this.svg.criticalcount, this.percentage(critical, count), critical.toString(), 82);
+                this.animateBar(svg.critical, svg.criticalcount, this.percentage(critical, count), critical.toString(), legendX[2]);
             }
+            this.animationMs = 250;
+            this.easing = mina.linear;
         },
-        initCanvas: function() {
-            this.p = snap(this.$('.osd-histogram-svg')[0]).attr({
-            });
-            this.p.node.setAttribute('viewBox', '0 0 130 130');
-            this.p.path('M5,5L5,111L110,111').attr({
+        legendX: [ 10, 45, 80 ],
+        barX: [ 13, 48, 83 ],
+        initSVG: function() {
+            var svg = this.svg;
+            var p;
+            this.p = snap(this.$('.osd-histogram-svg')[0]);
+            p = this.p;
+            var barBaseline = 110;
+            var legendBaseline = barBaseline + 20;
+            var barWidth = 20;
+            var barHeight = 100;
+            var barY = barBaseline - barHeight;
+            p.node.setAttribute('viewBox', '0 0 130 130');
+            p.path('M5,5L5,' + (barBaseline+1) + 'L110,' + (barBaseline+1)).attr({
                 'class': 'osd-lines'
             });
-            this.svg.ok = this.p.rect(15, 110, 20, 0).attr({
+            var legendX = this.legendX;
+            var barX = this.barX;
+            svg.ok = p.rect(barX[0], barY, barWidth, barHeight).attr({
                 'class': 'osd-histogram-ok'
             });
-            this.svg.warn = this.p.rect(50, 110, 20, 0).attr({
+            svg.warn = p.rect(barX[1], barY, barWidth, barHeight).attr({
                 'class': 'osd-histogram-warn'
             });
-            this.svg.critical = this.p.rect(85, 110, 20, 0).attr({
+            svg.critical = p.rect(barX[2], barY, barWidth, barHeight).attr({
                 'class': 'osd-histogram-critical'
             });
-            this.svg.okcount = this.p.text(12, 130, '0').attr({
+            svg.okcount = p.text(legendX[0], legendBaseline, '0').attr({
                 'class': 'osd-count-text'
             });
-            this.svg.warncount = this.p.text(47, 130, '0').attr({
+            svg.warncount = p.text(legendX[1], legendBaseline, '0').attr({
                 'class': 'osd-count-text'
             });
-            this.svg.criticalcount = this.p.text(82, 130, '0').attr({
+            svg.criticalcount = p.text(legendX[2], legendBaseline, '0').attr({
                 'class': 'osd-count-text'
             });
         }
