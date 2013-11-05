@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'], function($, _, Backbone, JST, Snap) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'], function($, _, Backbone, JST, snap) {
     'use strict';
 
     var OsdHistogramView = Backbone.Marionette.ItemView.extend({
@@ -68,7 +68,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'
             }
             this.ui.count.text(count);
             if (_.isNumber(ok)) {
-                this.animateBar(this.svg.ok, this.svg.okcount, this.percentage(ok, count), ok.toString(), 12)
+                this.animateBar(this.svg.ok, this.svg.okcount, this.percentage(ok, count), ok.toString(), 12);
             }
             if (_.isNumber(warn)) {
                 this.animateBar(this.svg.warn, this.svg.warncount, this.percentage(warn, count), warn.toString(), 47);
@@ -78,10 +78,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'
             }
         },
         initCanvas: function() {
-            this.p = Snap(this.$('.osd-histogram-svg')[0]).attr({
-                'height': 140,
-                'width': 120
+            this.p = snap(this.$('.osd-histogram-svg')[0]).attr({
             });
+            this.p.node.setAttribute('viewBox', '0 0 130 130');
             this.p.path('M5,5L5,111L110,111').attr({
                 'class': 'osd-lines'
             });

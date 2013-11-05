@@ -251,11 +251,28 @@ span.subtext {
 .osd-histogram-svg {
     position: absolute;
     bottom: 15px;
-    left: 25px;
-    //border: 1px solid red;
+    left: 45px;
+    height: 140px;
+    width: 120px;
     @include breakpoint(screen-lg) {
-    	left: 30px;
+    	height: 180px;
+    	width: 160px;
     }
+    @include breakpoint(screen-md) {
+    	//left: 30px;
+    }
+    @include breakpoint(screen-sm) {
+    	height: 180px;
+    	width: 160px;
+    	bottom: 20px;
+    	left: 80px;
+    }
+    @include breakpoint(screen-xs) {
+    	left: 30px;
+    	height: 140px;
+    	width: 120px;
+    }
+    //border: 1px solid red;
 }
 .osd-lines {
     fill: none;
@@ -263,9 +280,30 @@ span.subtext {
 }
 .osd-histogram-count {
     position: absolute;
-    right: 10px;
-    top: 50px;
+    right: 20px;
+    top: 35px;
     font-size: 3em;
+    @include breakpoint(screen-md) {
+        top: 35px;
+        right: 20px;
+    }
+    @include breakpoint(screen-sm) {
+        right: 30px;
+    }
+    @include breakpoint(screen-xs) {
+        top: 30px;
+    }
+}
+.osd-histogram-subtitle {
+    position: absolute;
+    top: 30px;
+    right: 20px;
+    @include breakpoint(screen-sm) {
+	right: 30px;
+    }
+    @include breakpoint(screen-xs) {
+        top: 25px;
+    }
 }
 .osd-histogram-ok {
     fill: $itosdok;
