@@ -101,7 +101,7 @@ hr.style-two {
     color: $itdarkgray;
     text-transform: uppercase;
     font-family: ApexSansLight;
-    font-size: 2em;
+    font-size: 1.5em;
 }
 table.metrics tr td:first-child {
     text-align: right;
@@ -177,60 +177,42 @@ span.subtext {
     max-width: #{$itapp-card-height - 30}px;
     box-sizing: border-box;
     padding: 0;
-    margin: 0 auto 0 auto;
-    @include breakpoint(screen-sm) {
-	display: block;
-	position: absolute;
-	margin: 0;
-	right: 0;
-	top: 50px;
-    }
+    margin: 45px auto 0 auto;
     @include breakpoint(screen-lg) {
     	min-height: #{$itapp-card-height/1.8}px;
     	max-width: #{$itapp-card-height}px;
 	margin-left: 20px;
     }
+    @include breakpoint(screen-sm) {
+	display: block;
+	position: absolute;
+        min-height: #{($itapp-card-height/1.75)*1.3}px;
+        max-width: #{$itapp-card-height*1.3}px;
+	margin: 0;
+//	right: 0;
+	top: 20px;
+    }
+    @include breakpoint(screen-xs) {
+	display: block;
+	position: absolute;
+        min-height: #{$itapp-card-height/2}px;
+        max-width: #{$itapp-card-height - 30}px;
+	margin: 0;
+	top: 80px;
+    }
 }
 .mytext {
-	margin: 15px auto 0 auto;
-	text-align: center;
-	font-size: 2rem;
-	@include breakpoint(screen-sm) {
-		display: block;
-		left: 0;
-		bottom: 0;
-		padding: 0 0 95px 30px;
-		font-size: 4.5rem;
-		position: absolute;
-	}
-	@include breakpoint(screen-xs) {
-	    padding: 0 0 9px 9px;
-	    font-size: 2.5rem;
-	}
+    position: absolute;
+    right: 20px;
+    top: 35px;
+    font-size: 3em;
+    @include breakpoint(screen-xs) {
+    top: 30px;
+    }
 }
 @mixin textalert($color) {
        color: $color;
        opacity: 0.95;
-}
-.osd-count {
-    margin-top: 40px;
-    font-size: 4em;
-    color: $itdarkgray;
-}
-.osd-total {
-   position: absolute; 
-   bottom: 10px;
-   right: 10px;
-}
-.osd-dots {
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  width: 100%;
-  left: 0;
-}
-.osd-hidden {
-    display: none;
 }
 .mon-state {
     margin-top: 40px;
@@ -299,12 +281,12 @@ span.subtext {
 .osd-histogram-subtitle {
     position: absolute;
     top: 30px;
-    right: 20px;
+    right: 23px;
     @include breakpoint(screen-sm) {
-	right: 30px;
+	right: 33px;
     }
     @include breakpoint(screen-xs) {
-        top: 25px;
+        top: 28px;
     }
 }
 .osd-histogram-ok {
