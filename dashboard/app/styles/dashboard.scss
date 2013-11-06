@@ -98,8 +98,10 @@ hr.style-two {
     background: #ccc;
 }
 .card-title {
-    color: $itapp-card-title-font-color;
+    color: $itdarkgray;
     text-transform: uppercase;
+    font-family: ApexSansLight;
+    font-size: 2em;
 }
 table.metrics tr td:first-child {
     text-align: right;
