@@ -26,6 +26,9 @@
     position: relative;
     background-color: $itlightgray;
     height: 600px;
+    &.viz-hidden {
+        visibility: hidden;
+    }
 }
 tspan:hover, circle:hover {
     cursor: pointer;

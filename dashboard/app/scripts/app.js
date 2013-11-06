@@ -107,10 +107,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App: App
         });
         gaugesLayout.mon.show(monView);
-        var pgView = new views.PgView({
-            App: App
-        });
-        gaugesLayout.pg.show(pgView);
         var gauge = new views.UsageView({
             App: App,
             model: new models.UsageModel({}),
@@ -119,6 +115,12 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         gauge.listenTo(gauge, 'item:postrender', function() {
             App.vent.trigger('updateTotals');
         });
+
+        var pgView = new views.PgView({
+            App: App,
+            el: '.pgmap'
+        });
+        pgView.render();
 
         var collection;
         if (config.offline) {

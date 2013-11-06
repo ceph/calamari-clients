@@ -178,6 +178,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         toFullscreenTransitionTwo: function() {
             var ui = this.ui;
             ui.viz.addClass('viz-fullscreen');
+            ui.filterpanel.css('display', 'block');
             ui.filterpanel.show();
             this.App.vent.trigger('filter:update');
             return this.fadeInAnimation(ui.filterpanel);
@@ -185,16 +186,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         fullscreen: function(callback) {
             this.state = 'fullscreen';
             this.ui.cardTitle.text('OSD Workbench');
-            this.$el.removeClass('card').addClass('workbench');
+            this.$el.removeClass('card viz-hidden').addClass('workbench');
             return this.vizMoveUpAnimation(this.$el, callback).then(this.toFullscreenTransitionOne).then(this.toFullscreenTransitionTwo);
         },
         toDashboardTransitionOne: function() {
             var ui = this.ui;
-            this.fadeOutAnimation(ui.filterpanel).then(function() {
-                ui.filterpanel.css('visibility', 'hidden');
-            }).then(function() {
-                ui.filterpanel.css('visibility', 'visible');
-            });
+            //            this.fadeOutAnimation(ui.filterpanel).then(function() {
+            ui.filterpanel.css('display', 'none');
+            //            }).then(function() {
+            //                ui.filterpanel.css('visibility', 'visible');
+            //            });
             this.reset();
             return this.vizSlideLeftAnimation(ui.viz);
         },
@@ -206,7 +207,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         dashboard: function(callback) {
             this.state = 'dashboard';
             this.ui.cardTitle.text('OSD Status');
-            this.$el.addClass('card').removeClass('workbench');
+            this.$el.addClass('card viz-hidden').removeClass('workbench');
             return this.vizMoveDownAnimation(this.$el, callback).then(this.toDashboardTransitionOne).then(this.toDashboardTransitionTwo);
         },
         resetViews: function(collection, options) {
