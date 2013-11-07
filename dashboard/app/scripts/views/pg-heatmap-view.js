@@ -36,18 +36,29 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'
             var y = (line * 10) + 2;
             var x = (Math.floor(index % rowlen) * width) + 2;
             var ok = 100;
-            var warn = 100;
             var attr = model.attributes;
-            if (attr.active != attr.clean) {
+            var f;
+            if (attr.active !== attr.clean) {
                 console.log('index ' + index + ' has interesting states');
                 var total = attr.active;
-                ok = 25 * (attr.clean/total);
+                ok = 1-(attr.clean / total);
+                if (ok < 0.1) {
+                    ok = 0.15;
+                }
+                var green = '#26bf00',
+                    yellow = '#bbbf00',
+                    red = '#bf0000';
+                var other = yellow;
+                if (attr.inconsistent || attr.down || attr.peering || attr.incomplete || attr.stale) {
+                    other = red;
+                }
+                f = this.p.gradient('r(0.5,0.5,' + ok + ')' + other + '-' + green);
                 console.log(ok);
+            } else if (attr.active === undefined) {
+                f = '#000';
+            } else {
+                f = '#26bf00';
             }
-            if (attr.active === undefined) {
-                ok = warn = 0;
-            }
-            var f = this.p.gradient('l(1, 1, 0, 0)#26bf00:' + ok + '-#bbbf00:' + warn + '-#bf0000');
 
             return {
                 x: x,
