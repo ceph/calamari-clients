@@ -133,6 +133,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             /*jshint camelcase: false */
             return this.collection.pg_state_counts || {};
         },
+        getOSDPGCounts: function() {
+            return this.collection.pluck('pg_states');
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App.Config) {
@@ -161,6 +164,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.App.ReqRes.setHandler('get:osdcounts', this.getOSDCounters);
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
             this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
+            this.App.ReqRes.setHandler('get:osdpgcounts', this.getOSDPGCounts);
             this.render = _.wrap(this.render, this.renderWrapper);
             this.osdHoverHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, [this.osdHoverHandlerCore, this.hostGroupHoverHandlerCore]);
             this.osdClickHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, this.osdClickHandlerCore);
