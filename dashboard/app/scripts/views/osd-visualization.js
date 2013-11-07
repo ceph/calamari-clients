@@ -134,7 +134,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return this.collection.pg_state_counts || {};
         },
         getOSDPGCounts: function() {
-            return this.collection.pluck('pg_states');
+            return this.collection.map(function(m) {
+                return {
+                    id: m.id,
+                    pg_states: m.get('pg_states')
+                };
+            });
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
