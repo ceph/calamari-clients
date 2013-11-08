@@ -161,13 +161,41 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
         },
         renderBar: function() {
             var p = this.p;
-            var x = 453 / 2 - ((this.colorMap.length * 21) / 2);
+            var x = 5
             var y = 390;
+            var yt = y + 15;
+            p.text(x, yt, 'Clean').attr({
+                'stroke': '#fff',
+                'font-size': '1em'
+            });
+            x += 40;
+            var xl = x;
             _.each(this.colorMap, function(c) {
                 p.rect(x, y, 20, 20).attr({
                     fill: snap.rgb(c.r, c.g, c.b).toString()
                 });
                 x += 21;
+            });
+            p.text(xl-5, y-5, "0%");
+            p.text(x-10, y-5, "100%");
+
+            x += 50;
+            p.text(x, yt, 'Down').attr({
+                'stroke': '#fff',
+                'font-size': '1em'
+            });
+            x += 40;
+            p.rect(x, y, 20, 20).attr({
+                fill: '#000'
+            });
+            x += 25;
+            p.text(x, yt, 'Unused').attr({
+                'stroke': '#fff',
+                'font-size': '1em'
+            });
+            x += 55;
+            p.rect(x, y, 20, 20).attr({
+                fill: '#ccc'
             });
         },
         renderMap: function() {
