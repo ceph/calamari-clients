@@ -32,6 +32,7 @@ $third-row-height: 120px;
 .pg-heatmap-svg {
     height: #{$itapp-card-height*1.75}px;
     background-color: white;
+    width: 100%;
 }
 .navbar {
     margin-bottom:0;
@@ -105,6 +106,7 @@ hr.style-two {
     background: #ccc;
 }
 .card-title {
+    display: block;
     color: $itdarkgray;
     text-transform: uppercase;
     font-family: ApexSansLight;
