@@ -91,7 +91,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             b: 180
         }],
         calcPosition: function(model, index) {
-            var margin = 0;
+            var margin = -0.5;
             var offsetx = 35;
             var offsety = 30;
             var line = Math.floor(index / this.rowlen);
@@ -224,7 +224,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                     fill: (self.firstRun ? '#fff' : pos.f)
                 });
                 el.animate({
-                    fill: pos.f
+                    fill: pos.f,
+                    stroke: 'none'
                 }, 500);
                 m.views = {
                     index: index,
