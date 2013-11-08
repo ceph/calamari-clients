@@ -106,9 +106,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             var ok = 100;
             var attr = model.attributes.pg_states;
             var f;
-            if (attr.active !== attr.clean) {
+            var total = this.countAttributes(attr, ['clean', 'creating', 'replaying', 'splitting', 'scrubbing', 'degraded', 'repair', 'recovering', 'backfill', 'wait-backfill', 'remapped', 'inconsistent', 'down', 'peering', 'incomplete', 'stale']);
+            if (attr.active != undefined && attr.active !== total) {
                 console.log('index ' + index + ' has interesting states');
-                var total = attr.active;
                 ok = (attr.clean / total);
                 if (1 - ok < 0.1) {
                     ok = 0.75;
@@ -141,7 +141,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 });
                 //f = snap.hsb2rgb(hsb).hex;
             } else if (attr.active === undefined) {
-                f = '#000';
+                if (model.get('up') === 1 && model.get('in') === 1) {
+                    f = '#ccc';
+                } else {
+                    f = '#000';
+                }
             } else {
                 color = this.colorMap[9]
                 f = snap.rgb(color.r, color.g, color.b).toString();
@@ -157,7 +161,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
         },
         renderBar: function() {
             var p = this.p;
-            var x = 453/2-((this.colorMap.length*21)/2);
+            var x = 453 / 2 - ((this.colorMap.length * 21) / 2);
             var y = 390;
             _.each(this.colorMap, function(c) {
                 p.rect(x, y, 20, 20).attr({

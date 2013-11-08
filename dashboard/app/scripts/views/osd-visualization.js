@@ -137,6 +137,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return this.collection.map(function(m) {
                 return {
                     id: m.id,
+                    up: m.get('up'),
+                    'in': m.get('in'),
                     pg_states: m.get('pg_states')
                 };
             });
