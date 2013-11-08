@@ -40,9 +40,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 self.trigger('renderMap');
             }, 0);
         },
-        width: 50,
-        height: 50,
-        rowlen: 9,
+        width: 40,
+        height: 40,
+        rowlen: 10,
         countAttributes: function(attr, list) {
             return _.reduce(list, function(memo, key) {
                 var value = attr[key];
@@ -91,15 +91,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             b: 180
         }],
         calcPosition: function(model, index) {
-            var margin = 1;
             var margin = 0;
+            var offsetx = 25;
+            var offsety = 20;
             var line = Math.floor(index / this.rowlen);
-            var y = (line * this.height) + 0;
+            var y = (line * this.height) + offsety;
             if (line) {
                 y += line * margin;
             }
             var col = Math.floor(index % this.rowlen);
-            var x = (col * this.width) + 0;
+            var x = (col * this.width) + offsetx;
             if (x > 2) {
                 x += col * margin;
             }
@@ -197,6 +198,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             p.rect(x, y, 20, 20).attr({
                 fill: '#ccc'
             });
+            var lx = 36,ly = 13;
+            for(var i = 0; i < 10; i++) {
+                p.text(lx, ly, i.toString()).attr({'stroke': '#000'});
+                lx += this.width;
+            }
+            lx = 5, ly = 40;
+            for(var i = 0; i < 8; i++) {
+                p.text(lx, ly, (i*10).toString()).attr({'stroke': '#000'});
+                ly += this.height;
+            }
         },
         renderMap: function() {
             var self = this;
