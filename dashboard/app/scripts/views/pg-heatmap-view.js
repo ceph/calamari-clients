@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'], function($, _, Backbone, JST, snap) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, snap, gaugeHelper) {
     'use strict';
 
     var PgHeatmapView = Backbone.Marionette.ItemView.extend({
@@ -19,6 +19,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'
             }
             this.listenToOnce(this, 'render', this.initSVG);
             this.listenToOnce(this, 'renderMap', this.renderMap);
+            gaugeHelper(this);
         },
         firstRun: true,
         changeView: function(m) {
@@ -41,13 +42,54 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'
         },
         width: 50,
         height: 50,
+        rowlen: 9,
         countAttributes: function(attr, list) {
             return _.reduce(list, function(memo, key) {
                 var value = attr[key];
                 return memo + (_.isNumber(value) ? value : 0);
             }, 0)
         },
-        rowlen: 9,
+        colorMap: [{
+            r: 215,
+            g: 48,
+            b: 39
+        }, {
+            r: 244,
+            g: 109,
+            b: 67
+        }, {
+            r: 253,
+            g: 174,
+            b: 97
+        }, {
+            r: 254,
+            g: 224,
+            b: 144
+        }, {
+            r: 255,
+            g: 255,
+            b: 191
+        }, {
+            r: 224,
+            g: 243,
+            b: 248
+        }, {
+            r: 171,
+            g: 217,
+            b: 233
+        }, {
+            r: 171,
+            g: 217,
+            b: 233
+        }, {
+            r: 116,
+            g: 173,
+            b: 209
+        }, {
+            r: 69,
+            g: 117,
+            b: 180
+        }],
         calcPosition: function(model, index) {
             var margin = 1;
             var margin = 0;
@@ -71,38 +113,38 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'
                 if (1 - ok < 0.1) {
                     ok = 0.75;
                 }
-                var green = '#26bf00',
-                    yellow = '#bbbf00',
-                    red = '#bf0000';
-                var other = yellow;
-                var otherrgb = {
-                    r: 0xbb,
-                    g: 0xbf,
-                    b: 0x0
-                };
-
+                var color;
                 var yellowCount = this.countAttributes(attr, ['creating', 'replaying', 'splitting', 'scrubbing', 'degraded', 'repair', 'recovering', 'backfill', 'wait-backfill', 'remapped']);
                 //yellowCount = total/2;
                 if (yellowCount) {
-                    ok = 0.25 + (0.5 - (0.5 * (yellowCount / total)));
+                    ok = 0.11 + (0.7 - (0.7 * (yellowCount / total)));
+                    var i = Math.floor(10 * ok);
+                    console.log(i, this.colorMap[i]);
+                    color = this.colorMap[i];
+                    f = snap.rgb(color.r, color.g, color.b).toString();
+                    console.log(f);
                 }
                 console.log({
                     'yellowCount': yellowCount
                 });
                 var redCount = this.countAttributes(attr, ['inconsistent', 'down', 'peering', 'incomplete', 'stale']);
                 if (redCount) {
-                    ok = 0.6 - (0.6 * (redCount / total));
+                    ok = 0.4 - (0.4 * (redCount / total));
+                    var i = Math.floor(10 * ok);
+                    console.log(i, this.colorMap[i]);
+                    color = this.colorMap[i];
+                    f = snap.rgb(color.r, color.g, color.b).toString();
+                    console.log(f);
                 }
                 console.log({
                     'redCount': redCount
                 });
-                var hsb = snap.rgb2hsb(otherrgb.r, otherrgb.g, otherrgb.b);
-                hsb.h = (107 * ok) / 360;
-                f = snap.hsb2rgb(hsb).hex;
+                //f = snap.hsb2rgb(hsb).hex;
             } else if (attr.active === undefined) {
                 f = '#000';
             } else {
-                f = '#26bf00';
+                color = this.colorMap[9]
+                f = snap.rgb(color.r, color.g, color.b).toString();
             }
 
             return {
@@ -113,8 +155,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'marionette'
                 f: f
             };
         },
+        renderBar: function() {
+            var p = this.p;
+            var x = 453/2-((this.colorMap.length*21)/2);
+            var y = 390;
+            _.each(this.colorMap, function(c) {
+                p.rect(x, y, 20, 20).attr({
+                    fill: snap.rgb(c.r, c.g, c.b).toString()
+                });
+                x += 21;
+            });
+        },
         renderMap: function() {
             var self = this;
+            this.renderBar();
             this.collection.each(function(m, index) {
                 var pos = self.calcPosition(m, index);
                 var el = self.p.rect(pos.x, pos.y, pos.w, pos.h).attr({
