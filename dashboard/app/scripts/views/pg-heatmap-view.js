@@ -164,11 +164,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             var x = 5
             var y = 390;
             var yt = y + 15;
-            p.text(x, yt, 'Clean').attr({
+            p.text(x, yt, 'Urgency').attr({
                 'stroke': '#fff',
                 'font-size': '1em'
             });
-            x += 40;
+            x += 60;
             var xl = x;
             _.each(this.colorMap, function(c) {
                 p.rect(x, y, 20, 20).attr({
@@ -176,10 +176,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 });
                 x += 21;
             });
-            p.text(xl-5, y-5, "0%");
-            p.text(x-10, y-5, "100%");
+            p.text(xl-5, y-5, "High");
+            p.text(x-10, y-5, "Low");
 
-            x += 50;
+            x += 30;
             p.text(x, yt, 'Down').attr({
                 'stroke': '#fff',
                 'font-size': '1em'
