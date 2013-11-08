@@ -92,8 +92,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
         }],
         calcPosition: function(model, index) {
             var margin = 0;
-            var offsetx = 25;
-            var offsety = 20;
+            var offsetx = 35;
+            var offsety = 30;
             var line = Math.floor(index / this.rowlen);
             var y = (line * this.height) + offsety;
             if (line) {
@@ -177,8 +177,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 });
                 x += 21;
             });
-            p.text(xl-5, y-5, "High");
-            p.text(x-10, y-5, "Low");
+            p.text(xl - 5, y - 5, "High");
+            p.text(x - 10, y - 5, "Low");
 
             x += 30;
             p.text(x, yt, 'Down').attr({
@@ -198,16 +198,22 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             p.rect(x, y, 20, 20).attr({
                 fill: '#ccc'
             });
-            var lx = 36,ly = 13;
-            for(var i = 0; i < 10; i++) {
-                p.text(lx, ly, i.toString()).attr({'stroke': '#000'});
+            var lx = 46,
+                ly = 23;
+            for (var i = 0; i < 10; i++) {
+                p.text(lx, ly, i.toString()).attr({
+                    'stroke': '#000'
+                });
                 lx += this.width;
             }
-            lx = 5, ly = 40;
-            for(var i = 0; i < 8; i++) {
-                p.text(lx, ly, (i*10).toString()).attr({'stroke': '#000'});
+            lx = 10, ly = 50;
+            for (var i = 0; i < 8; i++) {
+                p.text(lx, ly, (i * 10).toString()).attr({
+                    'stroke': '#000'
+                });
                 ly += this.height;
             }
+            p.text(4, 19, 'OSD').attr({'font-size': '1em'});
         },
         renderMap: function() {
             var self = this;
