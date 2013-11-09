@@ -121,6 +121,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             el: '.pgmap'
         });
         pgView.render();
+        var pgStat = new views.PgStat({
+            App: App,
+            el: '.pgstat'
+        });
+        pgStat.render();
 
         var collection;
         if (config.offline) {
