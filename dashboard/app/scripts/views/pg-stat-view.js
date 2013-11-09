@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function($, _, Backbone, JST) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, gaugeHelper) {
     'use strict';
 
     var PgStatView = Backbone.Marionette.ItemView.extend({
@@ -15,6 +15,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
                 this.listenTo(this.App.vent, 'filter:update', this.fetchOSDPGCount);
             }
             this.listenTo(this, 'updateStats', this.updateView);
+            gaugeHelper(this);
         },
         fetchOSDPGCount: function() {
             var self = this;
