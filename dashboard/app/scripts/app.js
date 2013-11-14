@@ -143,6 +143,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.vent.trigger('keyup', evt);
         });
 
+        var statusLine = new views.StatusLine({
+            App: App,
+            el: '.status-line'
+        });
+        statusLine.render();
 
         _.extend(humanize.catalog, {
             'about_a_minute_ago': '1m',
@@ -151,36 +156,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             'hours_ago': 'h',
             'one_day_ago': '1d',
             'days_ago': 'd',
-            'about_a_month_ago': '1M',
-            'months_ago': 'M',
-            'a_year_ago': '1y',
-            'years_ago': 'y'
         });
-        /*
-        views.NotificationCardView.view.setElement($('.notifications')).render();
-        views.NotificationCardView.collection.add(
-        [{
-            title: 'OSD',
-            message: 'OSD.100 has stopped responding',
-            timestamp: humanize.time() - 24 * 60 * 60,
-            priority: 2
-        }, {
-            title: 'Processes',
-            message: 'MDS 192.168.20.2 is online',
-            timestamp: humanize.time() - 60 * 60,
-            priority: 0
-        }, {
-            title: 'Processes',
-            message: 'OSD.10 has stopped responding',
-            timestamp: humanize.time() - 60,
-            priority: 2
-        }, {
-            title: 'Processes',
-            message: 'MDS 192.168.20.2 has become unreachable',
-            timestamp: humanize.time(),
-            priority: 1
-        }]);
-        */
+
         /* Widget Setup */
 
         /* Defer Visualization startup to after loading the cluster metadata */
@@ -193,7 +170,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             clusterDeferred.resolve(clusterMenu.collection.at(0));
         });
         clusterDeferred.promise().done(function(cluster) {
-            var alertsView = new views.AlertsView({ App: App });
+            var alertsView = new views.AlertsView({
+                App: App
+            });
 
             var poller = new Poller({
                 App: App,
@@ -418,6 +397,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 UserMenu: userMenu,
                 Viz: viz,
                 Alerts: alertsView,
+                StatusLine: statusLine,
                 models: models,
                 helpers: helpers,
                 commit: gitcommit['git-commit']
