@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, gaugeHelper) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'humanize', 'marionette'], function($, _, Backbone, JST, gaugeHelper, humanize) {
     'use strict';
 
     var PgStatView = Backbone.Marionette.ItemView.extend({
@@ -42,7 +42,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             var self = this;
             var html = _.reduce(stats, function(memo, count, state) {
                 memo.push(self.trTemplate({
-                    count: count,
+                    count: humanize.numberFormat(count, 0),
                     state: state
                 }));
                 return memo;
