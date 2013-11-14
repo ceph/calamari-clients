@@ -1,4 +1,4 @@
-/*global define*/
+/*global define, mina*/
 
 define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, snap, gaugeHelper) {
     'use strict';
@@ -6,12 +6,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
     var OsdHistogramView = Backbone.Marionette.ItemView.extend({
         className: 'osd-histogram card gauge',
         template: JST['app/scripts/templates/osd-histogram.ejs'],
+        cardTitleTemplate: _.template('<%- total %> OSD'),
         modelEvents: {
             'change': 'modelChanged'
         },
         ui: {
             count: '.osd-histogram-count',
-            spinner: '.fa-spinner'
+            spinner: '.fa-spinner',
+            cardTitle: '.card-title'
         },
         initialize: function() {
             _.bindAll(this, 'modelChanged', 'animateBar', 'initSVG', 'set');
@@ -70,7 +72,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             if (_.isNumber(critical)) {
                 count += critical;
             }
-            this.ui.count.text(count);
+            this.ui.cardTitle.text(this.cardTitleTemplate({total: count}));
             var svg = this.svg;
             var legendX = this.legendX;
             if (_.isNumber(ok)) {

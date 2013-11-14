@@ -10,6 +10,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
     return Backbone.Marionette.ItemView.extend({
         className: 'gauge card usage',
         template: JST['app/scripts/templates/usage.ejs'],
+        cardTitleTemplate: _.template('<%- used %>% Usage'),
         timer: null,
         delay: 20000,
         ui: {
@@ -40,6 +41,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             this.opts = {};
             _.extend(this.opts, {
                 lines: 10,
+                'font-size': '0px',
                 percentColors: [
                     [0.0, '#1ae61a'],
                     [0.60, '#e6e619'],
@@ -55,7 +57,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
         // Once the render has been executed and has set up the widget
         // add the canvas based gauge dial
         postRender: function() {
-            var self = this;
             this.gauge = new Gauge(this.ui.canvas[0]).setOptions(this.opts);
             this.gauge.setTextField(this.ui.number[0]);
             this.gauge.set(0);
@@ -77,6 +78,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             this.ui.totalused.text(used);
             this.ui.totalcap.text(total);
             this.gauge.set(model.getPercentageUsed());
+            this.ui.cardtitle.text(this.cardTitleTemplate({used: Math.floor(model.getPercentageUsed())}));
         },
         set: function(model) {
             this.model.set(model.toJSON());
