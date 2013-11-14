@@ -7,11 +7,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'h
         className: 'gauge card mon',
         template: JST['app/scripts/templates/mon.ejs'],
         countTemplate: _.template('<%- count %> of <%- total %>'),
+        cardTitleTemplate: _.template('<%- count %> MON'),
         ui: {
             'spinner': '.fa-spinner',
             'monState': '.mon-state',
             'monCount': '.mon-count',
-            'subText': '.subtext'
+            'subText': '.subtext',
+            'cardTitle': '.card-title'
         },
         modelEvents: {
             'change': 'updateModel'
@@ -40,6 +42,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'h
                 count: attr.ok.count
 
             }));
+            this.ui.cardTitle.text(this.cardTitleTemplate({count: attr.ok.count}));
         },
         updateTimer: function() {
             this.ui.subText.text(humanize.relativeTime(this.model.get('cluster_update_time_unix') / 1000));
@@ -54,7 +57,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'h
             if (this.App) {
                 this.listenTo(this.App.vent, 'status:update', this.set);
             }
-            var self = this;
             gaugeHelper(this, 'status');
         },
         set: function(model) {

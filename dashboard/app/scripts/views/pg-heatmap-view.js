@@ -6,6 +6,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
     var PgHeatmapView = Backbone.Marionette.ItemView.extend({
         className: 'pgmap card',
         template: JST['app/scripts/templates/pg-heatmap.ejs'],
+        ui: {
+            'cardTitle': '.card-title'
+        },
         collectionEvents: {
             'change': 'changeView'
         },
@@ -47,7 +50,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             return _.reduce(list, function(memo, key) {
                 var value = attr[key];
                 return memo + (_.isNumber(value) ? value : 0);
-            }, 0)
+            }, 0);
         },
         colorMap: [{
             r: 215,
@@ -105,21 +108,22 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 x += col * margin;
             }
             var ok = 100;
+            //jshint camelcase: false
             var attr = model.attributes.pg_states;
             var f;
             var total = this.countAttributes(attr, ['clean', 'creating', 'replaying', 'splitting', 'scrubbing', 'degraded', 'repair', 'recovering', 'backfill', 'wait-backfill', 'remapped', 'inconsistent', 'down', 'peering', 'incomplete', 'stale']);
-            if (attr.active != undefined && attr.active !== total) {
+            var color, i;
+            if (attr.active !== undefined && attr.active !== total) {
                 console.log('index ' + index + ' has interesting states');
                 ok = (attr.clean / total);
                 if (1 - ok < 0.1) {
                     ok = 0.75;
                 }
-                var color;
                 var yellowCount = this.countAttributes(attr, ['creating', 'replaying', 'splitting', 'scrubbing', 'degraded', 'repair', 'recovering', 'backfill', 'wait-backfill', 'remapped']);
                 //yellowCount = total/2;
                 if (yellowCount) {
                     ok = 0.11 + (0.7 - (0.7 * (yellowCount / total)));
-                    var i = Math.floor(10 * ok);
+                    i = Math.floor(10 * ok);
                     console.log(i, this.colorMap[i]);
                     color = this.colorMap[i];
                     f = snap.rgb(color.r, color.g, color.b).toString();
@@ -131,7 +135,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 var redCount = this.countAttributes(attr, ['inconsistent', 'down', 'peering', 'incomplete', 'stale']);
                 if (redCount) {
                     ok = 0.4 - (0.4 * (redCount / total));
-                    var i = Math.floor(10 * ok);
+                    i = Math.floor(10 * ok);
                     console.log(i, this.colorMap[i]);
                     color = this.colorMap[i];
                     f = snap.rgb(color.r, color.g, color.b).toString();
@@ -148,7 +152,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                     f = '#000';
                 }
             } else {
-                color = this.colorMap[9]
+                color = this.colorMap[9];
                 f = snap.rgb(color.r, color.g, color.b).toString();
             }
 
@@ -162,7 +166,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
         },
         renderBar: function() {
             var p = this.p;
-            var x = 5
+            var x = 5;
             var y = 390;
             var yt = y + 15;
             p.text(x, yt, 'Urgency').attr({
@@ -177,8 +181,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 });
                 x += 21;
             });
-            p.text(xl - 5, y - 5, "High");
-            p.text(x - 10, y - 5, "Low");
+            p.text(xl - 5, y - 5, 'High');
+            p.text(x - 10, y - 5, 'Low');
 
             x += 30;
             p.text(x, yt, 'Down').attr({
@@ -206,14 +210,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 });
                 lx += this.width;
             }
-            lx = 10, ly = 50;
-            for (var i = 0; i < 8; i++) {
+            lx = 10;
+            ly = 50;
+            for (i = 0; i < 8; i++) {
                 p.text(lx, ly, (i * 10).toString()).attr({
                     'stroke': '#000'
                 });
                 ly += this.height;
             }
-            p.text(4, 19, 'OSD').attr({'font-size': '1em'});
+            p.text(4, 19, 'OSD').attr({
+                'font-size': '1em'
+            });
         },
         renderMap: function() {
             var self = this;
@@ -230,7 +237,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
                 m.views = {
                     index: index,
                     rect: el
-                }
+                };
             });
         }
     });
