@@ -155,7 +155,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             'about_an_hour_ago': '1h',
             'hours_ago': 'h',
             'one_day_ago': '1d',
-            'days_ago': 'd',
+            'days_ago': 'd'
         });
 
         /* Widget Setup */

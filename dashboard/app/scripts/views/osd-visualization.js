@@ -134,6 +134,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return this.collection.pg_state_counts || {};
         },
         getOSDPGCounts: function() {
+            /* jshint camelcase: false */
             return this.collection.map(function(m) {
                 return {
                     id: m.id,

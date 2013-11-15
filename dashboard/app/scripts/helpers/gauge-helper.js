@@ -11,6 +11,7 @@
  */
 define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/animation', 'marionette'], function($, _, Backbone, JST, humanize, animation) {
     'use strict';
+    /*jshint validthis:true */
     function expand(callback) {
         this.$el.css('display', 'block');
         if (callback) {
@@ -39,7 +40,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         return this._reappearAnimation(this.$el, callback);
     }
 
-    function initialize_helper(target, watched) {
+    function initializeHelper(target, watched) {
         if (target.App.vent) {
             /* Assign functions */
             target._expand = expand;
@@ -72,5 +73,5 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         }
     }
 
-    return initialize_helper;
+    return initializeHelper;
 });

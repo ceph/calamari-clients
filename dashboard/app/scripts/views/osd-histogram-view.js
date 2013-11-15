@@ -35,7 +35,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
             this.model.set({
                 ok: attr.ok.count,
                 warn: attr.warn.count,
-                critical: attr.critical.count,
+                critical: attr.critical.count
             });
         },
         animationMs: 1000,

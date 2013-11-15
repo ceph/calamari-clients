@@ -22,7 +22,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'h
             if (this.App) {
                 this.listenTo(this.App.vent, 'status:update', this.set);
             }
-            var self = this;
             gaugeHelper(this, 'status');
         },
         updateModel: function(model) {
