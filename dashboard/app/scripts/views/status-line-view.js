@@ -6,7 +6,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
     var StatusLineView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/status-line.ejs'],
         updateTemplate: _.template('<i class="fa fa-heart"></i> <%- time %>'),
-        className: 'card status-line',
+        className: 'card status-line gauge',
         timer: null,
         initialize: function() {
             _.bindAll(this, 'updateUI', 'timerWrapper');
