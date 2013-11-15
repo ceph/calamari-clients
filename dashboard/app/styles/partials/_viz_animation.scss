@@ -1,0 +1,118 @@
+$shortTimer: 0.25s;
+$medTimer: 0.25s;
+.fadeInDownAnim {
+  @include animation(fadeInDown $shortTimer ease);
+}
+
+.fadeOutUpAnim {
+  @include animation(fadeOutUp $shortTimer ease);
+}
+.fadeInAnim {
+  @include animation(fadeIn $shortTimer ease);
+}
+
+.fadeOutAnim {
+  @include animation(fadeOut $shortTimer ease);
+}
+$itapp-viz-text-color: $itdarkgray;
+$itapp-viz-vertical-slide-distance:  220;
+text {
+    font: 9px ApexSansMedium;
+    stroke: none;
+    fill: $itapp-viz-text-color;
+}
+@include keyframes(move-up-viz) {
+    100% {
+        @include transform(translate(0px, -#{$itapp-viz-vertical-slide-distance}px));
+    }
+}
+.moveVizUpAnim {
+    @include animation(move-up-viz $medTimer ease);
+}
+@include keyframes(move-down-viz) {
+    100% {
+        @include transform(translate(0px, #{$itapp-viz-vertical-slide-distance}px));
+    }
+}
+.moveVizDownAnim {
+    @include animation(move-down-viz $medTimer ease);
+}
+
+@include keyframes(fadeInRightToLeft) {
+    0% {
+        @include transform(translate(200px, 0px));
+        opacity: 0;
+    }
+    100% {
+        @include transform(translate(0px, 0px));
+        opacity: 1;
+    }
+}
+.fadeInRightToLeftAnim {
+    @include animation(fadeInRightToLeft $medTimer ease);
+}
+
+@include keyframes(fadeOutRightToLeft) {
+    0% {
+        @include transform(translate(0, 0px));
+        opacity: 1;
+    }
+    100% {
+        @include transform(translate(-200px, 0px));
+        opacity: 0;
+    }
+}
+.fadeOutRightToLeftAnim {
+    @include animation(fadeOutRightToLeft $medTimer ease);
+}
+
+@include keyframes(slideVizRight) {
+    100% {
+        @include transform(translate(75px, 0px));
+    }
+}
+.slideVizRightAnim {
+    @include animation(slideVizRight $medTimer ease);
+}
+
+@include keyframes(slideVizLeft) {
+    100% {
+        @include transform(translate(-85px, 0px));
+    }
+}
+.slideVizLeftAnim {
+    @include animation(slideVizLeft $medTimer ease);
+}
+@include keyframes(growDialog) {
+    0% {
+	    opacity: 0;
+	    left: -#{$popover-width}px;
+    }
+    30% { 
+	    opacity: 1;
+    }
+    100% {
+	    left: 0;
+    }
+}
+.DialogInAnim {
+    @include animation(growDialog 0.25s ease-in-out);
+}
+@include keyframes(switcherSliderDown) {
+    0% {
+    }
+    100% {
+        @include transform(translateY(34px));
+    }
+}
+.sliderDownAnim {
+    @include animation(switcherSliderDown $shortTimer ease-out);
+}
+@include keyframes(switcherSliderUp) {
+    100% {
+        @include transform(translateY(-34px));
+    }
+}
+.sliderUpAnim {
+    @include animation(switcherSliderUp $shortTimer ease-out);
+}
