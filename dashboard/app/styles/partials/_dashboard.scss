@@ -13,7 +13,7 @@ body {
     font-style: normal;
 }
 
-$itapp-card-height: 240;
+$itapp-card-height: 200;
 $second-row-height: 600px;
 $third-row-height: 120px;
 
@@ -172,32 +172,21 @@ span.subtext {
     border-top: 0px;
 }
 .usage-canvas {
-    min-height: #{$itapp-card-height/2}px;
-    max-width: #{$itapp-card-height - 30}px;
+    min-height: #{$itapp-card-height/1.5}px;
+    max-width: 100%;
     box-sizing: border-box;
     padding: 0;
-    margin: 45px auto 0 auto;
-    @include breakpoint(screen-lg) {
-    	min-height: #{$itapp-card-height/1.8}px;
-    	max-width: #{$itapp-card-height}px;
-	margin-left: 20px;
-    }
+    margin: 0 auto 0 auto;
     @include breakpoint(screen-sm) {
 	display: block;
 	position: absolute;
-        min-height: #{($itapp-card-height/1.75)*1.3}px;
-        max-width: #{$itapp-card-height*1.3}px;
-	margin: 0;
-//	right: 0;
+	margin: 0 0 0 30px;
 	top: 20px;
     }
     @include breakpoint(screen-xs) {
 	display: block;
 	position: absolute;
-        min-height: #{$itapp-card-height/2}px;
-        max-width: #{$itapp-card-height - 30}px;
 	margin: 0;
-	top: 80px;
     }
 }
 .mytext {
@@ -214,7 +203,7 @@ span.subtext {
        opacity: 0.95;
 }
 .mon-state {
-    margin-top: 40px;
+    margin-top: 20px;
 }
 .pg-state {
   margin-top: 40px;
@@ -238,8 +227,9 @@ span.subtext {
     height: 140px;
     width: 120px;
     @include breakpoint(screen-lg) {
-    	height: 180px;
-    	width: 160px;
+    	height: 160px;
+    	width: 142px;
+	margin: 0 0 0 40px;
     }
     @include breakpoint(screen-md) {
     	//left: 30px;

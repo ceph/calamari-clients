@@ -23,14 +23,16 @@ $timeSlow: 1s;
     }
 }
 .toWorkBenchAnim {
-    @include animation(toWorkBench 0.125s ease-in);
+    @include animation(toWorkBench $timeFast ease-in);
 }
 @include keyframes(toDashboard) {
     0% {
-	    background-color: $itlightgray;
+	    opacity: 1;
+//	    background-color: $itlightgray;
     }
     100% {
-	    background-color: $itdarkgray;
+	    opacity: 0;
+//	    background-color: $itdarkgray;
     }
 }
 .toDashboardAnim {

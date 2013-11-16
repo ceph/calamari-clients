@@ -139,10 +139,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             } else {
                 d.resolve();
             }
-            var animFn = this.toWorkBenchAnimation;
             d.promise().then(function() {
                 $body.addClass('workbench-mode');
-                animFn($body);
                 vent.trigger('viz:fullscreen', function() {
                     vent.trigger('gauges:collapse');
                 });
@@ -153,14 +151,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             var vent = this.vent;
             $body.removeClass('workbench-mode');
             var d = $.Deferred();
-            var animFn = this.toDashboardAnimation;
             if (to === 'dashmode') {
-                animFn($body).then(function() {
-                    vent.trigger('viz:dashboard', function() {
-                        d.resolve();
-                    });
+                vent.trigger('viz:dashboard', function() {
+                    d.resolve();
                 });
-
             } else {
                 vent.trigger('viz:dashboard', function() {
                     d.resolve();
@@ -172,8 +166,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 });
             });
         },
-        toWorkBenchAnimation: animation.single('toWorkBenchAnim'),
-        toDashboardAnimation: animation.single('toDashboardAnim'),
         onenterdashmode: function() {},
         onleavedashmode: function() {}
     });

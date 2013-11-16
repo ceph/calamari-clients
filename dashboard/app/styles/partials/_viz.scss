@@ -18,6 +18,7 @@
     background-color: $itlightgray;
     height: 600px;
     &.viz-hidden {
+	max-height: 0;
         visibility: hidden;
     }
 }

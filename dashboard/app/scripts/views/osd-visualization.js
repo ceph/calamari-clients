@@ -92,12 +92,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
         },
         setupAnimations: function(obj) {
-            obj.vizMoveUpAnimation = animation.single('moveVizUpAnim');
-            obj.vizMoveDownAnimation = animation.single('moveVizDownAnim');
-            obj.vizSlideRightAnimation = animation.single('slideVizRightAnim');
-            obj.vizSlideLeftAnimation = animation.single('slideVizLeftAnim');
+            obj.opacityOutAnimation = animation.single('toDashboardAnim');
+            obj.toWorkBenchAnimation = animation.single('toWorkBenchAnim');
             obj.fadeInAnimation = animation.single('fadeInAnim');
-            obj.fadeOutAnimation = animation.single('fadeOutAnim');
         },
         getHosts: function() {
             return _.uniq(this.collection.pluck('host'));
@@ -184,43 +181,31 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 this.App.vent.trigger('app:fullscreen');
             }
         },
-        toFullscreenTransitionOne: function() {
-            return this.vizSlideRightAnimation(this.ui.viz);
-        },
         toFullscreenTransitionTwo: function() {
             var ui = this.ui;
+            this.$el.removeClass('viz-hidden');
             ui.viz.addClass('viz-fullscreen');
             ui.filterpanel.css('display', 'block');
-            ui.filterpanel.show();
             this.App.vent.trigger('filter:update');
             return this.fadeInAnimation(ui.filterpanel);
         },
         fullscreen: function(callback) {
             this.state = 'fullscreen';
             this.ui.cardTitle.text('OSD Workbench');
-            this.$el.removeClass('card viz-hidden').addClass('workbench');
-            return this.vizMoveUpAnimation(this.$el, callback).then(this.toFullscreenTransitionOne).then(this.toFullscreenTransitionTwo);
+            this.$el.addClass('workbench');
+            return this.toWorkBenchAnimation(this.$el, callback).then(this.toFullscreenTransitionTwo);
         },
         toDashboardTransitionOne: function() {
             var ui = this.ui;
-            //            this.fadeOutAnimation(ui.filterpanel).then(function() {
-            ui.filterpanel.css('display', 'none');
-            //            }).then(function() {
-            //                ui.filterpanel.css('visibility', 'visible');
-            //            });
-            this.reset();
-            return this.vizSlideLeftAnimation(ui.viz);
-        },
-        toDashboardTransitionTwo: function() {
-            var ui = this.ui;
-            ui.viz.removeClass('viz-fullscreen');
             ui.filterpanel.hide();
+            this.reset();
         },
         dashboard: function(callback) {
             this.state = 'dashboard';
-            this.ui.cardTitle.text('OSD Status');
-            this.$el.addClass('card viz-hidden').removeClass('workbench');
-            return this.vizMoveDownAnimation(this.$el, callback).then(this.toDashboardTransitionOne).then(this.toDashboardTransitionTwo);
+            var $el = this.$el;
+            return this.opacityOutAnimation(this.$el, callback).then(function() {
+                $el.addClass('viz-hidden').removeClass('workbench');
+            }).then(this.toDashboardTransitionOne);
         },
         resetViews: function(collection, options) {
             _.each(options.previousModels, this.cleanupModelView);
@@ -561,12 +546,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     cx: destX,
                     cy: destY
                 }, 333, 'easeIn', function() {
-                    t = this.paper.text(destX, destY - 1, model.id).attr({
-                        font: '',
-                        stroke: '',
-                        fill: '',
-                        style: ''
-                    });
+                    t = this.paper.text(destX, destY - 0.5, model.id);
                     t.data('modelid', model.id);
                     if (model.deferred) {
                         model.deferred.resolve();
