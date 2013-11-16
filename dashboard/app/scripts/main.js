@@ -32,6 +32,7 @@ require.config({
         }
     },
     paths: {
+        application: 'application',
         snapsvg: 'vendor/snap.svg',
         faker: '../bower_components/Faker/Faker',
         jquery: '../bower_components/jquery/jquery',
