@@ -19,7 +19,8 @@
     "Faker": "~0.5.11",
     "javascript-state-machine": "~2.2.0",
     "bootstrap-switch": "latest",
-    "noty": "~2.1.0"
+    "noty": "~2.1.0",
+    "kineticjs": "~4.7.3"
   },
   "devDependencies": {}
 }

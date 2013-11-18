@@ -18,7 +18,7 @@ $second-row-height: 600px;
 $third-row-height: 120px;
 
 .pgmap, .pgstat {
-    min-height: #{$itapp-card-height*2}px;
+    min-height: #{$itapp-card-height*1.5}px;
 }
 .pg-heatmap-svg {
     height: #{$itapp-card-height*1.75}px;
@@ -404,4 +404,10 @@ $bc-margin: 4;
     min-width: #{$bc-item-width}px;
     margin: 0 auto;
     padding: 0;
+}
+.pgcanvas {
+  height: 100%;
+  width: 100%;
+  background-color: #fff;
+  min-height: #{($itapp-card-height*1.5) - 50}px;
 }
