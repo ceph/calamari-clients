@@ -32,6 +32,7 @@ require.config({
         }
     },
     paths: {
+        kinetic: 'vendor/kinetic-v4.7.3',
         application: 'application',
         snapsvg: 'vendor/snap.svg',
         faker: '../bower_components/Faker/Faker',
