@@ -217,8 +217,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 });
             };
         },
-        selectTemplate: _.template('<select class="form-control" name="hosts"><option value="all" selected>Cluster</option><%= list %></select>'),
-        optionTemplate: _.template('<option value="<%- args.host %>"><%- args.host %></option>"', null, { variable: 'args' }),
+        selectTemplate: _.template('<select class="form-control" name="hosts"><option value="all" selected>Cluster - per host CPU</option><%= list %></select>'),
+        optionTemplate: _.template('<option value="<%- args.host %>">Host - <%- args.host %></option>"', null, { variable: 'args' }),
         renderHostSelector: function() {
             var hosts = this.App.ReqRes.request('get:hosts');
             var opts = _.reduce(hosts, function(memo, host) {
