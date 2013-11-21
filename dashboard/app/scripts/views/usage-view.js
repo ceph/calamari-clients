@@ -8,7 +8,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
      *  This is the view for the usage card widget in the dashboard
      */
     return Backbone.Marionette.ItemView.extend({
-        className: 'gauge card usage',
+        className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/usage.ejs'],
         cardTitleTemplate: _.template('<%- used %>% Usage'),
         timer: null,

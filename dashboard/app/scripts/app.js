@@ -102,11 +102,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         var osdView = new views.OsdView({
             App: App
         });
-        gaugesLayout.osd.show(osdView);
+        gaugesLayout.a.show(osdView);
         var monView = new views.MonView({
             App: App
         });
-        gaugesLayout.mon.show(monView);
+        gaugesLayout.b.show(monView);
         var gauge = new views.UsageView({
             App: App,
             model: new models.UsageModel({}),
@@ -185,7 +185,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
 
             viz.render().then(function() {
-                gaugesLayout.usage.show(gauge);
+                gaugesLayout.c.show(gauge);
                 if (!config.offline) {
                     poller.start();
                 }

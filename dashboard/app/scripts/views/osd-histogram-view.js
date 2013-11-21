@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'snapsvg', 'helpers/gau
     'use strict';
 
     var OsdHistogramView = Backbone.Marionette.ItemView.extend({
-        className: 'osd-histogram card gauge',
+        className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/osd-histogram.ejs'],
         cardTitleTemplate: _.template('<%- total %> OSD'),
         modelEvents: {

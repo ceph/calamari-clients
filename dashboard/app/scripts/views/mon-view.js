@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/animation', 'h
     'use strict';
 
     var MonView = Backbone.Marionette.ItemView.extend({
-        className: 'gauge card mon',
+        className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/mon.ejs'],
         countTemplate: _.template('<%- count %> of <%- total %>'),
         cardTitleTemplate: _.template('<%- count %> MON'),
