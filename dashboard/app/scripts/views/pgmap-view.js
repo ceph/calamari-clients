@@ -172,8 +172,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             fctx.clear();
             ctx.putImageData(imageData, 0, 0);
             fctx.drawImage(this._background.getCanvas()._canvas, l.x, l.y);
-            this.text.draw();
-
         }
     });
 
