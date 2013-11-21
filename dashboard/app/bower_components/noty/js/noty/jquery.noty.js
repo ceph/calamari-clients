@@ -1,5 +1,5 @@
 /**
- * noty - jQuery Notification Plugin v2.1.0
+ * noty - jQuery Notification Plugin v2.1.2
  * Contributors: https://github.com/needim/noty/graphs/contributors
  *
  * Examples and Documentation - http://needim.github.com/noty/
@@ -49,7 +49,7 @@ if (typeof Object.create !== 'function') {
         _build:function () {
 
             // Generating noty bar
-            var $bar = $('<div class="noty_bar"></div>').attr('id', this.options.id);
+            var $bar = $('<div class="noty_bar noty_type_' + this.options.type + '"></div>').attr('id', this.options.id);
             $bar.append(this.options.template).find('.noty_text').html(this.options.text);
 
             this.$bar = (this.options.layout.parent.object !== null) ? $(this.options.layout.parent.object).css(this.options.layout.parent.css).append($bar) : $bar;
@@ -68,7 +68,7 @@ if (typeof Object.create !== 'function') {
                 var self = this;
 
                 $.each(this.options.buttons, function (i, button) {
-                    var $button = $('<button/>').addClass((button.addClass) ? button.addClass : 'gray').html(button.text)
+                    var $button = $('<button/>').addClass((button.addClass) ? button.addClass : 'gray').html(button.text).attr('id', button.id ? button.id : 'button-' + i)
                         .appendTo(self.$bar.find('.noty_buttons'))
                         .bind('click', function () {
                             if ($.isFunction(button.onClick)) {
@@ -100,6 +100,8 @@ if (typeof Object.create !== 'function') {
             self.$bar.addClass(self.options.layout.addClass);
 
             self.options.layout.container.style.apply($(self.options.layout.container.selector));
+
+            self.showing = true;
 
             self.options.theme.callback.onShow.apply(this);
 
@@ -135,6 +137,7 @@ if (typeof Object.create !== 'function') {
                 self.options.animation.easing,
                 function () {
                     if (self.options.callback.afterShow) self.options.callback.afterShow.apply(self);
+                    self.showing = false;
                     self.shown = true;
                 });
 
@@ -155,7 +158,16 @@ if (typeof Object.create !== 'function') {
 
             var self = this;
 
-            if (!this.shown) { // If we are still waiting in the queue just delete from queue
+            if (this.showing) {
+              self.$bar.queue(
+                function () {
+                  self.close.apply(self);
+                }
+              )
+              return;
+            }
+
+            if (!this.shown && !this.showing) { // If we are still waiting in the queue just delete from queue
                 var queue = [];
                 $.each($.noty.queue, function (i, n) {
                     if (n.options.id != self.options.id) {
@@ -256,6 +268,7 @@ if (typeof Object.create !== 'function') {
         },
 
         closed:false,
+        showing:false,
         shown:false
 
     }; // end NotyObject
