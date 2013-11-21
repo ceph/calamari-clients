@@ -1,11 +1,17 @@
 <div class='gauge card usage'>
-    <span class="card-title"><%- title %></span>
+    <span class="card-title">Usage</span>
     <span style="visibility:hidden;" class="fa fa-spinner fa-spin"></span>
     <hr class="style-two"></hr>
-    <div style='display:none;' class="mytext">
-        <span class="number">0</span><span style='font-size:0.5em;'>%</span></div>
+    <div class="totalused">0</div>
+    <div class="totalcap">0T</div>
     <canvas class="usage-canvas"></canvas>
     <span class="subtext">
-        <span class="totalused">0</span> of <span class="totalcap">0T</span>
+        <span class="number">0</span>% of Capacity
     </span>
+    <div class='card-icon'>
+      <span class="fa-stack fa-lg fa-2x">
+        <i class="fa fa-square-o fa-stack-2x"></i>
+        <i class="fa fa-cloud fa-stack-1x"></i>
+      </span>
+</div>
 </div>

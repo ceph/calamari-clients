@@ -158,45 +158,11 @@ span.mon-text-2 {
     margin: 10px auto auto 15px;
     color: #aaa;
 }
-span.subtext {
-    position: absolute;
-    display: inline-block;
-    font-size: 0.9em;
-    bottom: 10px;
-    right: 8px;
-}
 .icon-target {
 	padding: 2px;
 }
 .table tr:first-child > th, .table tr:first-child > td {
     border-top: 0px;
-}
-.usage-canvas {
-    min-height: #{$itapp-card-height/1.5}px;
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0 auto 0 auto;
-    @include breakpoint(screen-sm) {
-	display: block;
-	position: absolute;
-	margin: 0 0 0 30px;
-	top: 20px;
-    }
-    @include breakpoint(screen-xs) {
-	display: block;
-	position: absolute;
-	margin: 0;
-    }
-}
-.mytext {
-    position: absolute;
-    right: 20px;
-    top: 35px;
-    font-size: 3em;
-    @include breakpoint(screen-xs) {
-    top: 30px;
-    }
 }
 @mixin textalert($color) {
        color: $color;
@@ -217,78 +183,6 @@ span.subtext {
 .pg-count-bottom {
   font-size: 0.8em;
   text-transform: capitalize;
-}
-.osd-histogram {
-}
-.osd-histogram-svg {
-    position: absolute;
-    bottom: 15px;
-    left: 45px;
-    height: 140px;
-    width: 120px;
-    @include breakpoint(screen-lg) {
-    	height: 160px;
-    	width: 142px;
-	margin: 0 0 0 40px;
-    }
-    @include breakpoint(screen-md) {
-    	//left: 30px;
-    }
-    @include breakpoint(screen-sm) {
-    	height: 180px;
-    	width: 160px;
-    	bottom: 20px;
-    	left: 80px;
-    }
-    @include breakpoint(screen-xs) {
-    	left: 30px;
-    	height: 140px;
-    	width: 120px;
-    }
-    //border: 1px solid red;
-}
-.osd-lines {
-    fill: none;
-    stroke: $itdarkgray;
-}
-.osd-histogram-count {
-    position: absolute;
-    right: 20px;
-    top: 35px;
-    font-size: 3em;
-    @include breakpoint(screen-md) {
-        top: 35px;
-        right: 20px;
-    }
-    @include breakpoint(screen-sm) {
-        right: 30px;
-    }
-    @include breakpoint(screen-xs) {
-        top: 30px;
-    }
-}
-.osd-histogram-subtitle {
-    position: absolute;
-    top: 30px;
-    right: 23px;
-    @include breakpoint(screen-sm) {
-	right: 33px;
-    }
-    @include breakpoint(screen-xs) {
-        top: 28px;
-    }
-}
-.osd-histogram-ok {
-    fill: $itosdok;
-}
-.osd-histogram-warn {
-    fill: $itosdwarn;
-}
-.osd-histogram-critical {
-    fill: $itosdcritical;
-}
-.osd-count-text {
-    font-size: 1em;
 }
 .warn {
        @include textalert(orange);

@@ -78,7 +78,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             this.ui.totalused.text(used);
             this.ui.totalcap.text(total);
             this.gauge.set(model.getPercentageUsed());
-            this.ui.cardtitle.text(this.cardTitleTemplate({used: Math.floor(model.getPercentageUsed())}));
         },
         set: function(model) {
             this.model.set(model.toJSON());
