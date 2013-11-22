@@ -58,7 +58,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
         // add the canvas based gauge dial
         postRender: function() {
             this.gauge = new Gauge(this.ui.canvas[0]).setOptions(this.opts);
-            this.gauge.setTextField(this.ui.number[0]);
+            function TextRenderer(el) {
+                this.el = el;
+                this.render = function(gauge) {
+                    var val = 100-Math.floor(gauge.displayedValue).toString();
+                    this.el.innerText = val;
+                }
+            };
+            this.gauge.textField = new TextRenderer(this.ui.number[0]);
             this.gauge.set(0);
             this.gauge.maxValue = 100;
             this.gauge.minValue = 0;
