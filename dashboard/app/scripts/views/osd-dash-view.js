@@ -50,7 +50,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             }
             this.ui.subline.text('In and Up');
             if (warn || critical) {
-                var percentage = Math.floor(((warn + critical) / count) * 100);
+                var percentage = Math.round(((warn + critical) / count) * 100);
                 this.ui.subtext.text(this.subtextTemplate({
                     percentage: percentage
                 }));
