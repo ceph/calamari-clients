@@ -64,7 +64,7 @@ $third-row-height: 120px;
     @include border-radius($itapp-card-border-radius);
     width: 100%;
     padding: 9px;
-    margin-top: 16px;
+    margin-top: 8px;
     @include breakpoint(screen-xs) {
 	min-width: 200px;
     }
@@ -74,8 +74,8 @@ $third-row-height: 120px;
 }
 
 .custom-gutter {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 .gauge {
