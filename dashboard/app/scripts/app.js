@@ -119,16 +119,20 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.vent.trigger('updateTotals');
         });
 
+        var mapsLayout = new views.GaugesLayout({
+            el: '.maps'
+        });
+        mapsLayout.render();
+
         var pgView = new views.PgView({
-            App: App,
-            el: '.pgmap'
+            App: App
         });
-        pgView.render();
+        mapsLayout.a.show(pgView);
+
         var pgStat = new views.PgStat({
-            App: App,
-            el: '.pgstat'
+            App: App
         });
-        pgStat.render();
+        mapsLayout.b.show(pgStat);
 
         var collection;
         if (config.offline) {

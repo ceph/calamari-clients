@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
     'use strict';
 
     var PgStatView = Backbone.Marionette.ItemView.extend({
-        className: 'pgstat card',
+        className: 'col-md-3 custom-gutter',
         template: JST['app/scripts/templates/pg-stat.ejs'],
         initialize: function() {
             _.bindAll(this, 'fetchOSDPGCount', 'updateView');

@@ -1,18 +1,20 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'kinetic', 'marionette'], function($, _, Backbone, JST, gaugeHelper, Kinetic) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'kinetic', 'humanize', 'marionette'], function($, _, Backbone, JST, gaugeHelper, Kinetic, humanize) {
     'use strict';
 
     var PgmapView = Backbone.Marionette.ItemView.extend({
-        className: 'card gauge',
+        className: 'col-md-9 custom-gutter',
         template: JST['app/scripts/templates/pgmap.ejs'],
+        headlineTemplate: _.template('<%- active %>/<%- total %>'),
         ui: {
-            container: '.pgcanvas'
+            container: '.pgcanvas',
+            headline: '.headline'
         },
         initialize: function() {
             _.bindAll(this);
             this.App = Backbone.Marionette.getOption(this, 'App');
-            this.listenToOnce(this, 'render', this.postRender);
+            this.listenToOnce(this, 'show', this.postRender);
             this.listenTo(this, 'renderMap', this.renderMap);
             this.collection = new Backbone.Collection();
             if (this.App) {
@@ -130,9 +132,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             imageData.data[index + 3] = a;
         },
         total: 0,
+        activeclean: 0,
+        format: function(v) {
+            return humanize.filesize(v, 1000, 1).replace(' ','').replace('b','').toLowerCase();
+        },
         renderMap: function() {
             var self = this;
             this.total = 0;
+            this.activeclean = 0;
             var r, g, b, a, y = 0;
             var l = this.getLayout(this.count);
             var ctx = this._background.getContext();
@@ -145,6 +152,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                         return memo;
                     }
                     if (key === 'clean') {
+                        self.activeclean += value;
                         r = 0;
                         g = 255;
                         b = 0;
@@ -172,6 +180,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             fctx.clear();
             ctx.putImageData(imageData, 0, 0);
             fctx.drawImage(this._background.getCanvas()._canvas, l.x, l.y);
+            this.ui.headline.text(this.headlineTemplate({
+                active: this.format(this.activeclean),
+                total: this.format(this.total)
+            }));
         }
     });
 

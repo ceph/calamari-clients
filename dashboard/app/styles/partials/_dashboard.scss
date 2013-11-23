@@ -17,14 +17,6 @@ $itapp-card-height: 200;
 $second-row-height: 600px;
 $third-row-height: 120px;
 
-.pgmap, .pgstat {
-    min-height: #{$itapp-card-height*1.5}px;
-}
-.pg-heatmap-svg {
-    height: #{$itapp-card-height*1.75}px;
-    background-color: white;
-    width: 100%;
-}
 .navbar {
     margin-bottom:0;
     min-height: 58px;
@@ -71,6 +63,10 @@ $third-row-height: 120px;
     h1, h2, h3, h4, h5, h6 {
         font-family: ApexSansMedium;
     }
+}
+
+.pgmap.card, .pgstat.card {
+    min-height: #{$itapp-card-height*1.5}px;
 }
 
 .custom-gutter {
@@ -288,10 +284,4 @@ $bc-margin: 4;
     min-width: #{$bc-item-width}px;
     margin: 0 auto;
     padding: 0;
-}
-.pgcanvas {
-  height: 100%;
-  width: 100%;
-  background-color: #fff;
-  min-height: #{($itapp-card-height*1.5) - 50}px;
 }
