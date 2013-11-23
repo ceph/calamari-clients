@@ -16,16 +16,25 @@ define(['jquery'], function($) {
             console.log(result);
             return $.ajax(url, {
                 type: 'GET',
-                dataType: 'json'
+                dataType: 'text'
             });
-        }, function(data, textStatus) {
+        }, function(jqXHR, textStatus, errorThrown) {
             console.log('No config, empty file, or bad json. Error: ' + textStatus);
             // It's ok if there's no config file
             // just return an empty object.
-            loaded.resolve({});
+            if (errorThrown === 'Not Found') {
+                loaded.resolve({});
+            } else {
+                loaded.reject(jqXHR);
+            }
         }).done(function(result, textStatus) {
             console.log('Loaded Config File ' + textStatus);
-            loaded.resolve(result);
+            try {
+                jsonResult = JSON.parse(result);
+                loaded.resolve(jsonResult);
+            } catch (e) {
+                loaded.reject('Unable to parse config.json! Please contact Calamari Admin');
+            }
         });
         return loaded.promise();
     };

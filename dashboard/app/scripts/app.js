@@ -25,6 +25,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
     /* Load Config.json first before starting app */
     var promise = configloader('scripts/config.json').then(function(result) {
         _.extend(config, result);
+    }).fail(function(jqXHR) {
+        window.alert(jqXHR);
+        console.log(jqXHR);
     });
     /* Load Config.json first before starting app */
 
