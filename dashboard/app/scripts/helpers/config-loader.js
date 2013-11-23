@@ -27,10 +27,10 @@ define(['jquery'], function($) {
             } else {
                 loaded.reject(jqXHR);
             }
-        }).done(function(result, textStatus) {
+        }).done(function(responseText, textStatus) {
             console.log('Loaded Config File ' + textStatus);
             try {
-                jsonResult = JSON.parse(result);
+                var jsonResult = JSON.parse(responseText);
                 loaded.resolve(jsonResult);
             } catch (e) {
                 loaded.reject('Unable to parse config.json! Please contact Calamari Admin');
