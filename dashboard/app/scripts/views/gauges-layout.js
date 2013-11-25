@@ -8,16 +8,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         template: JST['app/scripts/templates/gauges.ejs'],
         regions: {
             a: {
-                selector: '.one',
+                selector: '.one'
             },
             b: {
-                selector: '.two',
+                selector: '.two'
             },
             c: {
-                selector: '.three',
+                selector: '.three'
             },
             d: {
-                selector: '.four',
+                selector: '.four'
             }
         }
     });

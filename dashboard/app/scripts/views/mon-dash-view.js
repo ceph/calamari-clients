@@ -38,7 +38,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             setTimeout(this.updateView, 0);
         },
         updateView: function() {
-            var up = this.model.get('ok').states.in;
+            var up = this.model.get('ok').states['in'];
             var total = this.model.get('total');
             this.ui.headline.text(this.headlineTemplate({
                 up: up,

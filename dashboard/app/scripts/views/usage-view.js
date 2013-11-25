@@ -63,8 +63,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
                 this.render = function(gauge) {
                     var val = 100-Math.floor(gauge.displayedValue).toString();
                     this.el.innerText = val;
-                }
-            };
+                };
+            }
             this.gauge.textField = new TextRenderer(this.ui.number[0]);
             this.gauge.set(0);
             this.gauge.maxValue = 100;
