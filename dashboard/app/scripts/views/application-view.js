@@ -1,7 +1,7 @@
 /*global define */
 'use strict';
 
-define(['views/notification-card-view', 'views/notification-collection-view', 'views/notification-item-view', 'views/osd-detail-view', 'views/osd-visualization', 'views/usage-view', 'views/gauges-layout', 'views/breadcrumb-view', 'views/alerts-view', 'views/osd-dash-view', 'views/mon-dash-view', 'views/pgmap-view', 'views/pg-stat-view', 'views/status-line-view', 'views/osd-hex-view'], function(noticard, noticoll, notiitem, osddetail, osdviz, usage, gauges, breadcrumb, alerts, osd, mon, pg, pgstat, statusLine, osdHex) {
+define(['views/notification-card-view', 'views/notification-collection-view', 'views/notification-item-view', 'views/osd-detail-view', 'views/osd-visualization', 'views/usage-view', 'views/gauges-layout', 'views/breadcrumb-view', 'views/alerts-view', 'views/osd-dash-view', 'views/mon-dash-view', 'views/pgmap-view', 'views/pg-stat-view', 'views/status-line-view', 'views/osd-hex-view', 'views/hosts-dash-view'], function(noticard, noticoll, notiitem, osddetail, osdviz, usage, gauges, breadcrumb, alerts, osd, mon, pg, pgstat, statusLine, osdHex, hosts) {
     return {
         NotificationCardView: noticard,
         NotificationCollectionView: noticoll,
@@ -17,6 +17,7 @@ define(['views/notification-card-view', 'views/notification-collection-view', 'v
         PgView: pg,
         PgStat: pgstat,
         StatusLine: statusLine,
-        OsdHexView: osdHex
+        OsdHexView: osdHex,
+        HostsView: hosts
     };
 });

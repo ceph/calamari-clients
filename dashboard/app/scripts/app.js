@@ -115,6 +115,10 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             model: new models.UsageModel({}),
             title: 'Usage'
         });
+        var hostsView = new views.HostsView({
+            App: App
+        });
+        gaugesLayout.d.show(hostsView);
         gauge.listenTo(gauge, 'item:postrender', function() {
             App.vent.trigger('updateTotals');
         });
