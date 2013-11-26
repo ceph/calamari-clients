@@ -4,12 +4,13 @@ define(['jquery',
         'underscore',
         'backbone',
         'templates',
+        'helpers/gauge-helper',
         'marionette'
-], function($, _, Backbone, JST) {
+], function($, _, Backbone, JST, gaugeHelper) {
     'use strict';
 
     var HostsDashView = Backbone.Marionette.ItemView.extend({
-        className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
+        className: 'col-lg-3 col-md-3 col-sm-4 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/hosts-dash.ejs'],
         headlineTemplate: _.template('<%- count %>'),
         subtextTemplate: _.template('<%- mon %> MON/<%- host %> OSD'),
@@ -23,6 +24,7 @@ define(['jquery',
             if (this.App) {
                 this.listenTo(this.App.vent, 'filter:update', this.fetchHosts);
             }
+            gaugeHelper(this);
         },
         fetchHosts: function() {
             var hosts = this.App.ReqRes.request('get:hosts');

@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
     'use strict';
 
     var PgmapView = Backbone.Marionette.ItemView.extend({
-        className: 'col-md-9 custom-gutter',
+        className: 'col-lg-9 col-md-9 col-sm-12 col-xs-12 custom-gutter',
         template: JST['app/scripts/templates/pgmap.ejs'],
         headlineTemplate: _.template('<%- active %>/<%- total %>'),
         ui: {

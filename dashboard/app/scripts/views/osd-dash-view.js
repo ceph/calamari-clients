@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
     'use strict';
 
     var OsdDashView = Backbone.Marionette.ItemView.extend({
-        className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
+        className: 'col-lg-3 col-md-3 col-sm-4 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/osd-dash.ejs'],
         headlineTemplate: _.template('<%- ok %>/<%- total %>'),
         subtextTemplate: _.template('<%- percentage %>% out'),
