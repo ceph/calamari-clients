@@ -31,7 +31,7 @@ define(['jquery',
             }));
             this.ui.subtext.text(this.subtextTemplate({
                 host: hosts.length,
-                mon: '?' 
+                mon: '?'
             }));
         }
     });
