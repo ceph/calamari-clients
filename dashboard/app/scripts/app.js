@@ -33,15 +33,15 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
 
     // TODO replace this with CSS version
     var replaceText = function($el, text, removeClass, addClass) {
-            $el.css('display', 'none').text(text);
-            if (removeClass !== undefined) {
-                $el.removeClass(removeClass);
-            }
-            if (addClass !== undefined) {
-                $el.addClass(addClass);
-            }
-            $el.fadeIn().css('display', '');
-        };
+        $el.css('display', 'none').text(text);
+        if (removeClass !== undefined) {
+            $el.removeClass(removeClass);
+        }
+        if (addClass !== undefined) {
+            $el.addClass(addClass);
+        }
+        $el.fadeIn().css('display', '');
+    };
 
     var App, userMenu, clusterMenu;
     promise.then(function() {
@@ -133,10 +133,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
         mapsLayout.a.show(pgView);
 
-        var pgStat = new views.PgStat({
+
+        var poolsView = new views.PoolsView({
             App: App
         });
-        mapsLayout.b.show(pgStat);
+        mapsLayout.b.show(poolsView);
 
         var collection;
         if (config.offline) {
@@ -244,7 +245,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 StatusLine: statusLine,
                 models: models,
                 helpers: helpers,
-                commit: gitcommit['git-commit']
+                commit: gitcommit['git-commit'],
+                views: views,
+                PoolsView: poolsView
             };
         });
         /* Defer Visualization startup to after loading the cluster metadata */

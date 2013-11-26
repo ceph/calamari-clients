@@ -141,6 +141,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 };
             });
         },
+        getPools: function() {
+            return _.uniq(_.reduceRight(this.collection.pluck('pools'), function(a, b) {
+                return a.concat(b);
+            }));
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App.Config) {
@@ -170,6 +175,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
             this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
             this.App.ReqRes.setHandler('get:osdpgcounts', this.getOSDPGCounts);
+            this.App.ReqRes.setHandler('get:pools', this.getPools);
             this.render = _.wrap(this.render, this.renderWrapper);
             this.osdHoverHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, [this.osdHoverHandlerCore, this.hostGroupHoverHandlerCore]);
             this.osdClickHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, this.osdClickHandlerCore);
@@ -256,18 +262,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             path1.animate(anim);
         },
         startPosition: [{
-            x: 40,
-            y: 40
-        }, {
-            x: 600,
-            y: 40
-        }, {
-            x: 600,
-            y: 400
-        }, {
-            x: 40,
-            y: 400
-        }],
+                x: 40,
+                y: 40
+            }, {
+                x: 600,
+                y: 40
+            }, {
+                x: 600,
+                y: 400
+            }, {
+                x: 40,
+                y: 400
+            }
+        ],
         moveCircle: function(model, index) {
             if (model === null) {
                 return;
@@ -441,18 +448,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             // Helper method to draw circles for use as legends beneath viz.
             var srctext = ['down', 'up/out', 'down/in', 'up/in'];
             var srcstate = [{
-                up: 0,
-                'in': 0
-            }, {
-                up: 1,
-                'in': 0
-            }, {
-                up: 0,
-                'in': 1
-            }, {
-                up: 1,
-                'in': 1
-            }];
+                    up: 0,
+                    'in': 0
+                }, {
+                    up: 1,
+                    'in': 0
+                }, {
+                    up: 0,
+                    'in': 1
+                }, {
+                    up: 1,
+                    'in': 1
+                }
+            ];
             var percent = [1, 0.66, 0.66, 0.4];
 
             var model = new Models.OSDModel(_.extend(srcstate[index], {
@@ -657,22 +665,18 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 return;
             }
             var keyCode = evt.keyCode;
-            if (keyCode === 27) /* Escape */
-            {
+            if (keyCode === 27) /* Escape */ {
                 this.App.vent.trigger('escapekey');
             }
-            if (keyCode === 82) /* r */
-            {
+            if (keyCode === 82) /* r */ {
                 this.resetChanges();
                 return;
             }
-            if (keyCode === 85) /* u */
-            {
+            if (keyCode === 85) /* u */ {
                 this.simulateUsedChanges();
                 return;
             }
-            if (keyCode === 32) /* space */
-            {
+            if (keyCode === 32) /* space */ {
                 var $spinner = $('.fa-spinner');
                 if (this.timer === null) {
                     this.startSimulation();
