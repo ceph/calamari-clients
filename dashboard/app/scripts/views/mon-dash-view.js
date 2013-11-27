@@ -29,6 +29,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 cluster_update_time_unix: model.attributes.cluster_update_time_unix
             }, model.attributes.mon));
         },
+        displayWarning: function() {
+            var ok = this.model.get('ok').states['in'];
+            if (ok < 1) {
+                this.trigger('status:warn');
+            } else {
+                this.trigger('status:ok');
+            }
+        },
         updateModel: function(model) {
             var attr = model.attributes;
             var total = attr.ok.count + attr.warn.count + attr.critical.count;
@@ -45,6 +53,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 total: total
             }));
             this.ui.subtext.text('QUORUM');
+            this.displayWarning();
         }
     });
 
