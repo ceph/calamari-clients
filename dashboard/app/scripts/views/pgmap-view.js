@@ -211,6 +211,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 'replaying',
                 'creating'
         ],
+        redStates: {
+            'stale': true,
+            'incomplete': true,
+            'peering': true,
+            'down': true,
+            'inconsistent': true
+        },
+        displayWarnings: function(found) {
+            if (found in this.redStates) {
+                this.trigger('status:warn');
+            } else {
+                this.trigger('status:ok');
+            }
+        },
         renderMap: function() {
             var self = this;
             this.total = 0;
@@ -238,7 +252,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                         g = 255;
                         b = 0;
                         a = 78;
-                    } else if (key === 'down' || key === 'inconsistent' || key === 'peering' || key === 'incomplete' || key === 'stale') {
+                    } else if (key in self.redStates) {
                         r = 255;
                         g = 0;
                         b = 0;
@@ -273,6 +287,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                     key: found,
                     value: this.stats[found]
                 }));
+                this.displayWarnings(found);
             }
         }
     });
