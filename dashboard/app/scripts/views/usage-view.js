@@ -75,6 +75,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             });
             this.triggerMethod('item:postrender', this);
         },
+        warningThreshold: 90,
+        displayWarning: function() {
+            if (this.model.getPercentageUsed() > this.warningThreshold) {
+                this.trigger('status:warn');
+            } else {
+                this.trigger('status:ok');
+            }
+        },
         updateView: function(model) {
             var attr = model.toJSON();
             var space = attr.space;
@@ -85,6 +93,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             this.ui.totalused.text(used);
             this.ui.totalcap.text(total);
             this.gauge.set(model.getPercentageUsed());
+            this.displayWarning();
         },
         set: function(model) {
             this.model.set(model.toJSON());
