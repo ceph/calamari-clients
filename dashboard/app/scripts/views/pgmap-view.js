@@ -195,7 +195,21 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             return humanize.filesize(v, 1000, 1).replace(' ', '').replace('b', '').toLowerCase();
         },
         priorityOrder: [
-                'down', 'peering', 'incomplete', 'stale', 'remapped', 'wait-backfill', 'backfill', 'recovering', 'repair', 'degraded', 'scrubbing', 'splitting', 'replaying', 'creating'
+                'stale',
+                'incomplete',
+                'peering',
+                'down',
+                'inconsistent',
+                'remapped',
+                'wait-backfill',
+                'backfill',
+                'recovering',
+                'repair',
+                'degraded',
+                'scrubbing',
+                'splitting',
+                'replaying',
+                'creating'
         ],
         renderMap: function() {
             var self = this;
