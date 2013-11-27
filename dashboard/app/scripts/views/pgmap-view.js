@@ -7,9 +7,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         className: 'col-lg-9 col-md-9 col-sm-12 col-xs-12 custom-gutter',
         template: JST['app/scripts/templates/pgmap.ejs'],
         headlineTemplate: _.template('<%- active %>/<%- total %>'),
+        subtextTemplate: _.template('<%- value %> <%- key %>'),
         ui: {
             container: '.pgcanvas',
-            headline: '.headline'
+            headline: '.headline',
+            subtext: '.subtext'
         },
         initialize: function() {
             _.bindAll(this);
@@ -192,19 +194,27 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         format: function(v) {
             return humanize.filesize(v, 1000, 1).replace(' ', '').replace('b', '').toLowerCase();
         },
+        priorityOrder: [
+                'down', 'peering', 'incomplete', 'stale', 'remapped', 'wait-backfill', 'backfill', 'recovering', 'repair', 'degraded', 'scrubbing', 'splitting', 'replaying', 'creating'
+        ],
         renderMap: function() {
             var self = this;
             this.total = 0;
             this.activeclean = 0;
             var r, g, b, a, y = 0;
             var l = this.getLayout(this.count);
-            console.log(l);
             var ctx = this._background.getContext();
             ctx.clear();
             var imageData = this._background.getContext().getImageData(l.x, l.y, l.width, l.height);
+            this.stats = {};
             this.collection.each(function(m) {
                 var pgStates = m.get('pg_states');
                 self.total += _.reduce(pgStates, function(memo, value, key) {
+                    if (self.stats[key] === undefined) {
+                        self.stats[key] = 0;
+                    }
+                    self.stats[key] += value;
+
                     if (key === 'active') {
                         return memo;
                     }
@@ -241,6 +251,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 active: this.format(this.activeclean),
                 total: this.format(this.total)
             }));
+            var found = _.find(this.priorityOrder, function(key) {
+                return self.stats[key] > 0;
+            });
+            if (found) {
+                this.ui.subtext.text(this.subtextTemplate({
+                    key: found,
+                    value: this.stats[found]
+                }));
+            }
         }
     });
 
