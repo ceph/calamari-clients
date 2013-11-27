@@ -27,12 +27,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         },
         set: function(model) {
             var attr = model.attributes.osd;
-            console.log(model.attributes);
             this.model.set({
                 ok: attr.ok.count,
                 warn: attr.warn.count,
                 critical: attr.critical.count
             });
+        },
+        warningThresholdPercentage: 80,
+        displayWarning: function(percentage) {
+            if (Math.round(percentage) > this.warningThresholdPercentage) {
+                this.trigger('status:warn');
+            } else {
+                this.trigger('status:ok');
+            }
         },
         modelChanged: function(model) {
             var ok = model.get('ok');
@@ -54,6 +61,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 this.ui.subtext.text(this.subtextTemplate({
                     percentage: percentage
                 }));
+                this.displayWarning(percentage);
             }
             this.ui.headline.text(this.headlineTemplate({
                 ok: ok,
