@@ -46,12 +46,71 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             x = x / scale;
             y = y / scale;
             return {
-                x: x,
-                y: y,
+                x: Math.round(x),
+                y: Math.round(y),
                 width: width,
                 height: height,
                 scale: scale
             };
+        },
+        legendColors: [
+            ['#0f0', 0.305],
+            ['#ff0', 1],
+            ['#f00', 1]
+        ],
+        legendText: [
+                'Clean',
+                'Working',
+                'Dirty'
+        ],
+        makeText: function(index, x, y) {
+            var t = new Kinetic.Text({
+                fontFamily: 'ApexSansMedium',
+                fontSize: '12',
+                text: this.legendText[index],
+                fill: '#37424a',
+                x: x,
+                y: y + 3
+            });
+            x += t.getWidth() + 10;
+            return [t, x];
+        },
+        makeSwatch: function(index, x, y) {
+            var o = [];
+            var boxWidth = 16;
+            var border = new Kinetic.Rect({
+                x: x,
+                y: y,
+                width: boxWidth + 2,
+                height: boxWidth + 2,
+                stroke: '#5e6a71',
+            });
+            o.push(border);
+            o.push(new Kinetic.Rect({
+                x: x + 1,
+                y: y + 1,
+                width: boxWidth,
+                height: boxWidth,
+                fill: _.first(this.legendColors[index]),
+                opacity: _.last(this.legendColors[index])
+            }));
+            x += border.getWidth() + 4;
+            return [o, x];
+        },
+        makeLegend: function() {
+            var x = 34,
+                y = 229;
+            var self = this;
+            var legend = _.reduce(_.range(0, 3), function(memo, i) {
+                var swatch = self.makeSwatch(i, x, y);
+                memo = memo.concat(_.first(swatch));
+                x = _.last(swatch);
+                var text = self.makeText(i, x, y);
+                x = _.last(text);
+                memo.push(_.first(text));
+                return memo;
+            }, []);
+            return _.flatten(legend);
         },
         postRender: function() {
             var layout = this.getLayout(this.count);
@@ -71,20 +130,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 y: layout.y,
                 width: layout.width,
                 height: layout.height,
-                fill: '#fff'
+                fill: '#e6e8e8'
             });
 
             this.layer.add(this.background);
 
-            this.text = new Kinetic.Text({
-                fontFamily: 'ApexSansMedium',
-                fontSize: '12',
-                text: 'Example Text - Goes Down Here',
-                fill: '#000',
-                x: 25,
-                y: 235
-            });
-            this.tlayer.add(this.text);
+            var legend = this.makeLegend();
+            (function(tlayer) {
+                _.each(legend, function(o) {
+                    tlayer.add(o);
+                });
+            })(this.tlayer);
 
             this.stage.add(this.layer);
             this.stage.add(this.tlayer);
@@ -103,7 +159,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 y: layout.y,
                 width: layout.width,
                 height: layout.height,
-                fill: '#fff'
+                fill: '#e6e8e8'
             });
             this._layer = new Kinetic.Layer();
             this._layer.add(this._background);
@@ -134,7 +190,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         total: 0,
         activeclean: 0,
         format: function(v) {
-            return humanize.filesize(v, 1000, 1).replace(' ','').replace('b','').toLowerCase();
+            return humanize.filesize(v, 1000, 1).replace(' ', '').replace('b', '').toLowerCase();
         },
         renderMap: function() {
             var self = this;
@@ -142,6 +198,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             this.activeclean = 0;
             var r, g, b, a, y = 0;
             var l = this.getLayout(this.count);
+            console.log(l);
             var ctx = this._background.getContext();
             ctx.clear();
             var imageData = this._background.getContext().getImageData(l.x, l.y, l.width, l.height);

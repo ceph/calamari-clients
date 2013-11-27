@@ -10,7 +10,7 @@
         top: 12px;
         right: 9px;
 		font-size: .9em;
-        color: $itgray;
+        color: lighten($itgray,15%);
     }
     .card-status-icon {
         position: absolute;
@@ -27,11 +27,15 @@
     .subline {
         font-size: 1.5em;
         text-align: center;
+        color: $itgray;
+        font-family: ApexSansLight;
+		margin-top: 10px;
     }
     .subtext {
         position: absolute;
         display: inline-block;
         font-size: 1em;
+        color: $itgray;
         bottom: 10px;
         right: 8px;
     }
@@ -58,7 +62,7 @@
     .pgcanvas {
       height: 100%;
       width: 66%;
-      background-color: #fff;
+      background-color: $itlightgray;
       min-height: #{($itapp-card-height*1.5) - 50}px;
       padding: 0;
     }
