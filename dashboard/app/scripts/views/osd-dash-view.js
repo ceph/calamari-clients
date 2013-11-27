@@ -48,7 +48,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             if (_.isNumber(critical)) {
                 count += critical;
             }
-            this.ui.subline.text('In and Up');
+            this.ui.subline.text('In & Up');
             if (warn || critical) {
                 var percentage = Math.round(((warn + critical) / count) * 100);
                 this.ui.subtext.text(this.subtextTemplate({
