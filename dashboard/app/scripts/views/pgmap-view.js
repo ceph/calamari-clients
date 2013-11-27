@@ -98,7 +98,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             return [o, x];
         },
         makeLegend: function() {
-            var x = 34,
+            var x = 230,
                 y = 229;
             var self = this;
             var legend = _.reduce(_.range(0, 3), function(memo, i) {
