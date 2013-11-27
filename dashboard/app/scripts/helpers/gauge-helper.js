@@ -12,6 +12,7 @@
 define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/animation', 'marionette'], function($, _, Backbone, JST, humanize, animation) {
     'use strict';
     /*jshint validthis:true */
+
     function expand(callback) {
         this.$el.css('display', 'block');
         if (callback) {
@@ -39,8 +40,34 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
         this.$el.css('visibility', 'visible');
         return this._reappearAnimation(this.$el, callback);
     }
+    var colors = 'ok warn fail';
+    var icons = 'fa-check fa-warning fa-exclamation-circle';
+
+    function makeIconEventHandler(colorClass, iconClass) {
+        return function() {
+            if (this.ui && this.ui.statusIcon) {
+                this.ui.statusIcon.removeClass(colors).addClass(colorClass).find('.fa-stack-1x').removeClass(icons).addClass(iconClass);
+            }
+        };
+    }
+
+    var okEvent = makeIconEventHandler('ok', 'fa-check');
+    var warningEvent = makeIconEventHandler('warn', 'fa-warning');
+    var failEvent = makeIconEventHandler('fail', 'fa-exclamation-circle');
 
     function initializeHelper(target, watched) {
+        if (target.listenTo) {
+            target._okEvent = okEvent;
+            target._warningEvent = warningEvent;
+            target._failEvent = failEvent;
+            _.bindAll(target, '_okEvent', '_warningEvent', '_failEvent');
+            target.listenTo(target, 'status:ok', target._okEvent);
+            target.listenTo(target, 'status:warn', target._warningEvent);
+            target.listenTo(target, 'status:fail', target._failEvent);
+            if (target.ui) {
+                target.ui.statusIcon = '.card-status-icon';
+            }
+        }
         if (target.App.vent) {
             /* Assign functions */
             target._expand = expand;
