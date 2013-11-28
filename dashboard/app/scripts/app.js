@@ -139,6 +139,16 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         });
         mapsLayout.b.show(poolsView);
 
+        var iopsLayout = new views.GaugesLayout({
+            el: '.iops'
+        });
+        iopsLayout.render();
+
+        var iopsView = new views.IopsView({
+            App: App
+        });
+        iopsLayout.a.show(iopsView);
+
         var collection;
         if (config.offline) {
             collection = Generate.osds(160);
