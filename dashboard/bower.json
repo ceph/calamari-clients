@@ -20,7 +20,8 @@
     "javascript-state-machine": "~2.2.0",
     "bootstrap-switch": "latest",
     "noty": "~2.1.0",
-    "kineticjs": "~4.7.3"
+    "kineticjs": "~4.7.3",
+    "dygraphs": "~1.0.1"
   },
   "devDependencies": {}
 }

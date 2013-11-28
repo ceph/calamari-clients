@@ -34,7 +34,6 @@ require.config({
     paths: {
         kinetic: 'vendor/kinetic-v4.7.3',
         application: 'application',
-        snapsvg: 'vendor/snap.svg',
         faker: '../bower_components/Faker/Faker',
         jquery: '../bower_components/jquery/jquery',
         noty: '../bower_components/noty/js/noty/jquery.noty',
@@ -53,7 +52,8 @@ require.config({
         'bootstrap-switch': '../bower_components/bootstrap-switch/static/js/bootstrap-switch',
         statemachine: '../bower_components/javascript-state-machine/state-machine',
         marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
-        gitcommit: 'git'
+        gitcommit: 'git',
+        dygraphs: 'vendor/dygraph-combined'
     }
 });
 
