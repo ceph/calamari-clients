@@ -68,7 +68,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                 target.ui.statusIcon = '.card-status-icon';
             }
         }
-        if (target.App.vent) {
+        if (target.App && target.App.vent) {
             /* Assign functions */
             target._expand = expand;
             target._collapse = collapse;
@@ -97,6 +97,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
                     }, 250);
                 });
             });
+        } else {
+            console.log(target, ' is missing App or App.vent object');
         }
     }
 
