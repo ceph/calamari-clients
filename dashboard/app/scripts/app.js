@@ -257,7 +257,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 helpers: helpers,
                 commit: gitcommit['git-commit'],
                 views: views,
-                PoolsView: poolsView
+                PoolsView: poolsView,
+                IopsView: iopsView
             };
         });
         /* Defer Visualization startup to after loading the cluster metadata */
