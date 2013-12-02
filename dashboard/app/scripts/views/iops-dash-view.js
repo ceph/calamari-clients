@@ -6,8 +6,9 @@ define([
         'backbone',
         'templates',
         'dygraphs',
-        'marionette'
-], function($, _, Backbone, JST, Dygraph) {
+        'helpers/gauge-helper',
+        'marionette',
+], function($, _, Backbone, JST, Dygraph, gaugeHelper) {
     'use strict';
 
     var IopsDashView = Backbone.Marionette.ItemView.extend({
@@ -20,7 +21,9 @@ define([
         initialize: function() {
             this.Dygraph = Dygraph;
             _.bindAll(this, 'postRender');
+            this.App = Backbone.Marionette.getOption(this, 'App');
             this.listenToOnce(this, 'render', this.postRender);
+            gaugeHelper(this);
         },
         data: [
             [1, 10, 120],
