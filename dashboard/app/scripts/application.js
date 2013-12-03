@@ -102,8 +102,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 this.graphWall.showButtons();
                 var graphEvent = this.graphEvents[id];
                 if (graphEvent !== undefined) {
+                    var self = this;
                     this.graphWall[graphEvent.fn].call(this.graphWall, host, id).then(function(result) {
-                        this.graphWall.populateAll(graphEvent.title({
+                        self.graphWall.populateAll(graphEvent.title({
                             host: host
                         }), function() {
                             return _.flatten(result);

@@ -107,7 +107,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector');
+            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader');
 
             _.each(this.graphs, this.makeGraphFunctions);
 
