@@ -7,7 +7,7 @@ define([
         'templates',
         'dygraphs',
         'helpers/gauge-helper',
-        'marionette',
+        'marionette'
 ], function($, _, Backbone, JST, Dygraph, gaugeHelper) {
     'use strict';
 

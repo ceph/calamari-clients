@@ -85,7 +85,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 y: y,
                 width: boxWidth + 2,
                 height: boxWidth + 2,
-                stroke: '#5e6a71',
+                stroke: '#5e6a71'
             });
             o.push(border);
             o.push(new Kinetic.Rect({
