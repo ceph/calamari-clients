@@ -263,7 +263,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         dygraphLoader: function($el, url) {
             var self = this;
-            var $workarea = $el.find('.workarea');
+            var $workarea = $el.find('.workarea_g');
             _.defer(function() {
                 $workarea.html('<i class="fa fa-spinner fa-spin fa-lg fa-3x"></i>');
                 $.ajax({

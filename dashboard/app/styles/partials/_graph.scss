@@ -15,7 +15,7 @@
 }
 
 .graph-card {
-	height: 593px;
+	height: 480px;
 	margin-top: 25px;
 	visibility: hidden;
 }
@@ -67,4 +67,13 @@
 	    @include border-top-right-radius(4px);
 	    @include border-bottom-right-radius(4px);
 	}
+}
+.workarea_g {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  right: 10px;
+  bottom: 10px;
+  height: 360px;
+  margin-top: 80px;
 }
