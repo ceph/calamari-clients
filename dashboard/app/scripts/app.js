@@ -8,7 +8,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         offline: true,
         'delta-osd-api': false,
         'graphite-host': 'http://' + hostname + ':8080',
-        'api-request-timeout-ms': 3000,
+        'api-request-timeout-ms': 10000,
         'long-polling-interval-ms': 20000,
         'disable-network-checks': false
     };
