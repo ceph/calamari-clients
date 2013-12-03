@@ -234,7 +234,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 list: opts
             }));
         },
-        selectors: ['0-1', '0-2', '1-1', '1-2', '2-1', '2-2', '3-1', '3-2', '4-1', '4-2', '5-1', '5-2', '6-1', '6-2', '7-1', '7-2', '8-1', '8-2'],
+        selectors: ['0-1', '1-1', '2-1', '3-1', '4-1', '5-1', '6-1', '7-1', '8-1', '9-1', '10-1'],
         imageLoader: function($el, url) {
             _.defer(function() {
                 $el.html('<i class="fa fa-spinner fa-spin fa-lg fa-3x"></i>');
@@ -252,10 +252,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var self = this;
             _.defer(function() {
                 $el.html('<i class="fa fa-spinner fa-spin fa-lg fa-3x"></i>');
-                $.ajax({url: url, dataType: 'json'}).done(function(resp) {
+                $.ajax({
+                    url: url,
+                    dataType: 'json'
+                }).done(function(resp) {
                     var post = self.processDygraph(resp);
                     new Dygraph($el[0], post.data, {
-                        labels: post.labels
+                        labels: post.labels,
+                        height: 593,
+                        width: 960
                     });
                 });
             });
