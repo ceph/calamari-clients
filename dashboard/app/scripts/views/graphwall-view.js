@@ -259,8 +259,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     var post = self.processDygraph(resp);
                     new Dygraph($el[0], post.data, {
                         labels: post.labels,
-                        height: 593,
-                        width: 960
+                        height: 450,
+                        width: 728
                     });
                 });
             });
