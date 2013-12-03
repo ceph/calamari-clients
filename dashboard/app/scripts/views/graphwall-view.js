@@ -5,6 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
 
     var GraphwallView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/graphwall.ejs'],
+        graphTemplate: JST['app/scripts/templates/graph.ejs'],
         className: 'graph-mode',
         ui: {
             'title': '.title',
@@ -107,7 +108,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader');
+            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates');
 
             _.each(this.graphs, this.makeGraphFunctions);
 
@@ -126,8 +127,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // redelegate events on new ui elements
         renderWrapper: function(fn) {
             fn.call(this);
+            this.renderGraphTemplates();
             this.renderHostSelector();
             this.delegateEvents(this.events);
+        },
+        renderGraphTemplates: function() {
+            var self = this;
+            this.selectors = _.map(_.range(10), function(id) {
+                var selector = 'graph-' + id;
+                var t = self.graphTemplate({
+                    graphid: selector
+                });
+                self.$el.append(t);
+                return '.' + selector;
+            });
         },
         makeCPUDetail: function(hostname, id) {
             this.updateBtns(id);
@@ -234,7 +247,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 list: opts
             }));
         },
-        selectors: ['0-1', '1-1', '2-1', '3-1', '4-1', '5-1', '6-1', '7-1', '8-1', '9-1', '10-1'],
+        selectors: [],
         imageLoader: function($el, url) {
             _.defer(function() {
                 $el.html('<i class="fa fa-spinner fa-spin fa-lg fa-3x"></i>');
@@ -250,17 +263,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         dygraphLoader: function($el, url) {
             var self = this;
+            var $workarea = $el.find('.workarea');
             _.defer(function() {
-                $el.html('<i class="fa fa-spinner fa-spin fa-lg fa-3x"></i>');
+                $workarea.html('<i class="fa fa-spinner fa-spin fa-lg fa-3x"></i>');
                 $.ajax({
                     url: url,
                     dataType: 'json'
                 }).done(function(resp) {
                     var post = self.processDygraph(resp);
-                    new Dygraph($el[0], post.data, {
+                    new Dygraph($workarea[0], post.data, {
                         labels: post.labels,
-                        height: 450,
-                        width: 728
+                        connectSeparatedPoints: true
                     });
                 });
             });
@@ -312,7 +325,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var self = this;
             this.ui.title.text(title);
             _.each(urls, function(url, index) {
-                var $graph = self.$('.graph' + self.selectors[index]);
+                var $graph = self.$(self.selectors[index]);
                 $graph.css('visibility', 'visible');
                 self.dygraphLoader($graph, url);
             });
