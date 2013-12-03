@@ -72,12 +72,24 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 });
             };
         },
-        makeGraphURL: function(format, baseUrlFn, heightWidthFn, targetsFn) {
-            var self = this;
+        makeParam: function(key, value) {
+            var param = _.template('<%- key %>=<%- value %>', {
+                key: key,
+                value: value
+            });
             return function() {
-                return baseUrlFn() + _.reduce([heightWidthFn(), 'fgcolor=black&bgcolor=white', self.makeColorListParams(['7fc97f','beaed4','fdc086','386cb0','f0027f','bf5b17','666666'])(), targetsFn.apply(this, arguments), 'format=' + format], function(memo, value) {
-                    return memo + '&' + value;
-                });
+                return param;
+            };
+        },
+        makeGraphURL: function(baseUrlFn, fns) {
+            var initValue = baseUrlFn() + _.first(fns)();
+            var restFns = _.rest(fns);
+            return function() {
+                var args = arguments;
+                return _.reduce(restFns, function(memo, valueFn) {
+                    console.log(valueFn);
+                    return memo + '&' + valueFn.apply(this, args);
+                }, initValue);
             };
         }
     };

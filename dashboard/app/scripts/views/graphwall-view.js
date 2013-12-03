@@ -100,7 +100,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         ],
         makeGraphFunctions: function(options) {
             var targets = gutils.makeTargets(gutils[options.util](options.metrics));
-            this[options.fn] = gutils.makeGraphURL('json', this.baseUrl, this.heightWidth, targets);
+            var fns = [
+                gutils.makeParam('format', 'json'),
+                gutils.makeParam('fgcolor', 'black'),
+                gutils.makeParam('bgcolor', 'white'),
+                gutils.makeColorListParams(['8fc97f', 'beaed4', 'fdc086', '386cb0', 'f0027f', 'bf5b17', '666666']),
+                this.heightWidth,
+                targets
+            ];
+            this[options.fn] = gutils.makeGraphURL(this.baseUrl, fns);
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
