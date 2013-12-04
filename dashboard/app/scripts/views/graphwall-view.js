@@ -36,79 +36,96 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 trigger: true
             });
         },
+        titleTemplates: {},
         graphs: [{
                 metrics: ['byte_avail', 'byte_free', 'byte_used'],
                 fn: 'makeDiskSpaceBytesGraphUrl',
-                util: 'makeDiskSpaceTargets'
+                util: 'makeDiskSpaceTargets',
+                titleTemplate: _.template('OSD <%- id %> Disk Space')
             }, {
                 metrics: ['inodes_avail', 'inodes_free', 'inodes_used'],
                 fn: 'makeDiskSpaceInodesGraphUrl',
-                util: 'makeDiskSpaceTargets'
+                util: 'makeDiskSpaceTargets',
+                titleTemplate: _.template('OSD <%- id %> Inodes')
             }, {
                 metrics: ['system', 'user', 'idle'],
                 fn: 'makeCPUGraphUrl',
-                util: 'makeCPUTargets'
+                util: 'makeCPUTargets',
+                titleTemplate: _.template('<%- hostname %> CPU Summary')
             }, {
                 metrics: ['system', 'user', 'nice', 'idle', 'iowait', 'irq', 'softirq', 'steal'],
                 fn: 'makeCPUDetailGraphUrl',
-                util: 'makeCPUDetailedTargets'
+                util: 'makeCPUDetailedTargets',
+                titleTemplate: _.template('<%- id %> CPU Detail')
             }, {
                 metrics: ['op_r_latency', 'op_w_latency', 'op_rw_latency'],
                 fn: 'makeOpsLatencyGraphUrl',
-                util: 'makeOpLatencyTargets'
+                util: 'makeOpLatencyTargets',
+                titleTemplate: _.template('<%- id %> Ops Latency')
             }, {
                 metrics: ['journal_ops', 'journal_wr'],
                 fn: 'makeJournalOpsGraphUrl',
-                util: 'makeFilestoreTargets'
+                util: 'makeFilestoreTargets',
+                titleTemplate: _.template('<%- id %> Journal Ops')
             }, {
                 metrics: ['01', '05', '15'],
                 fn: 'makeLoadAvgGraphUrl',
-                util: 'makeLoadAvgTargets'
+                util: 'makeLoadAvgTargets',
+                titleTemplate: _.template('<%- hostname %> Load Avg')
             }, {
                 metrics: ['Active', 'Buffers', 'Cached', 'MemFree'],
                 fn: 'makeMemoryGraphUrl',
-                util: 'makeMemoryTargets'
+                util: 'makeMemoryTargets',
+                titleTemplate: _.template('<%- hostname %> Memory')
             }, {
                 metrics: ['read_byte_per_second', 'write_byte_per_second'],
                 fn: 'makeHostDeviceRWBytesGraphUrl',
-                util: 'makeIOStatIOPSTargets'
+                util: 'makeIOStatIOPSTargets',
+                titleTemplate: _.template('<%- id %> RW Bytes')
             }, {
                 metrics: ['read_await', 'write_await'],
                 fn: 'makeHostDeviceRWAwaitGraphUrl',
-                util: 'makeIOStatIOPSTargets'
+                util: 'makeIOStatIOPSTargets',
+                titleTemplate: _.template('<%- id %> RW Await')
             }, {
                 metrics: ['iops'],
                 fn: 'makeHostDeviceIOPSGraphUrl',
-                util: 'makeIOStatIOPSTargets'
+                util: 'makeIOStatIOPSTargets',
+                titleTemplate: _.template('<%- id %> IOPS')
             }, {
                 metrics: ['rx_byte', 'tx_byte'],
                 fn: 'makeHostNetworkTXRXBytesGraphURL',
-                util: 'makeNetworkTargets'
+                util: 'makeNetworkTargets',
+                titleTemplate: _.template('<%- id %> Network TX/RX Bytes')
             }, {
                 metrics: ['tx_packets', 'rx_packets'],
                 fn: 'makeHostNetworkTXRXPacketsGraphURL',
-                util: 'makeNetworkTargets'
+                util: 'makeNetworkTargets',
+                titleTemplate: _.template('<%- id %> Network TX/RX Packets')
             }, {
                 metrics: ['tx_errors', 'rx_errors'],
                 fn: 'makeHostNetworkTXRXErrorsGraphURL',
-                util: 'makeNetworkTargets'
+                util: 'makeNetworkTargets',
+                titleTemplate: _.template('<%- id %> Network TX/RX Errors')
             }, {
                 metrics: ['tx_drop', 'rx_drop'],
                 fn: 'makeHostNetworkTXRXDropGraphURL',
-                util: 'makeNetworkTargets'
+                util: 'makeNetworkTargets',
+                titleTemplate: _.template('<%- id %> Network TX/RX Drops')
             }
         ],
         makeGraphFunctions: function(options) {
             var targets = gutils.makeTargets(gutils[options.util](options.metrics));
             var fns = [
                 gutils.makeParam('format', 'json'),
-                gutils.makeParam('fgcolor', 'black'),
-                gutils.makeParam('bgcolor', 'white'),
-                gutils.makeColorListParams(['8fc97f', 'beaed4', 'fdc086', '386cb0', 'f0027f', 'bf5b17', '666666']),
-                this.heightWidth,
+                //                gutils.makeParam('fgcolor', 'black'),
+                //                gutils.makeParam('bgcolor', 'white'),
+                //                gutils.makeColorListParams(['8fc97f', 'beaed4', 'fdc086', '386cb0', 'f0027f', 'bf5b17', '666666']),
+                //                this.heightWidth,
                 targets
             ];
             this[options.fn] = gutils.makeGraphURL(this.baseUrl, fns);
+            this.titleTemplates[options.fn] = options.titleTemplate;
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
@@ -152,19 +169,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         makeCPUDetail: function(hostname, id) {
             this.updateBtns(id);
-            return this.makePerHostGraphs(hostname, this.makeCPUDetailGraphUrl, this.cpuTargetModels);
+            return this.makePerHostModelGraphs(hostname, 'makeCPUDetailGraphUrl', this.cpuTargetModels);
         },
         makeHostDeviceIOPS: function(hostname, id) {
             this.updateBtns(id);
-            return this.makePerHostGraphs(hostname, this.makeHostDeviceIOPSGraphUrl, this.ioTargetModels);
+            return this.makePerHostModelGraphs(hostname, 'makeHostDeviceIOPSGraphUrl', this.ioTargetModels);
         },
         makeHostDeviceRWBytes: function(hostname, id) {
             this.updateBtns(id);
-            return this.makePerHostGraphs(hostname, this.makeHostDeviceRWBytesGraphUrl, this.ioTargetModels);
+            return this.makePerHostModelGraphs(hostname, 'makeHostDeviceRWBytesGraphUrl', this.ioTargetModels);
         },
         makeHostDeviceRWAwait: function(hostname, id) {
             this.updateBtns(id);
-            return this.makePerHostGraphs(hostname, this.makeHostDeviceRWAwaitGraphUrl, this.ioTargetModels);
+            return this.makePerHostModelGraphs(hostname, 'makeHostDeviceRWAwaitGraphUrl', this.ioTargetModels);
         },
         updateBtns: function(id) {
             this.ui.buttons.find('.btn').removeClass('active');
@@ -190,26 +207,25 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         makeHostDeviceDiskSpaceBytes: function(hostname, id) {
             this.updateBtns(id);
-            return this.makePerHostGraphs(hostname, this.makeDiskSpaceBytesGraphUrl, this.getOSDIDs());
+            return this.makePerHostModelGraphs(hostname, 'makeDiskSpaceBytesGraphUrl', this.getOSDIDs());
         },
         makeHostDeviceDiskSpaceInodes: function(hostname, id) {
             this.updateBtns(id);
-            return this.makePerHostGraphs(hostname, this.makeDiskSpaceInodesGraphUrl, this.getOSDIDs());
+            return this.makePerHostModelGraphs(hostname, 'makeDiskSpaceInodesGraphUrl', this.getOSDIDs());
         },
         makeHostNetworkBytesMetrics: function(hostname, id) {
             this.updateBtns(id);
-            return this.makePerHostGraphs(hostname, this.makeHostNetworkTXRXBytesGraphURL, this.netTargetModels);
+            return this.makePerHostModelGraphs(hostname, 'makeHostNetworkTXRXBytesGraphURL', this.netTargetModels);
         },
         makeHostNetworkPacketsMetrics: function(hostname, id) {
             this.updateBtns(id);
-
-            return this.makePerHostGraphs(hostname, this.makeNetworkPacketsOverviewGraphURL(), this.netTargetModels);
-        },
-        makeNetworkPacketsOverviewGraphURL: function() {
             var self = this;
-            return function(hostname, id) {
-                return [self.makeHostNetworkTXRXPacketsGraphURL(hostname, id), self.makeHostNetworkTXRXErrorsGraphURL(hostname, id), self.makeHostNetworkTXRXDropGraphURL(hostname, id)];
-            };
+            var r = _.map(['makeHostNetworkTXRXPacketsGraphURL', 'makeHostNetworkTXRXErrorsGraphURL', 'makeHostNetworkTXRXDropGraphURL'], function(graph) {
+                return self.makePerHostModelGraphs(hostname, graph, self.netTargetModels);
+            });
+            return $.when.apply(undefined, r).then(function(a, b, c) {
+                return a.concat(b).concat(c);
+            });
         },
         showButtons: function() {
             this.ui.buttons.css('visibility', 'visible');
@@ -217,25 +233,52 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         hideButtons: function() {
             this.ui.buttons.css('visibility', 'hidden');
         },
-        makePerHostGraphs: function(hostname, fn, model) {
+        makePerHostGraphs: function(hostname, fnName) {
+            var fn = this[fnName];
+            var titleFn = this.titleTemplates[fnName];
+            var title;
+            if (titleFn) {
+                title = titleFn({
+                    hostname: hostname
+                });
+            }
+            return {
+                url: fn.call(this, hostname),
+                title: title
+            };
+        },
+        makePerHostModelGraphs: function(hostname, fnName, model) {
             var self = this;
+            var titleFn = this.titleTemplates[fnName];
+            var fn = this[fnName];
             this.hostname = hostname;
             var deferred = $.Deferred();
             model.fetchMetrics(hostname).done(function() {
                 var list = model.keys();
                 deferred.resolve(_.map(list, function(id) {
-                    return fn.call(self, hostname, id);
+                    var title;
+                    if (titleFn) {
+                        title = titleFn({
+                            hostname: hostname,
+                            id: id
+                        });
+                    }
+                    return {
+                        url: fn.call(self, hostname, id),
+                        title: title
+                    };
                 }));
             }).fail(function(resp) {
                 deferred.reject(resp);
             });
             return deferred.promise();
         },
-        makeHostUrls: function(fn) {
+        makeHostUrls: function(fnName) {
+            var self = this;
             return function() {
                 var hosts = this.App.ReqRes.request('get:hosts');
                 return _.map(hosts, function(host) {
-                    return fn(host);
+                    return self.makePerHostGraphs(host, fnName);
                 });
             };
         },
@@ -287,8 +330,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
         },
         makeHostOverviewGraphUrl: function(host) {
+            var self = this;
             return function() {
-                return [this.makeCPUGraphUrl(host), this.makeLoadAvgGraphUrl(host), this.makeMemoryGraphUrl(host)];
+                return _.map(['makeCPUGraphUrl', 'makeLoadAvgGraphUrl', 'makeMemoryGraphUrl'], function(fnName) {
+                    return self.makePerHostGraphs(host, fnName);
+                });
             };
         },
         hideGraphs: function() {
@@ -328,14 +374,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
             return data;
         },
-        populateAll: function(title, fn) {
-            var urls = fn.call(this);
+        renderGraphs: function(title, fn) {
+            var graphs = fn.call(this);
             var self = this;
             this.ui.title.text(title);
-            _.each(urls, function(url, index) {
-                var $graph = self.$(self.selectors[index]);
-                $graph.css('visibility', 'visible');
-                self.dygraphLoader($graph, url);
+            _.each(graphs, function(graph, index) {
+                var $graphEl = self.$(self.selectors[index]);
+                $graphEl.css('visibility', 'visible');
+                if (graph.title) {
+                    $graphEl.find('.graph-subtitle').text(graph.title);
+                }
+                self.dygraphLoader($graphEl, graph.url);
             });
         }
     });

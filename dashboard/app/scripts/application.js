@@ -15,18 +15,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             this.fsm = StateMachine.create({
                 initial: 'dashmode',
                 events: [{
-                    name: 'dashboard',
-                    from: ['vizmode', 'graphmode'],
-                    to: 'dashmode'
-                }, {
-                    name: 'viz',
-                    from: ['dashmode', 'graphmode'],
-                    to: 'vizmode'
-                }, {
-                    name: 'graph',
-                    from: ['dashmode', 'vizmode', 'graphmode'],
-                    to: 'graphmode'
-                }],
+                        name: 'dashboard',
+                        from: ['vizmode', 'graphmode'],
+                        to: 'dashmode'
+                    }, {
+                        name: 'viz',
+                        from: ['dashmode', 'graphmode'],
+                        to: 'vizmode'
+                    }, {
+                        name: 'graph',
+                        from: ['dashmode', 'vizmode', 'graphmode'],
+                        to: 'graphmode'
+                    }
+                ],
                 callbacks: {
                     onentervizmode: this.onentervizmode,
                     onleavevizmode: this.onleavevizmode,
@@ -97,14 +98,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             var hosts;
             if (host === 'all') {
                 this.graphWall.hideButtons();
-                this.graphWall.populateAll('CPU Load for Cluster', this.graphWall.makeHostUrls(this.graphWall.makeCPUGraphUrl));
+                this.graphWall.renderGraphs('CPU Load for Cluster', this.graphWall.makeHostUrls('makeCPUGraphUrl'));
             } else if (id !== undefined && id !== null) {
                 this.graphWall.showButtons();
                 var graphEvent = this.graphEvents[id];
                 if (graphEvent !== undefined) {
                     var self = this;
                     this.graphWall[graphEvent.fn].call(this.graphWall, host, id).then(function(result) {
-                        self.graphWall.populateAll(graphEvent.title({
+                        self.graphWall.renderGraphs(graphEvent.title({
                             host: host
                         }), function() {
                             return _.flatten(result);
@@ -121,7 +122,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     this.graphWall.showButtons();
                     this.graphWall.updateBtns('overview');
                     this.graphWall.hostname = host;
-                    this.graphWall.populateAll('Host Graphs for ' + host, this.graphWall.makeHostOverviewGraphUrl(host));
+                    this.graphWall.renderGraphs('Host Graphs for ' + host, this.graphWall.makeHostOverviewGraphUrl(host));
                 }
             }
         },

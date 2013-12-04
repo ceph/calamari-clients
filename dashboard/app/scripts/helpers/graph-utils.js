@@ -3,10 +3,36 @@
 define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbone, JST) {
     'use strict';
 
+    /*
+     * Creates a partial applied function which is pre-bound to the underscore.template
+     * to create the target.
+     *
+     * This returns a function with the following signature:
+     *
+     * function(metrics)
+     *
+     * @param metrics is an array of strings for specific leaf keys of Graphite Targets we're looking
+     *        to request. e.g. [ 'tx_errors', 'rx_errors' ]
+     *
+     * This creates another partially applied function with the following signature:
+     *
+     * function(hostname, id)
+     *
+     * @param hostname - hostname of target we want
+     * @param id - subkey of target we're looking for e.g. [ 'eth0', 'eth1' ]
+     *
+     * Which is used to create more specific target keys which target specific parts of the graphite hierarchy.
+     * We do it this way because we know which metrics want ahead of time, but need
+     * to dynamically fill in the hostname and subkey we need to request usually after making a 2nd request to graphite
+     * to find out what subkeys are available.
+     */
     function makeTargetTemplate(path) {
         var template = JST[path];
         return function(metrics) {
+            // pre-bind the metrics list using partial application
             return function(hostname, id) {
+                // returns a list of metrics target values as an array
+                // e.g. [ 'servers.mira064.memory.Active' ]
                 return _.map(metrics, function(metric) {
                     return $.trim(template({
                         metric: metric,
@@ -60,6 +86,12 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 });
             };
         },
+        /*
+         * takes a function which returns an array of strings, graphite target list values.
+         * Returns a function which applies any arguments to the partially applied function parameter.
+         * The returned function returns a url param string containing target params suitable for graphite.
+         *
+         */
         makeTargets: function(fn) {
             var template = _.template('target=<%- args.target %>', undefined, {
                 variable: 'args'
@@ -87,7 +119,6 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
             return function() {
                 var args = arguments;
                 return _.reduce(restFns, function(memo, valueFn) {
-                    console.log(valueFn);
                     return memo + '&' + valueFn.apply(this, args);
                 }, initValue);
             };

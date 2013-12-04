@@ -32,7 +32,11 @@
 	position: absolute;
 	margin: 0 auto 0 auto;
 }
-
+h3.graph-subtitle {
+	color: $itgray;
+	font-family: 'ApexSansLight';
+	margin-left: 30px;
+}
 .graph-title-system {
 	margin-left: 2.5em;
 	@include breakpoint(screen-sm) {
@@ -71,9 +75,9 @@
 .workarea_g {
   position: absolute;
   left: 0;
-  top: 10px;
   right: 10px;
-  bottom: 10px;
+  bottom: 20px;
   height: 360px;
-  margin-top: 80px;
+  margin-top: 0;
+  padding: 0;
 }
