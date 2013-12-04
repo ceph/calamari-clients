@@ -50,7 +50,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['inodes_avail', 'inodes_free', 'inodes_used'],
                 fn: 'makeDiskSpaceInodesGraphUrl',
                 util: 'makeDiskSpaceTargets',
-                titleTemplate: _.template('OSD <%- id %> Inodes')
+                titleTemplate: _.template('OSD <%- id %> Inodes'),
+                options: {
+                    labelsKMB: true
+                }
             }, {
                 metrics: ['system', 'user', 'idle'],
                 fn: 'makeCPUGraphUrl',
@@ -114,17 +117,26 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['tx_packets', 'rx_packets'],
                 fn: 'makeHostNetworkTXRXPacketsGraphURL',
                 util: 'makeNetworkTargets',
-                titleTemplate: _.template('<%- id %> Network TX/RX Packets')
+                titleTemplate: _.template('<%- id %> Network TX/RX Packets'),
+                options: {
+                    labelsKMB: true
+                }
             }, {
                 metrics: ['tx_errors', 'rx_errors'],
                 fn: 'makeHostNetworkTXRXErrorsGraphURL',
                 util: 'makeNetworkTargets',
-                titleTemplate: _.template('<%- id %> Network TX/RX Errors')
+                titleTemplate: _.template('<%- id %> Network TX/RX Errors'),
+                options: {
+                    labelsKMB: true
+                }
             }, {
                 metrics: ['tx_drop', 'rx_drop'],
                 fn: 'makeHostNetworkTXRXDropGraphURL',
                 util: 'makeNetworkTargets',
-                titleTemplate: _.template('<%- id %> Network TX/RX Drops')
+                titleTemplate: _.template('<%- id %> Network TX/RX Drops'),
+                options: {
+                    labelsKMB: true
+                }
             }
         ],
         makeGraphFunctions: function(options) {
