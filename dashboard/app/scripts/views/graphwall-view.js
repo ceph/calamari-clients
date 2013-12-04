@@ -78,7 +78,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeOpLatencyTargets',
                 titleTemplate: _.template('<%- id %> Ops Latency'),
                 options: {
-                    labels: ['Read Latency', 'Write Latency', 'RW Latency']
+                    labels: ['Date', 'Read Latency', 'Write Latency', 'RW Latency']
                 }
             }, {
                 metrics: ['journal_ops', 'journal_wr'],
@@ -86,7 +86,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeFilestoreTargets',
                 titleTemplate: _.template('<%- id %> Journal Ops'),
                 options: {
-                    labels: ['Journal Ops', 'Journal Writes']
+                    labels: ['Date', 'Journal Ops', 'Journal Writes']
                 }
             }, {
                 metrics: ['01', '05', '15'],
@@ -94,7 +94,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeLoadAvgTargets',
                 titleTemplate: _.template('<%- hostname %> Load Avg'),
                 options: {
-                    labels: ['1 Min', '5 Min', '15 Min']
+                    labels: ['Date', '1 Min', '5 Min', '15 Min']
                 }
             }, {
                 metrics: ['Active', 'Buffers', 'Cached', 'MemFree'],
@@ -103,7 +103,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- hostname %> Memory'),
                 options: {
                     labelsKMG2: true,
-                    labels: ['Active', 'Buffers', 'Cached', 'Free']
+                    labels: ['Date', 'Active', 'Buffers', 'Cached', 'Free']
                 }
             }, {
                 metrics: ['read_byte_per_second', 'write_byte_per_second'],
@@ -112,7 +112,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> RW Bytes'),
                 options: {
                     labelsKMG2: true,
-                    labels: ['Read Bytes/Sec', 'Write Bytes/Sec']
+                    labels: ['Date', 'Read Bytes/Sec', 'Write Bytes/Sec']
                 }
             }, {
                 metrics: ['read_await', 'write_await'],
@@ -120,7 +120,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeIOStatIOPSTargets',
                 titleTemplate: _.template('<%- id %> RW Await'),
                 options: {
-                    labels: ['Reads', 'Writes']
+                    labels: ['Date', 'Reads', 'Writes']
                 }
             }, {
                 metrics: ['iops'],
@@ -137,7 +137,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> Network TX/RX Bytes'),
                 options: {
                     labelsKMG2: true,
-                    labels: ['TX Bytes', 'RX Bytes']
+                    labels: ['Date', 'TX Bytes', 'RX Bytes']
                 }
             }, {
                 metrics: ['tx_packets', 'rx_packets'],
@@ -146,7 +146,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> Network TX/RX Packets'),
                 options: {
                     labelsKMB: true,
-                    labels: ['TX Packets', 'RX Packets']
+                    labels: ['Date', 'TX Packets', 'RX Packets']
                 }
             }, {
                 metrics: ['tx_errors', 'rx_errors'],
@@ -155,7 +155,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> Network TX/RX Errors'),
                 options: {
                     labelsKMB: true,
-                    labels: ['TX Errors', 'RX Errors']
+                    labels: ['Date', 'TX Errors', 'RX Errors']
                 }
             }, {
                 metrics: ['tx_drop', 'rx_drop'],
@@ -164,7 +164,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> Network TX/RX Drops'),
                 options: {
                     labelsKMB: true,
-                    labels: ['TX Drops', 'RX Drops']
+                    labels: ['Date', 'TX Drops', 'RX Drops']
                 }
             }
         ],
