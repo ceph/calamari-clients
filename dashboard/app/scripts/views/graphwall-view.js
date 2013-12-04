@@ -44,7 +44,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeDiskSpaceTargets',
                 titleTemplate: _.template('OSD <%- id %> Disk Space'),
                 options: {
-                    labelsKMG2: true
+                    labelsKMG2: true,
+                    labels: ['Date', 'Available', 'Free', 'Used']
                 }
             }, {
                 metrics: ['inodes_avail', 'inodes_free', 'inodes_used'],
@@ -52,40 +53,57 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeDiskSpaceTargets',
                 titleTemplate: _.template('OSD <%- id %> Inodes'),
                 options: {
-                    labelsKMB: true
+                    labelsKMB: true,
+                    labels: ['Date', 'Available', 'Free', 'Used']
                 }
             }, {
                 metrics: ['system', 'user', 'idle'],
                 fn: 'makeCPUGraphUrl',
                 util: 'makeCPUTargets',
-                titleTemplate: _.template('<%- hostname %> CPU Summary')
+                titleTemplate: _.template('<%- hostname %> CPU Summary'),
+                options: {
+                    labels: ['Date', 'System', 'User', 'Idle']
+                }
             }, {
                 metrics: ['system', 'user', 'nice', 'idle', 'iowait', 'irq', 'softirq', 'steal'],
                 fn: 'makeCPUDetailGraphUrl',
                 util: 'makeCPUDetailedTargets',
-                titleTemplate: _.template('<%- id %> CPU Detail')
+                titleTemplate: _.template('<%- id %> CPU Detail'),
+                options: {
+                    labels: ['Date', 'System', 'User', 'Nice', 'Idle', 'IOWait', 'IRQ', 'Soft IRQ', 'Steal']
+                }
             }, {
                 metrics: ['op_r_latency', 'op_w_latency', 'op_rw_latency'],
                 fn: 'makeOpsLatencyGraphUrl',
                 util: 'makeOpLatencyTargets',
-                titleTemplate: _.template('<%- id %> Ops Latency')
+                titleTemplate: _.template('<%- id %> Ops Latency'),
+                options: {
+                    labels: ['Read Latency', 'Write Latency', 'RW Latency']
+                }
             }, {
                 metrics: ['journal_ops', 'journal_wr'],
                 fn: 'makeJournalOpsGraphUrl',
                 util: 'makeFilestoreTargets',
-                titleTemplate: _.template('<%- id %> Journal Ops')
+                titleTemplate: _.template('<%- id %> Journal Ops'),
+                options: {
+                    labels: ['Journal Ops', 'Journal Writes']
+                }
             }, {
                 metrics: ['01', '05', '15'],
                 fn: 'makeLoadAvgGraphUrl',
                 util: 'makeLoadAvgTargets',
-                titleTemplate: _.template('<%- hostname %> Load Avg')
+                titleTemplate: _.template('<%- hostname %> Load Avg'),
+                options: {
+                    labels: ['1 Min', '5 Min', '15 Min']
+                }
             }, {
                 metrics: ['Active', 'Buffers', 'Cached', 'MemFree'],
                 fn: 'makeMemoryGraphUrl',
                 util: 'makeMemoryTargets',
                 titleTemplate: _.template('<%- hostname %> Memory'),
                 options: {
-                    labelsKMG2: true
+                    labelsKMG2: true,
+                    labels: ['Active', 'Buffers', 'Cached', 'Free']
                 }
             }, {
                 metrics: ['read_byte_per_second', 'write_byte_per_second'],
@@ -93,25 +111,33 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeIOStatIOPSTargets',
                 titleTemplate: _.template('<%- id %> RW Bytes'),
                 options: {
-                    labelsKMG2: true
+                    labelsKMG2: true,
+                    labels: ['Read Bytes/Sec', 'Write Bytes/Sec']
                 }
             }, {
                 metrics: ['read_await', 'write_await'],
                 fn: 'makeHostDeviceRWAwaitGraphUrl',
                 util: 'makeIOStatIOPSTargets',
-                titleTemplate: _.template('<%- id %> RW Await')
+                titleTemplate: _.template('<%- id %> RW Await'),
+                options: {
+                    labels: ['Reads', 'Writes']
+                }
             }, {
                 metrics: ['iops'],
                 fn: 'makeHostDeviceIOPSGraphUrl',
                 util: 'makeIOStatIOPSTargets',
-                titleTemplate: _.template('<%- id %> IOPS')
+                titleTemplate: _.template('<%- id %> IOPS'),
+                options: {
+                    labels: ['Date', 'IOPS']
+                }
             }, {
-                metrics: ['rx_byte', 'tx_byte'],
+                metrics: ['tx_byte', 'rx_byte'],
                 fn: 'makeHostNetworkTXRXBytesGraphURL',
                 util: 'makeNetworkTargets',
                 titleTemplate: _.template('<%- id %> Network TX/RX Bytes'),
                 options: {
-                    labelsKMG2: true
+                    labelsKMG2: true,
+                    labels: ['TX Bytes', 'RX Bytes']
                 }
             }, {
                 metrics: ['tx_packets', 'rx_packets'],
@@ -119,7 +145,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeNetworkTargets',
                 titleTemplate: _.template('<%- id %> Network TX/RX Packets'),
                 options: {
-                    labelsKMB: true
+                    labelsKMB: true,
+                    labels: ['TX Packets', 'RX Packets']
                 }
             }, {
                 metrics: ['tx_errors', 'rx_errors'],
@@ -127,7 +154,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeNetworkTargets',
                 titleTemplate: _.template('<%- id %> Network TX/RX Errors'),
                 options: {
-                    labelsKMB: true
+                    labelsKMB: true,
+                    labels: ['TX Errors', 'RX Errors']
                 }
             }, {
                 metrics: ['tx_drop', 'rx_drop'],
@@ -135,7 +163,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeNetworkTargets',
                 titleTemplate: _.template('<%- id %> Network TX/RX Drops'),
                 options: {
-                    labelsKMB: true
+                    labelsKMB: true,
+                    labels: ['TX Drops', 'RX Drops']
                 }
             }
         ],
@@ -338,6 +367,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 };
             });
         },
+        lineColors: ['#8fc97f', '#beaed4', '#fdc086', '#386cb0', '#f0027f', '#bf5b17', '#666666'],
         dygraphLoader: function($el, url, options) {
             var self = this;
             var $workarea = $el.find('.workarea_g');
@@ -348,10 +378,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     dataType: 'json'
                 }).done(function(resp) {
                     var post = self.processDygraph(resp);
+                    if (options && options.labels) {
+                        options.labels = options.labels.slice(0, post.labels.length);
+                    }
                     new Dygraph($workarea[0], post.data, _.extend({
-                        labels: post.labels,
                         connectSeparatedPoints: true,
-                        colors: ['8fc97f', 'beaed4', 'fdc086', '386cb0', 'f0027f', 'bf5b17', '666666']
+                        colors: self.lineColors,
+                        labelsDiv: $el.find('.dygraph-legend')[0],
+                        labelsSeparateLines: true,
+                        legend: 'always'
                     }, options));
                 });
             });

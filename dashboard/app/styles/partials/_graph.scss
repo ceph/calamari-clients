@@ -32,7 +32,7 @@
 	position: absolute;
 	margin: 0 auto 0 auto;
 }
-h3.graph-subtitle {
+h2.graph-subtitle {
 	color: $itgray;
 	font-family: 'ApexSansLight';
 	margin-left: 30px;
@@ -80,4 +80,20 @@ h3.graph-subtitle {
   height: 360px;
   margin-top: 0;
   padding: 0;
+}
+.legend-area {
+  right: 20px;
+  bottom: 40px;
+  position: absolute;
+  width: 25%;
+  height: 340px;
+  border: 1px solid lighten($itgray,25%);
+  padding: 9px;
+}
+.dygraph-legend {
+	width: 100%;
+}
+h3.dygraph-legend-title {
+	margin-top: 5px;
+	font-family: 'ApexSansLight';
 }
