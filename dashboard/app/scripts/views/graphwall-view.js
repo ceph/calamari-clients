@@ -37,11 +37,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
         },
         titleTemplates: {},
+        dygraphDefaults: {},
         graphs: [{
                 metrics: ['byte_avail', 'byte_free', 'byte_used'],
                 fn: 'makeDiskSpaceBytesGraphUrl',
                 util: 'makeDiskSpaceTargets',
-                titleTemplate: _.template('OSD <%- id %> Disk Space')
+                titleTemplate: _.template('OSD <%- id %> Disk Space'),
+                options: {
+                    labelsKMG2: true
+                }
             }, {
                 metrics: ['inodes_avail', 'inodes_free', 'inodes_used'],
                 fn: 'makeDiskSpaceInodesGraphUrl',
@@ -76,12 +80,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['Active', 'Buffers', 'Cached', 'MemFree'],
                 fn: 'makeMemoryGraphUrl',
                 util: 'makeMemoryTargets',
-                titleTemplate: _.template('<%- hostname %> Memory')
+                titleTemplate: _.template('<%- hostname %> Memory'),
+                options: {
+                    labelsKMG2: true
+                }
             }, {
                 metrics: ['read_byte_per_second', 'write_byte_per_second'],
                 fn: 'makeHostDeviceRWBytesGraphUrl',
                 util: 'makeIOStatIOPSTargets',
-                titleTemplate: _.template('<%- id %> RW Bytes')
+                titleTemplate: _.template('<%- id %> RW Bytes'),
+                options: {
+                    labelsKMG2: true
+                }
             }, {
                 metrics: ['read_await', 'write_await'],
                 fn: 'makeHostDeviceRWAwaitGraphUrl',
@@ -96,7 +106,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['rx_byte', 'tx_byte'],
                 fn: 'makeHostNetworkTXRXBytesGraphURL',
                 util: 'makeNetworkTargets',
-                titleTemplate: _.template('<%- id %> Network TX/RX Bytes')
+                titleTemplate: _.template('<%- id %> Network TX/RX Bytes'),
+                options: {
+                    labelsKMG2: true
+                }
             }, {
                 metrics: ['tx_packets', 'rx_packets'],
                 fn: 'makeHostNetworkTXRXPacketsGraphURL',
@@ -118,14 +131,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var targets = gutils.makeTargets(gutils[options.util](options.metrics));
             var fns = [
                 gutils.makeParam('format', 'json'),
-                //                gutils.makeParam('fgcolor', 'black'),
-                //                gutils.makeParam('bgcolor', 'white'),
-                //                gutils.makeColorListParams(['8fc97f', 'beaed4', 'fdc086', '386cb0', 'f0027f', 'bf5b17', '666666']),
-                //                this.heightWidth,
                 targets
             ];
             this[options.fn] = gutils.makeGraphURL(this.baseUrl, fns);
             this.titleTemplates[options.fn] = options.titleTemplate;
+            this.dygraphDefaults[options.fn] = options.options;
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
@@ -242,15 +252,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     hostname: hostname
                 });
             }
+            var options = this.dygraphDefaults[fnName];
             return {
                 url: fn.call(this, hostname),
-                title: title
+                title: title,
+                options: options
             };
         },
         makePerHostModelGraphs: function(hostname, fnName, model) {
             var self = this;
             var titleFn = this.titleTemplates[fnName];
             var fn = this[fnName];
+            var options = this.dygraphDefaults[fnName];
             this.hostname = hostname;
             var deferred = $.Deferred();
             model.fetchMetrics(hostname).done(function() {
@@ -265,7 +278,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     }
                     return {
                         url: fn.call(self, hostname, id),
-                        title: title
+                        title: title,
+                        options: options
                     };
                 }));
             }).fail(function(resp) {
@@ -312,7 +326,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 };
             });
         },
-        dygraphLoader: function($el, url) {
+        dygraphLoader: function($el, url, options) {
             var self = this;
             var $workarea = $el.find('.workarea_g');
             _.defer(function() {
@@ -322,10 +336,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     dataType: 'json'
                 }).done(function(resp) {
                     var post = self.processDygraph(resp);
-                    new Dygraph($workarea[0], post.data, {
+                    new Dygraph($workarea[0], post.data, _.extend({
                         labels: post.labels,
-                        connectSeparatedPoints: true
-                    });
+                        connectSeparatedPoints: true,
+                        colors: ['8fc97f', 'beaed4', 'fdc086', '386cb0', 'f0027f', 'bf5b17', '666666']
+                    }, options));
                 });
             });
         },
@@ -384,7 +399,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 if (graph.title) {
                     $graphEl.find('.graph-subtitle').text(graph.title);
                 }
-                self.dygraphLoader($graphEl, graph.url);
+                self.dygraphLoader($graphEl, graph.url, graph.options);
             });
         }
     });
