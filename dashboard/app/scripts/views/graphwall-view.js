@@ -62,7 +62,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeCPUTargets',
                 titleTemplate: _.template('<%- hostname %> CPU Summary'),
                 options: {
-                    labels: ['Date', 'System', 'User', 'Idle']
+                    labels: ['Date', 'System', 'User', 'Idle'],
+                    stackedGraph: true,
+                    stepPlot: true
                 }
             }, {
                 metrics: ['system', 'user', 'nice', 'idle', 'iowait', 'irq', 'softirq', 'steal'],
@@ -70,7 +72,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeCPUDetailedTargets',
                 titleTemplate: _.template('<%- id %> CPU Detail'),
                 options: {
-                    labels: ['Date', 'System', 'User', 'Nice', 'Idle', 'IOWait', 'IRQ', 'Soft IRQ', 'Steal']
+                    labels: ['Date', 'System', 'User', 'Nice', 'Idle', 'IOWait', 'IRQ', 'Soft IRQ', 'Steal'],
+                    stackedGraph: true,
+                    stepPlot: true
                 }
             }, {
                 metrics: ['op_r_latency', 'op_w_latency', 'op_rw_latency'],
@@ -171,7 +175,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         makeGraphFunctions: function(options) {
             var targets = gutils.makeTargets(gutils[options.util](options.metrics));
             var fns = [
-                gutils.makeParam('format', 'json'),
+                gutils.makeParam('format', 'json-array'),
                 targets
             ];
             this[options.fn] = gutils.makeGraphURL(this.baseUrl, fns);
@@ -367,8 +371,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 };
             });
         },
-        lineColors: ['#8fc97f', '#beaed4', '#fdc086', '#386cb0', '#f0027f', '#bf5b17', '#666666'],
-        dygraphLoader: function($el, url, options) {
+        dygraphDefaultOptions: {
+            connectSeparatedPoints: true,
+            colors: ['#8fc97f', '#beaed4', '#fdc086', '#386cb0', '#f0027f', '#bf5b17', '#666666'],
+            labelsSeparateLines: true,
+            legend: 'always',
+            axes: {
+                x: {
+                    valueFormatter: function(ms) {
+                        return new Date(ms).strftime('%Y-%m-%d @ %H:%M%Z');
+                    }
+                }
+            }
+        },
+        dygraphLoader: function($el, url, overrides) {
             var self = this;
             var $workarea = $el.find('.workarea_g');
             _.defer(function() {
@@ -378,16 +394,21 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     dataType: 'json'
                 }).done(function(resp) {
                     var post = self.processDygraph(resp);
-                    if (options && options.labels) {
-                        options.labels = options.labels.slice(0, post.labels.length);
+                    if (overrides && overrides.labels) {
+                        // handle too few series items
+                        var labels = _.map(['Date'].concat(post.labels), function(value, index) {
+                            if (overrides.labels[index] !== undefined) {
+                                return overrides.labels[index];
+                            } else {
+                                return value;
+                            }
+                        });
+                        overrides.labels = labels;
                     }
-                    new Dygraph($workarea[0], post.data, _.extend({
-                        connectSeparatedPoints: true,
-                        colors: self.lineColors,
+                    var options = _.extend({
                         labelsDiv: $el.find('.dygraph-legend')[0],
-                        labelsSeparateLines: true,
-                        legend: 'always'
-                    }, options));
+                    }, self.dygraphDefaultOptions, overrides);
+                    new Dygraph($workarea[0], post.data, options);
                 });
             });
         },
@@ -403,38 +424,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.$('.graph-card').css('visibility', 'hidden');
         },
         processDygraph: function(resp) {
-            var data = _.map(resp, function(value) {
-                var label = value.target;
-                var points = _.reduce(value.datapoints, function(memo, values) {
-                    memo[0].push(new Date(values[1] * 1000));
-                    memo[1].push(values[0]);
-                    return memo;
-                }, [
-                    [],
-                    []
-                ]);
-                return {
-                    label: label,
-                    points: points
-                };
+            // convert time which is usually the first part of a series tuple
+            var data = _.map(resp.datapoints, function(series) {
+                return _.map(series, function(value, index) {
+                    if (index === 0) {
+                        return new Date(value * 1000);
+                    }
+                    return value;
+                });
             });
-            data = _.reduce(data, function(memo, value, index) {
-                memo.labels.push(value.label);
-                if (index === 0) {
-                    memo.data = _.zip(value.points[0], value.points[1]);
-                } else {
-                    memo.data = _.map(memo.data, function(innerValue, innerIndex) {
-                        var v = value.points[1][innerIndex];
-                        innerValue.push(v);
-                        return innerValue;
-                    });
-                }
-                return memo;
-            }, {
-                labels: ['Date'],
-                data: []
-            });
-            return data;
+            return {
+                labels: resp.targets,
+                data: data
+            };
         },
         renderGraphs: function(title, fn) {
             var graphs = fn.call(this);
