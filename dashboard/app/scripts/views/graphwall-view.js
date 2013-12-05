@@ -59,6 +59,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     labelsKMG2: true,
                     stackedGraph: true,
                     fillGraph: true,
+                    ylabel: 'Bytes',
                     labels: ['Date', 'Free', 'Used']
                 }
             }, {
@@ -70,6 +71,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     labelsKMB: true,
                     stackedGraph: true,
                     fillGraph: true,
+                    ylabel: 'Inodes',
                     labels: ['Date', 'Free', 'Used']
                 }
             }, {
@@ -81,6 +83,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     labels: ['Date', 'System', 'User', 'Idle'],
                     stackedGraph: true,
                     fillGraph: true,
+                    ylabel: 'Percent',
                     stepPlot: true
                 }
             }, {
@@ -92,6 +95,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     labels: ['Date', 'System', 'User', 'Nice', 'Idle', 'IOWait', 'IRQ', 'Soft IRQ', 'Steal'],
                     stackedGraph: true,
                     fillGraph: true,
+                    ylabel: 'Percent',
                     stepPlot: true
                 }
             }, {
@@ -100,6 +104,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeOpLatencyTargets',
                 titleTemplate: _.template('<%- id %> Ops Latency'),
                 options: {
+                    ylabel: 'Ms',
                     labels: ['Date', 'Read Latency', 'Write Latency', 'RW Latency']
                 }
             }, {
@@ -108,6 +113,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeFilestoreTargets',
                 titleTemplate: _.template('<%- id %> Journal Ops'),
                 options: {
+                    ylabel: 'Operations',
                     labels: ['Date', 'Journal Ops', 'Journal Writes']
                 }
             }, {
@@ -116,6 +122,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeLoadAvgTargets',
                 titleTemplate: _.template('<%- hostname %> Load Avg'),
                 options: {
+                    ylabel: 'Load Average',
                     labels: ['Date', '1 Min', '5 Min', '15 Min']
                 }
             }, {
@@ -127,6 +134,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     labelsKMG2: true,
                     labels: ['Date', 'Active', 'Buffers', 'Cached', 'Free'],
                     fillGraph: true,
+                    ylabel: 'Bytes',
                     stackedGraph: true
                 }
             }, {
@@ -136,6 +144,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> RW Bytes'),
                 options: {
                     labelsKMG2: true,
+                    ylabel: 'Bytes/Second',
                     labels: ['Date', 'Read Bytes/Sec', 'Write Bytes/Sec']
                 }
             }, {
@@ -144,6 +153,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeIOStatIOPSTargets',
                 titleTemplate: _.template('<%- id %> RW Await'),
                 options: {
+                    ylabel: '',
                     labels: ['Date', 'Reads', 'Writes']
                 }
             }, {
@@ -152,6 +162,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeIOStatIOPSTargets',
                 titleTemplate: _.template('<%- id %> IOPS'),
                 options: {
+                    ylabel: 'IOPS',
                     labels: ['Date', 'IOPS']
                 }
             }, {
@@ -161,6 +172,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> Network TX/RX Bytes'),
                 options: {
                     labelsKMG2: true,
+                    ylabel: 'Bytes',
                     labels: ['Date', 'TX Bytes', 'RX Bytes']
                 }
             }, {
@@ -170,6 +182,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> Network TX/RX Packets'),
                 options: {
                     labelsKMB: true,
+                    ylabel: 'Packets',
                     labels: ['Date', 'TX Packets', 'RX Packets']
                 }
             }, {
@@ -179,6 +192,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> Network TX/RX Errors'),
                 options: {
                     labelsKMB: true,
+                    ylabel: 'Packets',
                     labels: ['Date', 'TX Errors', 'RX Errors']
                 }
             }, {
@@ -188,6 +202,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> Network TX/RX Drops'),
                 options: {
                     labelsKMB: true,
+                    ylabel: 'Packets',
                     labels: ['Date', 'TX Drops', 'RX Drops']
                 }
             }
@@ -385,6 +400,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             stackedGraph: false,
             fillGraph: false,
             stepPlot: false,
+            xlabel: 'Time (Last 24 hours)',
             connectSeparatedPoints: true,
             colors: ['#8fc97f', '#beaed4', '#fdc086', '#386cb0', '#f0027f', '#bf5b17', '#666666'],
             labelsSeparateLines: true,
