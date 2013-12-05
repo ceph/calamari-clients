@@ -39,24 +39,24 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         titleTemplates: {},
         dygraphDefaults: {},
         graphs: [{
-                metrics: ['byte_avail', 'byte_free', 'byte_used'],
+                metrics: ['byte_free', 'byte_used'],
                 fn: 'makeDiskSpaceBytesGraphUrl',
                 util: 'makeDiskSpaceTargets',
                 titleTemplate: _.template('OSD <%- id %> Disk Space'),
                 options: {
                     labelsKMG2: true,
                     stackedGraph: true,
-                    labels: ['Date', 'Available', 'Free', 'Used']
+                    labels: ['Date', 'Free', 'Used']
                 }
             }, {
-                metrics: ['inodes_avail', 'inodes_free', 'inodes_used'],
+                metrics: ['inodes_free', 'inodes_used'],
                 fn: 'makeDiskSpaceInodesGraphUrl',
                 util: 'makeDiskSpaceTargets',
                 titleTemplate: _.template('OSD <%- id %> Inodes'),
                 options: {
                     labelsKMB: true,
                     stackedGraph: true,
-                    labels: ['Date', 'Available', 'Free', 'Used']
+                    labels: ['Date', 'Free', 'Used']
                 }
             }, {
                 metrics: ['system', 'user', 'idle'],
