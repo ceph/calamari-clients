@@ -107,7 +107,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- hostname %> Memory'),
                 options: {
                     labelsKMG2: true,
-                    labels: ['Date', 'Active', 'Buffers', 'Cached', 'Free']
+                    labels: ['Date', 'Active', 'Buffers', 'Cached', 'Free'],
+                    stackedGraph: true
                 }
             }, {
                 metrics: ['read_byte_per_second', 'write_byte_per_second'],
