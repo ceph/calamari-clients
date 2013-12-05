@@ -36,6 +36,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 trigger: true
             });
         },
+        onItemBeforeClose: function() {
+            this.$('.graph-card').each(function(index, graph) {
+                var $graph = $(graph);
+                var dynagraph = $graph.data('graph');
+                // jshint camelcase: false
+                if (dynagraph && dynagraph.maindiv_ !== null) {
+                    dynagraph.destroy();
+                }
+                $graph.data('graph', undefined);
+            });
+        },
         titleTemplates: {},
         dygraphDefaults: {},
         graphs: [{
@@ -191,7 +202,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates');
+            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose');
 
             _.each(this.graphs, this.makeGraphFunctions);
 
@@ -205,6 +216,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 graphiteHost: this.graphiteHost
             });
             this.render = _.wrap(this.render, this.renderWrapper);
+            this.listenTo(this, 'item:before:close', this.onItemBeforeClose);
         },
         // Wrap render so we can augment it with ui elements and
         // redelegate events on new ui elements
@@ -216,7 +228,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         renderGraphTemplates: function() {
             var self = this;
-            this.selectors = _.map(_.range(10), function(id) {
+            this.selectors = _.map(_.range(30), function(id) {
                 var selector = 'graph-' + id;
                 var t = self.graphTemplate({
                     graphid: selector
@@ -362,6 +374,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         selectors: [],
         dygraphDefaultOptions: {
+            labelsKMG2: false,
+            labelsKMB: false,
             connectSeparatedPoints: true,
             colors: ['#8fc97f', '#beaed4', '#fdc086', '#386cb0', '#f0027f', '#bf5b17', '#666666'],
             labelsSeparateLines: true,
@@ -377,8 +391,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         dygraphLoader: function($el, url, overrides) {
             var self = this;
             var $workarea = $el.find('.workarea_g');
+            var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
+            $workarea.css('visibility', 'hidden');
             _.defer(function() {
-                $workarea.html('<i class="fa fa-spinner fa-spin fa-lg fa-3x"></i>');
                 $.ajax({
                     url: url,
                     dataType: 'json'
@@ -401,9 +416,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                             overrides.labels = labels;
                         }
                         var options = _.extend({
-                            labelsDiv: $el.find('.dygraph-legend')[0],
+                            labelsDiv: $el.find('.dygraph-legend')[0]
                         }, self.dygraphDefaultOptions, overrides);
-                        new Dygraph($workarea[0], post.data, options);
+                        $workarea.css('visibility', 'visible');
+                        var $g = $el.data('graph');
+                        if ($g) {
+                            $g.updateOptions(_.extend({
+                                file: post.data
+                            }, options));
+                        } else {
+                            $el.data('graph', new Dygraph($workarea[0], post.data, options));
+                        }
+                        $graphveil.addClass('hidden');
                     });
                 });
             });
@@ -417,7 +441,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             };
         },
         hideGraphs: function() {
-            this.$('.graph-card').css('visibility', 'hidden');
+            this.$('.graph-card, .workarea_g').css('visibility', 'hidden');
         },
         processDygraph: function(resp) {
             // convert time which is usually the first part of a series tuple
