@@ -57,6 +57,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 options: {
                     labelsKMG2: true,
                     stackedGraph: true,
+                    fillGraph: true,
                     labels: ['Date', 'Free', 'Used']
                 }
             }, {
@@ -67,6 +68,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 options: {
                     labelsKMB: true,
                     stackedGraph: true,
+                    fillGraph: true,
                     labels: ['Date', 'Free', 'Used']
                 }
             }, {
@@ -77,6 +79,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 options: {
                     labels: ['Date', 'System', 'User', 'Idle'],
                     stackedGraph: true,
+                    fillGraph: true,
                     stepPlot: true
                 }
             }, {
@@ -87,6 +90,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 options: {
                     labels: ['Date', 'System', 'User', 'Nice', 'Idle', 'IOWait', 'IRQ', 'Soft IRQ', 'Steal'],
                     stackedGraph: true,
+                    fillGraph: true,
                     stepPlot: true
                 }
             }, {
@@ -121,6 +125,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 options: {
                     labelsKMG2: true,
                     labels: ['Date', 'Active', 'Buffers', 'Cached', 'Free'],
+                    fillGraph: true,
                     stackedGraph: true
                 }
             }, {
@@ -376,6 +381,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         dygraphDefaultOptions: {
             labelsKMG2: false,
             labelsKMB: false,
+            stackedGraph: false,
+            fillGraph: false,
+            stepPlot: false,
             connectSeparatedPoints: true,
             colors: ['#8fc97f', '#beaed4', '#fdc086', '#386cb0', '#f0027f', '#bf5b17', '#666666'],
             labelsSeparateLines: true,
