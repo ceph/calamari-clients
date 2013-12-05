@@ -45,6 +45,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('OSD <%- id %> Disk Space'),
                 options: {
                     labelsKMG2: true,
+                    stackedGraph: true,
                     labels: ['Date', 'Available', 'Free', 'Used']
                 }
             }, {
@@ -54,6 +55,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('OSD <%- id %> Inodes'),
                 options: {
                     labelsKMB: true,
+                    stackedGraph: true,
                     labels: ['Date', 'Available', 'Free', 'Used']
                 }
             }, {
