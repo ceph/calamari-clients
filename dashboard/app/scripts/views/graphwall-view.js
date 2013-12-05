@@ -429,6 +429,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                         $workarea.css('visibility', 'visible');
                         var $g = $el.data('graph');
                         if ($g) {
+                            if ($g.isZoomed('x')) {
+                                $g.resetZoom();
+                            }
                             $g.updateOptions(_.extend({
                                 file: post.data
                             }, options));
