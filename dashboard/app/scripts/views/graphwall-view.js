@@ -37,7 +37,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
         },
         onItemBeforeClose: function() {
-            this.$('.graph-card').each(function(index, graph) {
+            this.$('.workarea_g').each(function(index, graph) {
+                /* clean up cached dygraph instances before closing view */
                 var $graph = $(graph);
                 var dynagraph = $graph.data('graph');
                 // jshint camelcase: false
@@ -47,8 +48,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 $graph.data('graph', undefined);
             });
         },
-        titleTemplates: {},
-        dygraphDefaults: {},
+        graphTitleTemplates: {},
+        graphOptions: {},
         graphs: [{
                 metrics: ['byte_free', 'byte_used'],
                 fn: 'makeDiskSpaceBytesGraphUrl',
@@ -198,8 +199,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 targets
             ];
             this[options.fn] = gutils.makeGraphURL(this.baseUrl, fns);
-            this.titleTemplates[options.fn] = options.titleTemplate;
-            this.dygraphDefaults[options.fn] = options.options;
+            this.graphTitleTemplates[options.fn] = options.titleTemplate;
+            this.graphOptions[options.fn] = options.options;
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
@@ -207,7 +208,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose');
+            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph');
 
             _.each(this.graphs, this.makeGraphFunctions);
 
@@ -310,14 +311,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         makePerHostGraphs: function(hostname, fnName) {
             var fn = this[fnName];
-            var titleFn = this.titleTemplates[fnName];
+            var titleFn = this.graphTitleTemplates[fnName];
             var title;
             if (titleFn) {
                 title = titleFn({
                     hostname: hostname
                 });
             }
-            var options = this.dygraphDefaults[fnName];
+            var options = this.graphOptions[fnName];
             return {
                 url: fn.call(this, hostname),
                 title: title,
@@ -326,9 +327,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         makePerHostModelGraphs: function(hostname, fnName, model) {
             var self = this;
-            var titleFn = this.titleTemplates[fnName];
+            var titleFn = this.graphTitleTemplates[fnName];
             var fn = this[fnName];
-            var options = this.dygraphDefaults[fnName];
+            var options = this.graphOptions[fnName];
             this.hostname = hostname;
             var deferred = $.Deferred();
             model.fetchMetrics(hostname).done(function() {
@@ -396,51 +397,68 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 }
             }
         },
-        dygraphLoader: function($el, url, overrides) {
-            var self = this;
+        jsonRequest: function(url) {
+            return $.ajax({
+                url: url,
+                dataType: 'json'
+            });
+        },
+        useCustomLabels: function(post, overrides) {
+            if (overrides && overrides.labels) {
+                // override labels from response if we have custom ones defined
+                return _.map(['Date'].concat(post.labels), function(value, index) {
+                    if (overrides.labels[index] !== undefined) {
+                        return overrides.labels[index];
+                    } else {
+                        return value;
+                    }
+                });
+            }
+            return post.labels;
+        },
+        allocateGraph: function($el, data, options) {
+            var $g = $el.data('graph');
+            if ($g) {
+                // use cached instance
+                if ($g.isZoomed('x')) {
+                    $g.resetZoom();
+                }
+                $g.updateOptions(_.extend({
+                    file: data
+                }, options));
+            } else {
+                // allocate new instance
+                $g = new Dygraph($el[0], data, options);
+                $el.data('graph', $g);
+            }
+            return $g;
+        },
+        renderGraph: function($el, overrides, resp) {
             var $workarea = $el.find('.workarea_g');
             var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
             $workarea.css('visibility', 'hidden');
+            var d = $.Deferred();
+            var self = this;
             _.defer(function() {
-                $.ajax({
-                    url: url,
-                    dataType: 'json'
-                }).done(function(resp) {
-                    var d = $.Deferred();
-                    _.defer(function() {
-                        var post = self.processDygraph(resp);
-                        d.resolve(post);
-                    });
-                    d.promise().done(function(post) {
-                        if (overrides && overrides.labels) {
-                            // handle too few series items
-                            var labels = _.map(['Date'].concat(post.labels), function(value, index) {
-                                if (overrides.labels[index] !== undefined) {
-                                    return overrides.labels[index];
-                                } else {
-                                    return value;
-                                }
-                            });
-                            overrides.labels = labels;
-                        }
-                        var options = _.extend({
-                            labelsDiv: $el.find('.dygraph-legend')[0]
-                        }, self.dygraphDefaultOptions, overrides);
-                        $workarea.css('visibility', 'visible');
-                        var $g = $el.data('graph');
-                        if ($g) {
-                            if ($g.isZoomed('x')) {
-                                $g.resetZoom();
-                            }
-                            $g.updateOptions(_.extend({
-                                file: post.data
-                            }, options));
-                        } else {
-                            $el.data('graph', new Dygraph($workarea[0], post.data, options));
-                        }
-                        $graphveil.addClass('hidden');
-                    });
-                });
+                var post = self.processDygraph(resp);
+                d.resolve(post);
+            });
+            d.promise().done(function(post) {
+                overrides.labels = self.useCustomLabels(post, overrides);
+                var options = _.extend({
+                    labelsDiv: $el.find('.dygraph-legend')[0]
+                }, self.dygraphDefaultOptions, overrides);
+                $workarea.css('visibility', 'visible');
+                self.allocateGraph($workarea, post.data, options);
+                $graphveil.addClass('hidden');
+            });
+        },
+        dygraphLoader: function($el, url, optOverrides) {
+            var $ajax = this.jsonRequest(url);
+            $ajax.done(_.partial(this.renderGraph, $el, optOverrides)).fail(function( /*err*/ ) {
+                // handle errors on load here
+                $el.find('.graph-spinner').addClass('hidden');
+                $el.find('.graph-subtitle').append(' <i class="fa fa-warning warn"></i>');
             });
         },
         makeHostOverviewGraphUrl: function(host) {
