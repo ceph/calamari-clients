@@ -361,19 +361,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             }));
         },
         selectors: [],
-        imageLoader: function($el, url) {
-            _.defer(function() {
-                $el.html('<i class="fa fa-spinner fa-spin fa-lg fa-3x"></i>');
-                var image = new Image();
-                image.src = url;
-                image.onload = function() {
-                    $el.html(image);
-                };
-                image.onerror = function() {
-                    $el.html('<i class="fa fa-exclamation-triangle fa-lg fa-3x"></i>');
-                };
-            });
-        },
         dygraphDefaultOptions: {
             connectSeparatedPoints: true,
             colors: ['#8fc97f', '#beaed4', '#fdc086', '#386cb0', '#f0027f', '#bf5b17', '#666666'],
@@ -396,22 +383,28 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     url: url,
                     dataType: 'json'
                 }).done(function(resp) {
-                    var post = self.processDygraph(resp);
-                    if (overrides && overrides.labels) {
-                        // handle too few series items
-                        var labels = _.map(['Date'].concat(post.labels), function(value, index) {
-                            if (overrides.labels[index] !== undefined) {
-                                return overrides.labels[index];
-                            } else {
-                                return value;
-                            }
-                        });
-                        overrides.labels = labels;
-                    }
-                    var options = _.extend({
-                        labelsDiv: $el.find('.dygraph-legend')[0],
-                    }, self.dygraphDefaultOptions, overrides);
-                    new Dygraph($workarea[0], post.data, options);
+                    var d = $.Deferred();
+                    _.defer(function() {
+                        var post = self.processDygraph(resp);
+                        d.resolve(post);
+                    });
+                    d.promise().done(function(post) {
+                        if (overrides && overrides.labels) {
+                            // handle too few series items
+                            var labels = _.map(['Date'].concat(post.labels), function(value, index) {
+                                if (overrides.labels[index] !== undefined) {
+                                    return overrides.labels[index];
+                                } else {
+                                    return value;
+                                }
+                            });
+                            overrides.labels = labels;
+                        }
+                        var options = _.extend({
+                            labelsDiv: $el.find('.dygraph-legend')[0],
+                        }, self.dygraphDefaultOptions, overrides);
+                        new Dygraph($workarea[0], post.data, options);
+                    });
                 });
             });
         },
