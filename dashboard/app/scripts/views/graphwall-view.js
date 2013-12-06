@@ -21,15 +21,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 '1 Week', '3 Days', '1 Day', '12 Hours', '1 Hour'
         ],
         rangeQuery: [
-                '-7days', '-3days', '-1day', '-12hours', '-1hour'
+                '-7day', '-3day', '-1day', '-12hour', '-1hour'
+        ],
+        rangeLabel: [
+                'Time (1 Week)', 'Time (3 Days)', 'Time (Last 24 Hours)', 'Time (Last 12 Hours)', 'Time (Last Hour)'
         ],
         changeGraphRange: function(evt) {
             var $target = $(evt.target);
             var $parent = $target.closest('.graph-card');
             var $workarea = $parent.find('.workarea_g');
             var url = $workarea.data('url');
-            var opts = $workarea.data('opts');
             var value = $target[0].value;
+            var opts = _.extend($workarea.data('opts'), {
+                xlabel: this.rangeLabel[value]
+            });
             $parent.find('.graph-value').text(this.rangeText[value]);
             var index = url.indexOf('&from');
             if (index !== -1) {
