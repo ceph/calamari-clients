@@ -16,7 +16,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         events: {
             'click .btn-graph .btn': 'clickHandler',
             'change .hosts-select select': 'hostChangeHandler',
-            'change .graph-range input': 'changeGraphRange'
+            'input .graph-range input': 'changeGraphRange'
         },
         rangeText: [
                 '1 Week', '3 Days', '1 Day', '12 Hours', '1 Hour'
@@ -31,6 +31,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.dygraphLoader($parent, url, opts);
         },
         changeGraphRange: function(evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
             var $target = $(evt.target);
             var $parent = $target.closest('.graph-card');
             var $workarea = $parent.find('.workarea_g');
