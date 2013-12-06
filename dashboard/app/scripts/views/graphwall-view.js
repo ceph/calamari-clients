@@ -27,10 +27,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 'Time (1 Week)', 'Time (3 Days)', 'Time (Last 24 Hours)', 'Time (Last 12 Hours)', 'Time (Last Hour)'
         ],
         debouncedChangedGraph: function($parent, url, opts) {
-            var index = url.indexOf('&from');
-            if (index !== -1) {
-                url = url.slice(0, index);
-            }
             this.dygraphLoader($parent, url, opts);
         },
         changeGraphRange: function(evt) {
@@ -43,6 +39,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 xlabel: this.rangeLabel[value]
             });
             $parent.find('.graph-value').text(this.rangeText[value]);
+            var index = url.indexOf('&from');
+            if (index !== -1) {
+                url = url.slice(0, index);
+            }
             this.debouncedChangedGraph($parent, url + '&from=' + this.rangeQuery[value], opts);
         },
         hostChangeHandler: function(evt) {
