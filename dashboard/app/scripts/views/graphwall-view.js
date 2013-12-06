@@ -516,6 +516,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 $el.find('.icon-space').append(self.graphFailToLoadTemplate({
                     msg: msg
                 }));
+                var $g = $el.find('.workarea_g').data('graph');
+                if ($g) {
+                    // clear existing graph if the graph fails to load
+                    $g.updateOptions({ labels: [], file: {} });
+                }
             }).always(function() {
                 $graphveil.addClass('hidden');
             });
