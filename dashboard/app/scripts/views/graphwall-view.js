@@ -21,7 +21,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 '1 Week', '3 Days', '1 Day', '12 Hours', '1 Hour'
         ],
         rangeQuery: [
-                '-7day', '-3day', '-1day', '-12hour', '-1hour'
+                '-7d', '-3d', '-1d', '-12hour', '-1hour'
         ],
         rangeLabel: [
                 'Time (1 Week)', 'Time (3 Days)', 'Time (Last 24 Hours)', 'Time (Last 12 Hours)', 'Time (Last Hour)'
