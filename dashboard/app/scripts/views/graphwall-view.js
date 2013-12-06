@@ -266,6 +266,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
             this.render = _.wrap(this.render, this.renderWrapper);
             this.listenTo(this, 'item:before:close', this.onItemBeforeClose);
+            this.changeGraphRange = _.debounce(this.changeGraphRange, 500);
         },
         // Wrap render so we can augment it with ui elements and
         // redelegate events on new ui elements
