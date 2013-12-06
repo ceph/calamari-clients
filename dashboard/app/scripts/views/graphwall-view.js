@@ -6,6 +6,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
     var GraphwallView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/graphwall.ejs'],
         graphTemplate: JST['app/scripts/templates/graph.ejs'],
+        graphFailToLoadTemplate: _.template('<i title="<%- msg %>" class="fa fa-warning fa-3x warn"></i>'),
         className: 'graph-mode',
         ui: {
             'title': '.title',
@@ -502,13 +503,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
         },
         dygraphLoader: function($el, url, optOverrides) {
+            var self = this;
             var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
             var $ajax = this.jsonRequest(url);
-            $el.find('.graph-subtitle span.icon-space').text('');
-            $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function( /*err*/ ) {
+            $el.find('.icon-space').text('');
+            $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function(jqXHR) {
                 // handle errors on load here
+                var msg = 'Graph Error: ' + jqXHR.statusText + ' ' + jqXHR.responseText;
                 $el.find('.graph-spinner').addClass('hidden');
-                $el.find('.graph-subtitle span.icon-space').append('<i class="fa fa-warning warn"></i>');
+                $el.find('.icon-space').append(self.graphFailToLoadTemplate({
+                    msg: msg
+                }));
             }).always(function() {
                 $graphveil.addClass('hidden');
             });
