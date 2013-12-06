@@ -501,10 +501,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         dygraphLoader: function($el, url, optOverrides) {
             var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
             var $ajax = this.jsonRequest(url);
+            $el.find('.graph-subtitle span.icon-space').text('');
             $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function( /*err*/ ) {
                 // handle errors on load here
                 $el.find('.graph-spinner').addClass('hidden');
-                $el.find('.graph-subtitle').append(' <i class="fa fa-warning warn"></i>');
+                $el.find('.graph-subtitle span.icon-space').append('<i class="fa fa-warning warn"></i>');
             }).always(function() {
                 $graphveil.addClass('hidden');
             });
