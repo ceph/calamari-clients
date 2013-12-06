@@ -14,7 +14,28 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         events: {
             'click .btn-graph .btn': 'clickHandler',
-            'change .hosts-select select': 'hostChangeHandler'
+            'change .hosts-select select': 'hostChangeHandler',
+            'change .graph-range input': 'changeGraphRange'
+        },
+        rangeText: [
+                '1 Week', '3 Days', '1 Day', '12 Hours', '1 Hour'
+        ],
+        rangeQuery: [
+                '-7days', '-3days', '-1day', '-12hours', '-1hour'
+        ],
+        changeGraphRange: function(evt) {
+            var $target = $(evt.target);
+            var $parent = $target.closest('.graph-card');
+            var $workarea = $parent.find('.workarea_g');
+            var url = $workarea.data('url');
+            var opts = $workarea.data('opts');
+            var value = $target[0].value;
+            $parent.find('.graph-value').text(this.rangeText[value]);
+            var index = url.indexOf('&from');
+            if (index !== -1) {
+                url = url.slice(0, index);
+            }
+            this.dygraphLoader($parent, url + '&from=' + this.rangeQuery[value], opts);
         },
         hostChangeHandler: function(evt) {
             var target = evt.target;
@@ -46,6 +67,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     dynagraph.destroy();
                 }
                 $graph.data('graph', undefined);
+                $graph.data('url', undefined);
+                $graph.data('opts', undefined);
             });
         },
         graphTitleTemplates: {},
@@ -449,10 +472,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             }
             return $g;
         },
-        renderGraph: function($el, overrides, resp) {
+        renderGraph: function($el, url, overrides, resp) {
             var $workarea = $el.find('.workarea_g');
             var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
             $workarea.css('visibility', 'hidden');
+            $workarea.data('url', url);
+            $workarea.data('opts', overrides);
             var d = $.Deferred();
             var self = this;
             _.defer(function() {
@@ -471,7 +496,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         dygraphLoader: function($el, url, optOverrides) {
             var $ajax = this.jsonRequest(url);
-            $ajax.done(_.partial(this.renderGraph, $el, optOverrides)).fail(function( /*err*/ ) {
+            $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function( /*err*/ ) {
                 // handle errors on load here
                 $el.find('.graph-spinner').addClass('hidden');
                 $el.find('.graph-subtitle').append(' <i class="fa fa-warning warn"></i>');
