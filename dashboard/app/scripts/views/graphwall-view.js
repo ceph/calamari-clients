@@ -35,7 +35,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var $parent = $target.closest('.graph-card');
             var $workarea = $parent.find('.workarea_g');
             var url = $workarea.data('url');
-            var value = $target[0].value;
+            var value = $target.val();
             var opts = _.extend($workarea.data('opts'), {
                 xlabel: this.rangeLabel[value]
             });
@@ -528,6 +528,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         hideGraphs: function() {
             this.$('.graph-card, .workarea_g').css('visibility', 'hidden');
+            this.$('.graph-range input').each(function(index, el) {
+                el.value = 2;
+            });
+            var self = this;
+            this.$('.graph-value').each(function(index, el) {
+                $(el).text(self.rangeText[2]);
+            });
         },
         processDygraph: function(resp) {
             // convert time which is usually the first part of a series tuple
