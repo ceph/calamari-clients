@@ -109,8 +109,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- hostname %> CPU Summary'),
                 options: {
                     labels: ['Date', 'System', 'User', 'Idle'],
-                    stackedGraph: true,
-                    fillGraph: true,
                     ylabel: 'Percent',
                     stepPlot: true
                 }
@@ -121,8 +119,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 titleTemplate: _.template('<%- id %> CPU Detail'),
                 options: {
                     labels: ['Date', 'System', 'User', 'Nice', 'Idle', 'IOWait', 'IRQ', 'Soft IRQ', 'Steal'],
-                    stackedGraph: true,
-                    fillGraph: true,
                     ylabel: 'Percent',
                     stepPlot: true
                 }
