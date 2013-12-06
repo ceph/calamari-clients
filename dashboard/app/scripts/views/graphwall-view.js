@@ -26,6 +26,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         rangeLabel: [
                 'Time (1 Week)', 'Time (3 Days)', 'Time (Last 24 Hours)', 'Time (Last 12 Hours)', 'Time (Last Hour)'
         ],
+        debouncedChangedGraph: function($parent, url, opts) {
+            var index = url.indexOf('&from');
+            if (index !== -1) {
+                url = url.slice(0, index);
+            }
+            this.dygraphLoader($parent, url, opts);
+        },
         changeGraphRange: function(evt) {
             var $target = $(evt.target);
             var $parent = $target.closest('.graph-card');
@@ -36,11 +43,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 xlabel: this.rangeLabel[value]
             });
             $parent.find('.graph-value').text(this.rangeText[value]);
-            var index = url.indexOf('&from');
-            if (index !== -1) {
-                url = url.slice(0, index);
-            }
-            this.dygraphLoader($parent, url + '&from=' + this.rangeQuery[value], opts);
+            this.debouncedChangedGraph($parent, url + '&from=' + this.rangeQuery[value], opts);
         },
         hostChangeHandler: function(evt) {
             var target = evt.target;
@@ -266,7 +269,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
             this.render = _.wrap(this.render, this.renderWrapper);
             this.listenTo(this, 'item:before:close', this.onItemBeforeClose);
-            this.changeGraphRange = _.debounce(this.changeGraphRange, 500);
+            this.debouncedChangedGraph = _.debounce(this.debouncedChangedGraph, 500);
         },
         // Wrap render so we can augment it with ui elements and
         // redelegate events on new ui elements
