@@ -479,7 +479,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         renderGraph: function($el, url, overrides, resp) {
             var $workarea = $el.find('.workarea_g');
-            var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
             $workarea.css('visibility', 'hidden');
             $workarea.data('url', url);
             $workarea.data('opts', overrides);
@@ -496,15 +495,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 }, self.dygraphDefaultOptions, overrides);
                 $workarea.css('visibility', 'visible');
                 self.allocateGraph($workarea, post.data, options);
-                $graphveil.addClass('hidden');
             });
         },
         dygraphLoader: function($el, url, optOverrides) {
+            var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
             var $ajax = this.jsonRequest(url);
             $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function( /*err*/ ) {
                 // handle errors on load here
                 $el.find('.graph-spinner').addClass('hidden');
                 $el.find('.graph-subtitle').append(' <i class="fa fa-warning warn"></i>');
+            }).always(function() {
+                $graphveil.addClass('hidden');
             });
         },
         makeHostOverviewGraphUrl: function(host) {
