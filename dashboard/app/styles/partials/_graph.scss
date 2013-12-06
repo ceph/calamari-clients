@@ -82,7 +82,8 @@ h2.graph-subtitle {
   padding: 0;
 }
 .graph-range {
-    width: 80%;
+    @include nowrap;
+    width: 70%;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
