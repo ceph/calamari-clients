@@ -520,6 +520,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 if ($g) {
                     // clear existing graph if the graph fails to load
                     $g.updateOptions({ labels: [], file: {} });
+                    $el.find('.dygraph-legend').text('');
                 }
             }).always(function() {
                 $graphveil.addClass('hidden');
