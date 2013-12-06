@@ -66,7 +66,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App.Config) {
                 this.delay = Backbone.Marionette.getOption(this.App.Config, 'long-polling-interval-ms') || this.delay;
-                this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.timeout;
+                this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.defaultTimeout;
                 this.disableNetworkChecks = Backbone.Marionette.getOption(this.App.Config, 'disable-network-checks') || false;
             }
             this.cluster = Backbone.Marionette.getOption(this, 'cluster');
@@ -83,9 +83,9 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                 cluster: this.cluster
             });
 
-            this.healthPoller = newPoller('health', this);
-            this.usagePoller = newPoller('usage', this);
-            this.statusPoller = newPoller('status', this);
+            this.healthPoller = newPoller('health', this, { timeout: this.timeout });
+            this.usagePoller = newPoller('usage', this, { timeout: this.timeout });
+            this.statusPoller = newPoller('status', this, { timeout: this.timeout });
             if (!this.disableNetworkChecks) {
                 this.krakenHeartBeatPoller = newPoller('krakenHeartBeat', this, {
                     delay: this.heartBeatDelay
