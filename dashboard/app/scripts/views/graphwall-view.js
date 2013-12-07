@@ -519,7 +519,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 var $g = $el.find('.workarea_g').data('graph');
                 if ($g) {
                     // clear existing graph if the graph fails to load
-                    $g.updateOptions({ labels: [], file: {} });
+                    $g.updateOptions({
+                        labels: [],
+                        file: {}
+                    });
                     $el.find('.dygraph-legend').text('');
                 }
             }).always(function() {
@@ -569,7 +572,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 if (graph.title) {
                     $graphEl.find('.graph-subtitle').text(graph.title);
                 }
-                self.dygraphLoader($graphEl, graph.url, graph.options);
+                _.delay(function() {
+                    self.dygraphLoader($graphEl, graph.url, graph.options);
+                }, 50*index);
             });
         }
     });
