@@ -65,7 +65,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             target.listenTo(target, 'status:warn', target._warningEvent);
             target.listenTo(target, 'status:fail', target._failEvent);
             if (target.ui) {
-                target.ui.statusIcon = '.card-status-icon';
+                target.ui.statusIcon = '.card-icon';
             }
         }
         if (target.App && target.App.vent) {
