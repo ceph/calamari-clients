@@ -122,6 +122,21 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                     return memo + '&' + valueFn.apply(this, args);
                 }, initValue);
             };
+        },
+        graphiteJsonArrayToDygraph: function(resp) {
+            // convert time which is usually the first part of a series tuple
+            var data = _.map(resp.datapoints, function(series) {
+                return _.map(series, function(value, index) {
+                    if (index === 0) {
+                        return new Date(value * 1000);
+                    }
+                    return value;
+                });
+            });
+            return {
+                labels: resp.targets,
+                data: data
+            };
         }
     };
 });

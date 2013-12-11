@@ -493,7 +493,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var d = $.Deferred();
             var self = this;
             _.defer(function() {
-                var post = self.processDygraph(resp);
+                var post = gutils.graphiteJsonArrayToDygraph(resp);
                 d.resolve(post);
             });
             d.promise().done(function(post) {
@@ -549,21 +549,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.$('.graph-value').each(function(index, el) {
                 $(el).text(self.rangeText[2]);
             });
-        },
-        processDygraph: function(resp) {
-            // convert time which is usually the first part of a series tuple
-            var data = _.map(resp.datapoints, function(series) {
-                return _.map(series, function(value, index) {
-                    if (index === 0) {
-                        return new Date(value * 1000);
-                    }
-                    return value;
-                });
-            });
-            return {
-                labels: resp.targets,
-                data: data
-            };
         },
         renderGraphs: function(title, fn) {
             var graphs = fn.call(this);
