@@ -105,7 +105,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         // Cluster ID has changed. Update pollers.
         updateModels: function(cluster) {
             _.each(this.models, function(model) {
-                this[model + 'Model'].set('cluster', cluster.id);
+                this[model + 'Model'].set('cluster', cluster.get('id'));
             }, this);
             this.stop();
             this.start();

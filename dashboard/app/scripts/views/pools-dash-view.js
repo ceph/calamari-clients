@@ -35,8 +35,14 @@ define(['jquery',
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
                 this.listenTo(this.App.vent, 'pool:update', this.updateCollection);
+                this.listenTo(this.App.vent, 'cluster:update', this.switchCluster);
             }
             gaugeHelper(this);
+        },
+        switchCluster: function(cluster) {
+            if (cluster) {
+                this.collection.cluster = cluster.get('id');
+            }
         },
         updateCollection: function() {
             this.collection.fetch();
