@@ -60,6 +60,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         statusTimer: null,
         osdUpdateTimer: null,
         poolUpdateTimer: null,
+        hostUpdateTimer: null,
         defaultDelay: 20000,
         defaultTimeout: 3000,
         heartBeatDelay: 60000,
@@ -94,11 +95,12 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             }
             this.osdUpdateEvent = newEventEmitter('osdUpdateEvent', 'osdUpdateTimer', 'osd:update');
             this.poolUpdateEvent = newEventEmitter('poolUpdateEvent', 'poolUpdateTimer', 'pool:update');
+            this.hostUpdateEvent = newEventEmitter('hostUpdateEvent', 'hostUpdateTimer', 'host:update');
             this.listenTo(this.App.vent, 'cluster:update', this.updateModels);
             _.bindAll(this, 'stop', 'updateModels', 'start');
             this.models = ['health', 'usage', 'status', 'krakenHeartBeat'];
             this.timers = ['health', 'usage', 'status', 'update', 'krakenHeartBeat'];
-            this.pollers = ['healthPoller', 'usagePoller', 'statusPoller', 'krakenHeartBeatPoller', 'osdUpdateEvent', 'poolUpdateEvent'];
+            this.pollers = ['healthPoller', 'usagePoller', 'statusPoller', 'krakenHeartBeatPoller', 'osdUpdateEvent', 'poolUpdateEvent', 'hostUpdateEvent'];
         },
         // Cluster ID has changed. Update pollers.
         updateModels: function(cluster) {
