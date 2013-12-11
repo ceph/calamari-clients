@@ -496,6 +496,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 d.resolve(post);
             });
             d.promise().done(function(post) {
+                $el.find('input').removeAttr('disabled');
                 overrides.labels = self.useCustomLabels(post, overrides);
                 var options = _.extend({
                     labelsDiv: $el.find('.dygraph-legend')[0]
@@ -509,6 +510,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
             var $ajax = this.jsonRequest(url);
             $el.find('.icon-space').text('');
+            $el.find('input').attr('disabled','disabled');
             $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function(jqXHR) {
                 // handle errors on load here
                 var msg = 'Graph Error: ' + jqXHR.statusText + ' ' + jqXHR.responseText;
