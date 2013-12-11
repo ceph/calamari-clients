@@ -255,6 +255,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.AppRouter = Backbone.Marionette.getOption(this, 'AppRouter');
             this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
+            this.graphiteRequestDelayMs = Backbone.Marionette.getOption(this, 'graphiteRequestDelayMs');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
             _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph');
@@ -510,7 +511,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
             var $ajax = this.jsonRequest(url);
             $el.find('.icon-space').text('');
-            $el.find('input').attr('disabled','disabled');
+            $el.find('input').attr('disabled', 'disabled');
             $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function(jqXHR) {
                 // handle errors on load here
                 var msg = 'Graph Error: ' + jqXHR.statusText + ' ' + jqXHR.responseText;
@@ -576,7 +577,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 }
                 _.delay(function() {
                     self.dygraphLoader($graphEl, graph.url, graph.options);
-                }, 50*index);
+                }, self.graphiteRequestDelayMs * index);
             });
         }
     });

@@ -10,7 +10,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         'graphite-host': 'http://' + hostname + ':8080',
         'api-request-timeout-ms': 10000,
         'long-polling-interval-ms': 20000,
-        'disable-network-checks': false
+        'disable-network-checks': false,
+        'graphite-request-delay-ms': 50
     };
 
     /* Default Configuration */
@@ -203,7 +204,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.graphWall = new GraphWall({
                 App: App,
                 AppRouter: appRouter,
-                graphiteHost: config['graphite-host']
+                graphiteHost: config['graphite-host'],
+                graphiteRequestDelayMs: config['graphite-request-delay-ms']
             });
 
             viz.render().then(function() {
