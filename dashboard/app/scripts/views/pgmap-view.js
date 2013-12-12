@@ -22,10 +22,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             if (this.App) {
                 this.ReqRes = Backbone.Marionette.getOption(this.App, 'ReqRes');
                 this.listenTo(this.App.vent, 'filter:update', this.fetchOSDPGCount);
+                this.listenTo(this.App.vent, 'status:update', this.statusUpdate);
             }
             gaugeHelper(this);
         },
         count: 15000,
+        statusUpdate: function(model) {
+            this.total = _.reduce(model.get('pg'), function(memo, obj) {
+                return memo + obj.count;
+            }, 0);
+            this.ui.headline.text(this.headlineTemplate({
+                active: this.format(model.get('pg').ok.count),
+                total: this.format(this.total)
+            }));
+        },
         getLayout: function(count) {
             var width = 400,
                 height = 250,
@@ -227,7 +237,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         },
         renderMap: function() {
             var self = this;
-            this.total = 0;
+            this.pgReplicaTotal = 0;
             this.activeclean = 0;
             var r, g, b, a, y = 0;
             var l = this.getLayout(this.count);
@@ -237,7 +247,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             this.stats = {};
             this.collection.each(function(m) {
                 var pgStates = m.get('pg_states');
-                self.total += _.reduce(pgStates, function(memo, value, key) {
+                self.pgReplicaTotal += _.reduce(pgStates, function(memo, value, key) {
                     if (self.stats[key] === undefined) {
                         self.stats[key] = 0;
                     }
@@ -266,7 +276,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                     var x = memo,
                         xo = memo;
                     for (; x < xo + value; x++) {
-                        self.setPixel(imageData, x + self.total, y, r, g, b, a); // 255 opaque
+                        self.setPixel(imageData, x + self.pgReplicaTotal, y, r, g, b, a); // 255 opaque
                     }
                     return xo + value;
                 }, 0);
@@ -275,10 +285,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             fctx.clear();
             ctx.putImageData(imageData, 0, 0);
             fctx.drawImage(this._background.getCanvas()._canvas, l.x, l.y);
-            this.ui.headline.text(this.headlineTemplate({
-                active: this.format(this.activeclean),
-                total: this.format(this.total)
-            }));
             var found = _.find(this.priorityOrder, function(key) {
                 return self.stats[key] > 0;
             });
