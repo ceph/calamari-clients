@@ -40,10 +40,10 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         };
     }
 
-    function newEventEmitter(fnName, timerName, eventName) {
+    function newEventEmitter(fnName, timerName, eventName, defaultDelay) {
         return function() {
             var self = this;
-            var delay = this[timerName] === null ? 0 : this.delay;
+            var delay = this[timerName] === null ? 0 : defaultDelay;
             this[timerName] = setTimeout(function() {
                 self.App.vent.trigger(eventName);
                 self[timerName] = self[fnName].apply(self);
@@ -93,14 +93,15 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                     delay: this.heartBeatDelay
                 });
             }
-            this.osdUpdateEvent = newEventEmitter('osdUpdateEvent', 'osdUpdateTimer', 'osd:update');
-            this.poolUpdateEvent = newEventEmitter('poolUpdateEvent', 'poolUpdateTimer', 'pool:update');
-            this.hostUpdateEvent = newEventEmitter('hostUpdateEvent', 'hostUpdateTimer', 'host:update');
+            this.osdUpdateEvent = newEventEmitter('osdUpdateEvent', 'osdUpdateTimer', 'osd:update', this.delay);
+            this.poolUpdateEvent = newEventEmitter('poolUpdateEvent', 'poolUpdateTimer', 'pool:update', this.delay);
+            this.hostUpdateEvent = newEventEmitter('hostUpdateEvent', 'hostUpdateTimer', 'host:update', this.delay);
+            this.iopsUpdateEvent = newEventEmitter('iopsUpdateEvent', 'iopsUpdateTimer', 'iops:update', 60000);
             this.listenTo(this.App.vent, 'cluster:update', this.updateModels);
             _.bindAll(this, 'stop', 'updateModels', 'start');
             this.models = ['health', 'usage', 'status', 'krakenHeartBeat'];
             this.timers = ['health', 'usage', 'status', 'update', 'krakenHeartBeat'];
-            this.pollers = ['healthPoller', 'usagePoller', 'statusPoller', 'krakenHeartBeatPoller', 'osdUpdateEvent', 'poolUpdateEvent', 'hostUpdateEvent'];
+            this.pollers = ['healthPoller', 'usagePoller', 'statusPoller', 'krakenHeartBeatPoller', 'osdUpdateEvent', 'poolUpdateEvent', 'hostUpdateEvent', 'iopsUpdateEvent'];
         },
         // Cluster ID has changed. Update pollers.
         updateModels: function(cluster) {

@@ -36,8 +36,9 @@ define([
                 targetParam
             ];
             this.getUrl = _.partial(gutils.makeGraphURL(this.baseUrl, fns), '', 'all');
-            _.bindAll(this, 'postRender');
+            _.bindAll(this, 'postRender', 'updateGraph');
             this.listenToOnce(this, 'render', this.postRender);
+            this.listenTo(this.App.vent, 'iops:update', this.updateGraph);
         },
         data: [
             [1, 10, 120],
@@ -76,6 +77,9 @@ define([
                     interactionModel: {}
                 });
                 var iops = _.last(d.data)[1];
+                if (iops === null) {
+                    iops = 0;
+                }
                 headline.text(iops);
             });
         }
