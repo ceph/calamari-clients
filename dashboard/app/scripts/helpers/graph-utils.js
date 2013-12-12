@@ -26,6 +26,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
      * to dynamically fill in the hostname and subkey we need to request usually after making a 2nd request to graphite
      * to find out what subkeys are available.
      */
+
     function makeTargetTemplate(path) {
         var template = JST[path];
         return function(metrics) {
@@ -53,6 +54,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
         makeMemoryTargets: makeTargetTemplate('app/scripts/templates/graphite/MemoryTarget.ejs'),
         makeIOStatIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/IOStatIOPSTargets.ejs'),
         makeNetworkTargets: makeTargetTemplate('app/scripts/templates/graphite/NetworkTargets.ejs'),
+        makePoolIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/PoolIOPSTarget.ejs'),
         makeHeightWidthParams: function(width, height) {
             var template = _.template('width=<%- args.width %>&height=<%- args.height %>', undefined, {
                 variable: 'args'
@@ -136,6 +138,14 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
             return {
                 labels: resp.targets,
                 data: data
+            };
+        },
+        sumSeries: function(fn) {
+            return function() {
+                var args = arguments;
+                return [ 'sumSeries(' + _.reduce(fn.apply(this, args), function(memo, value) {
+                    return memo + ',' + value;
+                }) + ')' ];
             };
         }
     };

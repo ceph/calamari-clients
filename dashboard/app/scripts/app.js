@@ -26,6 +26,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
     /* Load Config.json first before starting app */
     var promise = configloader('scripts/config.json').then(function(result) {
         _.extend(config, result);
+        if (config['graphite-host'] && config['iops-host'] === undefined) {
+            config['iops-host'] = config['graphite-host'];
+        }
     }).fail(function(jqXHR) {
         window.alert(jqXHR);
         console.log(jqXHR);
@@ -146,6 +149,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         iopsLayout.render();
 
         var iopsView = new views.IopsView({
+            'graphiteHost': config['iops-host'],
             App: App
         });
         iopsLayout.a.show(iopsView);
@@ -260,7 +264,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 commit: gitcommit['git-commit'],
                 views: views,
                 PoolsView: poolsView,
-                IopsView: iopsView
+                IopsView: iopsView,
+                HostsView: hostsView
             };
         });
         /* Defer Visualization startup to after loading the cluster metadata */

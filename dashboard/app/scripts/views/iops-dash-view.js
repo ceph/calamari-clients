@@ -6,9 +6,10 @@ define([
         'backbone',
         'templates',
         'dygraphs',
+        'helpers/graph-utils',
         'helpers/gauge-helper',
         'marionette'
-], function($, _, Backbone, JST, Dygraph, gaugeHelper) {
+], function($, _, Backbone, JST, Dygraph, gutils, gaugeHelper) {
     'use strict';
 
     var IopsDashView = Backbone.Marionette.ItemView.extend({
@@ -16,14 +17,27 @@ define([
         template: JST['app/scripts/templates/iops-dash.ejs'],
         ui: {
             'canvas': '.iopscanvas',
-            'headline': '.headline'
+            'headline': '.headline',
+            'legend': '.legend'
         },
         initialize: function() {
             this.Dygraph = Dygraph;
-            _.bindAll(this, 'postRender');
             this.App = Backbone.Marionette.getOption(this, 'App');
-            this.listenToOnce(this, 'render', this.postRender);
+
             gaugeHelper(this);
+            this.graphiteHost = Backbone.Marionette.getOption(this, 'graphiteHost');
+            this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
+            var metrics = ['num_read', 'num_write'];
+            var targets = gutils.makePoolIOPSTargets(metrics);
+            var targetParam = gutils.makeTargets(gutils.sumSeries(targets));
+            var fns = [
+                gutils.makeParam('format', 'json-array'),
+                gutils.makeParam('from', '-1d'),
+                targetParam
+            ];
+            this.getUrl = _.partial(gutils.makeGraphURL(this.baseUrl, fns), '', 'all');
+            _.bindAll(this, 'postRender');
+            this.listenToOnce(this, 'render', this.postRender);
         },
         data: [
             [1, 10, 120],
@@ -31,14 +45,39 @@ define([
             [3, 50, 60],
             [4, 70, 80]
         ],
-        postRender: function() {
-            this.d = new Dygraph(this.ui.canvas[0], this.data, {
-                axisLabelFontSize: 10,
-                drawYAxis: false,
-                height: 100,
-                width: 400
+        getData: function() {
+            return $.ajax({
+                url: this.getUrl('', 'all'),
+                dataType: 'json'
             });
-            this.ui.headline.text('lotta');
+        },
+        updateGraph: function() {
+            var dygraph = this.dygraph;
+            this.getData().done(function(resp) {
+                var d = gutils.graphiteJsonArrayToDygraph(resp);
+                dygraph.updateOptions({
+                    file: d.data
+                });
+            });
+        },
+        postRender: function() {
+            var request = this.getData();
+            var canvas = this.ui.canvas[0];
+            var headline = this.ui.headline;
+            var legend = this.ui.legend[0];
+            var self = this;
+            request.done(function(resp) {
+                var d = gutils.graphiteJsonArrayToDygraph(resp);
+                self.dygraph = new Dygraph(canvas, d.data, {
+                    axisLabelFontSize: 10,
+                    labels: ['Date', 'IOPS'],
+                    labelsKMB: true,
+                    labelsDiv: legend,
+                    interactionModel: {}
+                });
+                var iops = _.last(d.data)[1];
+                headline.text(iops);
+            });
         }
     });
 

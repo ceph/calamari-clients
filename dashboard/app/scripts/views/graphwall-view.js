@@ -512,7 +512,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var $ajax = this.jsonRequest(url);
             $el.find('.icon-space').text('');
             $el.find('input').attr('disabled', 'disabled');
-            $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function(jqXHR) {
+            $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function dygraphFail(jqXHR) {
                 // handle errors on load here
                 var msg = 'Graph Error: ' + jqXHR.statusText + ' ' + jqXHR.responseText;
                 $el.find('.graph-spinner').addClass('hidden');
@@ -528,7 +528,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     });
                     $el.find('.dygraph-legend').text('');
                 }
-            }).always(function() {
+            }).always(function hideVeil() {
                 $graphveil.addClass('hidden');
             });
         },

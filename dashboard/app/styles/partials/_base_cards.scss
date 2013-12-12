@@ -18,7 +18,7 @@
 		font-size: 0.6em;
     }
     .headline {
-        margin-top: 0.25em;
+        margin-top: 0.35em;
         font-size: 3em;
         text-align: center;
     }
@@ -84,8 +84,9 @@
       }
     }
 	.iopscanvas {
-      height: 100%;
-      width: 66%;
+	  margin-top: 25px;
+      height: 100px;
+      width: 90%;
 	  padding: 0;
 	}
 }
