@@ -1,14 +1,14 @@
 /*global define*/
 define([
-        'underscore',
-        'backbone',
-        'marionette'
-], function(_, Backbone) {
+    'underscore',
+    'backbone',
+    'marionette'
+], function (_, Backbone) {
     'use strict';
 
     var GraphiteModel = Backbone.Model.extend({
         url: function() {
-            throw ('you need to define a url function');
+            throw('you need to define a url function');
         },
         parse: function(resp) {
             return _.reduce(resp, function(memo, value) {
@@ -21,11 +21,10 @@ define([
         },
         fetchMetrics: function(host) {
             this.host = host;
-            return this.fetch({
-                reset: true
-            });
+            return this.fetch();
         },
-        defaults: {}
+        defaults: {
+        }
     });
 
     return GraphiteModel;

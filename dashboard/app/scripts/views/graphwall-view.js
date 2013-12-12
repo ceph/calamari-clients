@@ -383,6 +383,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var options = this.graphOptions[fnName];
             this.hostname = hostname;
             var deferred = $.Deferred();
+            model.clear({
+                silent: true
+            });
             model.fetchMetrics(hostname).done(function() {
                 var list = model.keys();
                 deferred.resolve(_.map(list, function(id) {
