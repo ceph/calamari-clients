@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['underscore', 'backbone', 'models/graphite-model'], function(_, Backbone, GraphiteModel) {
+define(['underscore', 'models/graphite-model'], function(_, GraphiteModel) {
     'use strict';
 
     var GraphiteCpuModel = GraphiteModel.extend({
