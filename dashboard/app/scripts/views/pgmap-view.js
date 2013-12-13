@@ -294,6 +294,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                     value: this.stats[found]
                 }));
                 this.displayWarnings(found);
+            } else {
+                // clear states when there's no interesting states
+                // to display
+                this.ui.subtext.text('');
+                this.displayWarnings('');
             }
         }
     });
