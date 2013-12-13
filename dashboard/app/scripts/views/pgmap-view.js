@@ -194,7 +194,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             var self = this;
             setTimeout(function() {
                 self.collection.set(self.ReqRes.request('get:osdpgcounts'));
-                self.count = self.countPGs();
+                var count = self.countPGs();
+                if (count !== self.count) {
+                    self.count = count;
+                    self.stage.destroy();
+                    self.backstage.destroy();
+                    self.postRender();
+                }
                 self.trigger('renderMap');
             }, 0);
         },
