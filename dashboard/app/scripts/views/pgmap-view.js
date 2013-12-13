@@ -179,10 +179,22 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             this._layer.drawScene();
 
         },
+        countPGs: function() {
+            return this.collection.reduce(function(memo, m) {
+                var pgs = m.get('pg_states');
+                return memo + _.reduce(pgs, function(memo, v, k) {
+                    if (k === 'active') {
+                        return memo;
+                    }
+                    return memo + v;
+                }, 0);
+            }, 0);
+        },
         fetchOSDPGCount: function() {
             var self = this;
             setTimeout(function() {
                 self.collection.set(self.ReqRes.request('get:osdpgcounts'));
+                self.count = self.countPGs();
                 self.trigger('renderMap');
             }, 0);
         },
