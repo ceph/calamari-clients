@@ -3,7 +3,7 @@
 define(['underscore', 'models/graphite-model'], function(_, GraphiteModel) {
     'use strict';
 
-    var GraphitePoolIoModel = GraphiteModel.extend({
+    var GraphitePoolIopsModel = GraphiteModel.extend({
         url: function() {
             return this.graphiteHost + '/metrics/find?query=ceph.cluster.ceph.pool.*';
         },
@@ -15,5 +15,5 @@ define(['underscore', 'models/graphite-model'], function(_, GraphiteModel) {
         }
     });
 
-    return GraphitePoolIoModel;
+    return GraphitePoolIopsModel;
 });
