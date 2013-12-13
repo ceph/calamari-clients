@@ -16,7 +16,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         initialize: function() {
             _.bindAll(this);
             this.App = Backbone.Marionette.getOption(this, 'App');
-            this.listenToOnce(this, 'show', this.postRender);
             this.listenTo(this, 'renderMap', this.renderMap);
             this.collection = new Backbone.Collection();
             if (this.App) {
@@ -124,7 +123,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             }, []);
             return _.flatten(legend);
         },
-        postRender: function() {
+        initCanvas: function() {
             var layout = this.getLayout(this.count);
             var width = this.ui.container.width();
             var height = this.ui.container.height();
@@ -196,10 +195,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 self.collection.set(self.ReqRes.request('get:osdpgcounts'));
                 var count = self.countPGs();
                 if (count !== self.count) {
+                    // PG Replica Count changed, re-render the canvas
                     self.count = count;
-                    self.stage.destroy();
-                    self.backstage.destroy();
-                    self.postRender();
+                    if (self.stage) {
+                        self.stage.destroy();
+                        self.backstage.destroy();
+                    }
+                    self.initCanvas();
                 }
                 self.trigger('renderMap');
             }, 0);
