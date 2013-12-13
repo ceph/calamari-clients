@@ -330,6 +330,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             model.keys = function() {
                 return model.ids;
             };
+            model.clear = function() {};
             return model;
         },
         makeHostDeviceDiskSpaceBytes: function(hostname, id) {
