@@ -255,9 +255,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         ],
         poolIopsGraphTitleTemplate: function(fn) {
             // wrap Pool Iops Title Template so we can add proper name
-            var request = this.App.ReqRes.request;
+            var self = this;
             return function(opts) {
-                var pools = request('get:pools');
+                var pools = self.App.ReqRes.request('get:pools');
                 if (opts.id) {
                     opts.id = _.template('<%- name %> (<%- id %>)', {
                         name: pools[opts.id],
