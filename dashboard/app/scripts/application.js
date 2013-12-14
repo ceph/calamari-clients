@@ -96,14 +96,21 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             //console.log('ongraph>> host: ' + host + ' device id: ' + id);
             this.graphWall.hideGraphs();
             var hosts;
+            var self = this;
             if (host === 'all') {
                 this.graphWall.hideButtons();
                 this.graphWall.renderGraphs('CPU Load for Cluster', this.graphWall.makeHostUrls('makeCPUGraphUrl'));
+            } else if (host === 'iops') {
+                this.graphWall.hideButtons();
+                this.graphWall.makePoolIOPS.call(this.graphWall).then(function(result) {
+                    self.graphWall.renderGraphs('Per Pool IOPS', function() {
+                        return _.flatten(result);
+                    });
+                });
             } else if (id !== undefined && id !== null) {
                 this.graphWall.showButtons();
                 var graphEvent = this.graphEvents[id];
                 if (graphEvent !== undefined) {
-                    var self = this;
                     this.graphWall[graphEvent.fn].call(this.graphWall, host, id).then(function(result) {
                         self.graphWall.renderGraphs(graphEvent.title({
                             host: host

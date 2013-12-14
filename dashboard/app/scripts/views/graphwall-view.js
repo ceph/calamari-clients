@@ -238,6 +238,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     labelsKMB: true,
                     ylabel: 'Packets',
                     labels: ['Date', 'TX Drops', 'RX Drops']
+                },
+            }, {
+                metrics: ['num_read', 'num_write'],
+                fn: 'makePoolIOPSGraphURL',
+                util: 'makePoolIOPSTargets',
+                titleTemplate: _.template('Pool <%- id %> IOPS/Min'),
+                options: {
+                    labelsKMB: true,
+                    ylabel: 'IOPS',
+                    labels: ['Date', 'Read', 'Write'],
+                    stackedGraph: true,
+                    fillGraph: true
                 }
             }
         ],
@@ -269,6 +281,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 graphiteHost: this.graphiteHost
             });
             this.netTargetModels = new models.GraphiteNetModel(undefined, {
+                graphiteHost: this.graphiteHost
+            });
+            this.iopsTargetModels = new models.GraphitePoolIOPSModel(undefined, {
                 graphiteHost: this.graphiteHost
             });
             this.render = _.wrap(this.render, this.renderWrapper);
@@ -309,6 +324,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         makeHostDeviceRWAwait: function(hostname, id) {
             this.updateBtns(id);
             return this.makePerHostModelGraphs(hostname, 'makeHostDeviceRWAwaitGraphUrl', this.ioTargetModels);
+        },
+        makePoolIOPS: function() {
+            return this.makePerHostModelGraphs('', 'makePoolIOPSGraphURL', this.iopsTargetModels);
         },
         updateBtns: function(id) {
             this.ui.buttons.find('.btn').removeClass('active');
@@ -417,7 +435,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 });
             };
         },
-        selectTemplate: _.template('<select class="form-control" name="hosts"><option value="all" selected>Cluster - per host CPU</option><%= list %></select>'),
+        selectTemplate: _.template('<select class="form-control" name="hosts"><option value="all" selected>Cluster - per host CPU</option><option value="iops">Pool IOPS</option><%= list %></select>'),
         optionTemplate: _.template('<option value="<%- args.host %>">Host - <%- args.host %></option>"', null, {
             variable: 'args'
         }),
