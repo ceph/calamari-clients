@@ -141,11 +141,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 };
             });
         },
-        getPools: function() {
-            return _.uniq(_.reduceRight(this.collection.pluck('pools'), function(a, b) {
-                return a.concat(b);
-            }));
-        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App.Config) {
@@ -175,7 +170,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
             this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
             this.App.ReqRes.setHandler('get:osdpgcounts', this.getOSDPGCounts);
-            this.App.ReqRes.setHandler('get:pools', this.getPools);
             this.render = _.wrap(this.render, this.renderWrapper);
             this.osdHoverHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, [this.osdHoverHandlerCore, this.hostGroupHoverHandlerCore]);
             this.osdClickHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, this.osdClickHandlerCore);

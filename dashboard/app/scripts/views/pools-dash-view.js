@@ -36,8 +36,17 @@ define(['jquery',
             if (this.App) {
                 this.listenTo(this.App.vent, 'pool:update', this.updateCollection);
                 this.listenTo(this.App.vent, 'cluster:update', this.switchCluster);
+                this.App.ReqRes.setHandler('get:pools', this.getPoolsHandler);
             }
             gaugeHelper(this);
+        },
+        getPoolsHandler: function() {
+            return this.collection.reduce(function(memo, m) {
+                var id = m.get('pool_id');
+                var name = m.get('name') || 'unknown';
+                memo[id] = name;
+                return memo;
+            }, {});
         },
         switchCluster: function(cluster) {
             if (cluster) {

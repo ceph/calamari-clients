@@ -8,9 +8,13 @@ define(['underscore', 'models/graphite-model'], function(_, GraphiteModel) {
             return this.graphiteHost + '/metrics/find?query=ceph.cluster.ceph.pool.*';
         },
         keys: function() {
-            return _.map(this.attributes, function(v, k) {
+            var keys =  _.map(this.attributes, function(v, k) {
                 return k;
             });
+            if (this.filter) {
+                return this.filter(keys);
+            }
+            return keys;
         }
     });
 

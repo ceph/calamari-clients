@@ -283,9 +283,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.netTargetModels = new models.GraphiteNetModel(undefined, {
                 graphiteHost: this.graphiteHost
             });
+            var self = this;
             this.iopsTargetModels = new models.GraphitePoolIOPSModel(undefined, {
                 graphiteHost: this.graphiteHost
             });
+            this.iopsTargetModels.filter = function(res) {
+                var pools = self.App.ReqRes.request('get:pools');
+                return _.filter(res, function(el) {
+                    return pools[el] !== undefined;
+                });
+            };
             this.render = _.wrap(this.render, this.renderWrapper);
             this.listenTo(this, 'item:before:close', this.onItemBeforeClose);
             this.debouncedChangedGraph = _.debounce(this.debouncedChangedGraph, 500);
