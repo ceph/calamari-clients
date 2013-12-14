@@ -253,6 +253,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 }
             }
         ],
+        poolIopsGraphTitleTemplate: function(fn) {
+            // wrap Pool Iops Title Template so we can add proper name
+            var request = this.App.ReqRes.request;
+            return function(opts) {
+                var pools = request('get:pools');
+                if (opts.id) {
+                    opts.id = _.template('<%- name %> (<%- id %>)', {
+                        name: pools[opts.id],
+                        id: opts.id
+                    });
+                }
+                return fn(opts);
+            };
+        },
         makeGraphFunctions: function(options) {
             var targets = gutils.makeTargets(gutils[options.util](options.metrics));
             var fns = [
@@ -263,6 +277,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphTitleTemplates[options.fn] = options.titleTemplate;
             this.graphOptions[options.fn] = options.options;
         },
+        wrapTitleTemplate: function(key, wrapperFn) {
+            this.graphTitleTemplates[key] = wrapperFn(this.graphTitleTemplates[key]);
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.AppRouter = Backbone.Marionette.getOption(this, 'AppRouter');
@@ -270,9 +287,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteRequestDelayMs = Backbone.Marionette.getOption(this, 'graphiteRequestDelayMs');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph');
+            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph', 'poolIopsGraphTitleTemplate');
 
             _.each(this.graphs, this.makeGraphFunctions);
+            this.wrapTitleTemplate('makePoolIOPSGraphURL', this.poolIopsGraphTitleTemplate);
 
             this.cpuTargetModels = new models.GraphiteCPUModel(undefined, {
                 graphiteHost: this.graphiteHost
