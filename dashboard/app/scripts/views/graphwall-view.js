@@ -289,6 +289,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
             this.iopsTargetModels.filter = function(res) {
                 var pools = self.App.ReqRes.request('get:pools');
+                pools.all = true;
                 return _.filter(res, function(el) {
                     return pools[el] !== undefined;
                 });
