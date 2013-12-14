@@ -258,6 +258,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var self = this;
             return function(opts) {
                 var pools = self.App.ReqRes.request('get:pools');
+                pools.all = 'Aggregate';
                 if (opts.id) {
                     opts.id = _.template('<%- name %> (<%- id %>)', {
                         name: pools[opts.id],
