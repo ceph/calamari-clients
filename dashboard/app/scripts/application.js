@@ -175,7 +175,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 });
             });
         },
-        onenterdashmode: function() {},
+        onenterdashmode: function() {
+            this.vent.trigger('dashboard:refresh');
+        },
         onleavedashmode: function() {}
     });
     return Application;

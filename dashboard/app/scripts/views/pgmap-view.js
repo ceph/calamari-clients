@@ -22,6 +22,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 this.ReqRes = Backbone.Marionette.getOption(this.App, 'ReqRes');
                 this.listenTo(this.App.vent, 'filter:update', this.fetchOSDPGCount);
                 this.listenTo(this.App.vent, 'status:update', this.statusUpdate);
+                var self = this;
+                this.listenToOnce(this.App.vent, 'filter:update', function() {
+                    // Wait until we've received an OSD map, then register
+                    // a refresh handler so that dashboard refreshes can be
+                    // requested
+                    self.listenTo(self.App.vent, 'dashboard:refresh', self.renderMap);
+                });
             }
             gaugeHelper(this);
         },
