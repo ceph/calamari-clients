@@ -21,7 +21,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             _.bindAll(this, 'switchDisabled', 'switchEnabled');
         },
         updateCount: function(model) {
-            var count = '-';
+            var count = '0';
             if (model) {
                 count = model.get('count');
             }
