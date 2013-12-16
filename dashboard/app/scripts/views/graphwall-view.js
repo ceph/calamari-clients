@@ -260,10 +260,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 var pools = self.App.ReqRes.request('get:pools');
                 pools.all = 'Aggregate';
                 if (opts.id) {
-                    opts.id = _.template('<%- name %> (<%- id %>)', {
-                        name: pools[opts.id],
-                        id: opts.id
-                    });
+                    opts.id = pools[opts.id];
                 }
                 return fn(opts);
             };
