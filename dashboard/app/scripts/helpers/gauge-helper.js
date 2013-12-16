@@ -88,14 +88,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
 
             /* Defer adding UI events until render is complete */
             target.listenToOnce(target, 'render', function() {
-                target.listenTo(target.App.vent, watched + ':request', function() {
-                    target.ui.spinner.css('visibility', 'visible');
-                });
-                target.listenTo(target.App.vent, watched + ':sync ' + watched + ':error', function() {
-                    setTimeout(function() {
-                        target.ui.spinner.css('visibility', 'hidden');
-                    }, 250);
-                });
+                if (target.ui && target.ui.spinner) {
+                    target.listenTo(target.App.vent, watched + ':request', function() {
+                        target.ui.spinner.css('visibility', 'visible');
+                    });
+                    target.listenTo(target.App.vent, watched + ':sync ' + watched + ':error', function() {
+                        setTimeout(function() {
+                            target.ui.spinner.css('visibility', 'hidden');
+                        }, 250);
+                    });
+                }
             });
         } else {
             console.log(target, ' is missing App or App.vent object');
