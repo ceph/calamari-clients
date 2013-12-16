@@ -35,18 +35,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
     });
     /* Load Config.json first before starting app */
 
-    // TODO replace this with CSS version
-    var replaceText = function($el, text, removeClass, addClass) {
-        $el.css('display', 'none').text(text);
-        if (removeClass !== undefined) {
-            $el.removeClass(removeClass);
-        }
-        if (addClass !== undefined) {
-            $el.addClass(addClass);
-        }
-        $el.fadeIn().css('display', '');
-    };
-
     var App, userMenu, clusterMenu;
     promise.then(function() {
         App = new Application();
@@ -57,49 +45,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App: App
         });
         userMenu.fetch();
-        /* Demo Code */
-        App.vent.listenTo(App.vent, 'status:healthok', function() {
-            replaceText($('.warn-pg, .warn-osd, .warn-pool'), '0');
-            replaceText($('.ok-pg'), 2400);
-            replaceText($('.ok-pool'), 10);
-        });
-        App.vent.listenTo(App.vent, 'status:healthwarn', function() {
-            var pg = Math.round(Math.random() * 45) + 5;
-            var pool = Math.round(Math.random() * 1) + 1;
-            replaceText($('.warn-pg'), pg);
-            replaceText($('.warn-pool'), pool);
-            replaceText($('.ok-pg'), 2400 - pg);
-            replaceText($('.ok-pool'), 10 - pool);
-        });
-        App.vent.listenTo(App.vent, 'updateTotals', function() {
-            var ONE_GIGABYTE = 1024 * 1024 * 1024;
-            var totalUsed = 0,
-                totalCapacity = 0,
-                totalObj = 0,
-                totalObjSpace = 0;
-            viz.collection.each(function(m) {
-                totalUsed += m.get('used');
-                totalCapacity += m.get('capacity');
-                totalObj += Math.random(Date.now()) * 100;
-            });
-
-            var settings = {
-                cluster: 1,
-                space: {
-                    /* jshint -W106 */
-                    free_bytes: totalCapacity * ONE_GIGABYTE,
-                    capacity_bytes: totalCapacity * ONE_GIGABYTE,
-                    used_bytes: totalUsed * ONE_GIGABYTE
-                }
-            };
-            gauge.set(new models.UsageModel(settings));
-            $('.objcount').text(Math.floor(totalObj));
-            totalObjSpace = totalObj * 50;
-            totalObjSpace = humanize.filesize(Math.floor(totalObjSpace)).replace(' Kb', 'K');
-            $('.objspace').text(totalObjSpace);
-        });
-        /* Demo Code */
-
 
         /* Widget Setup */
         var gaugesLayout = new views.GaugesLayout({
@@ -153,6 +98,11 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App: App
         });
         iopsLayout.a.show(iopsView);
+        var healthView = new views.HealthView({
+            App: App,
+            model: new models.HealthModel()
+        });
+        iopsLayout.b.show(healthView);
 
         var collection;
         if (config.offline) {
@@ -265,7 +215,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 views: views,
                 PoolsView: poolsView,
                 IopsView: iopsView,
-                HostsView: hostsView
+                HostsView: hostsView,
+                HealthView: healthView
             };
         });
         /* Defer Visualization startup to after loading the cluster metadata */

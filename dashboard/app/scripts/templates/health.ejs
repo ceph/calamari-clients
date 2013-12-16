@@ -1,11 +1,14 @@
-<hr class="style-two"></hr>
-<span class="card-title">
-    <%- title %>
-</span>
-<span style="visibility:hidden;" class="fa fa-spinner fa-spin"></span>
-<span class="health-text <%- clazz %>">
-    <%- healthText %>
-</span>
-<span class="subtext">
-    <%- relTimeStr %>
-</span>
+<div class="gauge card health">
+  <span class="card-title"><i class="fa fa-heart fa-lg"></i> Health</span>
+  <div class="content">
+    <div class="headline"><i class="fa fa-refresh fa-spin"></i></div>
+    <div class="subline"></div>
+    <div class="subtext"></div>
+  </div>
+  <div class='card-icon ok'>
+    <span class="fa-stack fa-lg fa-2x">
+      <i class="fa fa-square-o fa-stack-2x"></i>
+      <i class="fa fa-check fa-stack-1x"></i>
+    </span>
+  </div>
+</div>
