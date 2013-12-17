@@ -21,9 +21,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             _.bindAll(this, 'switchDisabled', 'switchEnabled');
         },
         updateCount: function(model) {
-            var count = '0';
+            var count = '-';
             if (model) {
                 count = model.get('count');
+                if (count === 0) {
+                    count = '-';
+                }
             }
             this.getSwitch().find('label').text(count);
         },
