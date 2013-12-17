@@ -51,25 +51,23 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             el: '.gauges'
         });
         gaugesLayout.render();
+        var healthView = new views.HealthView({
+            App: App,
+            model: new models.HealthModel()
+        });
+        gaugesLayout.a.show(healthView);
         var osdView = new views.OsdView({
             App: App
         });
-        gaugesLayout.a.show(osdView);
+        gaugesLayout.b.show(osdView);
         var monView = new views.MonView({
             App: App
         });
-        gaugesLayout.b.show(monView);
+        gaugesLayout.c.show(monView);
         var gauge = new views.UsageView({
             App: App,
             model: new models.UsageModel({}),
             title: 'Usage'
-        });
-        var hostsView = new views.HostsView({
-            App: App
-        });
-        gaugesLayout.d.show(hostsView);
-        gauge.listenTo(gauge, 'item:postrender', function() {
-            App.vent.trigger('updateTotals');
         });
 
         var mapsLayout = new views.GaugesLayout({
@@ -86,7 +84,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
         var poolsView = new views.PoolsView({
             App: App
         });
-        mapsLayout.b.show(poolsView);
+        gaugesLayout.d.show(poolsView);
 
         var iopsLayout = new views.GaugesLayout({
             el: '.iops'
@@ -98,11 +96,10 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App: App
         });
         iopsLayout.a.show(iopsView);
-        var healthView = new views.HealthView({
-            App: App,
-            model: new models.HealthModel()
+        var hostsView = new views.HostsView({
+            App: App
         });
-        iopsLayout.b.show(healthView);
+        iopsLayout.c.show(hostsView);
 
         var collection;
         if (config.offline) {
@@ -163,7 +160,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             });
 
             viz.render().then(function() {
-                gaugesLayout.c.show(gauge);
+                iopsLayout.b.show(gauge);
                 if (!config.offline) {
                     poller.start();
                 }
@@ -191,7 +188,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 appRouter: appRouter
             });
 
-            appRouter.navigate('dashboard');
 
             // Global Exports
             window.inktank = {
@@ -220,8 +216,9 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             };
         });
         /* Defer Visualization startup to after loading the cluster metadata */
+        Backbone.history.start();
+        appRouter.navigate('dashboard');
     });
 
-    Backbone.history.start();
 
 });
