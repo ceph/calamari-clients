@@ -58,14 +58,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
         // add the canvas based gauge dial
         postRender: function() {
             this.gauge = new Gauge(this.ui.canvas[0]).setOptions(this.opts);
-            function TextRenderer(el) {
-                this.el = el;
-                this.render = function(gauge) {
-                    var val = 100-Math.floor(gauge.displayedValue).toString();
-                    this.el.innerText = val;
-                };
-            }
-            this.gauge.textField = new TextRenderer(this.ui.number[0]);
             this.gauge.set(0);
             this.gauge.maxValue = 100;
             this.gauge.minValue = 0;
@@ -90,7 +82,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             used = used.replace(' ', '');
             var total = humanize.filesize(space.capacity_bytes, undefined, 1);
             total = total.replace(' ', '');
-            this.ui.totalused.text(used);
+            this.ui.number.text(used);
             this.ui.totalcap.text(total);
             this.gauge.set(model.getPercentageUsed());
             this.displayWarning();

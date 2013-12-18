@@ -46,8 +46,14 @@ define(['jquery',
         },
         countServices: function(memo, model) {
             var services = model.get('services');
+            var m = {};
             _.each(services, function(obj) {
-                memo[obj.type] += 1;
+                // count service presence
+                m[obj.type] = 1;
+            });
+            _.each(m, function(v, k) {
+                // add them to totals
+                memo[k] += v;
             });
             return memo;
         },
