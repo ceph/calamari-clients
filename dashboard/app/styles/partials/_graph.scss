@@ -87,55 +87,69 @@ h2.graph-subtitle {
   padding: 0;
 }
 .graph-range {
-    @include nowrap;
-    width: 70%;
+    width: 80%;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
     font-family:'ApexSansLight';
-    span.left {
-        margin-right: 5px;
-        &:after {
-            content:'Week';
-        }
-        @include breakpoint(screen-sm) {
-            &:after {
-                content:'1W';
-            }
-        }
-        @include breakpoint(screen-xs) {
-            &:after {
-                content:'W';
-            }
-        }
-    }
-    span.right {
-        margin-left: 5px;
-        &:after {
-            content:'Hour';
-        }
-        @include breakpoint(screen-sm) {
-            &:after {
-                content:'1H';
-            }
-        }
-        @include breakpoint(screen-xs) {
-            &:after {
-                content:'H';
-            }
-        }
-    }
     vertical-align: top;
+}
+.graph-label {
+    @include nowrap;
+	width: 80%;
+	margin-top: 0.5em;
+	margin-left: auto;
+	margin-right: auto;
+	.a {
+		display: inline-block;
+		min-width: 21.5%;
+		&:after {
+			content: '1w';
+		}
+	}
+	.b {
+		display: inline-block;
+		min-width: 21.5%; 
+		&:after {
+			content: '3d';
+		}
+	}
+	.c {
+		display: inline-block;
+		min-width: 21.5%;
+		&:after {
+			content: '24h';
+		}
+	}
+	.d {
+		display: inline-block;
+		min-width: 21.5%;
+		&:after {
+			content: '12h';
+		}
+	}
+	.e {
+		display: inline-block;
+		min-width: 0;
+		&:after {
+			content: '1h';
+		}
+	}
+}
+.rhs {
+    width: 25%;
+	position: absolute;
+    right: 20px;
+    top: 60px;
+	padding: 0;
+	margin: 0;
 }
 .graph-controls {
   border: 1px solid lighten($itgray,25%);
   padding: 18px 0;
-  position: absolute;
-  right: 20px;
-  top: 60px;
-  width: 25%;
+  position: relative;
   input[type='range'] {
-	  width: 60%;
+	  width: 100%;
   }
   .graph-value {
 	margin-top: 0.30em;
@@ -143,19 +157,12 @@ h2.graph-subtitle {
 	font-size: 1.2em;
 	text-align: center;
   }
-  .graph-icon {
-	  text-align: center;
-	  width: 100%;
-	  color: $itgray;
-  }
   line-height: 0.6;
 }
 .legend-area {
-  right: 20px;
-  bottom: 40px;
-  position: absolute;
-  width: 25%;
-  height: 250px;
+  margin-top: 10px;
+  position: relative;
+  min-height: 120px;
   border: 1px solid lighten($itgray,25%);
   padding: 9px;
 }
@@ -164,6 +171,10 @@ h2.graph-subtitle {
 }
 h3.dygraph-legend-title {
 	margin-top: 5px;
+	font-family: 'ApexSansLight';
+}
+h3.graph-control-title {
+	margin: 0 0 15px 9px;
 	font-family: 'ApexSansLight';
 }
 .graph-spinner {

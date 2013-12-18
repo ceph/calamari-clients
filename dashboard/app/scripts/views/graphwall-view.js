@@ -19,7 +19,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             'input .graph-range input': 'changeGraphRange'
         },
         rangeText: [
-                '1 Week', '3 Days', '1 Day', '12 Hours', '1 Hour'
+                '1 Week', '3 Days', '24 Hours', '12 Hours', '1 Hour'
         ],
         rangeQuery: [
                 '-7d', '-3d', '-1d', '-12hour', '-1hour'
