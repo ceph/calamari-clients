@@ -8,7 +8,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
      *  Health of the cluster widget
      */
     return Backbone.Marionette.ItemView.extend({
-        className: 'col-lg-3 col-md-3 col-sm-4 col-xs-6 custom-gutter',
+        className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/health.ejs'],
         timer: null,
         ui: {

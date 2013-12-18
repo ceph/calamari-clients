@@ -13,7 +13,7 @@ define([
     'use strict';
 
     var IopsDashView = Backbone.Marionette.ItemView.extend({
-        className: 'custom-gutter col-sm-12 col-xs-12 col-lg-9 col-md-9',
+        className: 'custom-gutter col-sm-12 col-xs-12 col-lg-6 col-md-6',
         template: JST['app/scripts/templates/iops-dash.ejs'],
         ui: {
             'canvas': '.iopscanvas',

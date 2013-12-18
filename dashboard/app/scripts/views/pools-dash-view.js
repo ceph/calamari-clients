@@ -11,7 +11,7 @@ define(['jquery',
     'use strict';
 
     var PoolsDashView = Backbone.Marionette.ItemView.extend({
-        className: 'col-md-3 col-lg-3 col-sm-4 col-xs-6 custom-gutter',
+        className: 'col-md-3 col-lg-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/pools-dash.ejs'],
         headlineTemplate: _.template('<%- count %>'),
         quotaTemplate: _.template('<%- name %> Check Quotas'),
