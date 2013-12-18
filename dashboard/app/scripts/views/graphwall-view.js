@@ -459,7 +459,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 });
             };
         },
-        selectTemplate: _.template('<select class="form-control" name="hosts"><option value="all" selected>Cluster - per host CPU</option><option value="iops">Pool IOPS</option><%= list %></select>'),
+        selectTemplate: _.template('<select class="form-control" name="hosts"><option value="all" selected>Cluster</option><option value="iops">Pool IOPS</option><%= list %></select>'),
         optionTemplate: _.template('<option value="<%- args.host %>">Host - <%- args.host %></option>"', null, {
             variable: 'args'
         }),
