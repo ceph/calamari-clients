@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
     'use strict';
 
     var PgmapView = Backbone.Marionette.ItemView.extend({
-        className: 'col-lg-9 col-md-9 col-sm-12 col-xs-12 custom-gutter',
+        className: 'col-lg-12 col-md-12 col-sm-12 col-xs-12 custom-gutter',
         template: JST['app/scripts/templates/pgmap.ejs'],
         headlineTemplate: _.template('<%- active %>/<%- total %>'),
         subtextTemplate: _.template('<%- value %> <%- key %>'),
@@ -43,23 +43,23 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             }));
         },
         getLayout: function(count) {
-            var width = 400,
-                height = 250,
-                x = 25,
-                y = 10,
+            var width = 610,
+                height = 165,
+                x = 0,
+                y = 0,
                 scale = 1;
             if (count <= 15000) {
-                width = 155;
-                height = 95;
-                scale = 2.58;
+                width = 238;
+                height = 63;
+                scale = 2.6;
             } else if (count <= 30000) {
-                width = 220;
-                height = 138;
+                width = 336;
+                height = 90;
                 scale = 1.8;
             } else if (count <= 60000) {
-                width = 310;
-                height = 194;
-                scale = 1.29;
+                width = 476;
+                height = 128;
+                scale = 1.3;
             }
             x = x / scale;
             y = y / scale;
@@ -117,7 +117,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         },
         makeLegend: function() {
             var x = 230,
-                y = 229;
+                y = 160;
             var self = this;
             var legend = _.reduce(_.range(0, 3), function(memo, i) {
                 var swatch = self.makeSwatch(i, x, y);
