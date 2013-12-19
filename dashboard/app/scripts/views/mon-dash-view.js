@@ -52,7 +52,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 up: up,
                 total: total
             }));
-            this.ui.subtext.text('QUORUM');
             this.displayWarning();
         }
     });
