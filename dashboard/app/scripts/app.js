@@ -117,19 +117,14 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
             App.vent.trigger('keyup', evt);
         });
 
-        var statusLine = new views.StatusLine({
-            App: App,
-            el: '.status-line'
-        });
-        statusLine.render();
-
         _.extend(humanize.catalog, {
-            'about_a_minute_ago': '1m',
-            'minutes_ago': 'm',
-            'about_an_hour_ago': '1h',
-            'hours_ago': 'h',
-            'one_day_ago': '1d',
-            'days_ago': 'd'
+            'seconds_ago': ' secs ago',
+            'about_a_minute_ago': '1 min ago',
+            'minutes_ago': ' mins ago',
+            'about_an_hour_ago': '1h ago',
+            'hours_ago': 'h ago',
+            'one_day_ago': '1d ago',
+            'days_ago': 'd ago'
         });
 
         /* Widget Setup */
@@ -204,7 +199,6 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 UserMenu: userMenu,
                 Viz: viz,
                 Alerts: alertsView,
-                StatusLine: statusLine,
                 models: models,
                 helpers: helpers,
                 commit: gitcommit['git-commit'],
