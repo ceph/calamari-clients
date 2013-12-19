@@ -243,7 +243,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['num_read', 'num_write'],
                 fn: 'makePoolIOPSGraphURL',
                 util: 'makePoolIOPSTargets',
-                titleTemplate: _.template('Pool <%- id %> IOPS/Min'),
+                titleTemplate: _.template('Pool <%- id %> IOPS'),
                 options: {
                     labelsKMB: true,
                     ylabel: 'IOPS',
