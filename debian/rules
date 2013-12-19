@@ -1,0 +1,6 @@
+#!/usr/bin/make -f
+export DH_VERBOSE=1
+
+%:
+	# keep your *(#$& hands off my venvs
+	dh $@ --without python2 --without python3 --without pycentral --without pysupport
