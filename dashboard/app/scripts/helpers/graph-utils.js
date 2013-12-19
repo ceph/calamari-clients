@@ -55,6 +55,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
         makeIOStatIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/IOStatIOPSTargets.ejs'),
         makeNetworkTargets: makeTargetTemplate('app/scripts/templates/graphite/NetworkTargets.ejs'),
         makePoolIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/PoolIOPSTarget.ejs'),
+        makePoolDiskFreeTargets: makeTargetTemplate('app/scripts/templates/graphite/PoolDiskFreeTarget.ejs'),
         makeHeightWidthParams: function(width, height) {
             var template = _.template('width=<%- args.width %>&height=<%- args.height %>', undefined, {
                 variable: 'args'

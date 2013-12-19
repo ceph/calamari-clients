@@ -251,6 +251,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     stackedGraph: true,
                     fillGraph: true
                 }
+            }, {
+                metrics: ['total_avail', 'total_used'],
+                fn: 'makePoolDiskFreeGraphURL',
+                util: 'makePoolDiskFreeTargets',
+                titleTemplate: _.template('Pools Total Disk Free'),
+                options: {
+                    labelsKMB: true,
+                    ylabel: 'Bytes',
+                    labels: ['Date', 'Available', 'Used'],
+                    stackedGraph: true,
+                    fillGraph: true
+                }
             }
         ],
         poolIopsGraphTitleTemplate: function(fn) {
@@ -395,6 +407,27 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
             return $.when.apply(undefined, r).then(function(a, b, c) {
                 return a.concat(b).concat(c);
+            });
+        },
+        makeClusterWideMetrics: function() {
+            var self = this;
+            var model = {
+                keys: function() {
+                    return [ 'all' ];
+                },
+                clear: function() {},
+                fetchMetrics: function() {
+                    var d = $.Deferred();
+                    d.resolve();
+                    return d.promise();
+                }
+
+            };
+            var r = _.map(['makePoolIOPSGraphURL', 'makePoolDiskFreeGraphURL'], function(graph) {
+                return self.makePerHostModelGraphs('', graph, model);
+            });
+            return $.when.apply(undefined, r).then(function(a, b) {
+                return a.concat(b);
             });
         },
         showButtons: function() {
