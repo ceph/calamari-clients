@@ -239,7 +239,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     labelsKMB: true,
                     ylabel: 'Packets',
                     labels: ['Date', 'TX Drops', 'RX Drops']
-                },
+                }
             }, {
                 metrics: ['num_read', 'num_write'],
                 fn: 'makePoolIOPSGraphURL',

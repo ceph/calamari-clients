@@ -9,7 +9,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
             return '/api/v1/cluster/' + this.get('cluster') + '/server';
         },
         defaults: {
-            cluster: 1,
+            cluster: 1
         }
     });
     return ServerModel;
