@@ -116,7 +116,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                     if (pools.length === 0) {
                         pools = [ 'N/A' ];
                     }
-                    var $sign = self.$('.fa-info-sign-o');
+                    var $sign = self.$('.fa-info-circle');
                     $sign.popover({
                         title: 'Pool Membership',
                         content: pools.join(', '),
