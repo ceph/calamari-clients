@@ -258,7 +258,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makePoolDiskFreeTargets',
                 titleTemplate: _.template('Pools Total Disk Free'),
                 options: {
-                    labelsKMB: true,
+                    labelsKMG2: true,
                     ylabel: 'Bytes',
                     labels: ['Date', 'Available', 'Used'],
                     stackedGraph: true,
