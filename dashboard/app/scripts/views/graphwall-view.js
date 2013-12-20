@@ -414,7 +414,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var self = this;
             var model = {
                 keys: function() {
-                    return [ 'all' ];
+                    return ['all'];
                 },
                 clear: function() {},
                 fetchMetrics: function() {
@@ -604,7 +604,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             $el.find('input').attr('disabled', 'disabled');
             $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function dygraphFail(jqXHR) {
                 // handle errors on load here
-                var msg = 'Graph Error: ' + jqXHR.statusText + ' ' + jqXHR.responseText;
+                var msg = _.template('Graph Error: <%- status %><%- response %>', {
+                    status: jqXHR.statusText,
+                    response: jqXHR.responseText
+                });
                 $el.find('.graph-spinner').addClass('hidden');
                 $el.find('.icon-space').append(self.graphFailToLoadTemplate({
                     msg: msg
