@@ -35,7 +35,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     onleavegraphmode: this.onleavegraphmode,
                     onenterdashmode: this.onenterdashmode,
                     onleavedashmode: this.onleavedashmode,
-                    ongraph: this.ongraph
+                    ongraph: this.ongraph,
+                    ondashboard: this.ondashboard
                 }
             });
             _.bindAll(this.fsm);
@@ -179,10 +180,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 });
             });
         },
-        onenterdashmode: function() {
+        onenterdashmode: function() {},
+        onleavedashmode: function() {},
+        ondashboard: function( /*event, from, to, host, id*/ ) {
             this.vent.trigger('dashboard:refresh');
-        },
-        onleavedashmode: function() {}
+        }
     });
     return Application;
 });
