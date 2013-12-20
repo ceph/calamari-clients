@@ -85,6 +85,11 @@ h2.graph-subtitle {
   height: 340px;
   margin-top: 0;
   padding: 0;
+  .help-icon {
+	  position: absolute;
+	  right: 10px;
+	  top: 5px;
+  }
 }
 .graph-range {
     width: 80%;

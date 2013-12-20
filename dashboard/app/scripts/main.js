@@ -29,6 +29,9 @@ require.config({
         },
         'notytheme': {
             deps: ['notylayout']
+        },
+        'popover': {
+            deps: ['modal']
         }
     },
     paths: {
@@ -42,6 +45,8 @@ require.config({
         backbone: '../bower_components/backbone-amd/backbone',
         underscore: '../bower_components/underscore-amd/underscore',
         bootstrap: 'vendor/bootstrap',
+        popover: '../bower_components/sass-bootstrap/js/popover',
+        modal: '../bower_components/sass-bootstrap/js/modal',
         gauge: 'vendor/gauge',
         bean: '../bower_components/bean/bean',
         'backbone.babysitter': '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',

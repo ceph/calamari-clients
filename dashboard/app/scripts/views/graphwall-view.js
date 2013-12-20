@@ -1,11 +1,12 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'models/application-model', 'dygraphs', 'marionette'], function($, _, Backbone, JST, gutils, models, Dygraph) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'models/application-model', 'dygraphs', 'marionette', 'modal'], function($, _, Backbone, JST, gutils, models, Dygraph) {
     'use strict';
 
     var GraphwallView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/graphwall.ejs'],
         graphTemplate: JST['app/scripts/templates/graph.ejs'],
+        graphHelpTemplate: JST['app/scripts/templates/graph-help.ejs'],
         graphFailToLoadTemplate: _.template('<i title="<%- msg %>" class="fa fa-warning fa-3x warn"></i>'),
         className: 'graph-mode',
         ui: {
@@ -583,6 +584,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 }, self.dygraphDefaultOptions, overrides);
                 $workarea.css('visibility', 'visible');
                 self.allocateGraph($workarea, post.data, options);
+                $workarea.append('<div class="help-icon"><i class="fa fa-question-circle fa-2x"></i></div>');
+                var $icon = $workarea.find('.help-icon i.fa');
+                $icon.popover('destroy');
+                $icon.popover({
+                    title: 'Help',
+                    trigger: 'hover',
+                    container: 'body',
+                    content: self.graphHelpTemplate(),
+                    placement: 'top'
+                });
             });
         },
         dygraphLoader: function($el, url, optOverrides) {
