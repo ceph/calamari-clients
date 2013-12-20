@@ -9,7 +9,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     //
     // This is the model backing the Usage Widget
     //
-    window.Usage = Backbone.Model.extend({
+    var Usage = Backbone.Model.extend({
         url: function() {
             return '/api/v1/cluster/' + this.get('cluster') + '/space';
         },
@@ -32,5 +32,5 @@ define(['underscore', 'backbone'], function(_, Backbone) {
         }
 
     });
-    return window.Usage;
+    return Usage;
 });

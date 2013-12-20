@@ -1,0 +1,12 @@
+@import 'animate';
+@include animate-fadeIn($class: true);
+@include animate-fadeInDown($class: true);
+@include animate-fadeInLeft($class: true);
+@include animate-fadeInRight($class: true);
+@include animate-fadeOut($class: true);
+@include animate-fadeOutLeft($class: true);
+@include animate-fadeOutRight($class: true);
+@include animate-fadeOutUp($class: true);
+@import '_dashboard_animation.scss';
+@import '_viz_animation.scss';
+

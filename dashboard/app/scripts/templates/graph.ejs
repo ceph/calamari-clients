@@ -1,1 +1,30 @@
-<div class='card span6 graph-card <%- clazz %>'></div>
+<div class='row'>
+    <div class='col-md-12 col-lg-12 col-sm-12 col-xs-12'>
+      <div class='card graph-card <%- graphid %>'>
+        <div class='graph-spinner'><i class="fa fa-spinner fa-spin fa-lg fa-3x"></i></div>
+        <h2 class='graph-subtitle'></h2>
+        <div class='workarea_g col-md-7 col-lg-7 col-sm-7 col-xs-7'></div>
+        <div class='rhs'>
+        <div class='graph-controls'>
+          <h3 class='graph-control-title'><i class='fa fa-clock-o'></i> Time Axis</h3>
+          <div class='graph-value'>Day</div>
+          <div class='graph-range'>
+            <input type='range' value=2 min=0 max=4 />
+          </div>
+          <div class='graph-label'>
+            <div class='a'></div>
+            <div class='b'></div>
+            <div class='c'></div>
+            <div class='d'></div>
+            <div class='e'></div>
+          </div>
+        </div>
+        <div class='legend-area'>
+          <h3 class='dygraph-legend-title'>Legend</h3>
+          <div class='dygraph-legend'></div>
+        </div>
+        </div>
+        <div class='icon-space'></div>
+      </div>
+    </div>
+</div>

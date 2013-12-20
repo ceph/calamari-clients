@@ -5,6 +5,7 @@
 <!--[if gt IE 8]><!--><html class="no-js"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title></title>
     <meta name="description" content="">
@@ -16,93 +17,40 @@
     <!-- endbuild -->
   </head>
   <body>
-    <div class="navbar">
-      <div class="navbar-inner">
-        <a class="brand" href="http://www.inktank.com"><img src="images/logo.png" alt="Inktank Logo"/></a>
-        <ul style='display:none;' class="nav clustermenu"></ul>
+    <div class="nav navbar hidden-xs" role='navigation'>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="http://www.inktank.com"><img class='image-responsive' src="images/logo.png" alt="Inktank Logo"/></a>
+        </div>
+        <ul style='display:none;' class="navbar-nav clustermenu"></ul>
         <div class='inknav'></div>
-        <ul class="nav pull-right usermenu"></ul>
-      </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right usermenu"></ul>
+        </div>
     </div>
     <div class="container">
       <div class="row gauges">
-        <div class="span3 card gauge health">
-          <span class="card-title">Health</span>
-          <hr class="style-two"></hr>
-          <span class="health-text ok"></span>
-          <span class="subtext"></span>
-        </div>
-        <div class="gauge card span6">
-          <span class="card-title">Status</span>
-          <hr class="style-two"></hr>
-          <table class='table metrics'>
-            <thead>
-
-              <tr>
-                <th>&nbsp;</th>
-                <th class="ok">OK</th>
-                <th class="warn">WARN</th>
-                <th class="fail">CRIT</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>
-                  MON
-                </th>
-                <td>
-                </td>
-                <td>
-                </td>
-                <td>
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  OSD
-                </th>
-                <td>
-                </td>
-                <td class='warn-osd'>
-                </td>
-                <td>
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  PG
-                </th>
-                <td class='ok-pg'>
-                </td>
-                <td class='warn-pg'>
-                </td>
-                <td>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <span class="subtext"></span>
-        </div>
-        <div class="usage gauge card span3">
-          <span class="card-title">Usage</span>
-          <hr class="style-two"></hr>
-          <div class="mytext"><span class="number">0</span>%</div>
-          <canvas class="usage-canvas"></canvas>
-          <span class="subtext"><span class="totalused">0</span> of <span class="totalcap">0T</span></span>
-        </div>
+      </div>
+      <div class="row maps">
+      </div>
+      <div class="row iops">
       </div>
       <div class="row">
-        <div class="raphael-one card span12">
-          <span class="card-title">OSD Status</span>
-          <hr class="style-two"></hr>
-          <div id="viz" class="viz span9">
+        <div class="col-md-12 col-lg-9 hidden-xs custom-gutter">
+          <!--div class='hexagons'>
+              <span class='card-title'>OSD Status</span>
+              <hr class="style-two"></hr>
+
+          </div-->
+          <div class="raphael-one viz-hidden">
+            <span class="card-title">OSD Status</span>
+            <hr class="style-two"></hr>
           </div>
         </div>
       </div>
-      <div class="row" style="display:none">
-        <div class="span12 notifications card">
+      <!--div class="row" style="display:none">
+        <div style='visibility: hidden; max-height: 0px;' class="col-md-12 notifications card">
         </div>
-      </div>
+      </div-->
     </div>
   </div>
 

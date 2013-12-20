@@ -46,7 +46,7 @@ Your *user* needs *sudo* privileges.
 1. Install yeoman, coffee-script, jsonlint, uglify-js and bower
 
 	```
-    npm install -g yo coffee-script jsonlint uglify-js bower
+    npm install -g yo grunt-cli coffee-script jsonlint uglify-js bower
 	```
 
 1. Install generators:

@@ -1,9 +1,8 @@
 /*global define */
 'use strict';
 
-define(['views/health-view', 'views/notification-card-view', 'views/notification-collection-view', 'views/notification-item-view', 'views/osd-detail-view', 'views/osd-visualization', 'views/usage-view', 'views/gauges-layout', 'views/status-view', 'views/breadcrumb-view', 'views/alerts'], function(health, noticard, noticoll, notiitem, osddetail, osdviz, usage, gauges, status, breadcrumb, alerts) {
+define(['views/notification-card-view', 'views/notification-collection-view', 'views/notification-item-view', 'views/osd-detail-view', 'views/osd-visualization', 'views/usage-view', 'views/gauges-layout', 'views/breadcrumb-view', 'views/alerts-view', 'views/osd-dash-view', 'views/mon-dash-view', 'views/pgmap-view', 'views/status-line-view', 'views/osd-hex-view', 'views/hosts-dash-view', 'views/pools-dash-view', 'views/iops-dash-view', 'views/health-view'], function(noticard, noticoll, notiitem, osddetail, osdviz, usage, gauges, breadcrumb, alerts, osd, mon, pg, statusLine, osdHex, hosts, pools, iops, health) {
     return {
-        HealthView: health,
         NotificationCardView: noticard,
         NotificationCollectionView: noticoll,
         NotificationitemView: notiitem,
@@ -12,7 +11,15 @@ define(['views/health-view', 'views/notification-card-view', 'views/notification
         UsageView: usage,
         GaugesLayout: gauges,
         BreadCrumbView: breadcrumb,
-        StatusView: status,
-        AlertsView: alerts
+        AlertsView: alerts,
+        OsdView: osd,
+        MonView: mon,
+        PgView: pg,
+        StatusLine: statusLine,
+        OsdHexView: osdHex,
+        HostsView: hosts,
+        PoolsView: pools,
+        IopsView: iops,
+        HealthView: health
     };
 });

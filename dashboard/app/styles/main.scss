@@ -1,8 +1,15 @@
+// Bootstrap
 @import 'sass-bootstrap/lib/bootstrap';
-@import 'bootstrap-switch.css';
+// Bootstrap Switch
+@import 'vendor/bootstrap-switch';
+// font-awesome
 @import 'font-awesome/scss/font-awesome';
-@import 'inktank_fonts';
-@import 'dashboard';
-@import 'graph';
-@import 'viz';
-@import 'notifications';
+
+// Bootstrap breakpoints from css-tricks
+@import 'modules/bootstrap3_vars';
+
+// Standard color vars
+@import 'modules/inktank_colors';
+
+// Application Specific Styles
+@import 'partials/base';

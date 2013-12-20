@@ -1,0 +1,31 @@
+$hex-scale: 1.41;
+$host-color: lightblue;
+$mon-color: yellow;
+
+@mixin hexes($color, $scale) {
+    margin-top: #{$scale * 30}px;
+    width: #{$scale * 104}px;
+    height: #{$scale * 60}px;
+    background-color: $color;
+    position: relative;
+    display: inline-block;
+    &:before {
+      content: "";
+       line-height: 2;
+       width: 0; height: 0;
+       border-bottom: #{$scale * 30}px solid $color;
+       border-left: #{$scale * 52}px solid transparent;
+       border-right: #{$scale * 52}px solid transparent;
+       position: absolute;
+       top: -#{$scale * 30}px;
+    }
+    &:after {
+      content: "";
+      width: 0;
+      position: absolute;
+      bottom: -#{$scale * 30}px;
+      border-top: #{$scale * 30}px solid $color;
+      border-left: #{$scale * 52}px solid transparent;
+      border-right: #{$scale * 52}px solid transparent;
+    }
+}

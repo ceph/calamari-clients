@@ -1,7 +1,7 @@
 /*global define, Raphael*/
 
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'bootstrap', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/filterBy', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, bs, OSDDetailView, FilterView, Models, animation, FilterByView) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/filterBy-view', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, OSDDetailView, FilterView, Models, animation, FilterByView) {
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
@@ -25,7 +25,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             filterpanel: '.filter-panel',
             switcher: '.switcher',
             detail: '.detail-outer',
-            spinner: '.icon-spinner'
+            spinner: '.fa-spinner'
         },
         events: {
             'click .viz': 'osdClickHandler',
@@ -92,12 +92,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
         },
         setupAnimations: function(obj) {
-            obj.vizMoveUpAnimation = animation.single('moveVizUpAnim');
-            obj.vizMoveDownAnimation = animation.single('moveVizDownAnim');
-            obj.vizSlideRightAnimation = animation.single('slideVizRightAnim');
-            obj.vizSlideLeftAnimation = animation.single('slideVizLeftAnim');
+            obj.opacityOutAnimation = animation.single('toDashboardAnim');
+            obj.toWorkBenchAnimation = animation.single('toWorkBenchAnim');
             obj.fadeInAnimation = animation.single('fadeInAnim');
-            obj.fadeOutAnimation = animation.single('fadeOutAnim');
         },
         getHosts: function() {
             return _.uniq(this.collection.pluck('host'));
@@ -133,6 +130,17 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             /*jshint camelcase: false */
             return this.collection.pg_state_counts || {};
         },
+        getOSDPGCounts: function() {
+            /* jshint camelcase: false */
+            return this.collection.map(function(m) {
+                return {
+                    id: m.id,
+                    up: m.get('up'),
+                    'in': m.get('in'),
+                    pg_states: m.get('pg_states')
+                };
+            });
+        },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App.Config) {
@@ -161,6 +169,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.App.ReqRes.setHandler('get:osdcounts', this.getOSDCounters);
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
             this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
+            this.App.ReqRes.setHandler('get:osdpgcounts', this.getOSDPGCounts);
             this.render = _.wrap(this.render, this.renderWrapper);
             this.osdHoverHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, [this.osdHoverHandlerCore, this.hostGroupHoverHandlerCore]);
             this.osdClickHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, this.osdClickHandlerCore);
@@ -172,42 +181,31 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 this.App.vent.trigger('app:fullscreen');
             }
         },
-        toFullscreenTransitionOne: function() {
-            return this.vizSlideRightAnimation(this.ui.viz);
-        },
         toFullscreenTransitionTwo: function() {
             var ui = this.ui;
+            this.$el.removeClass('viz-hidden');
             ui.viz.addClass('viz-fullscreen');
-            ui.filterpanel.show();
+            ui.filterpanel.css('display', 'block');
             this.App.vent.trigger('filter:update');
             return this.fadeInAnimation(ui.filterpanel);
         },
         fullscreen: function(callback) {
             this.state = 'fullscreen';
             this.ui.cardTitle.text('OSD Workbench');
-            this.$el.removeClass('card').addClass('workbench');
-            return this.vizMoveUpAnimation(this.$el, callback).then(this.toFullscreenTransitionOne).then(this.toFullscreenTransitionTwo);
+            this.$el.addClass('workbench');
+            return this.toWorkBenchAnimation(this.$el, callback).then(this.toFullscreenTransitionTwo);
         },
         toDashboardTransitionOne: function() {
             var ui = this.ui;
-            this.fadeOutAnimation(ui.filterpanel).then(function() {
-                ui.filterpanel.css('visibility', 'hidden');
-            }).then(function() {
-                ui.filterpanel.css('visibility', 'visible');
-            });
-            this.reset();
-            return this.vizSlideLeftAnimation(ui.viz);
-        },
-        toDashboardTransitionTwo: function() {
-            var ui = this.ui;
-            ui.viz.removeClass('viz-fullscreen');
             ui.filterpanel.hide();
+            this.reset();
         },
         dashboard: function(callback) {
             this.state = 'dashboard';
-            this.ui.cardTitle.text('OSD Status');
-            this.$el.addClass('card').removeClass('workbench');
-            return this.vizMoveDownAnimation(this.$el, callback).then(this.toDashboardTransitionOne).then(this.toDashboardTransitionTwo);
+            var $el = this.$el;
+            return this.opacityOutAnimation(this.$el, callback).then(function() {
+                $el.addClass('viz-hidden').removeClass('workbench');
+            }).then(this.toDashboardTransitionOne);
         },
         resetViews: function(collection, options) {
             _.each(options.previousModels, this.cleanupModelView);
@@ -258,18 +256,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             path1.animate(anim);
         },
         startPosition: [{
-            x: 40,
-            y: 40
-        }, {
-            x: 600,
-            y: 40
-        }, {
-            x: 600,
-            y: 400
-        }, {
-            x: 40,
-            y: 400
-        }],
+                x: 40,
+                y: 40
+            }, {
+                x: 600,
+                y: 40
+            }, {
+                x: 600,
+                y: 400
+            }, {
+                x: 40,
+                y: 400
+            }
+        ],
         moveCircle: function(model, index) {
             if (model === null) {
                 return;
@@ -443,18 +442,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             // Helper method to draw circles for use as legends beneath viz.
             var srctext = ['down', 'up/out', 'down/in', 'up/in'];
             var srcstate = [{
-                up: 0,
-                'in': 0
-            }, {
-                up: 1,
-                'in': 0
-            }, {
-                up: 0,
-                'in': 1
-            }, {
-                up: 1,
-                'in': 1
-            }];
+                    up: 0,
+                    'in': 0
+                }, {
+                    up: 1,
+                    'in': 0
+                }, {
+                    up: 0,
+                    'in': 1
+                }, {
+                    up: 1,
+                    'in': 1
+                }
+            ];
             var percent = [1, 0.66, 0.66, 0.4];
 
             var model = new Models.OSDModel(_.extend(srcstate[index], {
@@ -548,12 +548,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     cx: destX,
                     cy: destY
                 }, 333, 'easeIn', function() {
-                    t = this.paper.text(destX, destY - 1, model.id).attr({
-                        font: '',
-                        stroke: '',
-                        fill: '',
-                        style: ''
-                    });
+                    t = this.paper.text(destX, destY - 0.5, model.id);
                     t.data('modelid', model.id);
                     if (model.deferred) {
                         model.deferred.resolve();
@@ -664,29 +659,25 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 return;
             }
             var keyCode = evt.keyCode;
-            if (keyCode === 27) /* Escape */
-            {
+            if (keyCode === 27) /* Escape */ {
                 this.App.vent.trigger('escapekey');
             }
-            if (keyCode === 82) /* r */
-            {
+            if (keyCode === 82) /* r */ {
                 this.resetChanges();
                 return;
             }
-            if (keyCode === 85) /* u */
-            {
+            if (keyCode === 85) /* u */ {
                 this.simulateUsedChanges();
                 return;
             }
-            if (keyCode === 32) /* space */
-            {
-                var $spinner = $('.icon-spinner');
+            if (keyCode === 32) /* space */ {
+                var $spinner = $('.fa-spinner');
                 if (this.timer === null) {
                     this.startSimulation();
-                    $spinner.closest('i').addClass('.icon-spin').show();
+                    $spinner.closest('i').addClass('.fa-spin').show();
                 } else {
                     this.stopSimulation();
-                    $spinner.closest('i').removeClass('.icon-spin').hide();
+                    $spinner.closest('i').removeClass('.fa-spin').hide();
                 }
             }
         },

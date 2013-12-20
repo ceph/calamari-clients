@@ -29,9 +29,14 @@ require.config({
         },
         'notytheme': {
             deps: ['notylayout']
+        },
+        'popover': {
+            deps: ['modal']
         }
     },
     paths: {
+        kinetic: 'vendor/kinetic-v4.7.3',
+        application: 'application',
         faker: '../bower_components/Faker/Faker',
         jquery: '../bower_components/jquery/jquery',
         noty: '../bower_components/noty/js/noty/jquery.noty',
@@ -40,6 +45,8 @@ require.config({
         backbone: '../bower_components/backbone-amd/backbone',
         underscore: '../bower_components/underscore-amd/underscore',
         bootstrap: 'vendor/bootstrap',
+        popover: '../bower_components/sass-bootstrap/js/popover',
+        modal: '../bower_components/sass-bootstrap/js/modal',
         gauge: 'vendor/gauge',
         bean: '../bower_components/bean/bean',
         'backbone.babysitter': '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
@@ -50,7 +57,8 @@ require.config({
         'bootstrap-switch': '../bower_components/bootstrap-switch/static/js/bootstrap-switch',
         statemachine: '../bower_components/javascript-state-machine/state-machine',
         marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
-        gitcommit: 'git'
+        gitcommit: 'git',
+        dygraphs: 'vendor/dygraph-combined'
     }
 });
 

@@ -3,10 +3,37 @@
 define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbone, JST) {
     'use strict';
 
+    /*
+     * Creates a partial applied function which is pre-bound to the underscore.template
+     * to create the target.
+     *
+     * This returns a function with the following signature:
+     *
+     * function(metrics)
+     *
+     * @param metrics is an array of strings for specific leaf keys of Graphite Targets we're looking
+     *        to request. e.g. [ 'tx_errors', 'rx_errors' ]
+     *
+     * This creates another partially applied function with the following signature:
+     *
+     * function(hostname, id)
+     *
+     * @param hostname - hostname of target we want
+     * @param id - subkey of target we're looking for e.g. [ 'eth0', 'eth1' ]
+     *
+     * Which is used to create more specific target keys which target specific parts of the graphite hierarchy.
+     * We do it this way because we know which metrics want ahead of time, but need
+     * to dynamically fill in the hostname and subkey we need to request usually after making a 2nd request to graphite
+     * to find out what subkeys are available.
+     */
+
     function makeTargetTemplate(path) {
         var template = JST[path];
         return function(metrics) {
+            // pre-bind the metrics list using partial application
             return function(hostname, id) {
+                // returns a list of metrics target values as an array
+                // e.g. [ 'servers.mira064.memory.Active' ]
                 return _.map(metrics, function(metric) {
                     return $.trim(template({
                         metric: metric,
@@ -27,6 +54,8 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
         makeMemoryTargets: makeTargetTemplate('app/scripts/templates/graphite/MemoryTarget.ejs'),
         makeIOStatIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/IOStatIOPSTargets.ejs'),
         makeNetworkTargets: makeTargetTemplate('app/scripts/templates/graphite/NetworkTargets.ejs'),
+        makePoolIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/PoolIOPSTarget.ejs'),
+        makePoolDiskFreeTargets: makeTargetTemplate('app/scripts/templates/graphite/PoolDiskFreeTarget.ejs'),
         makeHeightWidthParams: function(width, height) {
             var template = _.template('width=<%- args.width %>&height=<%- args.height %>', undefined, {
                 variable: 'args'
@@ -60,6 +89,12 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 });
             };
         },
+        /*
+         * takes a function which returns an array of strings, graphite target list values.
+         * Returns a function which applies any arguments to the partially applied function parameter.
+         * The returned function returns a url param string containing target params suitable for graphite.
+         *
+         */
         makeTargets: function(fn) {
             var template = _.template('target=<%- args.target %>', undefined, {
                 variable: 'args'
@@ -72,12 +107,46 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 });
             };
         },
-        makeGraphURL: function(format, baseUrlFn, heightWidthFn, targetsFn) {
-            var self = this;
+        makeParam: function(key, value) {
+            var param = _.template('<%- key %>=<%- value %>', {
+                key: key,
+                value: value
+            });
             return function() {
-                return baseUrlFn() + _.reduce([heightWidthFn(), 'fgcolor=black&bgcolor=white', self.makeColorListParams(['7fc97f','beaed4','fdc086','386cb0','f0027f','bf5b17','666666'])(), targetsFn.apply(this, arguments), 'format=' + format], function(memo, value) {
-                    return memo + '&' + value;
+                return param;
+            };
+        },
+        makeGraphURL: function(baseUrlFn, fns) {
+            var initValue = baseUrlFn() + _.first(fns)();
+            var restFns = _.rest(fns);
+            return function() {
+                var args = arguments;
+                return _.reduce(restFns, function(memo, valueFn) {
+                    return memo + '&' + valueFn.apply(this, args);
+                }, initValue);
+            };
+        },
+        graphiteJsonArrayToDygraph: function(resp) {
+            // convert time which is usually the first part of a series tuple
+            var data = _.map(resp.datapoints, function(series) {
+                return _.map(series, function(value, index) {
+                    if (index === 0) {
+                        return new Date(value * 1000);
+                    }
+                    return value;
                 });
+            });
+            return {
+                labels: resp.targets,
+                data: data
+            };
+        },
+        sumSeries: function(fn) {
+            return function() {
+                var args = arguments;
+                return [ 'sumSeries(' + _.reduce(fn.apply(this, args), function(memo, value) {
+                    return memo + ',' + value;
+                }) + ')' ];
             };
         }
     };

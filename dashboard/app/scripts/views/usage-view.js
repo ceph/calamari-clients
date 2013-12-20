@@ -1,6 +1,6 @@
 /*global define*/
 /* jshint -W106, -W069*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'helpers/animation', 'marionette'], function($, _, Backbone, JST, Gauge, humanize, animation) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'helpers/animation', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, Gauge, humanize, animation, gaugeHelper) {
     'use strict';
 
     /* UsageView
@@ -8,8 +8,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
      *  This is the view for the usage card widget in the dashboard
      */
     return Backbone.Marionette.ItemView.extend({
-        className: 'gauge card span3 usage',
+        className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/usage.ejs'],
+        cardTitleTemplate: _.template('<%- used %>% Usage'),
         timer: null,
         delay: 20000,
         ui: {
@@ -18,7 +19,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             totalused: '.totalused',
             totalcap: '.totalcap',
             canvas: '.usage-canvas',
-            spinner: '.icon-spinner'
+            spinner: '.fa-spinner'
         },
         modelEvents: {
             'change': 'updateView'
@@ -28,36 +29,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
                 title: this.title
             };
         },
-        expand: function(callback) {
-            this.$el.css('display', 'block');
-            if (callback) {
-                callback.apply(this);
-            }
-        },
-        collapse: function(callback) {
-            this.$el.css('display', 'none');
-            if (callback) {
-                callback.apply(this);
-            }
-        },
         initialize: function(options) {
-            this.disappearAnimation = animation.single('fadeOutUpAnim');
-            this.reappearAnimation = animation.single('fadeInDownAnim');
-            _.bindAll(this, 'updateView', 'set', 'disappearAnimation', 'disappear', 'reappear', 'reappearAnimation', 'expand', 'collapse');
+            _.bindAll(this, 'updateView', 'set');
             // The are defaults for Gauge.js and can be overidden from the contructor
             this.App = Backbone.Marionette.getOption(this, 'App');
 
             if (this.App) {
                 this.listenTo(this.App.vent, 'usage:update', this.set);
-                this.listenTo(this.App.vent, 'gauges:disappear', this.disappear);
-                this.listenTo(this.App.vent, 'gauges:reappear', this.reappear);
-                this.listenTo(this.App.vent, 'gauges:collapse', this.collapse);
-                this.listenTo(this.App.vent, 'gauges:expand', this.expand);
             }
 
             this.opts = {};
             _.extend(this.opts, {
                 lines: 10,
+                'font-size': '0px',
                 percentColors: [
                     [0.0, '#1ae61a'],
                     [0.60, '#e6e619'],
@@ -68,13 +52,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
             });
             this.title = options.title === undefined ? 'Untitled' : options.title;
             this.listenToOnce(this, 'render', this.postRender);
+            gaugeHelper(this, 'usage');
         },
         // Once the render has been executed and has set up the widget
         // add the canvas based gauge dial
         postRender: function() {
-            var self = this;
             this.gauge = new Gauge(this.ui.canvas[0]).setOptions(this.opts);
-            this.gauge.setTextField(this.ui.number[0]);
             this.gauge.set(0);
             this.gauge.maxValue = 100;
             this.gauge.minValue = 0;
@@ -83,38 +66,29 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
                 'width': ''
             });
             this.triggerMethod('item:postrender', this);
-            this.listenTo(this.App.vent, 'usage:request', function() {
-                self.ui.spinner.css('visibility', 'visible');
-            });
-            this.listenTo(this.App.vent, 'usage:sync usage:error', function() {
-                self.ui.spinner.css('visibility', 'hidden');
-            });
+        },
+        warningThreshold: 90,
+        displayWarning: function() {
+            if (this.model.getPercentageUsed() > this.warningThreshold) {
+                this.trigger('status:warn');
+            } else {
+                this.trigger('status:ok');
+            }
         },
         updateView: function(model) {
             var attr = model.toJSON();
             var space = attr.space;
-            var used = humanize.filesize(space.used_bytes);
+            var used = humanize.filesize(space.used_bytes, undefined, 1);
             used = used.replace(' ', '');
-            var total = humanize.filesize(space.capacity_bytes);
+            var total = humanize.filesize(space.capacity_bytes, undefined, 1);
             total = total.replace(' ', '');
-            this.ui.totalused.text(used);
+            this.ui.number.text(used);
             this.ui.totalcap.text(total);
             this.gauge.set(model.getPercentageUsed());
+            this.displayWarning();
         },
         set: function(model) {
             this.model.set(model.toJSON());
-        },
-        disappear: function(callback) {
-            return this.disappearAnimation(this.$el, function() {
-                this.$el.css('visibility', 'hidden');
-                if (callback) {
-                    callback.apply(this);
-                }
-            });
-        },
-        reappear: function(callback) {
-            this.$el.css('visibility', 'visible');
-            return this.reappearAnimation(this.$el, callback);
         }
     });
 });

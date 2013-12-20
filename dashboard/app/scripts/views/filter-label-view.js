@@ -24,6 +24,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'bootstrap-switch'], fu
             var count = '-';
             if (model) {
                 count = model.get('count');
+                if (count === 0) {
+                    count = '-';
+                }
             }
             this.getSwitch().find('label').text(count);
         },

@@ -40,10 +40,10 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         };
     }
 
-    function newEventEmitter(fnName, timerName, eventName) {
+    function newEventEmitter(fnName, timerName, eventName, defaultDelay) {
         return function() {
             var self = this;
-            var delay = this[timerName] === null ? 0 : this.delay;
+            var delay = this[timerName] === null ? 0 : defaultDelay;
             this[timerName] = setTimeout(function() {
                 self.App.vent.trigger(eventName);
                 self[timerName] = self[fnName].apply(self);
@@ -58,7 +58,9 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         healthModel: null,
         statusModel: null,
         statusTimer: null,
-        updateTimer: null,
+        osdUpdateTimer: null,
+        poolUpdateTimer: null,
+        hostUpdateTimer: null,
         defaultDelay: 20000,
         defaultTimeout: 3000,
         heartBeatDelay: 60000,
@@ -66,7 +68,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App.Config) {
                 this.delay = Backbone.Marionette.getOption(this.App.Config, 'long-polling-interval-ms') || this.delay;
-                this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.timeout;
+                this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.defaultTimeout;
                 this.disableNetworkChecks = Backbone.Marionette.getOption(this.App.Config, 'disable-network-checks') || false;
             }
             this.cluster = Backbone.Marionette.getOption(this, 'cluster');
@@ -83,25 +85,28 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                 cluster: this.cluster
             });
 
-            this.healthPoller = newPoller('health', this);
-            this.usagePoller = newPoller('usage', this);
-            this.statusPoller = newPoller('status', this);
+            this.healthPoller = newPoller('health', this, { timeout: this.timeout });
+            this.usagePoller = newPoller('usage', this, { timeout: this.timeout });
+            this.statusPoller = newPoller('status', this, { timeout: this.timeout });
             if (!this.disableNetworkChecks) {
                 this.krakenHeartBeatPoller = newPoller('krakenHeartBeat', this, {
                     delay: this.heartBeatDelay
                 });
             }
-            this.updateEvent = newEventEmitter('updateEvent', 'updateTimer', 'osd:update');
+            this.osdUpdateEvent = newEventEmitter('osdUpdateEvent', 'osdUpdateTimer', 'osd:update', this.delay);
+            this.poolUpdateEvent = newEventEmitter('poolUpdateEvent', 'poolUpdateTimer', 'pool:update', this.delay);
+            this.hostUpdateEvent = newEventEmitter('hostUpdateEvent', 'hostUpdateTimer', 'host:update', this.delay);
+            this.iopsUpdateEvent = newEventEmitter('iopsUpdateEvent', 'iopsUpdateTimer', 'iops:update', 60000);
             this.listenTo(this.App.vent, 'cluster:update', this.updateModels);
             _.bindAll(this, 'stop', 'updateModels', 'start');
             this.models = ['health', 'usage', 'status', 'krakenHeartBeat'];
             this.timers = ['health', 'usage', 'status', 'update', 'krakenHeartBeat'];
-            this.pollers = ['healthPoller', 'usagePoller', 'statusPoller', 'krakenHeartBeatPoller', 'updateEvent'];
+            this.pollers = ['healthPoller', 'usagePoller', 'statusPoller', 'krakenHeartBeatPoller', 'osdUpdateEvent', 'poolUpdateEvent', 'hostUpdateEvent', 'iopsUpdateEvent'];
         },
         // Cluster ID has changed. Update pollers.
         updateModels: function(cluster) {
             _.each(this.models, function(model) {
-                this[model + 'Model'].set('cluster', cluster.id);
+                this[model + 'Model'].set('cluster', cluster.get('id'));
             }, this);
             this.stop();
             this.start();

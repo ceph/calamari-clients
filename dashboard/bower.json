@@ -2,7 +2,7 @@
   "name": "inktank",
   "version": "0.0.0",
   "dependencies": {
-    "sass-bootstrap": "~2.3.0",
+    "sass-bootstrap": "~3.0.0",
     "jquery": "~1.9.0",
     "requirejs": "~2.1.5",
     "requirejs-text": "~2.0.5",
@@ -11,15 +11,17 @@
     "modernizr": "~2.6.2",
     "bean": "~1.0.4",
     "raphael": "~2.1.0",
-    "font-awesome": "~3.2.1",
+    "font-awesome": "~4.0.0",
     "backbone.wreqr": "~0.2.0",
     "humanize": "~0.0.7",
-    "backbone.marionette": "~1.0.4",
+    "backbone.marionette": "~1.2.3",
     "backbone.babysitter": "~0.0.6",
     "Faker": "~0.5.11",
     "javascript-state-machine": "~2.2.0",
     "bootstrap-switch": "latest",
-    "noty": "~2.1.0"
+    "noty": "~2.1.0",
+    "kineticjs": "~4.7.3",
+    "dygraphs": "~1.0.1"
   },
   "devDependencies": {}
 }

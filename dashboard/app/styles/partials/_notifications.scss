@@ -1,0 +1,58 @@
+$diameter: 50px;
+$round-fontsize: 24px;
+$ring-color: #fff;
+$ring-text: #fff;
+$ring-border-width: 2px;
+$notification-border-color: darken($itlightgray, 10%);
+$notification-background-color: lighten($itlightgray, 10%);
+$message-title-color: $itdarkgray;
+$message-detail-color: $itgray;
+
+$notification-width: 916px;
+.notifications {
+	.badge {
+	}
+}
+.notification {
+	position: relative;
+	@include box-shadow(0 1px 2px rgba(0,0,0,.2));
+	@include box-sizing(border-box);
+	display: inline-block;
+	min-height: 60px;
+	padding: 3px;
+	border-radius: 0;
+	border: 1px solid $notification-border-color;
+	background-color: $notification-background-color;
+	margin: 3px;
+	width: $notification-width;
+	min-height: 1em;
+	i {
+		padding-right: 5px;
+		padding-left: 3px;
+	}
+}
+.timesince {
+	position: absolute;
+	right: 8px;
+	top: 2px;
+	font-size: 11px;
+}
+.message-title {
+	display: inline-block;
+	color: $message-title-color;
+	min-width: 7em;
+}
+.message-detail {
+	color: $message-detail-color;
+	text-overflow: break-word;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.message {
+	margin: 3px;
+	font-family: 'ApexSansMedium';
+	display: inline-block;
+}
+.read {
+	opacity: 0.50;
+}

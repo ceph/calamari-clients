@@ -8,7 +8,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         template: JST['app/scripts/templates/osd-details-full.ejs'],
         state: 'dashboard',
         events: {
-            'click .icon-remove': 'removeDialog',
+            'click .fa-times': 'removeDialog',
             'click .graph-button': 'goToGraph'
         },
         ui: {},
@@ -116,7 +116,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                     if (pools.length === 0) {
                         pools = [ 'N/A' ];
                     }
-                    var $sign = self.$('.icon-info-sign');
+                    var $sign = self.$('.fa-info-circle');
                     $sign.popover({
                         title: 'Pool Membership',
                         content: pools.join(', '),
@@ -125,7 +125,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                         placement: placement
                     });
                     var pgs = self.model.get('pg_states') || {};
-                    var $cloud = self.$('.icon-cloud');
+                    var $cloud = self.$('.fa-cloud');
                     $cloud.popover({
                         title: 'PG States',
                         content: self.pgTemplate(pgs),

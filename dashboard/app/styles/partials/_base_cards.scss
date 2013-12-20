@@ -1,0 +1,101 @@
+.card {
+    .card-title {
+        color: $itdarkgray;
+        text-transform: uppercase;
+        font-family: ApexSansLight;
+        font-size: 1.5em;
+    }
+    .card-icon {
+        position: absolute;
+        top: 7px;
+        right: 6px;
+        font-size: 0.45em;
+    }
+    .card-status-icon {
+        position: absolute;
+        bottom: 4px;
+        left: 4px;
+		font-size: 0.6em;
+    }
+    .headline {
+        margin-top: 0.35em;
+        font-size: 3em;
+        text-align: center;
+    }
+    .subline {
+        font-size: 1.5em;
+        text-align: center;
+        color: $itgray;
+        font-family: ApexSansLight;
+		margin-top: 10px;
+    }
+    .subtext {
+        position: absolute;
+        display: inline-block;
+        font-size: 1em;
+        color: $itgray;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+        left: 0;
+        right: 0;
+    }
+    .usage-canvas {
+        min-height: #{$itapp-card-height/1.5}px;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0 auto 0 auto;
+    }
+    .totalused {
+        left: 0;
+        position: absolute;
+        width: 100%;
+        text-align: center;
+	font-family: 'ApexSansLight';
+    }
+    .totalcap {
+        position: absolute;
+        bottom: 23%;
+        right: 15%;
+	font-family: 'ApexSansLight';
+    }
+    .pgcanvas {
+      height: 100%;
+      width: 66%;
+      background-color: $itlightgray;
+      min-height: #{$itapp-card-height - 20}px;
+	  margin-top: -5px;
+      padding: 0;
+    }
+    .pgstats {
+	  min-height: #{$itapp-card-height - 18}px;
+      padding: 0;
+      .headline {
+        font-size: 2.5em;
+      }
+      .subtext {
+        position: absolute;
+        display: inline-block;
+        font-size: 1em;
+        color: $itgray;
+        bottom: 8px;
+        right: 0;
+      }
+    }
+	.iopscanvas {
+	  max-height: 100px;
+      max-width: 95%;
+	  position: absolute;
+	  top: 25px;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  padding: 0;
+	}
+}
+.mon {
+	.fa-lg {
+      vertical-align: 0;
+    }
+}

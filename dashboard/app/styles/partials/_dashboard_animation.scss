@@ -1,0 +1,40 @@
+@import 'animate';
+$timeFast: 0.125s;
+$timeMed: 0.5s;
+$timeSlow: 1s;
+.fadeInStatusAnim {
+    @include animation(fadeIn $timeFast ease);
+}
+.fadeOutAnim {
+    @include animation(fadeOut $timeFast ease);
+}
+.fadeOutUpAnim {
+    @include animation(fadeOutUp $timeMed ease);
+}
+.fadeInDownAnim {
+    @include animation(fadeInDown $timeSlow ease);
+}
+@include keyframes(toWorkBench) {
+    0% {
+	    background-color: $itdarkgray;
+    }
+    100% {
+	    background-color: $itlightgray;
+    }
+}
+.toWorkBenchAnim {
+    @include animation(toWorkBench $timeFast ease-in);
+}
+@include keyframes(toDashboard) {
+    0% {
+	    opacity: 1;
+//	    background-color: $itlightgray;
+    }
+    100% {
+	    opacity: 0;
+//	    background-color: $itdarkgray;
+    }
+}
+.toDashboardAnim {
+    @include animation(toDashboard $timeFast ease-out);
+}

@@ -1,0 +1,29 @@
+<h1 class='title'>WALL-O-GRAPHS</h1>
+<div class='row'>
+    <div class='col-md-2 col-sm-2 hosts-select'></div>
+    <div class="col-md-9 col-sm-9 it-graph-controls btn-toolbar" style='visibility: hidden;'>
+        <div class='btn-graph btn-group btn-group-sm' data-toggle='buttons-radio'>
+            <span class='graph-title graph-title-system hidden-xs'>system</span>
+            <button type='button' data-id='overview' class='btn it-btn-left btn-primary active hidden-sm hidden-xs'>Summary</button>
+        </div>
+        <div class='btn-graph btn-group btn-group-sm' data-toggle='buttons-radio'>
+            <button type='button' data-id='cpudetail' class='btn it-btn-left btn-primary'>All CPUs</button>
+        </div>
+        <div class='btn-graph btn-group btn-group-sm' data-toggle='buttons-radio'>
+            <span class='graph-title hidden-xs'>Disk</span>
+            <button type='button' data-id='rwbytes' class='btn it-btn-left btn-primary hidden-xs'>Bytes</button>
+            <button type='button' data-id='rwbytes' class='btn it-btn-left btn-primary visible-xs'>Disk Bytes</button>
+            <button type='button' data-id='rwawait' class='btn btn-primary hidden-xs'>Await</button>
+            <button type='button' data-id='iops' class='btn btn-primary hidden-xs'>IOPS</button>
+            <button type='button' data-id='iops' class='btn btn-primary it-btn-right visible-xs'>IOPS</button>
+            <button type='button' data-id='diskbytes' class='btn btn-primary hidden-xs'>Capacity</button>
+            <button type='button' data-id='diskinodes' class='btn btn-primary hidden-xs'>Inodes</button>
+        </div>
+        <div class='btn-graph btn-group btn-group-sm' data-toggle='buttons-radio'>
+            <span class='graph-title hidden-xs'>Network</span>
+            <button type='button' data-id='netbytes' class='btn it-btn-left btn-primary hidden-xs'>Bytes</button>
+            <button type='button' data-id='netbytes' class='btn it-btn-left btn-primary visible-xs'>Net Bytes</button>
+            <button type='button' data-id='netpackets' class='btn btn-primary'>Packets</button>
+        </div>
+    </div>
+</div>
