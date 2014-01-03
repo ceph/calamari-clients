@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'kinetic', 'humanize', 'marionette'], function($, _, Backbone, JST, gaugeHelper, Kinetic, humanize) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'humanize', 'kinetic', 'marionette'], function($, _, Backbone, JST, gaugeHelper, humanize, Kinetic) {
     'use strict';
 
     var PgmapView = Backbone.Marionette.ItemView.extend({
@@ -225,8 +225,24 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         },
         total: 0,
         activeclean: 0,
+        formatNumberTemplate: _.template('<%- num %><%- unit %>'),
         format: function(v) {
-            return humanize.filesize(v, 1000, 1).replace(' ', '').replace('b', '').toLowerCase();
+            var num = v,
+                unit = '',
+                digits = 0;
+            if (num >= 1000000) {
+                num /= 1000000;
+                unit = 'M';
+                digits = 1;
+            } else if (num >= 1000) {
+                num /= 1000;
+                unit = 'K';
+                digits = 1;
+            }
+            return this.formatNumberTemplate({
+                num: humanize.numberFormat(num, digits),
+                unit: unit
+            });
         },
         priorityOrder: [
                 'stale',
