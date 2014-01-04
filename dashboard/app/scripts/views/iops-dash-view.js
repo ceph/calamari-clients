@@ -76,9 +76,14 @@ define([
                     labelsDiv: legend,
                     interactionModel: {}
                 });
-                var iops = _.last(d.data)[1];
-                if (iops === null) {
-                    iops = 0;
+                var iops = 0;
+                if (d.data && d.data.length) {
+                    // Ignore empty datasets
+                    iops = _.last(d.data)[1];
+                    if (iops === null) {
+                        // deal with nulls
+                        iops = 0;
+                    }
                 }
                 headline.text(iops);
             });
