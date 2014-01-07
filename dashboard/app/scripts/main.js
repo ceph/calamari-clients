@@ -58,7 +58,8 @@ require.config({
         statemachine: '../bower_components/javascript-state-machine/state-machine',
         marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
         gitcommit: 'git',
-        dygraphs: 'vendor/dygraph-combined'
+        dygraphs: 'vendor/dygraph-combined',
+        react: '../bower_components/react/react'
     }
 });
 
