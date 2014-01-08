@@ -70,29 +70,51 @@ define(['backbone', 'react'], function(Backbone, React) {
             this.stopListening();
         },
         render: function() {
-            var stateIcon = 'fa-check';
-            var stateColor = 'ok';
-            if (this.state.status === 'warn') {
-                stateIcon = 'fa-warning';
-                stateColor = 'warn';
-            } else if (this.state.status === 'fail') {
-                stateIcon = 'fa-exclamation-circle';
-                stateColor = 'fail';
-            }
+            var cardIconStateClasses = {
+                fa: true,
+                'fa-stack-1x': true,
+                'fa-check': this.state.status === 'ok',
+                'fa-warning': this.state.status === 'warn',
+                'fa-exclamation-circle': this.state.status === 'fail'
+            };
+            var cardIconClasses = {
+                'card-icon': true,
+                'ok': this.state.status === 'ok',
+                'warn': this.state.status === 'warn',
+                'fail': this.state.status === 'fail'
+            };
+            var iconClasses = {
+                fa: true,
+                'fa-lg': true,
+            };
+            iconClasses[this.props.icon] = true;
+            var cx = React.addons.classSet;
+
+            var sizeClasses = {
+                'custom-gutter': true
+            };
+            sizeClasses[this.props.size] = true;
+
+            var cardClasses = {
+                gauge: true,
+                card: true
+            };
+            cardClasses[this.props.classId] = true;
+
             return React.DOM.div({
                 style: this.state.style
             }, [
                 React.DOM.div({
-                    className: this.props.size + ' custom-gutter '
+                    className: cx(sizeClasses)
                 }, [
                     React.DOM.div({
-                        className: 'gauge card ' + this.props.classId
+                        className: cx(cardClasses)
                     }, [
                         React.DOM.span({
                             className: 'card-title',
                         }, [
                             React.DOM.i({
-                                className: 'fa ' + this.props.icon + ' fa-lg'
+                                className: cx(iconClasses)
                             }),
                                 ' ' + this.props.title
                         ]),
@@ -116,7 +138,7 @@ define(['backbone', 'react'], function(Backbone, React) {
                                 this.state.subtext)
                         ]),
                         React.DOM.div({
-                            className: 'card-icon ' + stateColor
+                            className: cx(cardIconClasses)
                         }, [
                             React.DOM.span({
                                 className: 'fa-stack fa-lg fa-2x'
@@ -125,7 +147,7 @@ define(['backbone', 'react'], function(Backbone, React) {
                                     className: 'fa fa-square-o fa-stack-2x'
                                 }),
                                 React.DOM.i({
-                                    className: 'fa ' + stateIcon + ' fa-stack-1x'
+                                    className: cx(cardIconStateClasses)
                                 })
                             ])
                         ])
