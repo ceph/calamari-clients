@@ -1,6 +1,6 @@
 /*global require */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'react', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, React) {
     /* Default Configuration */
     var hostname = document.location.hostname;
     //hostname = 'mira022.front.sepia.ceph.com';
@@ -182,6 +182,42 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 appRouter: appRouter
             });
 
+            var typeOne = views.TypeOneView({
+                title: 'Hello',
+                classId: 'typeOne',
+                vent: App.vent
+            });
+            var typeOneB = views.TypeOneView({
+                title: 'Hello',
+                classId: 'typeOne',
+                vent: App.vent
+            });
+            var typeOneC = views.TypeOneView({
+                title: 'Hello',
+                classId: 'typeOne',
+                vent: App.vent
+            });
+            var typeOneD = views.TypeOneView({
+                title: 'Hello',
+                classId: 'typeOne',
+                vent: App.vent
+            });
+
+            var pluginRow = views.DashboardRow({
+                one: typeOne,
+                two: typeOneB,
+                three: typeOneC,
+                four: typeOneD
+            });
+
+            React.renderComponent(pluginRow, $('.plugins')[0]);
+
+            typeOne.setState({
+                headline: '3 / 3',
+                subline: 'Boxificiation',
+                subtext: 'ready',
+                status: 'fail'
+            });
 
             // Global Exports
             window.inktank = {
@@ -205,7 +241,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 PoolsView: poolsView,
                 IopsView: iopsView,
                 HostsView: hostsView,
-                HealthView: healthView
+                HealthView: healthView,
+                TypeOne: typeOne
             };
         });
         /* Defer Visualization startup to after loading the cluster metadata */
