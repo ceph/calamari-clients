@@ -1,8 +1,12 @@
 /* global define */
-define(['backbone', 'react'], function(Backbone, React) {
+define(['backbone', 'react', 'helpers/react-mixins'], function(Backbone, React, mixins) {
     'use strict';
     var TypeOneView = React.createClass({
-        mixins: [Backbone.Events],
+        mixins: [
+            Backbone.Events,
+            mixins.SetIntervalMixin,
+            mixins.PollerMixin
+        ],
         getInitialState: function() {
             return {
                 status: 'ok',
@@ -16,17 +20,19 @@ define(['backbone', 'react'], function(Backbone, React) {
         },
         getDefaultProps: function() {
             return {
-                size: 'col-lg-3 col-md-3 col-sm-3 col-xs-3',
+                size: 'col-lg-3 col-md-3 col-sm-6 col-xs-6',
                 classId: 'typeOne',
                 icon: 'fa-heart',
-                title: 'Unconfigured'
+                title: 'Unconfigured',
+                frequencyMs: 1000
             };
         },
         propTypes: {
             size: React.PropTypes.string,
             classId: React.PropTypes.string,
             icon: React.PropTypes.string,
-            title: React.PropTypes.string
+            title: React.PropTypes.string,
+            url: React.PropTypes.string.isRequired
         },
         componentDidMount: function() {
             if (this.props.vent) {
