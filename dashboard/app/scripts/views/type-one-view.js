@@ -1,5 +1,5 @@
 /* global define */
-define(['backbone', 'react', 'helpers/react-mixins'], function(Backbone, React, mixins) {
+define(['underscore', 'backbone', 'react', 'helpers/react-mixins', 'helpers/animation'], function(_, Backbone, React, mixins, animation) {
     'use strict';
     var TypeOneView = React.createClass({
         mixins: [
@@ -24,9 +24,11 @@ define(['backbone', 'react', 'helpers/react-mixins'], function(Backbone, React, 
                 classId: 'typeOne',
                 icon: 'fa-heart',
                 title: 'Unconfigured',
-                frequencyMs: 1000
+                frequencyMs: 30000
             };
         },
+        disappearAnimation: animation.single('fadeOutUpAnim'),
+        reappearAnimation: animation.single('fadeInDownAnim'),
         propTypes: {
             size: React.PropTypes.string,
             classId: React.PropTypes.string,
@@ -36,6 +38,8 @@ define(['backbone', 'react', 'helpers/react-mixins'], function(Backbone, React, 
         },
         componentDidMount: function() {
             if (this.props.vent) {
+                this.listenTo(this.props.vent, 'gauges:collapse', this.collapse);
+                this.listenTo(this.props.vent, 'gauges:expand', this.expand);
                 this.listenTo(this.props.vent, 'gauges:disappear', this.disappear);
                 this.listenTo(this.props.vent, 'gauges:reappear', this.reappear);
                 this.listenTo(this, 'status:ok', this.ok);
@@ -58,17 +62,47 @@ define(['backbone', 'react', 'helpers/react-mixins'], function(Backbone, React, 
                 status: 'fail'
             });
         },
-        disappear: function() {
+        collapse: function(callback) {
             this.setState({
                 style: {
                     display: 'none'
                 }
             });
+            if (_.isFunction(callback)) {
+                callback.apply(this);
+            }
         },
-        reappear: function() {
+        expand: function(callback) {
             this.setState({
                 style: {
                     display: 'block'
+                }
+            });
+            if (_.isFunction(callback)) {
+                callback.apply(this);
+            }
+        },
+        disappear: function() {
+            this.disappearAnimation(this.getDOMNode(), function(callback) {
+                this.setState({
+                    style: {
+                        visibility: 'hidden'
+                    }
+                });
+                if (_.isFunction(callback)) {
+                    callback.apply(this);
+                }
+            });
+        },
+        reappear: function() {
+            this.reappearAnimation(this.getDOMNode(), function(callback) {
+                this.setState({
+                    style: {
+                        visibility: 'visible'
+                    }
+                });
+                if (_.isFunction(callback)) {
+                    callback.apply(this);
                 }
             });
         },
