@@ -36,6 +36,9 @@ define(['jquery', 'underscore'], function($, _) {
                     d.resolve();
                 };
             var self = this;
+            if (!$selector.jquery) {
+                $selector = $($selector);
+            }
             $selector.on(animationEndEvent, resolver);
             $selector.addClass(class1);
             return d.promise().then(function() {
