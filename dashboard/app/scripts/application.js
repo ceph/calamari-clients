@@ -154,9 +154,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             }
             d.promise().then(function() {
                 $body.addClass('workbench-mode');
-                vent.trigger('viz:fullscreen', function() {
+                vent.trigger('viz:fullscreen', _.once(function() {
                     vent.trigger('gauges:collapse');
-                });
+                }));
             });
         },
         onleavevizmode: function(event, from, to) {
@@ -174,9 +174,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 });
             }
             d.promise().then(function() {
-                vent.trigger('gauges:expand', function() {
+                vent.trigger('gauges:expand', _.once(function() {
                     vent.trigger('gauges:reappear');
-                });
+                }));
             });
         },
         onenterdashmode: function() {},
