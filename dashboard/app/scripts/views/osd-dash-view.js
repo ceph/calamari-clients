@@ -62,6 +62,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                     percentage: percentage
                 }));
                 this.displayWarning(percentage);
+            } else {
+                this.ui.subtext.text('');
+                this.displayWarning(0);
             }
             this.ui.headline.text(this.headlineTemplate({
                 ok: ok,
