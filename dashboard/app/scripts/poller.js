@@ -64,6 +64,7 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         defaultDelay: 20000,
         defaultTimeout: 3000,
         heartBeatDelay: 60000,
+        krakenHeartBeatTimer: null,
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App.Config) {
