@@ -54,7 +54,7 @@ $(CONFIG_JSON): build-ui
 dpkg:
 	dpkg-buildpackage -b -us -uc
 
-install:
+install: build-ui
 	@echo "install"
 	for d in $(UI_SUBDIRS); do \
 		instdir=$$(basename $$d); \
