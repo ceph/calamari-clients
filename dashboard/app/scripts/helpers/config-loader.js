@@ -23,10 +23,10 @@ define(['jquery'], function($) {
             if (errorThrown === 'Not Found') {
                 // convert error into empty object
                 return loaded.reject({});
-            } else {
-                loaded.reject(jqXHR, textStatus, errorThrown);
             }
-        }).done(function(responseText) {
+            loaded.reject(jqXHR, textStatus, errorThrown);
+        }).done(function(responseText, textStatus) {
+            console.log('Loaded Config File ' + textStatus);
             try {
                 var jsonResult = JSON.parse(responseText);
                 loaded.resolve(jsonResult);
