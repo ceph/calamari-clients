@@ -1,4 +1,19 @@
-VERSION=1.0.0
+ifndef VERSION
+    VERSION=$(shell ./get-versions.sh VERSION)
+endif
+ifndef REVISION
+    REVISION=$(shell ./get-versions.sh REVISION)
+endif
+ifndef DIST
+    DIST=unstable
+endif
+ifndef BPTAG
+    BPTAG=""
+endif
+ifndef DEBEMAIL
+    DEBEMAIL=dan.mick@inktank.com
+endif
+
 DISTNAMEVER=calamari-clients_$(VERSION)
 PKGDIR=calamari-clients-$(VERSION)
 TARNAME = ../$(DISTNAMEVER).tar.gz
@@ -26,6 +41,12 @@ DEBFILES = \
 	copyright \
 	rules \
 	source/format
+
+DATESTR=$(shell /bin/echo -n "built on "; date)
+set_deb_version:
+	DEBEMAIL=$(DEBEMAIL) dch \
+		--newversion $(VERSION)-$(REVISION)$(BPTAG) \
+		-D $(DIST) --force-bad-version --force-distribution "$(DATESTR)"
 
 build: build-ui $(CONFIG_JSON)
 
