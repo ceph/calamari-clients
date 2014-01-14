@@ -1,5 +1,5 @@
 /* global define */
-define(['underscore', 'backbone', 'react', 'helpers/react-mixins', 'helpers/animation'], function(_, Backbone, React, mixins, animation) {
+define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/react-mixins', 'helpers/animation'], function(_, Backbone, log, React, mixins, animation) {
     'use strict';
     var TypeOneView = React.createClass({
         mixins: [
@@ -24,7 +24,9 @@ define(['underscore', 'backbone', 'react', 'helpers/react-mixins', 'helpers/anim
                 classId: 'typeOne',
                 icon: 'fa-heart',
                 title: 'Unconfigured',
-                frequencyMs: 30000
+                fields: ['primary', 'secondary'],
+                frequencyMs: 30000,
+                headlineTemplate: _.template('<%- primary %> / <%- secondary %>')
             };
         },
         disappearAnimation: animation.single('fadeOutUpAnim'),
@@ -34,7 +36,10 @@ define(['underscore', 'backbone', 'react', 'helpers/react-mixins', 'helpers/anim
             classId: React.PropTypes.string,
             icon: React.PropTypes.string,
             title: React.PropTypes.string,
-            url: React.PropTypes.string.isRequired
+            url: React.PropTypes.string.isRequired,
+            fields: React.PropTypes.array,
+            frequencyMs: React.PropTypes.number,
+            headlineTemplate: React.PropTypes.func
         },
         componentDidMount: function() {
             if (this.props.vent) {
@@ -46,6 +51,24 @@ define(['underscore', 'backbone', 'react', 'helpers/react-mixins', 'helpers/anim
                 this.listenTo(this, 'status:warn', this.warn);
                 this.listenTo(this, 'status:fail', this.fail);
             }
+            if (this.model) {
+                this.listenTo(this.model, 'change', this.modelChangeHandler);
+            }
+        },
+        modelChangeHandler: function(model) {
+            log.info('model changed!');
+            var obj = _.reduce(this.props.fields, function(memo, field) {
+                memo[field] = model.get(field);
+                return memo;
+            }, {});
+            if (_.isString(this.props.headlineTemplate)) {
+                this.setProps({
+                    'headlineTemplate': _.template(this.props.headlineTemplate)
+                });
+            }
+            this.setState({
+                'headline': this.props.headlineTemplate(obj)
+            });
         },
         ok: function() {
             this.setState({
