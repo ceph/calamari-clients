@@ -1,38 +1,33 @@
 [
   {
     "title": "Disk Stats",
-    "url": "/api/vendor/whatever",
-    "frequencyMs": 30000,
+    "url": "/plugin/one",
+    "frequencyMs": 5000,
+	"headlineTemplate": "<%- primary %> : <%- secondary %>",
     "fields": [
-      "primary.field",
-      "secondary.field"
+      "primary",
+      "secondary"
     ],
     "classId": "diskStats",
-    "icon": "fa-bell",
-    "size": "col-lg-4 col-md-4 col-sm-6 col-xs-6"
+    "icon": "fa-bell"
   },
   {
     "title": "Mem Stats",
-    "url": "/api/vendor/whatever",
-    "frequencyMs": 30000,
+    "url": "/plugin/two/",
+    "frequencyMs": 1000,
     "fields": [
-      "primary.field",
-      "secondary.field"
+      "alpha",
+      "omega"
     ],
+	"headlineTemplate": "(<%- alpha %>) - (<%- omega %>)",
     "classId": "memStats",
-    "icon": "fa-book",
-    "size": "col-lg-4 col-md-4 col-sm-6 col-xs-6"
+    "icon": "fa-book"
   },
   {
     "title": "URL Stats",
-    "url": "/api/vendor/whatever",
-    "frequencyMs": 30000,
-    "fields": [
-      "primary.field",
-      "secondary.field"
-    ],
+    "url": "/plugin/one",
+    "frequencyMs": 15000,
     "classId": "urlStats",
-    "icon": "fa-bullhorn",
-    "size": "col-lg-4 col-md-4 col-sm-6 col-xs-6"
+    "icon": "fa-bullhorn"
   }
 ]
