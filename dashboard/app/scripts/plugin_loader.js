@@ -44,13 +44,13 @@ define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/config-loader', 
                 var plugins = {};
                 _.each(result, function(plugin, index) {
                     try {
-                        self[self.slots[index]] = typeOneView({
-                            vent: self.vent,
-                            title: plugin.title,
-                            classId: plugin.classId,
-                            url: plugin.url,
-                            icon: plugin.icon
-                        });
+                        if (_.isString(plugin.headlineTemplate)) {
+                            plugin.headlineTemplate = _.template(plugin.headlineTemplate);
+                        }
+                        self[self.slots[index]] = typeOneView(
+                            _.extend(plugin, {
+                            vent: self.vent
+                        }));
                         plugins[self.slots[index]] = self[self.slots[index]];
                     } catch (e) {
                         log.error('Unable to start plugin ' + plugin.title, e);

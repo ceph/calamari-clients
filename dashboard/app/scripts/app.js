@@ -235,7 +235,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 IopsView: iopsView,
                 HostsView: hostsView,
                 HealthView: healthView,
-                pluginLoader: pluginLoader
+                PluginLoader: pluginLoader
             };
 
             App.start({
