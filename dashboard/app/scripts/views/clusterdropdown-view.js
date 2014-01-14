@@ -1,5 +1,5 @@
 /* global define */
-define(['jquery', 'underscore', 'templates', 'backbone', 'collections/cluster-collection', 'marionette'], function($, _, JST, Backbone, Clusters) {
+define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collections/cluster-collection', 'marionette'], function($, _, JST, Backbone, log, Clusters) {
     'use strict';
     var ClusterDropDown = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/clusterdropdown.ejs'],
@@ -30,7 +30,7 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'collections/cluster-co
             var t = this.rowTemplate;
             var markup = [];
             this.collection.each(function(m) {
-                console.log(m.toJSON());
+                log.debug(m.toJSON());
                 markup.push(t(m.toJSON()));
             });
             this.ui.menu.html(markup.join(''));
