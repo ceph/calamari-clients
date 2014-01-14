@@ -1,5 +1,5 @@
 /*global define*/
-define(['underscore', 'backbone', 'react', 'helpers/config-loader', 'views/dashboard-row', 'views/type-one-view'], function(_, Backbone, React, loader, dashboardRow, typeOneView) {
+define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/config-loader', 'views/dashboard-row', 'views/type-one-view'], function(_, Backbone, log, React, loader, dashboardRow, typeOneView) {
     'use strict';
     var PluginLoader = function() {
         this.initialize.apply(this, arguments);
@@ -19,38 +19,42 @@ define(['underscore', 'backbone', 'react', 'helpers/config-loader', 'views/dashb
                 this.el = options.el;
             }
         },
-        names: ['one', 'two', 'three', 'four'],
+        slots: ['one', 'two', 'three', 'four'],
         render: function() {
             var self = this;
             if (!this.url) {
                 return;
             }
             var configPromise = loader(this.url).then(function(result) {
-                console.log('loaded plugin file');
+                log.info('loaded plugin file');
                 return result;
             }, function(jqXHR, textStatus, errorThrown) {
                 if (jqXHR.readyState === undefined) {
                     // assume if it's not an real jqXHR it's missing readyState
                     // and it just returns an empty object
-                    console.log('no plugins detected');
+                    log.info('no plugins detected');
                 } else {
-                    console.log(errorThrown + ' loading ' + this.url);
+                    log.error(errorThrown + ' loading ' + this.url);
                 }
                 return jqXHR;
             });
             configPromise.done(function(result) {
-                console.log(result);
-                console.log('detected ' + result.length + ' plugins');
+                log.debug(result);
+                log.debug('detected ' + result.length + ' plugins');
                 var plugins = {};
                 _.each(result, function(plugin, index) {
-                    self[self.names[index]] = typeOneView({
-                        vent: self.vent,
-                        title: plugin.title,
-                        classId: plugin.classId,
-                        url: plugin.url,
-                        icon: plugin.icon
-                    });
-                    plugins[self.names[index]] = self[self.names[index]];
+                    try {
+                        self[self.slots[index]] = typeOneView({
+                            vent: self.vent,
+                            title: plugin.title,
+                            classId: plugin.classId,
+                            url: plugin.url,
+                            icon: plugin.icon
+                        });
+                        plugins[self.slots[index]] = self[self.slots[index]];
+                    } catch (e) {
+                        log.error('Unable to start plugin ' + plugin.title, e);
+                    }
                 });
 
                 self.row = dashboardRow(plugins);
