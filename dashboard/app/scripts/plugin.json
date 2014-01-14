@@ -1,0 +1,38 @@
+[
+  {
+    "title": "Disk Stats",
+    "url": "/api/vendor/whatever",
+    "frequencyMs": 30000,
+    "fields": [
+      "primary.field",
+      "secondary.field"
+    ],
+    "classId": "diskStats",
+    "icon": "fa-bell",
+    "size": "col-lg-4 col-md-4 col-sm-6 col-xs-6"
+  },
+  {
+    "title": "Mem Stats",
+    "url": "/api/vendor/whatever",
+    "frequencyMs": 30000,
+    "fields": [
+      "primary.field",
+      "secondary.field"
+    ],
+    "classId": "memStats",
+    "icon": "fa-book",
+    "size": "col-lg-4 col-md-4 col-sm-6 col-xs-6"
+  },
+  {
+    "title": "URL Stats",
+    "url": "/api/vendor/whatever",
+    "frequencyMs": 30000,
+    "fields": [
+      "primary.field",
+      "secondary.field"
+    ],
+    "classId": "urlStats",
+    "icon": "fa-bullhorn",
+    "size": "col-lg-4 col-md-4 col-sm-6 col-xs-6"
+  }
+]

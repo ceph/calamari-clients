@@ -1,6 +1,6 @@
 /*global require */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
+require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'plugin_loader', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, PluginLoader) {
     /* Default Configuration */
     var config = {
         'offline': false,
@@ -198,6 +198,16 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                     waitFn.call(window);
                 }
             });
+            App.start({
+                appRouter: appRouter
+            });
+
+            var pluginLoader = new PluginLoader({
+                vent: App.vent,
+                url: 'scripts/plugin.json',
+                el: $('.plugins')[0]
+            });
+            pluginLoader.render();
 
             // Global Exports
             window.inktank = {
@@ -221,7 +231,8 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 PoolsView: poolsView,
                 IopsView: iopsView,
                 HostsView: hostsView,
-                HealthView: healthView
+                HealthView: healthView,
+                pluginLoader: pluginLoader
             };
 
             App.start({
