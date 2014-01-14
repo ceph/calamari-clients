@@ -1,5 +1,5 @@
 /*global define */
-define(['jquery'], function($) {
+define(['jquery', 'loglevel'], function($, log) {
     'use strict';
     // Loads the specified JSON config file and returns a promise
     // to tell you when it's done.
@@ -13,13 +13,13 @@ define(['jquery'], function($) {
             dataType: 'text'
         });
         ajax.then(function(result) {
-            console.log(result);
+            log.debug(result);
             return $.ajax(url, {
                 type: 'GET',
                 dataType: 'text'
             });
         }, function(jqXHR, textStatus, errorThrown) {
-            console.log('No config, empty file, or bad json. Error: ' + textStatus);
+            log.warn('No config, empty file, or bad json. Error: ' + textStatus);
             // It's ok if there's no config file
             // just return an empty object.
             if (errorThrown === 'Not Found') {
@@ -28,7 +28,7 @@ define(['jquery'], function($) {
             }
             loaded.reject(jqXHR, textStatus, errorThrown);
         }).done(function(responseText, textStatus) {
-            console.log('Loaded Config File ' + textStatus);
+            log.info('Loading ' + url + '...' + textStatus);
             try {
                 var jsonResult = JSON.parse(responseText);
                 loaded.resolve(jsonResult);

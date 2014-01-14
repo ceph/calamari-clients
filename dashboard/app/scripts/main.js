@@ -59,7 +59,8 @@ require.config({
         marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
         gitcommit: 'git',
         dygraphs: 'vendor/dygraph-combined',
-        react: '../bower_components/react/react-with-addons'
+        react: '../bower_components/react/react-with-addons',
+        loglevel: '../bower_components/loglevel/dist/loglevel'
     }
 });
 
