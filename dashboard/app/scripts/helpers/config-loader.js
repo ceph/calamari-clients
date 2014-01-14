@@ -22,9 +22,13 @@ define(['jquery', 'loglevel'], function($, log) {
             // It's ok if there's no config file
             // just return an empty object.
             if (errorThrown === 'Not Found') {
+                log.info(url + ' ' + errorThrown);
                 // convert error into empty object
                 log.info(url + ' ' + errorThrown);
                 return loaded.reject({});
+            } else {
+                log.info(textStatus + ': ' + url + ' ' + errorThrown);
+                loaded.reject(jqXHR, textStatus, errorThrown);
             }
             log.info(textStatus + ': ' + url + ' ' + errorThrown);
             loaded.reject(jqXHR, textStatus, errorThrown);
