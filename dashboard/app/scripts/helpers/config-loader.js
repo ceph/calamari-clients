@@ -23,10 +23,10 @@ define(['jquery'], function($) {
             // It's ok if there's no config file
             // just return an empty object.
             if (errorThrown === 'Not Found') {
-                loaded.resolve({});
-            } else {
-                loaded.reject(jqXHR);
+                // convert error into empty object
+                return loaded.reject({});
             }
+            loaded.reject(jqXHR, textStatus, errorThrown);
         }).done(function(responseText, textStatus) {
             console.log('Loaded Config File ' + textStatus);
             try {
