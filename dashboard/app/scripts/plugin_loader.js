@@ -47,7 +47,8 @@ define(['underscore', 'backbone', 'react', 'helpers/config-loader', 'views/dashb
                         vent: self.vent,
                         title: plugin.title,
                         classId: plugin.classId,
-                        url: plugin.url
+                        url: plugin.url,
+                        icon: plugin.icon
                     });
                     plugins[self.names[index]] = self[self.names[index]];
                 });
