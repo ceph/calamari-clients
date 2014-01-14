@@ -212,7 +212,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 IopsView: iopsView,
                 HostsView: hostsView,
                 HealthView: healthView,
-                pluginLoader: pluginLoader
+                PluginLoader: pluginLoader
             };
         });
         /* Defer Visualization startup to after loading the cluster metadata */
