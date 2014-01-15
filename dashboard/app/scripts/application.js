@@ -94,7 +94,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             }
         },
         ongraph: function(event, from, to, host, id) {
-            //console.log('ongraph>> host: ' + host + ' device id: ' + id);
             this.graphWall.hideGraphs();
             var hosts;
             var self = this;
@@ -124,7 +123,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         });
                     }).fail(function(result) {
                         // TODO Handle errors gracefully
-                        console.log('failed! ', result);
                     });
                     return;
                 }
@@ -132,6 +130,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 hosts = this.ReqRes.request('get:hosts');
                 if (_.contains(hosts, host)) {
                     this.graphWall.showButtons();
+                    this.graphWall.updateSelect(host);
                     this.graphWall.updateBtns('overview');
                     this.graphWall.hostname = host;
                     this.graphWall.renderGraphs('Host Graphs for ' + host, this.graphWall.makeHostOverviewGraphUrl(host));

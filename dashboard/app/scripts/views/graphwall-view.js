@@ -657,6 +657,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     self.dygraphLoader($graphEl, graph.url, graph.options);
                 }, self.graphiteRequestDelayMs * index);
             });
+        },
+        updateSelect: function(id) {
+            this.$('select option[selected]').removeAttr('selected');
+            this.$('select option[value="'+ id +'"]').attr('selected', true);
         }
     });
 
