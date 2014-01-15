@@ -19,14 +19,16 @@ define(['jquery', 'loglevel'], function($, log) {
                 dataType: 'text'
             });
         }, function(jqXHR, textStatus, errorThrown) {
-            log.warn('No config, empty file, or bad json. Error: ' + textStatus);
             // It's ok if there's no config file
             // just return an empty object.
             if (errorThrown === 'Not Found') {
+                log.info(url + ' ' + errorThrown);
                 // convert error into empty object
                 return loaded.reject({});
+            } else {
+                log.info(textStatus + ': ' + url + ' ' + errorThrown);
+                loaded.reject(jqXHR, textStatus, errorThrown);
             }
-            loaded.reject(jqXHR, textStatus, errorThrown);
         }).done(function(responseText, textStatus) {
             log.info('Loading ' + url + '...' + textStatus);
             try {

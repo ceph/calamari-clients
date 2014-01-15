@@ -29,12 +29,15 @@ define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/config-loader', 
                 log.info('loaded plugin file');
                 return result;
             }, function(jqXHR, textStatus, errorThrown) {
-                if (jqXHR.readyState === undefined) {
-                    // assume if it's not an real jqXHR it's missing readyState
-                    // and it just returns an empty object
-                    log.info('no plugins detected');
-                } else {
+                if (_.isString(jqXHR)) {
+                    // probably JSON parsing error
+                    log.error(jqXHR);
+                } else if (_.isObject(jqXHR) && jqXHR.readyState) {
+                    // looks like an xhr error
                     log.error(errorThrown + ' loading ' + this.url);
+                } else {
+                    // assume file not found
+                    log.info('No plugins detected.');
                 }
                 return jqXHR;
             });
