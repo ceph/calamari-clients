@@ -1,0 +1,13 @@
+Source: calamari-clients
+Section: misc
+Priority: extra
+Homepage: http://www.inktank.com/
+Maintainer: Inktank <info@intank.com>
+Standards-Version: 3.9.2
+Build-Depends: ruby, rubygems, make, git
+
+Package: calamari-clients
+Architecture: all
+Depends: calamari-server
+Description: Inktank Calamari user interface
+
