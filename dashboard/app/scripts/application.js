@@ -121,7 +121,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         }), function() {
                             return _.flatten(result);
                         });
-                    }).fail(function(result) {
+                    }).fail(function(/*result*/) {
                         // TODO Handle errors gracefully
                     });
                     return;
