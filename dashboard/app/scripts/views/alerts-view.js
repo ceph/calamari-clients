@@ -6,6 +6,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
     var AlertsView = Backbone.Marionette.ItemView.extend({
         serverErrorTemplate: _.template('Server Error (<%- status %>) <%- responseText %>. Please contact Administrator.'),
         unexpectedErrorTemplate: _.template('Unexpected Error (<%- status %>)<%- responseText %>. Please contact Administrator.'),
+        serverUnreachableTemplate: _.template('Server Unreachable. Try re-loading page or contact an Administrator.'),
         parserErrorTemplate: _.template('Error decoding <%- source %> response from server. Please contact Administrator.'),
         template: JST['app/scripts/templates/alerts.ejs'],
         throttleMs: 10000,
@@ -19,6 +20,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
                 this[fnName] = _.throttle(this[fnName], this.throttleMs);
             }, this);
             this.sessionExpired = _.once(this.sessionExpired);
+            this.serverUnreachable = _.once(this.serverUnreachable);
             this.timeout = _.after(this.throttleCount, this.timeout);
             this.clusterUpdateTimeout = _.throttle(this.clusterUpdateTimeout, this.krakenFailThreshold);
             this.clusterAPITimeout = _.throttle(this.clusterAPITimeout, this.krakenFailThreshold);
@@ -76,15 +78,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             this.warning(msg);
         },
         sessionExpired: function(msg) {
-            msg.text = 'Session Has Timed Out. Please Login again.';
-            msg.buttons = [{
-                addClass: 'btn btn-primary',
-                text: 'Login',
-                onClick: function($noty) {
-                    $noty.close();
-                    window.location = '/login/';
-                }
-            }];
+            msg = _.extend(msg, {
+                text: 'Session Has Timed Out. Please Login again.',
+                buttons: [{
+                        addClass: 'btn btn-primary',
+                        text: 'Login',
+                        onClick: function($noty) {
+                            $noty.close();
+                            window.location = '/login/';
+                        }
+                    }
+                ]
+            });
             this.warning(msg);
         },
         serverError: function(msg, xhr) {
@@ -95,9 +100,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             msg.text = this.unexpectedErrorTemplate(xhr);
             this.error(msg);
         },
+        serverUnreachable: function(msg, xhr) {
+            msg = _.extend(msg, {
+                force: true,
+                modal: true,
+                text: this.serverUnreachableTemplate(xhr),
+                closeWith: []
+            });
+            this.error(msg);
+        },
         parserError: function(msg, xhr) {
-            msg.text = this.parserErrorTemplate(xhr);
-            msg.timeout = 10000;
+            msg = _.extend(msg, {
+                text: this.parserErrorTemplate(xhr),
+                timeout: 10000
+            });
             this.error(msg);
         },
         neterrorHandler: function(source, xhr) {
@@ -120,6 +136,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             }
             if (xhr.status >= 500) {
                 return this.serverError(msg, xhr);
+            }
+            if (xhr.status === 0) {
+                return this.serverUnreachable(msg, xhr);
             }
             return this.unexpectedError(msg, xhr);
         }
