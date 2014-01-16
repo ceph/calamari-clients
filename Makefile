@@ -75,7 +75,7 @@ $(CONFIG_JSON): build-ui
 dpkg:
 	dpkg-buildpackage -b -us -uc
 
-install: build-ui
+install: build
 	@echo "install"
 	for d in $(UI_SUBDIRS); do \
 		instdir=$$(basename $$d); \
@@ -89,7 +89,6 @@ clean:
 		(cd $$d; \
 		if [ -d node_modules ] ; then grunt --no-color clean; fi) \
 	done
-	@rm -f $(CONFIG_JSON)
 
 dist:
 	@echo "making dist tarball in $(TARNAME)"
@@ -106,4 +105,3 @@ dist:
 	@echo "tar file made in $(TARNAME)"
 
 .PHONY: dist clean build dpkg install
-
