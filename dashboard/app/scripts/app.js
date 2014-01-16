@@ -25,14 +25,21 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
     });
     var appRouter = new AppRouter();
     /* Load Config.json first before starting app */
-    var promise = configloader('scripts/config.json').then(function(result) {
+    var configUrl = 'scripts/config.json';
+    var promise = configloader(configUrl).then(function(result) {
         _.extend(config, result);
         if (config['graphite-host'] && config['iops-host'] === undefined) {
             config['iops-host'] = config['graphite-host'];
         }
-    }).fail(function(jqXHR) {
-        window.alert(jqXHR);
-        console.log(jqXHR);
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        if (_.isString(jqXHR)) {
+            window.alert(jqXHR);
+            console.log(jqXHR);
+        } else if (_.isObject(jqXHR) && jqXHR.readState) {
+            console.log(errorThrown + ' loading ' + configUrl);
+        } else {
+            window.alert(configUrl + ' not found on server');
+        }
     });
     /* Load Config.json first before starting app */
 
