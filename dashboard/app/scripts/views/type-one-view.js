@@ -53,6 +53,7 @@ define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/react-mixins', '
             }
             if (this.model) {
                 this.listenTo(this.model, 'change', this.modelChangeHandler);
+                this.props.vent.trigger('poll');
             }
         },
         modelChangeHandler: function(model) {
