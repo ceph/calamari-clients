@@ -66,9 +66,23 @@ define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/react-mixins', '
                     'headlineTemplate': _.template(this.props.headlineTemplate)
                 });
             }
-            this.setState({
+
+            var status = model.get('status');
+            var statusObj = {};
+            if (status && _.isObject(status)) {
+                if (status.state) {
+                    var state = status.state;
+                    if (state === 'ok' || state === 'warn' || state === 'fail') {
+                        this.trigger('status:' + status.state);
+                        statusObj = {
+                            subtext: status.message
+                        };
+                    }
+                }
+            }
+            this.setState(_.extend({
                 'headline': this.props.headlineTemplate(obj)
-            });
+            }, statusObj));
         },
         ok: function() {
             this.setState({
