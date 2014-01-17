@@ -23,6 +23,9 @@ define(['backbone'], function(Backbone) {
             this.model = new Model();
         },
         componentDidMount: function() {
+            if (this.props.vent) {
+                this.listenTo(this.props.vent, 'poll', this.poll);
+            }
             this.setInterval(this.poll, this.props.frequencyMs);
         },
         poll: function() {
