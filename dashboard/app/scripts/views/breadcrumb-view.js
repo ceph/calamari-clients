@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function($, _, Backbone, JST) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'i18n!nls/breadcrumb-view', 'marionette'], function($, _, Backbone, JST, i18n) {
     'use strict';
 
     var BreadcrumbView = Backbone.Marionette.ItemView.extend({
@@ -36,10 +36,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         serializeData: function() {
             return {
                 title: {
-                    dashboard: 'Dashboard',
-                    bench: 'OSD Workbench',
-                    chart: 'Charting'
-                }
+                    dashboard: i18n.dashboardTitle,
+                    bench: i18n.workbenchTitle,
+                    chart: i18n.graphTitle,
+                },
+                dashboard: i18n.dashboard,
+                workbench: i18n.workbench,
+                graph: i18n.graph
             };
         },
         switcher: function(evt) {

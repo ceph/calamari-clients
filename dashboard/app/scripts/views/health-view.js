@@ -1,6 +1,6 @@
 /*global define*/
 /* jshint -W106, -W069*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, humanize, gaugeHelper) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/gauge-helper', 'i18n!nls/health-view', 'marionette'], function($, _, Backbone, JST, humanize, gaugeHelper, i18n) {
     'use strict';
 
     /* HealthView
@@ -63,7 +63,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
             return {
                 evt: evt,
                 healthText: healthText,
-                relTimeStr: subtext
+                relTimeStr: subtext,
+                title: i18n.title
             };
         },
         timerWrapper: function(fn) {

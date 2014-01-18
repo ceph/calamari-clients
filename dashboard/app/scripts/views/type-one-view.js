@@ -1,5 +1,5 @@
 /* global define */
-define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/react-mixins', 'helpers/animation'], function(_, Backbone, log, React, mixins, animation) {
+define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/react-mixins', 'helpers/animation', 'i18n!nls/type-one-view'], function(_, Backbone, log, React, mixins, animation, i18n) {
     'use strict';
     var TypeOneView = React.createClass({
         mixins: [
@@ -23,7 +23,7 @@ define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/react-mixins', '
                 size: 'col-lg-3 col-md-3 col-sm-6 col-xs-6',
                 classId: 'typeOne',
                 icon: 'fa-heart',
-                title: 'Unconfigured',
+                title: i18n.unconfigured,
                 fields: ['primary', 'secondary'],
                 frequencyMs: 30000,
                 headlineTemplate: _.template('<%- primary %> / <%- secondary %>')
