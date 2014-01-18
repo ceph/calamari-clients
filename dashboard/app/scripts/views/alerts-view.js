@@ -15,12 +15,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.listenTo(this.App.vent, 'app:neterror', this.neterrorHandler);
+            this.listenTo(this.App.vent, 'app:configerror', this.configError);
             this.listenTo(this.App.vent, 'krakenHeartBeat:update', this.heartBeat);
             _.each(['timeout', 'serverError', 'unexpectedError', 'parserError'], function(fnName) {
                 this[fnName] = _.throttle(this[fnName], this.throttleMs);
             }, this);
             this.sessionExpired = _.once(this.sessionExpired);
             this.serverUnreachable = _.once(this.serverUnreachable);
+            this.configError = _.once(this.configError);
             this.timeout = _.after(this.throttleCount, this.timeout);
             this.clusterUpdateTimeout = _.throttle(this.clusterUpdateTimeout, this.krakenFailThreshold);
             this.clusterAPITimeout = _.throttle(this.clusterAPITimeout, this.krakenFailThreshold);
@@ -113,6 +115,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             msg = _.extend(msg, {
                 text: this.parserErrorTemplate(xhr),
                 timeout: 10000
+            });
+            this.error(msg);
+        },
+        configError: function(str) {
+            var msg = _.extend({}, this.notyDefaults, {
+                text: str
             });
             this.error(msg);
         },

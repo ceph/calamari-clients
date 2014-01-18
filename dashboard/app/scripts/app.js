@@ -2,12 +2,10 @@
 'use strict';
 require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'plugin_loader', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, PluginLoader) {
     /* Default Configuration */
-    var hostname = document.location.hostname;
-    //hostname = 'mira022.front.sepia.ceph.com';
     var config = {
-        offline: true,
+        'offline': false,
         'delta-osd-api': false,
-        'graphite-host': 'http://' + hostname + ':8080',
+        'graphite-host': '/graphite',
         'api-request-timeout-ms': 10000,
         'long-polling-interval-ms': 20000,
         'disable-network-checks': false,
@@ -25,19 +23,35 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
     });
     var appRouter = new AppRouter();
     /* Load Config.json first before starting app */
-    var promise = configloader('scripts/config.json').then(function(result) {
+    var configUrl = 'scripts/config.json';
+    var promise = configloader(configUrl).then(undefined, function(jqXHR, textStatus, errorThrown) {
+        if (_.isString(jqXHR)) {
+            console.log(jqXHR);
+            // Create a Wait Function which we pass through to promise callbacks.
+            // The last callback is responsible for invoking it, in this
+            // case after the AlertView has been set up. This is a deferred event,
+            // otherwise there would be nothing to receive it.
+            var waitAfterLoadedFn = function() {
+                this.inktank.App.vent.trigger('app:configerror', jqXHR);
+            };
+            return $.Deferred().resolve(waitAfterLoadedFn);
+        } else if (_.isObject(jqXHR) && jqXHR.readState) {
+            console.log(errorThrown + ' loading ' + configUrl);
+        } else {
+            console.log('No ' + configUrl + ' found. Using app defaults');
+            return $.Deferred().resolve();
+        }
+    });
+    promise.done(function(result) {
         _.extend(config, result);
         if (config['graphite-host'] && config['iops-host'] === undefined) {
             config['iops-host'] = config['graphite-host'];
         }
-    }).fail(function(jqXHR) {
-        window.alert(jqXHR);
-        log.error(jqXHR);
     });
     /* Load Config.json first before starting app */
 
     var App, userMenu, clusterMenu;
-    promise.then(function() {
+    promise.then(function(waitFn) {
         App = new Application();
         App.ReqRes = new Backbone.Wreqr.RequestResponse();
         App.Config = config;
@@ -178,8 +192,11 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 App.fsm.graph(host, osd);
             });
 
-            App.start({
-                appRouter: appRouter
+            App.addInitializer(function() {
+                if (_.isFunction(waitFn)) {
+                    // run this callback after the app has been set up
+                    waitFn.call(window);
+                }
             });
 
             var pluginLoader = new PluginLoader({
@@ -214,6 +231,10 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 HealthView: healthView,
                 PluginLoader: pluginLoader
             };
+
+            App.start({
+                appRouter: appRouter
+            });
         });
         /* Defer Visualization startup to after loading the cluster metadata */
         Backbone.history.start();
