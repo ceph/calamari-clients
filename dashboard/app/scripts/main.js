@@ -32,6 +32,9 @@ require.config({
         },
         'popover': {
             deps: ['modal']
+        },
+        'l20n': {
+            exports: 'L20n'
         }
     },
     paths: {
@@ -60,7 +63,9 @@ require.config({
         gitcommit: 'git',
         dygraphs: 'vendor/dygraph-combined',
         react: '../bower_components/react/react-with-addons',
-        loglevel: '../bower_components/loglevel/dist/loglevel'
+        loglevel: '../bower_components/loglevel/dist/loglevel',
+        l20n: 'vendor/l20n.min',
+        l20nCtx: 'l20nCtxPlugin'
     }
 });
 

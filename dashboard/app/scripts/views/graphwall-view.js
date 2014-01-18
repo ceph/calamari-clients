@@ -1,12 +1,12 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'models/application-model', 'dygraphs', 'marionette', 'modal'], function($, _, Backbone, JST, gutils, models, Dygraph) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'models/application-model', 'dygraphs', 'l20nCtx!locales/{{locale}}/strings', 'marionette', 'modal'], function($, _, Backbone, JST, gutils, models, Dygraph, l10n) {
     'use strict';
 
     var GraphwallView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/graphwall.ejs'],
         graphTemplate: JST['app/scripts/templates/graph.ejs'],
-        graphHelpTemplate: JST['app/scripts/templates/graph-help.ejs'],
+        graphHelpTemplate: l10n.getSync('GraphHelp'),
         graphFailToLoadTemplate: _.template('<i title="<%- msg %>" class="fa fa-warning fa-3x warn"></i>'),
         className: 'graph-mode',
         ui: {
@@ -20,13 +20,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             'input .graph-range input': 'changeGraphRange'
         },
         rangeText: [
-                '1 Week', '3 Days', '24 Hours', '12 Hours', '1 Hour'
+                l10n.getSync('Graph1Week'), l10n.getSync('Graph3Days'), l10n.getSync('Graph24Hours'), l10n.getSync('Graph12Hours'), l10n.getSync('GraphHour')
         ],
         rangeQuery: [
                 '-7d', '-3d', '-1d', '-12hour', '-1hour'
         ],
         rangeLabel: [
-                'Time (1 Week)', 'Time (3 Days)', 'Time (Last 24 Hours)', 'Time (Last 12 Hours)', 'Time (Last Hour)'
+                l10n.getSync('GraphLabelWeek'), l10n.getSync('GraphLabel3Days'), l10n.getSync('GraphLabel24Hours'), l10n.getSync('GraphLabel12Hours'), l10n.getSync('GraphLabelHour')
         ],
         debouncedChangedGraph: function($parent, url, opts) {
             this.dygraphLoader($parent, url, opts);
@@ -89,7 +89,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['byte_free', 'byte_used'],
                 fn: 'makeDiskSpaceBytesGraphUrl',
                 util: 'makeDiskSpaceTargets',
-                titleTemplate: _.template('OSD <%- id %> Disk Space'),
+                titleTemplate: 'TitleGraphDiskSpaceBytes',
                 options: {
                     labelsKMG2: true,
                     stackedGraph: true,
@@ -101,7 +101,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['inodes_free', 'inodes_used'],
                 fn: 'makeDiskSpaceInodesGraphUrl',
                 util: 'makeDiskSpaceTargets',
-                titleTemplate: _.template('OSD <%- id %> Inodes'),
+                titleTemplate: 'TitleGraphDiskSpaceInodes',
                 options: {
                     labelsKMB: true,
                     stackedGraph: true,
@@ -113,7 +113,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['system', 'user', 'idle'],
                 fn: 'makeCPUGraphUrl',
                 util: 'makeCPUTargets',
-                titleTemplate: _.template('<%- hostname %> CPU Summary'),
+                titleTemplate: 'TitleGraphHostCPUSummary',
                 options: {
                     labels: ['Date', 'System', 'User', 'Idle'],
                     stackedGraph: true,
@@ -125,7 +125,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['system', 'user', 'nice', 'idle', 'iowait', 'irq', 'softirq', 'steal'],
                 fn: 'makeCPUDetailGraphUrl',
                 util: 'makeCPUDetailedTargets',
-                titleTemplate: _.template('<%- id %> CPU Detail'),
+                titleTemplate: 'TitleGraphCPUDetail',
                 options: {
                     labels: ['Date', 'System', 'User', 'Nice', 'Idle', 'IOWait', 'IRQ', 'Soft IRQ', 'Steal'],
                     stackedGraph: true,
@@ -137,7 +137,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['op_r_latency', 'op_w_latency', 'op_rw_latency'],
                 fn: 'makeOpsLatencyGraphUrl',
                 util: 'makeOpLatencyTargets',
-                titleTemplate: _.template('<%- id %> Ops Latency'),
+                titleTemplate: 'TitleGraphOpsLatency',
                 options: {
                     ylabel: 'Ms',
                     labels: ['Date', 'Read Latency', 'Write Latency', 'RW Latency']
@@ -146,7 +146,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['journal_ops', 'journal_wr'],
                 fn: 'makeJournalOpsGraphUrl',
                 util: 'makeFilestoreTargets',
-                titleTemplate: _.template('<%- id %> Journal Ops'),
+                titleTemplate: 'TitleGraphJournalOps',
                 options: {
                     ylabel: 'Operations',
                     labels: ['Date', 'Journal Ops', 'Journal Writes']
@@ -155,7 +155,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['01', '05', '15'],
                 fn: 'makeLoadAvgGraphUrl',
                 util: 'makeLoadAvgTargets',
-                titleTemplate: _.template('<%- hostname %> Load Avg'),
+                titleTemplate: 'TitleGraphLoadAverage',
                 options: {
                     ylabel: 'Load Average',
                     labels: ['Date', '1 Min', '5 Min', '15 Min']
@@ -164,7 +164,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['Active', 'Buffers', 'Cached', 'MemFree'],
                 fn: 'makeMemoryGraphUrl',
                 util: 'makeMemoryTargets',
-                titleTemplate: _.template('<%- hostname %> Memory'),
+                titleTemplate: 'TitleGraphMemory',
                 options: {
                     labelsKMG2: true,
                     labels: ['Date', 'Active', 'Buffers', 'Cached', 'Free'],
@@ -176,7 +176,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['read_byte_per_second', 'write_byte_per_second'],
                 fn: 'makeHostDeviceRWBytesGraphUrl',
                 util: 'makeIOStatIOPSTargets',
-                titleTemplate: _.template('<%- id %> RW Bytes'),
+                titleTemplate: 'TitleGraphRWBytes',
                 options: {
                     labelsKMG2: true,
                     ylabel: 'Bytes/Second',
@@ -186,7 +186,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['read_await', 'write_await'],
                 fn: 'makeHostDeviceRWAwaitGraphUrl',
                 util: 'makeIOStatIOPSTargets',
-                titleTemplate: _.template('<%- id %> RW Await'),
+                titleTemplate: 'TitleGraphRWAwait',
                 options: {
                     ylabel: '',
                     labels: ['Date', 'Reads', 'Writes']
@@ -195,7 +195,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['iops'],
                 fn: 'makeHostDeviceIOPSGraphUrl',
                 util: 'makeIOStatIOPSTargets',
-                titleTemplate: _.template('<%- id %> IOPS'),
+                titleTemplate: 'TitleGraphIOPS',
                 options: {
                     ylabel: 'IOPS',
                     labels: ['Date', 'IOPS']
@@ -204,7 +204,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['tx_byte', 'rx_byte'],
                 fn: 'makeHostNetworkTXRXBytesGraphURL',
                 util: 'makeNetworkTargets',
-                titleTemplate: _.template('<%- id %> Network TX/RX Bytes'),
+                titleTemplate: 'TitleGraphNetworkTXRXBytes',
                 options: {
                     labelsKMG2: true,
                     ylabel: 'Bytes',
@@ -214,7 +214,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['tx_packets', 'rx_packets'],
                 fn: 'makeHostNetworkTXRXPacketsGraphURL',
                 util: 'makeNetworkTargets',
-                titleTemplate: _.template('<%- id %> Network TX/RX Packets'),
+                titleTemplate: 'TitleGraphNetworkTXRXPackets',
                 options: {
                     labelsKMB: true,
                     ylabel: 'Packets',
@@ -224,7 +224,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['tx_errors', 'rx_errors'],
                 fn: 'makeHostNetworkTXRXErrorsGraphURL',
                 util: 'makeNetworkTargets',
-                titleTemplate: _.template('<%- id %> Network TX/RX Errors'),
+                titleTemplate: 'TitleGraphNetworkTXRXErrors',
                 options: {
                     labelsKMB: true,
                     ylabel: 'Packets',
@@ -234,7 +234,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['tx_drop', 'rx_drop'],
                 fn: 'makeHostNetworkTXRXDropGraphURL',
                 util: 'makeNetworkTargets',
-                titleTemplate: _.template('<%- id %> Network TX/RX Drops'),
+                titleTemplate: 'TitleGraphNetworkTXRXDrops',
                 options: {
                     labelsKMB: true,
                     ylabel: 'Packets',
@@ -244,7 +244,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['num_read', 'num_write'],
                 fn: 'makePoolIOPSGraphURL',
                 util: 'makePoolIOPSTargets',
-                titleTemplate: _.template('Pool <%- id %> IOPS'),
+                titleTemplate: 'TitleGraphPoolIOPS',
                 options: {
                     labelsKMB: true,
                     ylabel: 'IOPS',
@@ -256,7 +256,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['total_avail', 'total_used'],
                 fn: 'makePoolDiskFreeGraphURL',
                 util: 'makePoolDiskFreeTargets',
-                titleTemplate: _.template('Pools Total Disk Free'),
+                titleTemplate: 'TitleGraphPoolIOPS',
                 options: {
                     labelsKMG2: true,
                     ylabel: 'Bytes',
@@ -285,7 +285,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 targets
             ];
             this[options.fn] = gutils.makeGraphURL(this.baseUrl, fns);
-            this.graphTitleTemplates[options.fn] = options.titleTemplate;
+            this.graphTitleTemplates[options.fn] = function() {
+                var args = Array.prototype.slice.call(arguments,0);
+                args.unshift(options.titleTemplate);
+                return l10n.getSync.apply(null, args);
+            };
             this.graphOptions[options.fn] = options.options;
         },
         wrapTitleTemplate: function(key, wrapperFn) {
@@ -493,7 +497,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 });
             };
         },
-        selectTemplate: _.template('<select class="form-control" name="hosts"><option value="all" selected>Cluster</option><option value="iops">Pool IOPS</option><%= list %></select>'),
+        selectTemplate: _.template('<select class="form-control" name="hosts"><option value="all" selected><%- Cluster %></option><option value="iops"><%- PoolIOPS %></option><%= list %></select>'),
         optionTemplate: _.template('<option value="<%- args.host %>">Host - <%- args.host %></option>"', null, {
             variable: 'args'
         }),
@@ -506,6 +510,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             }, null, this);
             var $el = this.ui.hosts;
             $el.html(this.selectTemplate({
+                Cluster: l10n.getSync('Cluster'),
+                PoolIOPS: l10n.getSync('PoolIOPS'),
                 list: opts
             }));
         },
@@ -591,7 +597,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     title: 'Help',
                     trigger: 'hover',
                     container: 'body',
-                    content: self.graphHelpTemplate(),
+                    content: self.graphHelpTemplate,
                     placement: 'top'
                 });
             });
