@@ -47,9 +47,6 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
         if (config['graphite-host'] && config['iops-host'] === undefined) {
             config['iops-host'] = config['graphite-host'];
         }
-    }).fail(function(jqXHR) {
-        window.alert(jqXHR);
-        log.error(jqXHR);
     });
     /* Load Config.json first before starting app */
 
@@ -200,9 +197,6 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                     // run this callback after the app has been set up
                     waitFn.call(window);
                 }
-            });
-            App.start({
-                appRouter: appRouter
             });
 
             var pluginLoader = new PluginLoader({
