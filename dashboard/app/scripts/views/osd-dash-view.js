@@ -7,7 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/osd-dash.ejs'],
         headlineTemplate: _.template('<%- ok %>/<%- total %>'),
-        subtextTemplate: _.template('<%- percentage %>% out'),
+        subtextTemplate: _.template('<%- down %> down'),
         ui: {
             'headline': '.headline',
             'subline': '.subline',
@@ -27,10 +27,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         },
         set: function(model) {
             var attr = model.attributes.osd;
+            var down = 0;
+            if (attr.warn.count && attr.warn.states['down/in']) {
+                down += attr.warn.states['down/in'];
+            }
+            if (attr.critical.count && attr.critical.states['down/out']) {
+                down += attr.critical.states['down/out'];
+            }
             this.model.set({
                 ok: attr.ok.count,
                 warn: attr.warn.count,
-                critical: attr.critical.count
+                critical: attr.critical.count,
+                down: down
             });
         },
         warningThresholdPercentage: 80,
@@ -45,6 +53,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             var ok = model.get('ok');
             var warn = model.get('warn');
             var critical = model.get('critical');
+            var down = model.get('down');
             var count = 0;
             if (_.isNumber(ok)) {
                 count += ok;
@@ -57,10 +66,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             }
             this.ui.subline.text('In & Up');
             if (warn || critical) {
-                var percentage = Math.round(((warn + critical) / count) * 100);
                 this.ui.subtext.text(this.subtextTemplate({
-                    percentage: percentage
+                    down: down
                 }));
+                var percentage = Math.round((down / count) * 100);
                 this.displayWarning(percentage);
             } else {
                 this.ui.subtext.text('');
