@@ -41,6 +41,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
         set: function(model) {
             this.model.set(model.toJSON());
         },
+        getSummary: function(report) {
+            if (report.summary && report.summary.length) {
+                return _.first(report.summary).summary;
+            }
+            return '';
+        },
         serializeData: function() {
             var model = this.model.toJSON();
             var subtext = '',
@@ -48,13 +54,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
                 healthText = 'OK';
             switch (model.report.overall_status) {
                 case 'HEALTH_WARN':
-                    subtext = _.first(model.report.summary).summary;
+                    subtext = this.getSummary(model.report);
                     evt = 'status:warn';
                     break;
                 case 'HEALTH_ERR':
                     healthText = 'ERROR';
                     evt = 'status:fail';
-                    subtext = _.first(model.report.summary).summary;
+                    subtext = this.getSummary(model.report);
                     break;
                 default:
                     break;
