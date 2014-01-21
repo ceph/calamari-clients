@@ -32,7 +32,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 return memo + obj.count;
             }, 0);
             this.ui.headline.text(this.headlineTemplate({
-                active: this.format(model.get('pg').ok.count),
+                active: this.format(model.get('pg').ok.states.clean),
                 total: this.format(this.total)
             }));
         },
