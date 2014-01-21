@@ -60,8 +60,9 @@ require.config({
         gitcommit: 'git',
         dygraphs: 'vendor/dygraph-combined',
         react: '../bower_components/react/react-with-addons',
-        loglevel: '../bower_components/loglevel/dist/loglevel'
+        loglevel: '../bower_components/loglevel/dist/loglevel',
+        i18n: 'i18n'
     }
 });
 
-require(['./app'], function() {});
+require(['i18n', './app'], function() {});
