@@ -329,10 +329,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 return self.stats[key] > 0;
             });
             if (found) {
-                this.ui.subtext.text(this.subtextTemplate({
-                    key: found,
-                    value: this.stats[found]
-                }));
                 this.displayWarnings(found);
             } else {
                 // clear states when there's no interesting states
