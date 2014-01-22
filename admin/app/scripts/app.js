@@ -20,15 +20,15 @@ adminApp.config(function($routeProvider) {
         title: 'Users Settings',
         controller: 'UsersCtrl'
     }).otherwise({
-        redirectTo: '/user'
+        redirectTo: '/cluster'
     });
 
 });
 adminApp.factory('menus', function() {
     return {
         menu: function() {
-            var labels = ['General', 'Cluster', 'User'];
-            var url = ['general', 'cluster', 'user'];
+            var labels = ['General', 'Cluster'];
+            var url = ['general', 'cluster'];
             var res = [];
             for (var i = 0; i < url.length; ++i) {
                 res.push({

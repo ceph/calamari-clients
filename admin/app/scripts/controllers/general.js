@@ -1,13 +1,13 @@
 'use strict';
 
-var generalController = function($rootScope, $scope, $http) {
+var generalController = function($rootScope, $scope) {
         $scope.title = $rootScope.pageTitle;
         $scope.dashboard = $rootScope.dashboard;
         $rootScope.activeTab = 'general';
-        $scope.loading = true;
-        $http.get('/api/v1/info').success(function(data) {
-            $scope.general = data;
-            $scope.loading = false;
-        });
+        $scope.loading = false;
+        $scope.general = {
+            version: '1.1',
+            git: window.inktank.commit
+        };
     };
 angular.module('adminApp').controller('GeneralCtrl', ['$rootScope', '$scope', '$http', generalController]);
