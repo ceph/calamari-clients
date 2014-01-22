@@ -36,10 +36,10 @@ define(['jquery', 'underscore'], function($, _) {
                     d.resolve();
                 };
             var self = this;
-            $selector.on(animationEndEvent, resolver);
+            $selector.one(animationEndEvent, resolver);
             $selector.addClass(class1);
             return d.promise().then(function() {
-                $selector.off(animationEndEvent, resolver).removeClass(class1);
+                $selector.removeClass(class1);
                 if (_.isFunction(fn1)) {
                     var args = _.toArray(arguments);
                     fn1.apply(self, args);
