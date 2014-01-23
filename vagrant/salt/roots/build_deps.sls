@@ -8,6 +8,8 @@ build_deps:
       - make
       - git
       - debhelper
+      - build-essential
+      - devscripts
 
 install_node:
   pkgrepo.managed:
@@ -32,11 +34,3 @@ grunt-cli:
         - name: npm install -g grunt-cli
     require:
         - pkg: install_node
-
-animate:
-    gem:
-        - installed
-    require:
-        - pkg: rubygems
-
-
