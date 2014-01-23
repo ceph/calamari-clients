@@ -1,12 +1,30 @@
-@import 'animate';
-@include animate-fadeIn($class: true);
-@include animate-fadeInDown($class: true);
-@include animate-fadeInLeft($class: true);
-@include animate-fadeInRight($class: true);
-@include animate-fadeOut($class: true);
-@include animate-fadeOutLeft($class: true);
-@include animate-fadeOutRight($class: true);
-@include animate-fadeOutUp($class: true);
+// keyframes mixin
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content; 
+  }
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+  @-ms-keyframes #{$name} {
+    @content;
+  }
+  @keyframes #{$name} {
+    @content;
+  } 
+}
+// animation mixing
+@mixin animation($name, $ease) {
+   -webkit-animation-name: #{$name};
+   animation-name: #{$name};
+   -webkit-animation-timing-function: #{$ease};
+   animation-timing-function: #{$ease};
+}
+// animation-duration
+@mixin animation-duration($duration) {
+	-webkit-animation-duration: #{$duration};
+	animation-duration: #{$duration};
+}
 @import '_dashboard_animation.scss';
 @import '_viz_animation.scss';
 

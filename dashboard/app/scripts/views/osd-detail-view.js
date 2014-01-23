@@ -13,9 +13,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         },
         ui: {},
         initialize: function(options) {
-            this.replaceAnimation = animation.pair('fadeOutRightToLeftAnim', 'fadeInRightToLeftAnim');
-            this.popInAnimation = animation.single('DialogInAnim');
-            this.fadeOutAnimation = animation.single('fadeOutAnim');
+            this.replaceAnimation = animation.pair('animated fadeOutRightToLeft-enter fadeOutRightToLeft', 'animated fadeInRightToLeft-enter fadeInRightToLeft');
+            this.popInAnimation = animation.single('animated DialogIn-enter DialogIn');
+            this.fadeOutAnimation = animation.single('animated fadeOut-leave fadeOut');
             _.bindAll(this, 'clearDetail', 'template', 'replaceAnimation', 'toFullscreen', 'toDashboard', 'removeDialog');
             this.model = new model.OSDModel();
             this.listenTo(this.model, 'change', this.render);
