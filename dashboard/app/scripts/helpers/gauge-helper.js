@@ -74,8 +74,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             target._collapse = collapse;
             target._disappear = disappear;
             target._reappear = reappear;
-            target._disappearAnimation = animation.single('fadeOutUpAnim');
-            target._reappearAnimation = animation.single('fadeInDownAnim');
+            target._disappearAnimation = animation.single('animated fadeOutUp-enter fadeOutUp');
+            target._reappearAnimation = animation.single('animated fadeInDown-enter fadeInDown');
 
             /* bind new functions to target */
             _.bindAll(target, '_expand', '_collapse', '_disappear', '_reappear', '_disappearAnimation', '_reappearAnimation');

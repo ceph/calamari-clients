@@ -24,7 +24,7 @@ define(['jquery', 'underscore'], function($, _) {
     function pair(clazzA, clazzB) {
         var animA = single(clazzA), animB = single(clazzB);
         return function($selector, fn1, fn2) {
-            return animA.call(this, $selector, fn1).then(animB.call(this, $selector, fn2));
+            return animA.call(this, $selector, fn1).then(_.bind(animB, this, $selector, fn2));
         };
     }
 

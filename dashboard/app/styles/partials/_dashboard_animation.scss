@@ -1,40 +1,41 @@
-@import 'animate';
-$timeFast: 0.125s;
-$timeMed: 0.5s;
-$timeSlow: 1s;
-.fadeInStatusAnim {
-    @include animation(fadeIn $timeFast ease);
-}
-.fadeOutAnim {
-    @include animation(fadeOut $timeFast ease);
-}
-.fadeOutUpAnim {
-    @include animation(fadeOutUp $timeMed ease);
-}
-.fadeInDownAnim {
-    @include animation(fadeInDown $timeSlow ease);
-}
+ $timeFast: 0.125s;
+ $timeMed: 0.5s;
+ $timeSlow: 1s;
+
 @include keyframes(toWorkBench) {
     0% {
-	    background-color: $itdarkgray;
+           background-color: $itdarkgray;
     }
     100% {
-	    background-color: $itlightgray;
+           background-color: $itlightgray;
     }
 }
-.toWorkBenchAnim {
-    @include animation(toWorkBench $timeFast ease-in);
+.toWorkBench {
+	@include animation(toWorkBench, ease-in);
+}
+.toWorkBench-enter {
+	@include animation-duration($timeFast);
 }
 @include keyframes(toDashboard) {
     0% {
 	    opacity: 1;
-//	    background-color: $itlightgray;
     }
     100% {
 	    opacity: 0;
-//	    background-color: $itdarkgray;
     }
 }
-.toDashboardAnim {
-    @include animation(toDashboard $timeFast ease-out);
+.toDashboard {
+	@include animation(toDashboard, ease-out);
+}
+.toDashboard-enter {
+	@include animation-duration($timeFast);
+}
+.fadeOutUp-enter {
+	@include animation-duration($timeFast);
+}
+.fadeInDown-enter {
+	@include animation-duration($timeFast);
+}
+.fadeIn-enter {
+	@include animation-duration($timeFast);
 }

@@ -92,9 +92,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
         },
         setupAnimations: function(obj) {
-            obj.opacityOutAnimation = animation.single('toDashboardAnim');
-            obj.toWorkBenchAnimation = animation.single('toWorkBenchAnim');
-            obj.fadeInAnimation = animation.single('fadeInAnim');
+            obj.opacityOutAnimation = animation.single('animated toDashboard-enter toDashboard');
+            obj.toWorkBenchAnimation = animation.single('animated toWorkBench-enter toWorkBench');
+            obj.fadeInAnimation = animation.single('animated fadeIn-enter fadeIn');
         },
         getHosts: function() {
             return _.uniq(this.collection.pluck('host'));
