@@ -1,0 +1,24 @@
+<unconfigured "Unconfigured">
+<workbench "WORKBENCH">
+<graph "GRAPH">
+<dashboard "DASHBOARD">
+<workbenchTitle "OSD Workbench">
+<graphTitle "Charting">
+<dashboardTitle "Dashboard">
+<healthOSDTitle "Health">
+<pleaseContactAdmin "Please contact Administrator">
+<serverErrorMessage """
+Server Error {{ $status }} {{ $responseText }}. {{ pleaseContactAdmin }}
+""">
+<clusterUpdatesAreStale """
+Cluster Updates Are Stale. The Calamari update process may have failed.
+""">
+<clusterNotResponding """
+Cluster Updates Are Stale. The Cluster isn't updating Calamari. {{ pleaseContactAdmin }}
+""">
+<sessionTimeout "Session Has Timed Out. Please Login again.">
+<loginButton "Login">
+<dashboardUpdateTimeout "Dashboard Update Timed Out. Please check your connection.">
+<unexpectedError "Unexpected Error ({{ $status }}){{ $responseText }}. {{ pleaseContactAdmin }}">
+<serverUnreachable "Server Unreachable. Try re-loading page or contact an Administrator.">
+<JSONParserError "Error decoding {{ $source }} response from server. {{ pleaseContactAdmin }}">

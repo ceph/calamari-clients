@@ -1,13 +1,9 @@
 /*global define, noty */
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function($, _, Backbone, JST) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{locale}}/strings', 'marionette'], function($, _, Backbone, JST, l10n) {
     'use strict';
 
     var AlertsView = Backbone.Marionette.ItemView.extend({
-        serverErrorTemplate: _.template('Server Error (<%- status %>) <%- responseText %>. Please contact Administrator.'),
-        unexpectedErrorTemplate: _.template('Unexpected Error (<%- status %>)<%- responseText %>. Please contact Administrator.'),
-        serverUnreachableTemplate: _.template('Server Unreachable. Try re-loading page or contact an Administrator.'),
-        parserErrorTemplate: _.template('Error decoding <%- source %> response from server. Please contact Administrator.'),
         template: JST['app/scripts/templates/alerts.ejs'],
         throttleMs: 10000,
         throttleCount: 3,
@@ -66,25 +62,25 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             noty(msg);
         },
         timeout: function(msg) {
-            msg.text = 'Dashboard Update Timed Out. Please check your connection.';
+            msg.text = l10n.getSync('dashboardUpdateTimeout');
             this.timeoutCount++;
             this.error(msg);
             console.log('timeout count ' + this.timeoutCount);
         },
         clusterUpdateTimeout: function(msg) {
-            msg.text = 'Cluster Updates Are Stale. Calamari update process may have failed.';
+            msg.text = l10n.getSync('clusterUpdatesAreStale');
             this.warning(msg);
         },
         clusterAPITimeout: function(msg) {
-            msg.text = 'Cluster Updates Are Stale. Cluster isn\'t responding to Calamari requests.';
+            msg.text = l10n.getSync('clusterNotResponding');
             this.warning(msg);
         },
         sessionExpired: function(msg) {
             msg = _.extend(msg, {
-                text: 'Session Has Timed Out. Please Login again.',
+                text: l10n.getSync('sessionTimeout'),
                 buttons: [{
                         addClass: 'btn btn-primary',
-                        text: 'Login',
+                        text: l10n.getSync('loginButton'),
                         onClick: function($noty) {
                             $noty.close();
                             window.location = '/login/';
@@ -95,25 +91,25 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'marionette'], function
             this.warning(msg);
         },
         serverError: function(msg, xhr) {
-            msg.text = this.serverErrorTemplate(xhr);
+            msg.text = l10n.getSync('serverErrorMessage', xhr);
             this.error(msg);
         },
         unexpectedError: function(msg, xhr) {
-            msg.text = this.unexpectedErrorTemplate(xhr);
+            msg.text = l10n.getSync('unexpectedError', xhr);
             this.error(msg);
         },
         serverUnreachable: function(msg, xhr) {
             msg = _.extend(msg, {
                 force: true,
                 modal: true,
-                text: this.serverUnreachableTemplate(xhr),
+                text: l10n.getSync('serverUnreachable', xhr),
                 closeWith: []
             });
             this.error(msg);
         },
         parserError: function(msg, xhr) {
             msg = _.extend(msg, {
-                text: this.parserErrorTemplate(xhr),
+                text: l10n.getSync('JSONParserError', xhr),
                 timeout: 10000
             });
             this.error(msg);
