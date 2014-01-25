@@ -188,7 +188,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeIOStatIOPSTargets',
                 titleTemplate: _.template('<%- id %> RW Await'),
                 options: {
-                    ylabel: '',
+                    ylabel: 'Millis',
                     labels: ['Date', 'Reads', 'Writes']
                 }
             }, {
