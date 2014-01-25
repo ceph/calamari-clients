@@ -659,8 +659,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
         },
         updateSelect: function(id) {
-            this.$('select option[selected]').removeAttr('selected');
-            this.$('select option[value="'+ id +'"]').attr('selected', true);
+            this.$('select option[selected]').prop('selected', false);
+            this.$('select option[value="'+ id +'"]').prop('selected', true);
         }
     });
 
