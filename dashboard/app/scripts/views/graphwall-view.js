@@ -120,7 +120,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['system', 'user', 'idle'],
                 fn: 'makeCPUGraphUrl',
                 util: 'makeCPUTargets',
-                titleTemplate: _.template('<%- hostname %> CPU Summary'),
+                titleTemplate: _.template('<%- hostname %> All Cores CPU Summary'),
                 options: {
                     labels: ['Date', 'System', 'User', 'Idle'],
                     stackedGraph: true,
