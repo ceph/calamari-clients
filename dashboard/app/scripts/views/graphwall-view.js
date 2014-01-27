@@ -6,7 +6,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
     var GraphwallView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/graphwall.ejs'],
         graphTemplate: JST['app/scripts/templates/graph.ejs'],
-        graphHelpTemplate: JST['app/scripts/templates/graph-help.ejs'],
+        graphHelpTemplate: l10n.getSync('GraphHelp'),
         graphFailToLoadTemplate: _.template('<i title="<%- msg %>" class="fa fa-warning fa-3x warn"></i>'),
         className: 'graph-mode',
         ui: {
@@ -597,7 +597,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     title: 'Help',
                     trigger: 'hover',
                     container: 'body',
-                    content: self.graphHelpTemplate(),
+                    content: self.graphHelpTemplate,
                     placement: 'top'
                 });
             });

@@ -49,6 +49,11 @@ Cluster Updates Are Stale. The Cluster isn't updating Calamari. {{ pleaseContact
 <GraphLabel24Hours "Time (Last {{ Graph24Hours}})">
 <GraphLabel12Hours "Time (Last {{ Graph12Hours}})">
 <GraphLabelHour "Time (Last {{ GraphHour}})">
+<GraphHelp """
+The chart is interactive: you can mouse over to highlight individual
+values. You can click and drag to zoom. Double-clicking will zoom
+you back out. Shift-drag will pan.
+""">
 <Cluster "Cluster">
 <PoolIOPS "Pool IOPS">
 
