@@ -22,3 +22,33 @@ Cluster Updates Are Stale. The Cluster isn't updating Calamari. {{ pleaseContact
 <unexpectedError "Unexpected Error ({{ $status }}){{ $responseText }}. {{ pleaseContactAdmin }}">
 <serverUnreachable "Server Unreachable. Try re-loading page or contact an Administrator.">
 <JSONParserError "Error decoding {{ $source }} response from server. {{ pleaseContactAdmin }}">
+<TitleGraphDiskSpaceBytes "OSD {{ $id }} Disk Space">
+<TitleGraphDiskSpaceInodes "OSD {{ $id }} Inodes">
+<TitleGraphHostCPUSummary "{{ $hostname }} CPU Summary">
+<TitleGraphCPUDetail "{{ $id }} CPU Detail">
+<TitleGraphOpsLatency "{{ $id }} Ops Latency">
+<TitleGraphJournalOps "{{ $id }} Journal Ops">
+<TitleGraphLoadAverage "{{ $hostname }} Load Average">
+<TitleGraphMemory "{{ $hostname }} Memory">
+<TitleGraphRWBytes "{{ $id }} RW Bytes">
+<TitleGraphRWAwait "{{ $id }} RW Await">
+<TitleGraphIOPS "{{ $id }} IOPS">
+<TitleGraphNetworkTXRXBytes "{{ $id }} Network TX/RX Bytes">
+<TitleGraphNetworkTXRXPackets "{{ $id }} Network TX/RX Packets">
+<TitleGraphNetworkTXRXErrors "{{ $id }} Network TX/RX Errors">
+<TitleGraphNetworkTXRXDrops "{{ $id }} Network TX/RX Drops">
+<TitleGraphPoolIOPS "Pool {{ $id }} IOPS">
+<TitleGraphPoolTotalDiskFree "Pools Total Disk Free">
+<Graph1Week "1 Week">
+<Graph3Days "3 Days">
+<Graph24Hours "24 Hours">
+<Graph12Hours "12 Hours">
+<GraphHour "Hour">
+<GraphLabelWeek "Time ({{ Graph1Week }})">
+<GraphLabel3Days "Time ({{ Graph3Days }})">
+<GraphLabel24Hours "Time (Last {{ Graph24Hours}})">
+<GraphLabel12Hours "Time (Last {{ Graph12Hours}})">
+<GraphLabelHour "Time (Last {{ GraphHour}})">
+<Cluster "Cluster">
+<PoolIOPS "Pool IOPS">
+
