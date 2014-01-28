@@ -1,39 +1,56 @@
 <div class="header">
-  <ul class="nav nav-pills pull-right">
-    <li class="active"><a ng-href="#">Home</a></li>
-    <li><a ng-href="#">About</a></li>
-    <li><a ng-href="#">Contact</a></li>
-  </ul>
   <h3 class="text-muted">manage</h3>
 </div>
-
-<div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!</a></p>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="navbar navbar-default" role="navigation" bs-navbar>
+            <ul class="nav navbar-nav">
+                <li class="active"><a ng-href="#/">Cluster</a></li>
+                <li><a ng-href="#/osd">OSD</a></li>
+                <li><a ng-href="#/pool">Pool</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<h2 class="text-muted">CLUSTER &raquo;</h3>
+<h3 class="text-muted">APPROVE REQUESTS</h3>
+<div class=".container">
+<div class="row">
+    <h3 class="pull-right">Just Now</h3>
+</div>
+<div class="row" style="border:1px solid black; padding: 20px 5px;">
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+        <button type="button" class="btn btn-lg btn-primary" data-placement="center">Commit</button>
+        <div style="height: 10px"></div>
+        <button type="button" class="btn btn-lg btn-primary" data-placement="center">Cancel</button>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+        <button type="button" class="btn btn-lg btn-info" bs-tooltip="tooltip1">PENDING<br/>Pina01</button>
+        <button type="button" class="btn btn-lg btn-success" bs-tooltip="tooltip2">APPROVED<br/>Pina02</button>
+        <button type="button" class="btn btn-lg btn-warning" bs-tooltip="tooltip3">REJECTED<br/>Pina03</button>
+        <button type="button" class="btn btn-lg btn-danger" bs-tooltip="tooltip4">BLOCKED<br/>Pina04</button>
+        
+    </div>
 </div>
 
-<div class="row marketing">
-    <button type="button" class="btn btn-lg btn-primary" bs-modal="modal" data-placement="center" data-animation="animation-fade">
-        Click to toggle aside
-    </button>
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+<div class="row">
+    <h3 class="pull-right">1 Day Ago</h3>
+</div>
+<div class="row" style="border:1px solid black; padding: 20px 5px;">
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+        <button type="button" class="btn btn-lg btn-primary" data-placement="center">Commit</button>
+        <div style="height: 10px"></div>
+        <button type="button" class="btn btn-lg btn-primary" data-placement="center">Cancel</button>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+        <button type="button" class="btn btn-lg btn-info" bs-tooltip="tooltip1">PENDING<br/>Polo01</button>
+        <button type="button" class="btn btn-lg btn-info" bs-tooltip="tooltip2">PENDING<br/>Polo02</button>
+        <button type="button" class="btn btn-lg btn-info" bs-tooltip="tooltip3">PENDING<br/>Polo03</button>
+        <button type="button" class="btn btn-lg btn-info" bs-tooltip="tooltip4">PENDING<br/>Polo04</button>
+        
+    </div>
 </div>
 
 <div class="footer">
-  <p>♥ from the Yeoman team</p>
+</div>
 </div>
