@@ -14,6 +14,22 @@ angular.module('manageApp', [
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
+      .when('/osd', {
+        templateUrl: 'views/osd.html',
+        controller: 'OSDCtrl'
+      })
+      .when('/pool', {
+        templateUrl: 'views/pool.html',
+        controller: 'PoolCtrl'
+      })
+      .when('/pool', {
+        templateUrl: 'views/pool.html',
+        controller: 'PoolCtrl'
+      })
+      .when('/pool/new', {
+        templateUrl: 'views/pool-new.html',
+        controller: 'PoolCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

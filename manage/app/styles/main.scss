@@ -66,19 +66,19 @@
         border-bottom: 0;
     }
 }
-.modal-backdrop.animation-fade {
+.tooltip.animation-fade {
     opacity: .5;
     transition: opacity .15s linear;
-}
-.modal-backdrop.animation-fade.ng-enter {
-    opacity: 0;
-    &.ng-enter-active {
-        opacity: .5;
-    }
-}
-.modal-backdrop.animation-fade.ng-leave {
-    opacity: .5;
-    &.ng-enter-leave {
+    &.ng-enter {
         opacity: 0;
+        &.ng-enter-active {
+            opacity: .5;
+        }
+    }
+    &.ng-leave {
+        opacity: .5;
+        &.ng-enter-leave {
+            opacity: 0;
+        }
     }
 }
