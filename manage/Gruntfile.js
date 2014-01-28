@@ -40,7 +40,7 @@ module.exports = function (grunt) {
       },
       compass: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-        tasks: ['compass']
+        tasks: ['compass:server']
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
@@ -60,20 +60,30 @@ module.exports = function (grunt) {
         ]
       }
     },
+    // Compiles Sass to CSS and generates necessary files if requested
     compass: {
       options: {
         sassDir: '<%= yeoman.app %>/styles',
         cssDir: '.tmp/styles',
+        generatedImagesDir: '.tmp/images/generated',
         imagesDir: '<%= yeoman.app %>/images',
         javascriptsDir: '<%= yeoman.app %>/scripts',
         fontsDir: '<%= yeoman.app %>/styles/fonts',
-        importPath: 'app/bower_components',
-        relativeAssets: true
+        importPath: '<%= yeoman.app %>/bower_components',
+        httpImagesPath: '/images',
+        httpGeneratedImagesPath: '/images/generated',
+        httpFontsPath: '/styles/fonts',
+        relativeAssets: false,
+        assetCacheBuster: false
       },
-      dist: {},
+      dist: {
+        options: {
+          generatedImagesDir: '<%= yeoman.dist %>/images/generated'
+        }
+      },
       server: {
         options: {
-          debugInfo: false
+          debugInfo: true
         }
       }
     },
@@ -297,12 +307,15 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
+        'compass:server',
         'copy:styles'
       ],
       test: [
+        'compass',
         'copy:styles'
       ],
       dist: [
+        'compass:dist',
         'copy:styles',
         'imagemin',
         'svgmin'
@@ -355,7 +368,6 @@ module.exports = function (grunt) {
       'bower-install',
       'concurrent:server',
       'autoprefixer',
-      'compass:server',
       'connect:livereload',
       'watch'
     ]);
@@ -370,7 +382,6 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:test',
     'autoprefixer',
-    'compass',
     'connect:test',
     'karma'
   ]);
@@ -378,7 +389,6 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'bower-install',
-    'compass:dist',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
