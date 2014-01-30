@@ -1,6 +1,6 @@
 /*global require */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'plugin_loader', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, PluginLoader) {
+require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
     /* Default Configuration */
     var config = {
         'offline': false,
@@ -199,13 +199,6 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 }
             });
 
-            var pluginLoader = new PluginLoader({
-                vent: App.vent,
-                url: 'scripts/plugin.json',
-                el: $('.plugins')[0]
-            });
-            pluginLoader.render();
-
             // Global Exports
             window.inktank = {
                 App: App,
@@ -228,8 +221,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 PoolsView: poolsView,
                 IopsView: iopsView,
                 HostsView: hostsView,
-                HealthView: healthView,
-                PluginLoader: pluginLoader
+                HealthView: healthView
             };
 
             App.start({
