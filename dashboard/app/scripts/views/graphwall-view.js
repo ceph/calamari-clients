@@ -9,6 +9,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         graphHelpTemplate: JST['app/scripts/templates/graph-help.ejs'],
         graphFailToLoadTemplate: _.template('<i title="<%- msg %>" class="fa fa-warning fa-3x warn"></i>'),
         className: 'graph-mode',
+        currentGraph: '',
         ui: {
             'title': '.title',
             'buttons': '.btn-toolbar',
@@ -53,6 +54,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var target = evt.target;
             var $el = $(target.options[target.selectedIndex]);
             var host = $el.attr('value');
+            if (target.selectedIndex < 2 || this.currentGraph === '') {
+                this.currentGraph = '';
+            } else {
+                host += '/' + this.currentGraph;
+            }
             this.AppRouter.navigate('graph/' + host, {
                 trigger: true
             });
@@ -61,10 +67,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var $target = $(evt.target);
             var id = $target.attr('data-id');
             var route = 'graph/' + this.hostname + '/' + id;
+            this.currentGraph = id;
             if (id === 'overview') {
                 route = 'graph/' + this.hostname;
+                this.currentGraph = '';
             }
-            //console.log(route);
             this.AppRouter.navigate(route, {
                 trigger: true
             });
@@ -113,7 +120,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['system', 'user', 'idle'],
                 fn: 'makeCPUGraphUrl',
                 util: 'makeCPUTargets',
-                titleTemplate: _.template('<%- hostname %> CPU Summary'),
+                titleTemplate: _.template('<%- hostname %> All Cores CPU Summary'),
                 options: {
                     labels: ['Date', 'System', 'User', 'Idle'],
                     stackedGraph: true,
@@ -188,7 +195,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 util: 'makeIOStatIOPSTargets',
                 titleTemplate: _.template('<%- id %> RW Await'),
                 options: {
-                    ylabel: '',
+                    ylabel: 'Millis',
                     labels: ['Date', 'Reads', 'Writes']
                 }
             }, {
@@ -659,8 +666,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
         },
         updateSelect: function(id) {
-            this.$('select option[selected]').removeAttr('selected');
-            this.$('select option[value="'+ id +'"]').attr('selected', true);
+            this.$('select option[selected]').prop('selected', false);
+            this.$('select option[value="'+ id +'"]').prop('selected', true);
         }
     });
 
