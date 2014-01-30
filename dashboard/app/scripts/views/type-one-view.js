@@ -163,7 +163,7 @@ define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/react-mixins', '
             };
             var iconClasses = {
                 fa: true,
-                'fa-lg': true,
+                'fa-lg': true
             };
             iconClasses[this.props.icon] = true;
             var cx = React.addons.classSet;
@@ -189,7 +189,7 @@ define(['underscore', 'backbone', 'loglevel', 'react', 'helpers/react-mixins', '
                         className: cx(cardClasses)
                     }, [
                         React.DOM.span({
-                            className: 'card-title',
+                            className: 'card-title'
                         }, [
                             React.DOM.i({
                                 className: cx(iconClasses)
