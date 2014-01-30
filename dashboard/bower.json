@@ -21,7 +21,9 @@
     "bootstrap-switch": "latest",
     "noty": "~2.1.0",
     "kineticjs": "~4.7.3",
-    "dygraphs": "~1.0.1"
+    "dygraphs": "~1.0.1",
+    "react": "~0.8.0",
+    "loglevel": "~0.5.0"
   },
   "devDependencies": {}
 }

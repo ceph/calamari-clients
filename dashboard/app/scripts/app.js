@@ -1,6 +1,6 @@
 /*global require */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
+require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
     /* Default Configuration */
     var config = {
         'offline': false,
@@ -188,7 +188,7 @@ require(['jquery', 'underscore', 'backbone', 'humanize', 'views/application-view
                 App.fsm.dashboard();
             });
             appRouter.on('route:graph', function(host, osd) {
-                console.log('router>> host: ' + host + ' osd: ' + osd);
+                log.debug('router>> host: ' + host + ' osd: ' + osd);
                 App.fsm.graph(host, osd);
             });
 

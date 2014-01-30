@@ -32,6 +32,9 @@ require.config({
         },
         'popover': {
             deps: ['modal']
+        },
+        'l20n': {
+            exports: 'L20n'
         }
     },
     paths: {
@@ -58,7 +61,11 @@ require.config({
         statemachine: '../bower_components/javascript-state-machine/state-machine',
         marionette: '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
         gitcommit: 'git',
-        dygraphs: 'vendor/dygraph-combined'
+        dygraphs: 'vendor/dygraph-combined',
+        react: '../bower_components/react/react-with-addons',
+        loglevel: '../bower_components/loglevel/dist/loglevel',
+        l20n: 'vendor/l20n.min',
+        l20nCtx: 'l20nCtxPlugin'
     }
 });
 

@@ -1,0 +1,33 @@
+[
+  {
+    "title": "Disk Stats",
+    "url": "/plugin/one",
+    "frequencyMs": 5000,
+	"headlineTemplate": "<%- primary %> : <%- secondary %>",
+    "fields": [
+      "primary",
+      "secondary"
+    ],
+    "classId": "diskStats",
+    "icon": "fa-bell"
+  },
+  {
+    "title": "Mem Stats",
+    "url": "/plugin/two/",
+    "frequencyMs": 1000,
+    "fields": [
+      "alpha",
+      "omega"
+    ],
+	"headlineTemplate": "(<%- alpha %>) - (<%- omega %>)",
+    "classId": "memStats",
+    "icon": "fa-book"
+  },
+  {
+    "title": "URL Stats",
+    "url": "/plugin/one",
+    "frequencyMs": 15000,
+    "classId": "urlStats",
+    "icon": "fa-bullhorn"
+  }
+]
