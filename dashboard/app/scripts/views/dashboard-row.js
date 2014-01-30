@@ -22,7 +22,7 @@ define(['react'], function(React) {
                     className: 'two'
                 }, this.props.two),
                 React.DOM.div({
-                    className: 'three',
+                    className: 'three'
                 }, this.props.three),
                 React.DOM.div({
                     className: 'four'

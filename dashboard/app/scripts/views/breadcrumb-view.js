@@ -38,7 +38,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                 title: {
                     dashboard: l10n.getSync('dashboardTitle'),
                     bench: l10n.getSync('workbenchTitle'),
-                    chart: l10n.getSync('graphTitle'),
+                    chart: l10n.getSync('graphTitle')
                 },
                 dashboard: l10n.getSync('dashboard'),
                 workbench: l10n.getSync('workbench'),

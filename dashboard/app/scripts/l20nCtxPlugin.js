@@ -1,10 +1,12 @@
+/* global define, alert */
+/* jshint camelcase: false, curly: false */
 /**
  * l20n
  * The l20n module.
  * @author @fernandogmar
  */
-define(["l20n", "module"], function(L20n, module) {
-    "use strict";
+define(['l20n', 'module'], function(L20n, module) {
+    'use strict';
     var config = module.config ? module.config() : {};
 
     var defaults = {
@@ -83,7 +85,7 @@ define(["l20n", "module"], function(L20n, module) {
             }
         },
         parseName: function(file_name, config){
-            var to_replace = config.prefix + "locale" + config.suffix;
+            var to_replace = config.prefix + 'locale' + config.suffix;
             return file_name.replace(to_replace, config.locale);
         }
     };
