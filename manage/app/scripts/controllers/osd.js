@@ -1,5 +1,7 @@
-'use strict';
+/* global define */
+define([], function() {
+    'use strict';
 
-angular.module('manageApp')
-  .controller('OSDCtrl', function () {
+    var OSDController = function() {};
+    return [ OSDController ];
 });

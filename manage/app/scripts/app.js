@@ -1,36 +1,17 @@
-'use strict';
-
-angular.module('manageApp', [
-  'ngCookies',
-  'ngResource',
-  'ngSanitize',
-  'ngRoute',
-  'mgcrea.ngStrap',
-  'ngAnimate'
-])
-  .config(function ($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
-      })
-      .when('/osd', {
-        templateUrl: 'views/osd.html',
-        controller: 'OSDCtrl'
-      })
-      .when('/pool', {
-        templateUrl: 'views/pool.html',
-        controller: 'PoolCtrl'
-      })
-      .when('/pool', {
-        templateUrl: 'views/pool.html',
-        controller: 'PoolCtrl'
-      })
-      .when('/pool/new', {
-        templateUrl: 'views/pool-new.html',
-        controller: 'PoolCtrl'
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
-  });
+/* global define */
+define(['angular', 'RouteConfig', 'controllers/root', 'controllers/pool', 'controllers/osd', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate'], function(angular, RouteConfig, RootController, PoolController, OSDController) {
+    'use strict';
+    angular.module('manageApp', [
+            'ngCookies',
+            'ngResource',
+            'ngSanitize',
+            'ngRoute',
+            'mgcrea.ngStrap',
+            'ngAnimate'
+    ])
+        .controller('RootController', RootController)
+        .controller('PoolController', PoolController)
+        .controller('OSDController', OSDController)
+        .config(RouteConfig);
+    angular.bootstrap(document.getElementsByClassName('manageApp')[0], ['manageApp']);
+});

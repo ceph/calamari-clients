@@ -1,8 +1,11 @@
-'use strict';
+/* global define */
+define([], function() {
+    'use strict';
 
-angular.module('manageApp')
-    .controller('PoolCtrl', function($scope) {
-          $scope.create = function($scope) {
-        window.document.location = '#/pool/new';
+    var PoolController = function($scope) {
+        $scope.create = function() {
+            window.document.location = '#/pool/new';
+        };
     };
+    return ['$scope', PoolController];
 });
