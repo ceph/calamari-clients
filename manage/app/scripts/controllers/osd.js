@@ -1,7 +1,9 @@
 /* global define */
-define([], function() {
+(function() {
     'use strict';
+    define([], function() {
 
-    var OSDController = function() {};
-    return [ OSDController ];
-});
+        var OSDController = function() {};
+        return [OSDController];
+    });
+})();

@@ -1,11 +1,13 @@
 /* global define */
-define([], function() {
+(function() {
     'use strict';
+    define([], function() {
 
-    var PoolController = function($scope) {
-        $scope.create = function() {
-            window.document.location = '#/pool/new';
+        var PoolController = function($scope) {
+            $scope.create = function() {
+                window.document.location = '#/pool/new';
+            };
         };
-    };
-    return ['$scope', PoolController];
-});
+        return ['$scope', PoolController];
+    });
+})();
