@@ -1,5 +1,11 @@
+calamari-clients (1.1.0) stable; urgency=low
+
+  * Calamari 1.1.0 (this package is new for 1.1)
+
+ -- Dan Mick <dan.mick@inktank.com>  Mon, 03 Feb 2014 13:39:53 -0800
+
 calamari-clients (0.1) UNRELEASED; urgency=low
 
   * Initial release.
 
- -- Inktank <info@inktank.com>  Weds, 18 Dec 2013 14:20:00 -0800
+ -- Inktank <info@inktank.com>  Wed, 18 Dec 2013 14:20:00 -0800
