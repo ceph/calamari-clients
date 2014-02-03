@@ -87,6 +87,28 @@ module.exports = function (grunt) {
         }
       }
     },
+    requirejs: {
+      dist: {
+        // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
+        options: {
+          // `name` and `out` is set by grunt-usemin
+          baseUrl: 'app/scripts',
+          out: '.tmp/concat/scripts/main.js',
+          mainConfigFile: '<%= yeoman.app%>/scripts/main.js',
+          name: 'main',
+          optimize: 'none',
+          // TODO: Figure out how to make sourcemaps work with grunt-usemin
+          // https://github.com/yeoman/grunt-usemin/issues/30
+          //generateSourceMaps: true,
+          // required to support SourceMaps
+          // http://requirejs.org/docs/errors.html#sourcemapcomments
+          preserveLicenseComments: false,
+          useStrict: true,
+          wrap: true,
+          //uglify2: {} // https://github.com/mishoo/UglifyJS2
+        }
+      }
+    },
     // The actual grunt server settings
     connect: {
       options: {
@@ -265,6 +287,17 @@ module.exports = function (grunt) {
       }
     },
 
+    uglify: {
+      dist: {
+        options: {
+            mangle: false
+        },
+        files: {
+          '<%= yeoman.dist %>/scripts/main.js': ['.tmp/concat/scripts/main.js']
+        }
+      }
+    },
+
     // Replace Google CDN references
     cdnify: {
       dist: {
@@ -285,7 +318,7 @@ module.exports = function (grunt) {
             '.htaccess',
             '*.html',
             'views/{,*/}*.html',
-            'bower_components/**/*',
+            'bower_components/requirejs/require.js',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
@@ -391,6 +424,7 @@ module.exports = function (grunt) {
     'concurrent:dist',
     'autoprefixer',
     'concat',
+    'requirejs',
     'ngmin',
     'copy:dist',
     'cdnify',
