@@ -117,8 +117,42 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
+      proxies: [
+        {
+          context: ['/api'],
+          host: '192.168.10.72',
+          port: 8000,
+          https: false,
+          changeOrigin: false,
+          xforward: false,
+          headers: {
+            // You need to login in via a normal browser and copy the headers from a valid session into an environment variable
+            // Use by exporting CALAMARI_AUTH='calamari_sessionid=jz7kun6pe7ntwccsoat4aqc8coojerrn; XSRF-TOKEN=o83BzXcgLRxroQ2G0fvcf4gOE5KEgInb'
+            'Cookie': process.env.CALAMARI_AUTH || ''
+          }
+        }
+      ],
       livereload: {
         options: {
+          middleware: function (connect, options) {
+            var middlewares = [];
+            var directory = options.directory || options.base[options.base.length - 1];
+            if (!Array.isArray(options.base)) {
+              options.base = [options.base];
+            }
+            // Setup the proxy
+            middlewares.push(require('grunt-connect-proxy/lib/utils').proxyRequest);
+
+            options.base.forEach(function(base) {
+            // Serve static files.
+              middlewares.push(connect.static(base));
+            });
+
+            // Make directory browse-able.
+            middlewares.push(connect.directory(directory));
+
+            return middlewares;
+          },
           open: true,
           base: [
             '.tmp',
@@ -399,6 +433,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
+      'configureProxies:server',
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
@@ -442,3 +477,4 @@ module.exports = function (grunt) {
     'build'
   ]);
 };
+/* vim: set tabstop=2 shiftwidth=2: */
