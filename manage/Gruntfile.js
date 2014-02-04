@@ -290,7 +290,8 @@ module.exports = function (grunt) {
     uglify: {
       dist: {
         options: {
-            mangle: false
+            mangle: false,
+            beautify: false
         },
         files: {
           '<%= yeoman.dist %>/scripts/main.js': ['.tmp/concat/scripts/main.js']

@@ -1,14 +1,15 @@
 /* global define */
 (function() {
     'use strict';
-    define(['angular', 'RouteConfig', 'controllers/root', 'controllers/pool', 'controllers/osd', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate'], function(angular, RouteConfig, RootController, PoolController, OSDController) {
+    define(['angular', 'RouteConfig', 'controllers/root', 'controllers/pool', 'controllers/osd', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate', 'restangular'], function(angular, RouteConfig, RootController, PoolController, OSDController) {
         angular.module('manageApp', [
                 'ngCookies',
                 'ngResource',
                 'ngSanitize',
                 'ngRoute',
                 'mgcrea.ngStrap',
-                'ngAnimate'
+                'ngAnimate',
+                'restangular'
         ])
             .controller('RootController', RootController)
             .controller('PoolController', PoolController)
