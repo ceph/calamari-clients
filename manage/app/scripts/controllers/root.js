@@ -3,7 +3,11 @@
     'use strict';
     define([], function() {
 
-        var RootController = function($scope) {
+        var RootController = function($scope, Restangular) {
+            var baseClusters = Restangular.setBaseUrl('/api/v2').all('cluster');
+            baseClusters.getList().then(function(clusters) {
+                $scope.allClusters = clusters;
+            });
             $scope.tooltip1 = {
                 title: 'Hostname: Pina01',
                 placement: 'top',
@@ -26,6 +30,6 @@
                 trigger: 'hover',
             };
         };
-        return ['$scope', RootController];
+        return ['$scope', 'Restangular', RootController];
     });
 })();
