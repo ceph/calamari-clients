@@ -19,12 +19,10 @@
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <button style="min-width: 200px;" type="button" ng-click="create()" class="btn btn-lg btn-primary" data-placement="center">Create Pool</button>
-        <div style="height: 10px"></div>
-        <button style="min-width: 200px;" type="button" class="btn btn-lg btn-primary" data-placement="center">RBD</button>
-        <div style="height: 10px"></div>
-        <button style="min-width: 200px;" type="button" class="btn btn-lg btn-primary" data-placement="center">Data</button>
-        <div style="height: 10px"></div>
-        <button style="min-width: 200px;" type="button" class="btn btn-lg btn-primary" data-placement="center">Metadata</button>
+        <span ng-repeat="pool in pools">
+          <div style="height: 10px"></div>
+          <button style="min-width: 200px;" type="button" class="btn btn-lg btn-primary" data-id='{{pool.id}}' data-placement="center">{{pool.name}}</button>
+        </span>
     </div>
 </div>
 

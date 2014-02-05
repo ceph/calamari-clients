@@ -120,8 +120,8 @@ module.exports = function (grunt) {
       proxies: [
         {
           context: ['/api'],
-          host: '192.168.10.72',
-          port: 8000,
+          host: process.env.CALAMARI_HOST || '192.168.10.72',
+          port: process.env.CALAMARI_PORT || 8000,
           https: false,
           changeOrigin: false,
           xforward: false,

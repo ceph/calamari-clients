@@ -12,7 +12,10 @@
         </div>
     </div>
 </div>
-<h2 class="text-muted">CLUSTER &raquo;</h3>
+<div class="row">
+    $scope
+</div>
+<h2 class="text-muted">CLUSTER {{clusterName}} &raquo;</h3>
 <h3 class="text-muted">APPROVE REQUESTS</h3>
 <div class=".container">
 <div class="row">
@@ -23,9 +26,6 @@
         <button type="button" class="btn btn-lg btn-primary" data-placement="center">Commit</button>
         <div style="height: 10px"></div>
         <button type="button" class="btn btn-lg btn-primary" data-placement="center">Cancel</button>
-    </div>
-    <div>
-        {{allClusters | json}}
     </div>
     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
         <button type="button" class="btn btn-lg btn-info" bs-tooltip="tooltip1">PENDING<br/>Pina01</button>
@@ -50,7 +50,27 @@
         <button type="button" class="btn btn-lg btn-info" bs-tooltip="tooltip2">PENDING<br/>Polo02</button>
         <button type="button" class="btn btn-lg btn-info" bs-tooltip="tooltip3">PENDING<br/>Polo03</button>
         <button type="button" class="btn btn-lg btn-info" bs-tooltip="tooltip4">PENDING<br/>Polo04</button>
-        
+    </div>
+</div>
+
+<div class="row" style="border:1px solid black; padding: 20px 5px;">
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+        <table class='table table-condensed'>
+            <thead>
+              <tr>
+                  <th>Id</th>
+                  <th>State</th>
+              </tr>
+            <thead>
+            <tbody>
+              <tr ng-repeat="minion in minions">
+                  <td>{{minion.id}}</td>
+                  <td>{{minion.status | uppercase}}</td>
+              </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
