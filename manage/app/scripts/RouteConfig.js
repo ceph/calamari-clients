@@ -9,6 +9,9 @@
             }).when('/osd', {
                 templateUrl: 'views/osd.html',
                 controller: 'OSDController'
+            }).when('/osd/:fqdn', {
+                templateUrl: 'views/osd-host.html',
+                controller: 'OSDHostController'
             }).when('/pool', {
                 templateUrl: 'views/pool.html',
                 controller: 'PoolController'

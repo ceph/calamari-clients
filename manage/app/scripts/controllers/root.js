@@ -4,7 +4,7 @@
     var __split = String.prototype.split;
     define(['lodash'], function(_) {
 
-        var RootController = function($scope, Restangular) {
+        var RootController = function($log, $scope, Restangular) {
             var baseClusters = Restangular.setBaseUrl('/api/v2').all('cluster');
             baseClusters.getList().then(function(clusters) {
                 $scope.allClusters = clusters;
@@ -19,8 +19,8 @@
                 $scope.minions = _.map(minions, function(minion) {
                     var shortName = _.first(__split.call(minion.id, '.'));
                     minion.shortName = shortName;
-                    console.log(shortName);
-                    console.log(minion);
+                    $log.debug(shortName);
+                    $log.debug(minion);
                     return minion;
                 });
             });
@@ -46,6 +46,6 @@
                 trigger: 'hover',
             };
         };
-        return ['$scope', 'Restangular', RootController];
+        return ['$log', '$scope', 'Restangular', RootController];
     });
 })();
