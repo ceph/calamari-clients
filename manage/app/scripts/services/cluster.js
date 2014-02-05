@@ -9,11 +9,16 @@ define(['lodash'], function(_) {
             this.restangular = restangular;
         };
         Service.prototype = _.extend(Service.prototype, {
-            getList: function() {
+            initialize: function() {
                 var self = this;
-                return this.restangular.all('cluster').getList().then(function(clusters) {
+                return this.getList().then(function(clusters) {
                     var cluster = _.first(clusters);
                     self.clusterId = cluster.id;
+                    self.clusterModel = cluster;
+                });
+            },
+            getList: function() {
+                return this.restangular.all('cluster').getList().then(function(clusters) {
                     return clusters;
                 });
             },
