@@ -19,6 +19,10 @@
             .factory('PoolService', PoolService)
             .factory('ServerService', ServerService)
             .factory('KeyService', KeyService)
+            .factory('ClusterResolver', [ 'ClusterService' , function(service) {
+                // Get the initial cluster list before showing views
+                return service.getList();
+            }])
             .config(RouteConfig);
         angular.bootstrap(document.getElementsByClassName('manageApp')[0], ['manageApp']);
     });

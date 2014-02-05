@@ -4,15 +4,11 @@
     var __split = String.prototype.split;
     define(['lodash'], function(_) {
 
-        var RootController = function($log, $scope, Restangular) {
-            var baseClusters = Restangular.setBaseUrl('/api/v2').all('cluster');
-            baseClusters.getList().then(function(clusters) {
-                $scope.allClusters = clusters;
-                var cluster = _.first(clusters);
+        var RootController = function($log, $scope, KeyService, ClusterService) {
+            ClusterService.get().then(function(cluster) {
                 $scope.clusterName = cluster.name;
             });
-            var baseMinions = Restangular.all('key');
-            baseMinions.getList().then(function(minions) {
+            KeyService.getList().then(function(minions) {
                 $scope.minionsCounts = {
                     total: minions.length
                 };
@@ -46,6 +42,6 @@
                 trigger: 'hover',
             };
         };
-        return ['$log', '$scope', 'Restangular', RootController];
+        return ['$log', '$scope', 'KeyService', 'ClusterService', RootController];
     });
 })();
