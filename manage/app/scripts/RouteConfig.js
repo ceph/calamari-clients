@@ -19,6 +19,10 @@
                 templateUrl: 'views/pool.html',
                 controller: 'PoolController',
                 resolve: { 'Resolver': 'ClusterResolver' }
+            }).when('/tools', {
+                templateUrl: 'views/tool.html',
+                controller: 'ToolController',
+                resolve: { 'Resolver': 'ClusterResolver' }
             }).when('/pool/new', {
                 templateUrl: 'views/pool-new.html',
                 controller: 'PoolNewController',

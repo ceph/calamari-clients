@@ -1,0 +1,67 @@
+<div class="header">
+     <h3 class="text-muted">manage</h3>
+
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="navbar navbar-default" role="navigation" bs-navbar>
+            <ul class="nav navbar-nav">
+                <li><a ng-href="#/">Cluster</a>
+
+                </li>
+                <li><a ng-href="#/osd">OSD</a>
+
+                </li>
+                <li><a ng-href="#/pool">Pool</a>
+
+                </li>
+                <li class="active"><a ng-href="#/tools">Tols</a>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h2 class="text-muted">CLUSTER {{clusterName}} &raquo; Tools>
+<div class="container">
+<div class="row" >
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <h3>Log Tail</h3>
+        <div >
+            <p class='small' ng-repeat='line in logs'>{{line}}</p>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <h3>Config</h3>
+        <div >
+            {{ config | json }}
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>
+                            key
+                        </th>
+                        <th>
+                            value
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat='config in configs'>
+                        <td>
+                            {{config.key}}
+                        </td>
+                        <td>
+                            {{config.value}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+</div>
+</div>
