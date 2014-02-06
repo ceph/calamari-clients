@@ -4,7 +4,7 @@
     define([], function() {
         var RouteConfig = function($routeProvider) {
             $routeProvider.when('/', {
-                templateUrl: 'views/main.html',
+                templateUrl: 'views/root.html',
                 controller: 'RootController',
                 resolve: { 'Resolver': 'ClusterResolver' }
             }).when('/osd', {
