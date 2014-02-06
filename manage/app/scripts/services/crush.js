@@ -1,26 +1,23 @@
 /*global define*/
 define(['lodash'], function(_) {
     'use strict';
-    var PoolService = function(ClusterService) {
+    var CrushService = function(ClusterService) {
         var Service = function() {
             this.restangular = ClusterService;
         };
         Service.prototype = _.extend(Service.prototype, {
             getList: function() {
-                return this.restangular.cluster().all('pool').getList().then(function(pools) {
+                return this.restangular.cluster().all('crush_rule_set').getList().then(function(pools) {
                     return pools;
                 });
             },
             get: function(id) {
-                return this.restangular.cluster().one('pool', id).get().then(function(pool) {
+                return this.restangular.cluster().one('crush_rule_set', id).get().then(function(pool) {
                     return pool[0];
                 });
             },
-            defaults: function() {
-                return this.restangular.cluster().one('pool').get({ defaults: '' });
-            }
         });
         return new Service();
     };
-    return ['ClusterService', PoolService];
+    return ['ClusterService', CrushService];
 });

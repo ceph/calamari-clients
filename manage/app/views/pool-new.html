@@ -13,27 +13,30 @@
         </div>
     </div>
 </div>
-<h2 class="text-muted">POOL &laquo; CREATE</h2>
+<h2 class="text-muted">CLUSTER {{clusterName}} &raquo; POOL &raquo; CREATE</h2>
 <div class=".container">
 
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
         <form role="form">
+                {{ defaults | json }}
             <div class="form-group">
                 <label>Name</label>
                 <input type="text" class="form-control" placeholder="New Pool Name"></input>
             </div>
             <div class="form-group">
                 <label>Quota</label>
-                <input type="number" class="form-control" placeholder="Quota (Size)"></input>
+                <input type="number" class="form-control" placeholder="Quota (Size)" value='{{defaults.quota_max_bytes}}'></input>
             </div>
             <div class="form-group">
                 <label>Placement Groups</label>
-                <input type="number" class="form-control" placeholder="Placement Groups"></input>
+                <input type="number" class="form-control" placeholder="Placement Groups" value='100'></input>
             </div>
             <div class="form-group">
-                <label>Replication Factor</label>
-                <input type="number" class="form-control" placeholder="Replication Factor"></input>
+                <label>Crush Ruleset</label>
+                <select class="form-control" value='{{defaults.crush_ruleset}}'>
+                    <option ng-repeat='crush in crushrulesets' value='{{crush.id}}'>{{crush.id}}: {{crush.rules[0].name}}</option>
+                </select>
             </div>
         </form>
     </div>

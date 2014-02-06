@@ -21,7 +21,7 @@
                 resolve: { 'Resolver': 'ClusterResolver' }
             }).when('/pool/new', {
                 templateUrl: 'views/pool-new.html',
-                controller: 'PoolController',
+                controller: 'PoolNewController',
                 resolve: { 'Resolver': 'ClusterResolver' }
             })
                 .otherwise({
