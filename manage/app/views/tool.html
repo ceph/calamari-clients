@@ -28,14 +28,20 @@
 <div class="row" >
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <h3>Log Tail</h3>
-        <div >
-            <p class='small' ng-repeat='line in logs'>{{line}}</p>
+        <div>
+          <div ng-switch on="logui">
+            <span ng-switch-when="logs" >
+              <p class='small' ng-repeat='line in logs'>{{line}}</p>
+            </span>
+            <i ng-switch-default class="fa fa-spinner fa-spin fa-lg">Loading...</i>
+          </div>
         </div>
     </div>
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+</div>
+<div class="row">
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
         <h3>Config</h3>
-        <div >
-            {{ config | json }}
+        <div>
             <table class="table table-condensed">
                 <thead>
                     <tr>
