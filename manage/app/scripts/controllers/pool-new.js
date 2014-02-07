@@ -7,17 +7,19 @@
             var pool = {
                 /* jshint camelcase:false */
                 name: '',
-                size: 0,
+                size: 2,
                 crush_ruleset: 0,
                 pg_num: 100
             };
             $scope.pool = pool;
             $scope.clusterName = ClusterService.clusterModel.name;
             var self = this;
-            $q.all([PoolService.defaults(), CrushService.getList(), ToolService.config('mon_max_pool_pg_num')]).then(function(promises) {
-                self.defaults = promises[0];
-                self.crushrulesets = promises[1];
-                self.mon_max_pool_pg_num = parseInt(promises[2].value, 10);
+            var promises = [PoolService.defaults(), CrushService.getList(), ToolService.config('mon_max_pool_pg_num')];
+            $q.all(promises).then(function(results) {
+                var result = _.chain(results);
+                self.defaults = result.shift().value();
+                self.crushrulesets = result.shift().value();
+                self.mon_max_pool_pg_num = parseInt(result.shift().value().value, 10);
                 /* jshint camelcase:false */
                 pool = _.extend(pool, {
                     size: self.defaults.size,
@@ -35,12 +37,12 @@
                             max: Math.max(rule.max_size, result.max)
                         };
                     }, {
-                        min: 10000,
+                        min: self.mon_max_pool_pg_num,
                         max: 1
                     });
                     if (helpers.validateMaxMin.call(pool, 'size', newValue, limits.min, limits.max)) {
                         var osdcount = self.crushrulesets[self.defaults.crush_ruleset].osd_count;
-                        var pgnum = helpers.calculatePGNum(osdcount, newValue, 65536);
+                        var pgnum = helpers.calculatePGNum(osdcount, newValue, self.mon_max_pool_pg_num);
                         pool.pg_num = pgnum;
                     }
                 });
