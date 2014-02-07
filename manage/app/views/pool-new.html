@@ -20,25 +20,26 @@
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
         <form role="form">
-                {{ defaults | json }}
+            <!-- {{ defaults | json }} -->
             <div class="form-group">
                 <label>Name</label>
-                <input type="text" class="form-control" placeholder="New Pool Name"></input>
+                <input type="text" required class="form-control" placeholder="New Pool Name"></input>
             </div>
             <div class="form-group">
-                <label>Quota</label>
-                <input type="number" class="form-control" placeholder="Quota (Size)" value='{{defaults.quota_max_bytes}}'></input>
+                <label>Replicas (size)</label>
+                <input type="number" required class="form-control" placeholder="Size" ng-model='pool.size'></input>
             </div>
             <div class="form-group">
-                <label>Placement Groups</label>
-                <input type="number" class="form-control" placeholder="Placement Groups" value='100'></input>
+                <label>Placement Groups (pg_num)</label>
+                <input type="number" required class="form-control" ng-model='pool.pg_num' placeholder="Placement Groups"></input>
             </div>
             <div class="form-group">
                 <label>Crush Ruleset</label>
-                <select class="form-control" value='{{defaults.crush_ruleset}}'>
+                <select class="form-control" required ng-model='pool.crush_ruleset'>
                     <option ng-repeat='crush in crushrulesets' value='{{crush.id}}'>{{crush.id}}: {{crush.rules[0].name}}</option>
                 </select>
             </div>
+            <!-- {{ crushrulesets | json }} -->
         </form>
     </div>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
