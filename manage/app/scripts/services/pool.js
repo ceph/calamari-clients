@@ -16,6 +16,9 @@ define(['lodash'], function(_) {
                     return pool[0];
                 });
             },
+            create: function(pool) {
+                return this.restangular.clusterFull().all('pool').post(pool);
+            },
             defaults: function() {
                 return this.restangular.cluster().one('pool').get({ defaults: '' });
             }

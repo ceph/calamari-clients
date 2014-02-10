@@ -5,8 +5,12 @@ define(['lodash'], function(_) {
         var restangular = Restangular.withConfig(function(RestangularConfigurer) {
             RestangularConfigurer.setBaseUrl('/api/v2');
         });
+        var restangularFull = Restangular.withConfig(function(RestangularConfigurer) {
+            RestangularConfigurer.setBaseUrl('/api/v2').setFullResponse(true);
+        });
         var Service = function() {
             this.restangular = restangular;
+            this.restangularFull = restangularFull;
         };
         Service.prototype = _.extend(Service.prototype, {
             initialize: function() {
@@ -32,6 +36,12 @@ define(['lodash'], function(_) {
                     id = this.clusterId;
                 }
                 return this.restangular.one('cluster', id);
+            },
+            clusterFull: function(id) {
+                if (id === undefined) {
+                    id = this.clusterId;
+                }
+                return this.restangularFull.one('cluster', id);
             }
         });
         return new Service();
