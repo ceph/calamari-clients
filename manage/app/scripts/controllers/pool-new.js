@@ -49,11 +49,25 @@
                 var pgnum = helpers.calculatePGNum(limits.osd_count, $scope.size, defaults.mon_max_pool_pg_num);
                 if ($scope.pg_num !== pgnum) {
                     // Only reset pg num if it's different from calculated default
-                        // This catches where size isn't change but pg has been
+                    // This catches where size isn't change but pg has been
                     $scope.pg_num = pgnum;
                 }
             };
+            $scope.create = function() {
+                var pool = {
+                    name: $scope.name,
+                    size: $scope.size,
+                    pg_num: $scope.pg_num,
+                    crush_ruleset: $scope.crush_ruleset
+                };
+                PoolService.create(pool).then(function(resp) {
+                    console.log(resp);
+                }, function(error) {
+                    console.log(error);
+                });
+            };
 
+            // Initialize Controller
             var promises = [PoolService.defaults(), CrushService.getList(), ToolService.config('mon_max_pool_pg_num')];
 
             $q.all(promises).then(function(results) {
