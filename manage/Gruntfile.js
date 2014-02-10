@@ -232,11 +232,16 @@ module.exports = function (grunt) {
         ignorePath: '<%= yeoman.app %>/'
       }
     },
-
-
-
-
-
+    symlink: {
+      fonts: {
+        target: 'bower_components/font-awesome/fonts',
+        link: '<%= yeoman.app %>/fonts',
+        options: {
+          overwrite: true,
+          force: true
+        }
+      }
+    },
     // Renames files for browser caching purposes
     rev: {
       dist: {
@@ -432,6 +437,7 @@ module.exports = function (grunt) {
     }
 
     grunt.task.run([
+      'symlink',
       'clean:server',
       'configureProxies:server',
       'concurrent:server',
@@ -447,6 +453,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('test', [
+    'symlink',
     'clean:server',
     'concurrent:test',
     'autoprefixer',
