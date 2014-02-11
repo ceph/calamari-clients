@@ -41,26 +41,23 @@
             };
             $scope.reset = function() {
                 var defaults = this.defaults;
-                $scope.name = '';
-                $scope.size = defaults.size;
-                $scope.crush_ruleset = defaults.crush_ruleset;
+                $scope.pool.name = '';
+                $scope.pool.size = defaults.size;
+                $scope.pool.crush_ruleset = defaults.crush_ruleset;
                 var ruleset = this.crushrulesets[defaults.crush_ruleset];
                 var limits = getActiveRule(ruleset, defaults.mon_max_pool_pg_num, $scope.size);
                 var pgnum = helpers.calculatePGNum(limits.osd_count, $scope.size, defaults.mon_max_pool_pg_num);
-                if ($scope.pg_num !== pgnum) {
+                if ($scope.pool.pg_num !== pgnum) {
                     // Only reset pg num if it's different from calculated default
                     // This catches where size isn't change but pg has been
-                    $scope.pg_num = pgnum;
+                    $scope.pool.pg_num = pgnum;
                 }
             };
             $scope.create = function() {
-                var pool = {
-                    name: $scope.name,
-                    size: $scope.size,
-                    pg_num: $scope.pg_num,
-                    crush_ruleset: $scope.crush_ruleset
-                };
-                PoolService.create(pool).then(function(resp) {
+                if ($scope.poolForm.$invalid) {
+                    return;
+                }
+                PoolService.create($scope.pool).then(function(resp) {
                     console.log(resp);
                 }, function(error) {
                     console.log(error);
@@ -101,24 +98,36 @@
                 });
                 $scope.crushrulesets = crushruleSets;
 
-                $scope.name = mergedDefaults.name;
-                $scope.size = mergedDefaults.size;
-                $scope.crush_ruleset = mergedDefaults.crush_ruleset;
-                $scope.pg_num = mergedDefaults.pg_num;
+                $scope.pool = {
+                    name: mergedDefaults.name,
+                    size: mergedDefaults.size,
+                    crush_ruleset: mergedDefaults.crush_ruleset,
+                    pg_num: mergedDefaults.pg_num
+                };
 
-                $scope.$watch('size', function(newValue /*, oldValue*/ ) {
-                    var ruleset = crushruleSets[$scope.crush_ruleset];
-                    var limits = getActiveRule(ruleset, self.mon_max_pool_pg_num, newValue);
+                $scope.$watch('pool.size', function(newValue /*, oldValue*/ ) {
+                    if (!_.isNumber(newValue)) {
+                        $scope.poolForm.size.$error.number = true;
+                        return;
+                    }
+                    var ruleset = crushruleSets[$scope.pool.crush_ruleset];
+                    var limits = getActiveRule(ruleset, $scope.defaults.mon_max_pool_pg_num, newValue);
                     $scope.limits = limits;
-                    if (helpers.validateMaxMin.call($scope, 'size', newValue, limits.min_size, limits.max_size)) {
-                        $scope.pg_num = helpers.calculatePGNum(limits.osd_count, newValue, self.mon_max_pool_pg_num);
-                        $scope.crushrulesets[$scope.crush_ruleset].active_sub_rule = limits.active_rule;
+                    if (helpers.validateMaxMin.call($scope.pool, 'size', newValue, limits.min_size, limits.max_size)) {
+                        $scope.pool.pg_num = helpers.calculatePGNum(limits.osd_count, newValue, $scope.defaults.mon_max_pool_pg_num);
+                        $scope.crushrulesets[$scope.pool.crush_ruleset].active_sub_rule = limits.active_rule;
                     }
                 });
-                $scope.$watch('pg_num', function(newValue /*, oldValue*/ ) {
-                    helpers.validateMaxMin.call($scope, 'pg_num', newValue, 1, self.mon_max_pool_pg_num);
+                $scope.$watch('pool.pg_num', function(newValue /*, oldValue*/ ) {
+                    if (!_.isNumber(newValue)) {
+                        $scope.poolForm.pg_num.$error.number = true;
+                        return;
+                    }
+                    $scope.poolForm.pg_num.$error.number = false;
+                    $scope.poolForm.pg_num.$pristine = true;
+                    helpers.validateMaxMin.call($scope.pool, 'pg_num', newValue, 1, $scope.defaults.mon_max_pool_pg_num);
                 });
-                $scope.$watch('crush_ruleset', function(newValue, oldValue) {
+                $scope.$watch('pool.crush_ruleset', function(newValue, oldValue) {
                     $scope.size = mergedDefaults.size;
                     crushruleSets[newValue].active_sub_rule = 0;
                     crushruleSets[oldValue].active_sub_rule = 0;
