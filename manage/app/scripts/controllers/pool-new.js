@@ -87,7 +87,7 @@
                             name: rule.name,
                             min_size: rule.min_size,
                             max_size: rule.max_size,
-                            osd_count: set.osd_count
+                            osd_count: rule.osd_count
                         };
                     });
                     return {
