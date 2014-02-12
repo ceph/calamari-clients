@@ -13,7 +13,7 @@
                 $scope.show = function() {
                     RequestService.getList().then(function(response) {
                         myAside.show();
-                        response = _.map(response, function(request) {
+                        response = _.map(response.reverse(), function(request) {
                             /* jshint camelcase: false */
                             var time = request.state === 'complete' ? request.completed_at : request.requested_at;
                             return {
