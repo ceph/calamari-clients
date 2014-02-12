@@ -14,16 +14,14 @@
         </div>
     </div>
 </div>
-<h2 class="text-muted">POOL &raquo;</h2>
+<h2 class="text-muted">CLUSTER {{clusterName}} &raquo; POOL &raquo;</h2>
 <div class="container">
-
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <button style="min-width: 200px;" type="button" ng-click="create()" class="btn btn-lg btn-primary" data-placement="center">Create Pool</button>
-        <span ng-repeat="pool in pools">
-          <div style="height: 10px"></div>
+        <div style="margin-top: 10px;" ng-repeat="pool in pools" class="am-fade-and-slide-right">
           <button style="min-width: 200px;" type="button" class="btn btn-lg btn-success" data-id='{{pool.id}}' data-placement="center">{{pool.name}}</button>
-        </span>
+        </div>
     </div>
 </div>
 

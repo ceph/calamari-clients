@@ -8,6 +8,9 @@
                 var myAside = $aside({
                     'title': 'Requested Tasks',
                     'template': 'views/request.html',
+                    'container': 'body',
+                    'animation': 'am-fade-and-slide-left',
+                    'backdropAnimation': 'animation-fade',
                     'show': false
                 });
                 myAside.$scope.empty = true;

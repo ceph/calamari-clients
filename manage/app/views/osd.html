@@ -14,16 +14,14 @@
         </div>
     </div>
 </div>
-<h2 class="text-muted">OSD {{clusterName}} &raquo;</h2>
+<h2 class="text-muted">CLUSTER {{clusterName}} &raquo; OSD HOSTS &raquo;</h2>
 <div class="container">
-
-<h4 class="text-muted">Hosts</h4>
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-        <span ng-repeat='server in servers'>
+        <div ng-repeat='server in servers' class="am-fade-and-slide-left">
             <button style="min-width: 200px;" type="button" class="btn btn-lg btn-primary" ng-click="hostClickHandler(server.fqdn)" data-placement="center">{{server.hostname}}</button>
             <div style="height: 10px"></div>
-        </span>
+        </div>
     </div>
 </div>
 

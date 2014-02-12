@@ -17,10 +17,8 @@
         </div>
     </div>
 </div>
-<h2 class="text-muted">OSD &raquo;</h2>
+<h2 class="text-muted">CLUSTER {{clusterName}} &raquo; OSD HOST {{fqdn}} &raquo;</h2>
 <div class="container">
-
-    <h4 class="text-muted">Host {{fqdn}}</h4>
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <table class='table table-condensed'>
@@ -30,7 +28,7 @@
                 </tr>
             </thead>
             </tbody>
-                <tr ng-repeat='osd in services.osds'>
+                <tr class='am-fade-and-slide-top' ng-repeat='osd in services.osds'>
                     <td>{{osd.id}}</td>
                 </tr>
             </tbody>
