@@ -1,15 +1,15 @@
 /* global define */
 (function() {
     'use strict';
-    define(['angular', 'RouteConfig', 'controllers/root', 'controllers/pool', 'controllers/osd', 'controllers/osd-host', 'services/cluster', 'services/pool', 'services/server', 'services/key', 'controllers/pool-new', 'services/crush', 'services/tool', 'controllers/tools', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate', 'restangular'], function(angular, RouteConfig, RootController, PoolController, OSDController, OSDHostController, ClusterService, PoolService, ServerService, KeyService, PoolNewController, CrushService, ToolService, ToolsController) {
-        angular.module('manageApp', [
+    define(['angular', 'RouteConfig', 'ApiModule', 'requests/requestModule', 'controllers/root', 'controllers/pool', 'controllers/osd', 'controllers/osd-host', 'controllers/pool-new', 'controllers/tools', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate', 'restangular'], function(angular, RouteConfig, APIModule, RequestModule, RootController, PoolController, OSDController, OSDHostController, PoolNewController, ToolsController) {
+        var app = angular.module('manageApp', [
+                APIModule,
                 'ngCookies',
                 'ngResource',
                 'ngSanitize',
                 'ngRoute',
                 'mgcrea.ngStrap',
-                'ngAnimate',
-                'restangular'
+                'ngAnimate'
         ])
             .controller('RootController', RootController)
             .controller('PoolController', PoolController)
@@ -17,17 +17,11 @@
             .controller('OSDController', OSDController)
             .controller('OSDHostController', OSDHostController)
             .controller('ToolController', ToolsController)
-            .factory('ClusterService', ClusterService)
-            .factory('PoolService', PoolService)
-            .factory('ServerService', ServerService)
-            .factory('KeyService', KeyService)
-            .factory('CrushService', CrushService)
-            .factory('ToolService', ToolService)
-            .factory('ClusterResolver', [ 'ClusterService' , function(service) {
-                // Get the initial cluster list before showing views
-                return service.initialize();
-            }])
             .config(RouteConfig);
-        angular.bootstrap(document.getElementsByClassName('manageApp')[0], ['manageApp']);
+        console.log(app);
+        angular.element(document).ready(function() {
+            angular.bootstrap(document.getElementsByClassName('manageApp')[0], ['manageApp']);
+            angular.bootstrap(document.getElementsByClassName('RequestManagement')[0], [RequestModule]);
+        });
     });
 })();
