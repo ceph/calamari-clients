@@ -16,6 +16,9 @@
                   </tr>
               <thead>
               <tbody>
+                <tr ng-if="empty">
+                    <td style="text-align: center;" colspan=4>No Requests Submitted</td>
+                </tr>
                 <tr ng-repeat="task in tasks">
                     <td><i ng-class="{
                             'fa fa-spinner fa-spin': task.state === 'submitted',

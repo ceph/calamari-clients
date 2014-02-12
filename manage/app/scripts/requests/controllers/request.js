@@ -10,6 +10,7 @@
                     'template': 'views/request.html',
                     'show': false
                 });
+                myAside.$scope.empty = true;
                 $scope.show = function() {
                     RequestService.getList().then(function(response) {
                         myAside.show();
@@ -23,6 +24,7 @@
                             };
                         });
                         myAside.$scope.tasks = response;
+                        myAside.$scope.empty = response.length === 0;
                     });
                 };
             });

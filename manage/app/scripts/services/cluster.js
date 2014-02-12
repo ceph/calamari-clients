@@ -3,7 +3,7 @@ define(['lodash'], function(_) {
     'use strict';
     var ClusterService = function(Restangular) {
         var djangoPaginationResponseExtractor = function(response /*, operation, what, url */ ) {
-            if (response.count && response.results) {
+            if (response.count !== undefined && response.results !== undefined) {
                 var newResponse = response.results;
                 newResponse.pagnation = {
                     next: response.next,
