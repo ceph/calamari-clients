@@ -2,35 +2,15 @@
 
 angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
 
-  .run(function($templateCache, $modal) {
-
-    var template = '' +
-      '<div class="modal" tabindex="-1" role="dialog">' +
-        '<div class="modal-dialog">' +
-          '<div class="modal-content">' +
-            '<div class="modal-header" ng-show="title">' +
-              '<button type="button" class="close" ng-click="$hide()">&times;</button>' +
-              '<h4 class="modal-title" ng-bind="title"></h4>' +
-            '</div>'+
-            '<div class="modal-body" ng-show="content" ng-bind="content"></div>'+
-            '<div class="modal-footer">' +
-              '<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-
-    $templateCache.put('$modal', template);
-
-  })
-
   .provider('$modal', function() {
 
     var defaults = this.defaults = {
-      animation: 'animation-fade',
+      animation: 'am-fade',
+      backdropAnimation: 'am-fade',
       prefixClass: 'modal',
       placement: 'top',
-      template: '$modal',
+      template: 'modal/modal.tpl.html',
+      contentTemplate: false,
       container: false,
       element: null,
       backdrop: true,
@@ -42,13 +22,10 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
     this.$get = function($window, $rootScope, $compile, $q, $templateCache, $http, $animate, $timeout, dimensions) {
 
       var forEach = angular.forEach;
-      var jqLite = angular.element;
       var trim = String.prototype.trim;
-      var bodyElement = jqLite($window.document.body);
+      var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
+      var bodyElement = angular.element($window.document.body);
       var htmlReplaceRegExp = /ng-bind="/ig;
-      var findElement = function(query, element) {
-        return jqLite((element || document).querySelectorAll(query));
-      };
 
       function ModalFactory(config) {
 
@@ -56,7 +33,7 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
 
         // Common vars
         var options = angular.extend({}, defaults, config);
-        $modal.$promise = $q.when($templateCache.get(options.template) || $http.get(options.template/*, {cache: true}*/));
+        $modal.$promise = fetchTemplate(options.template);
         var scope = $modal.$scope = options.scope && options.scope.$new() || $rootScope.$new();
         if(!options.element && !options.container) {
           options.container = 'body';
@@ -86,9 +63,23 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
           });
         };
 
+        // Support contentTemplate option
+        if(options.contentTemplate) {
+          $modal.$promise = $modal.$promise.then(function(template) {
+            var templateEl = angular.element(template);
+            return fetchTemplate(options.contentTemplate)
+            .then(function(contentTemplate) {
+              var contentEl = findElement('[ng-bind="content"]', templateEl[0]).removeAttr('ng-bind').html(contentTemplate);
+              // Drop the default footer as you probably don't want it if you use a custom contentTemplate
+              if(!config.template) contentEl.next().remove();
+              return templateEl[0].outerHTML;
+            });
+          });
+        }
+
         // Fetch, compile then initialize modal
         var modalLinker, modalElement;
-        var backdropElement = jqLite('<div class="' + options.prefixClass + '-backdrop"/>');
+        var backdropElement = angular.element('<div class="' + options.prefixClass + '-backdrop"/>');
         $modal.$promise.then(function(template) {
           if(angular.isObject(template)) template = template.data;
           if(options.html) template = template.replace(htmlReplaceRegExp, 'ng-bind-html="');
@@ -102,7 +93,7 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
           // Options: show
           if(options.show) {
             scope.$$postDigest(function() {
-              options.trigger === 'focus' ? element[0].focus() : $modal.show();
+              $modal.show();
             });
           }
 
@@ -139,7 +130,7 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
           // Options: animation
           if(options.animation) {
             if(options.backdrop) {
-              backdropElement.addClass('animation-fade');
+              backdropElement.addClass(options.backdropAnimation);
             }
             modalElement.addClass(options.animation);
           }
@@ -150,7 +141,12 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
           $animate.enter(modalElement, parent, after, function() {});
           scope.$isShown = true;
           scope.$$phase || scope.$digest();
-          $modal.focus();
+          // Focus once the enter-animation has started
+          // Weird PhantomJS bug hack
+          var el = modalElement[0];
+          requestAnimationFrame(function() {
+            el.focus();
+          });
 
           bodyElement.addClass(options.prefixClass + '-open');
           // if(options.animation) {
@@ -179,8 +175,8 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
           if(options.backdrop) {
             $animate.leave(backdropElement, function() {});
           }
-          scope.$$phase || scope.$digest();
           scope.$isShown = false;
+          scope.$$phase || scope.$digest();
 
           // Unbind events
           if(options.backdrop) {
@@ -200,9 +196,7 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
         };
 
         $modal.focus = function() {
-
           modalElement[0].focus();
-
         };
 
         // Protected methods
@@ -224,6 +218,23 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
 
       }
 
+      // Helper functions
+
+      function findElement(query, element) {
+        return angular.element((element || document).querySelectorAll(query));
+      }
+
+      function fetchTemplate(template) {
+        return $q.when($templateCache.get(template) || $http.get(template))
+        .then(function(res) {
+          if(angular.isObject(res)) {
+            $templateCache.put(template, res.data);
+            return res.data;
+          }
+          return res;
+        });
+      }
+
       return ModalFactory;
 
     };
@@ -239,14 +250,14 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
 
         // Directive options
         var options = {scope: scope, element: element, show: false};
-        angular.forEach(['template', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function(key) {
+        angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function(key) {
           if(angular.isDefined(attr[key])) options[key] = attr[key];
         });
 
         // Support scope as data-attrs
         angular.forEach(['title', 'content'], function(key) {
           attr[key] && attr.$observe(key, function(newValue, oldValue) {
-            scope[key] = newValue;
+            scope[key] = $sce.getTrustedHtml(newValue);
           });
         });
 

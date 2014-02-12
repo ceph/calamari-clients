@@ -1,30 +1,58 @@
 {
   "name": "angular-strap",
   "description": "AngularStrap - AngularJS directives for Twitter Bootstrap",
-  "version": "2.0.0-beta.4",
-  "main": "dist/angular-strap.min.js",
+  "version": "2.0.0-rc.3",
+  "keywords": [
+    "angular",
+    "bootstrap"
+  ],
+  "homepage": "http://mgcrea.github.io/angular-strap",
+  "bugs": "https://github.com/mgcrea/angular-strap/issues",
+  "author": {
+    "name": "Olivier Louvignes",
+    "email": "olivier@mg-crea.com",
+    "url": "https://github.com/mgcrea"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mgcrea/angular-strap.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "main": [
+    "dist/angular-strap.min.js",
+    "dist/angular-strap.tpl.min.js"
+  ],
+  "ignore": [
+    "docs",
+    "test",
+    "CONTRIBUTING.md"
+  ],
   "dependencies": {
-    "angular": "~1.2.9",
-    "bootstrap": "~3.0.3"
+    "angular": "~1.2.10",
+    "bootstrap": "~3.1.0"
   },
   "devDependencies": {
-    "angular-animate": "~1.2.9",
-    "angular-i18n": "~1.2.9",
-    "angular-mocks": "~1.2.9",
-    "angular-route": "~1.2.9",
-    "angular-sanitize": "~1.2.9",
-    "angular-scenario": "~1.2.9",
-    "fastclick": "~0.6.10",
+    "angular-animate": "~1.2.10",
+    "angular-i18n": "~1.2.10",
+    "angular-mocks": "~1.2.10",
+    "angular-motion": "~0.3.1",
+    "angular-route": "~1.2.10",
+    "angular-sanitize": "~1.2.10",
+    "angular-scenario": "~1.2.10",
+    "fastclick": "~0.6.11",
     "font-awesome": "~4.0.3",
-    "highlightjs": "~7.5.0",
-    "jquery": "~2.0.3"
+    "highlightjs": "~8.0.0",
+    "jquery": "~2.1.0"
   },
-  "homepage": "https://github.com/mgcrea/angular-strap",
-  "_release": "2.0.0-beta.4",
+  "_release": "2.0.0-rc.3",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.0-beta.4",
-    "commit": "7c70b540d4b12cfaed84d902671c3bbda77c0da0"
+    "tag": "v2.0.0-rc.3",
+    "commit": "8831bf664d89ae74374fd2fffdad2f4b718a2a14"
   },
   "_source": "git://github.com/mgcrea/angular-strap.git",
   "_target": "~2.0.0",

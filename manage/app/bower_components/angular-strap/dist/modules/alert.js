@@ -1,29 +1,24 @@
 /**
  * angular-strap
- * @version v2.0.0-beta.4 - 2014-01-20
+ * @version v2.0.0-rc.3 - 2014-02-10
  * @link http://mgcrea.github.io/angular-strap
- * @author Olivier Louvignes <olivier@mg-crea.com>
+ * @author Olivier Louvignes (olivier@mg-crea.com)
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
 'use strict';
-angular.module('mgcrea.ngStrap.alert', []).run([
-  '$templateCache',
-  function ($templateCache) {
-    var template = '' + '<div class="alert" tabindex="-1" ng-class="[type ? \'alert-\' + type : null]">' + '<button type="button" class="close" ng-click="$hide()">&times;</button>' + '<strong ng-bind="title"></strong>&nbsp;<span ng-bind-html="content"></span>' + '</div>';
-    $templateCache.put('$alert', template);
-  }
-]).provider('$alert', function () {
+angular.module('mgcrea.ngStrap.alert', []).provider('$alert', function () {
   var defaults = this.defaults = {
-      animation: 'animation-fade',
+      animation: 'am-fade',
       prefixClass: 'alert',
       placement: null,
-      template: '$alert',
+      template: 'alert/alert.tpl.html',
       container: false,
       element: null,
       backdrop: false,
       keyboard: true,
       show: true,
-      duration: false
+      duration: false,
+      type: false
     };
   this.$get = [
     '$modal',
@@ -33,11 +28,8 @@ angular.module('mgcrea.ngStrap.alert', []).run([
         var $alert = {};
         var options = angular.extend({}, defaults, config);
         $alert = $modal(options);
-        if (!options.scope) {
-          angular.forEach(['type'], function (key) {
-            if (options[key])
-              $alert.$scope[key] = options[key];
-          });
+        if (options.type) {
+          $alert.$scope.type = options.type;
         }
         var show = $alert.show;
         if (options.duration) {
@@ -87,7 +79,7 @@ angular.module('mgcrea.ngStrap.alert', []).run([
           'type'
         ], function (key) {
           attr[key] && attr.$observe(key, function (newValue, oldValue) {
-            scope[key] = newValue;
+            scope[key] = $sce.getTrustedHtml(newValue);
           });
         });
         attr.bsAlert && scope.$watch(attr.bsAlert, function (newValue, oldValue) {

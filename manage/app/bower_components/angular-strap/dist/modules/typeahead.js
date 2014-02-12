@@ -1,26 +1,20 @@
 /**
  * angular-strap
- * @version v2.0.0-beta.4 - 2014-01-20
+ * @version v2.0.0-rc.3 - 2014-02-10
  * @link http://mgcrea.github.io/angular-strap
- * @author Olivier Louvignes <olivier@mg-crea.com>
+ * @author Olivier Louvignes (olivier@mg-crea.com)
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
 'use strict';
 angular.module('mgcrea.ngStrap.typeahead', [
   'mgcrea.ngStrap.tooltip',
   'mgcrea.ngStrap.helpers.parseOptions'
-]).run([
-  '$templateCache',
-  function ($templateCache) {
-    var template = '' + '<ul tabindex="-1" class="typeahead dropdown-menu" ng-show="$isVisible()" role="select">' + '<li role="presentation" ng-repeat="match in $matches" ng-class="{active: $index == $activeIndex}">' + '<a role="menuitem" tabindex="-1" ng-click="$select($index, $event)" ng-bind="match.label"></a>' + '</li>' + '</ul>';
-    $templateCache.put('$typeahead', template);
-  }
 ]).provider('$typeahead', function () {
   var defaults = this.defaults = {
-      animation: 'animation-fade',
+      animation: 'am-fade',
       prefixClass: 'typeahead',
       placement: 'bottom-left',
-      template: '$typeahead',
+      template: 'typeahead/typeahead.tpl.html',
       trigger: 'focus',
       container: false,
       keyboard: true,
@@ -85,7 +79,7 @@ angular.module('mgcrea.ngStrap.typeahead', [
           if (!options.minLength || !controller) {
             return !!scope.$matches.length;
           }
-          return scope.$matches.length && controller.$viewValue.length >= options.minLength;
+          return scope.$matches.length && angular.isString(controller.$viewValue) && controller.$viewValue.length >= options.minLength;
         };
         $typeahead.$onMouseDown = function (evt) {
           evt.preventDefault();
@@ -163,7 +157,7 @@ angular.module('mgcrea.ngStrap.typeahead', [
             options[key] = attr[key];
         });
         var limit = options.limit || defaults.limit;
-        var parsedOptions = $parseOptions(attr.ngOptions + ' | filter:$viewValue |\xa0limitTo:' + limit);
+        var parsedOptions = $parseOptions(attr.ngOptions + ' | filter:$viewValue | limitTo:' + limit);
         var typeahead = $typeahead(element, options);
         scope.$watch(attr.ngModel, function (newValue, oldValue) {
           parsedOptions.valuesFn(scope, controller).then(function (values) {

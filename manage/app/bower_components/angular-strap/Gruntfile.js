@@ -10,7 +10,6 @@ module.exports = function (grunt) {
 
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
-  grunt.loadNpmTasks('grunt-nginclude');
 
   // Time how long tasks take. Can help when optimizing build times
   // require('time-grunt')(grunt);
@@ -26,7 +25,7 @@ module.exports = function (grunt) {
       ' * <%= pkg.name %>\n' +
       ' * @version v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
       ' * @link <%= pkg.homepage %>\n' +
-      ' * @author <%= pkg.author %>\n' +
+      ' * @author <%= pkg.author.name %> (<%= pkg.author.email %>)\n' +
       ' * @license MIT License, http://www.opensource.org/licenses/MIT\n' +
       ' */\n'
     },
@@ -390,7 +389,8 @@ module.exports = function (grunt) {
         options:  {
           module: function(src) { return 'mgcrea.ngStrap.' + src.match(/src\/(.+)\/.*/)[1]; },
           url: function(url) { return url.replace('src/', ''); },
-          htmlmin: { collapseWhitespace: true }
+          htmlmin: { collapseWhitespace: true },
+          usemin: 'scripts/angular-strap.tpl.min.js' // docs
         },
         files: [{
           expand: true,
@@ -406,7 +406,6 @@ module.exports = function (grunt) {
           module: function(src) { return 'mgcrea.ngStrap.' + src.match(/src\/(.+)\/.*/)[1]; },
           url: function(url) { return url.replace('src/', ''); },
           htmlmin: { collapseWhitespace: true },
-          usemin: 'scripts/angular-strap.tpl.min.js' // docs
         },
         files: [{
           expand: true,
@@ -467,12 +466,23 @@ module.exports = function (grunt) {
         browsers: ['PhantomJS']
       },
       unit: {
-        singleRun: true
+        singleRun: true,
+        options: {
+          reporters: ['dots', 'coverage']
+        }
       },
       server: {
         autoWatch: true
       }
+    },
+
+    coveralls: {
+      options: {
+        /*jshint camelcase: false */
+        coverage_dir: 'test/coverage/PhantomJS 1.9.2 (Linux)/'
+      }
     }
+
   });
 
 
@@ -516,7 +526,7 @@ module.exports = function (grunt) {
     'less:docs',
     'autoprefixer',
     'nginclude:docs',
-    'ngtemplates:dist',
+    'ngtemplates:test',
     'ngtemplates:docs',
     'concat:generated',
     'ngmin:docs',

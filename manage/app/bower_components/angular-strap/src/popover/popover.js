@@ -2,25 +2,13 @@
 
 angular.module('mgcrea.ngStrap.popover', ['mgcrea.ngStrap.tooltip'])
 
-  .run(function($templateCache) {
-
-    var template = '' +
-      '<div class="popover" tabindex="-1" ng-show="content" ng-class="{\'in\': $visible}">' +
-        '<div class="arrow"></div>' +
-        '<h3 class="popover-title" ng-bind="title" ng-show="title"></h3>' +
-        '<div class="popover-content" ng-bind="content"></div>' +
-      '</div>';
-
-    $templateCache.put('$popover', template);
-
-  })
-
   .provider('$popover', function() {
 
     var defaults = this.defaults = {
-      animation: 'animation-fade',
+      animation: 'am-fade',
       placement: 'right',
-      template: '$popover',
+      template: 'popover/popover.tpl.html',
+      contentTemplate: false,
       trigger: 'click',
       keyboard: true,
       html: false,
@@ -37,7 +25,14 @@ angular.module('mgcrea.ngStrap.popover', ['mgcrea.ngStrap.tooltip'])
         // Common vars
         var options = angular.extend({}, defaults, config);
 
-        return $tooltip(element, options);
+        var $popover = $tooltip(element, options);
+
+        // Support scope as string options [/*title, */content]
+        if(options.content) {
+          $popover.$scope.content = options.content;
+        }
+
+        return $popover;
 
       }
 
@@ -58,14 +53,14 @@ angular.module('mgcrea.ngStrap.popover', ['mgcrea.ngStrap.tooltip'])
 
         // Directive options
         var options = {scope: scope};
-        angular.forEach(['placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'template'], function(key) {
+        angular.forEach(['template', 'contentTemplate', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation'], function(key) {
           if(angular.isDefined(attr[key])) options[key] = attr[key];
         });
 
         // Support scope as data-attrs
         angular.forEach(['title', 'content'], function(key) {
           attr[key] && attr.$observe(key, function(newValue, oldValue) {
-            scope[key] = newValue;
+            scope[key] = $sce.getTrustedHtml(newValue);
             angular.isDefined(oldValue) && requestAnimationFrame(function() {
               popover && popover.$applyPlacement();
             });

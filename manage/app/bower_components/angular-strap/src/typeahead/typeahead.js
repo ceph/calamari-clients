@@ -2,26 +2,13 @@
 
 angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.helpers.parseOptions'])
 
-  .run(function($templateCache) {
-
-    var template = '' +
-      '<ul tabindex="-1" class="typeahead dropdown-menu" ng-show="$isVisible()" role="select">' +
-        '<li role="presentation" ng-repeat="match in $matches" ng-class="{active: $index == $activeIndex}">' +
-          '<a role="menuitem" tabindex="-1" ng-click="$select($index, $event)" ng-bind="match.label"></a>' +
-        '</li>' +
-      '</ul>';
-
-    $templateCache.put('$typeahead', template);
-
-  })
-
   .provider('$typeahead', function() {
 
     var defaults = this.defaults = {
-      animation: 'animation-fade',
+      animation: 'am-fade',
       prefixClass: 'typeahead',
       placement: 'bottom-left',
-      template: '$typeahead',
+      template: 'typeahead/typeahead.tpl.html',
       trigger: 'focus',
       container: false,
       keyboard: true,
@@ -100,7 +87,7 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
             return !!scope.$matches.length;
           }
           // minLength support
-          return scope.$matches.length && controller.$viewValue.length >= options.minLength;
+          return scope.$matches.length && angular.isString(controller.$viewValue) && controller.$viewValue.length >= options.minLength;
         };
 
         $typeahead.$onMouseDown = function(evt) {
@@ -176,7 +163,7 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
 
         // Build proper ngOptions
         var limit = options.limit || defaults.limit;
-        var parsedOptions = $parseOptions(attr.ngOptions + ' | filter:$viewValue | limitTo:' + limit);
+        var parsedOptions = $parseOptions(attr.ngOptions + ' | filter:$viewValue | limitTo:' + limit);
 
         // Initialize typeahead
         var typeahead = $typeahead(element, options);

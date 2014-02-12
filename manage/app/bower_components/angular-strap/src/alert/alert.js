@@ -6,32 +6,21 @@
 
 angular.module('mgcrea.ngStrap.alert', [])
 
-  .run(function($templateCache) {
-
-    var template =  '' +
-      '<div class="alert" tabindex="-1" ng-class="[type ? \'alert-\' + type : null]">' +
-        '<button type="button" class="close" ng-click="$hide()">&times;</button>' +
-        '<strong ng-bind="title"></strong>&nbsp;<span ng-bind-html="content"></span>' +
-      '</div>';
-
-    $templateCache.put('$alert', template);
-
-  })
-
   .provider('$alert', function() {
 
     var defaults = this.defaults = {
-      animation: 'animation-fade',
+      animation: 'am-fade',
       prefixClass: 'alert',
       placement: null,
-      template: '$alert',
+      template: 'alert/alert.tpl.html',
       container: false,
       element: null,
       backdrop: false,
       keyboard: true,
       show: true,
       // Specific options
-      duration: false
+      duration: false,
+      type: false
     };
 
     this.$get = function($modal, $timeout) {
@@ -45,11 +34,9 @@ angular.module('mgcrea.ngStrap.alert', [])
 
         $alert = $modal(options);
 
-        // Support scope as string options
-        if(!options.scope) {
-          angular.forEach([/*'title', 'content', */'type'], function(key) {
-            if(options[key]) $alert.$scope[key] = options[key];
-          });
+        // Support scope as string options [/*title, content, */type]
+        if(options.type) {
+          $alert.$scope.type = options.type;
         }
 
         // Support auto-close duration
@@ -91,7 +78,7 @@ angular.module('mgcrea.ngStrap.alert', [])
         // Support scope as data-attrs
         angular.forEach(['title', 'content', 'type'], function(key) {
           attr[key] && attr.$observe(key, function(newValue, oldValue) {
-            scope[key] = newValue;
+            scope[key] = $sce.getTrustedHtml(newValue);
           });
         });
 
