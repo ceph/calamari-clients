@@ -2,11 +2,23 @@
 define(['lodash'], function(_) {
     'use strict';
     var ClusterService = function(Restangular) {
+        var djangoPaginationResponseExtractor = function(response /*, operation, what, url */ ) {
+            if (response.count && response.results) {
+                var newResponse = response.results;
+                newResponse.pagnation = {
+                    next: response.next,
+                    previous: response.previous,
+                    count: response.count
+                };
+                return newResponse;
+            }
+            return response;
+        };
         var restangular = Restangular.withConfig(function(RestangularConfigurer) {
-            RestangularConfigurer.setBaseUrl('/api/v2');
+            RestangularConfigurer.setBaseUrl('/api/v2').setResponseExtractor(djangoPaginationResponseExtractor);
         });
         var restangularFull = Restangular.withConfig(function(RestangularConfigurer) {
-            RestangularConfigurer.setBaseUrl('/api/v2').setFullResponse(true);
+            RestangularConfigurer.setBaseUrl('/api/v2').setFullResponse(true).setResponseExtractor(djangoPaginationResponseExtractor);
         });
         var Service = function() {
             this.restangular = restangular;
@@ -44,7 +56,9 @@ define(['lodash'], function(_) {
                 return this.restangularFull.one('cluster', id);
             }
         });
-        return new Service();
+        var service = new Service();
+        service.initialize = _.once(service.initialize);
+        return service;
     };
     return ['Restangular', ClusterService];
 });
