@@ -43,7 +43,8 @@
             'angular-strap': '../bower_components/angular-strap/dist/angular-strap.min',
             'angular-animate': '../bower_components/angular-animate/angular-animate',
             'restangular': '../bower_components/restangular/dist/restangular',
-            'lodash': '../bower_components/lodash/dist/lodash'
+            'lodash': '../bower_components/lodash/dist/lodash',
+            'moment': '../bower_components/momentjs/moment'
         }
     });
 

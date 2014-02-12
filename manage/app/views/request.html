@@ -9,14 +9,21 @@
           <table class="table table-condensed">
               <thead>
                   <tr>
+                      <th>&nbsp;</th>
                       <th>Task</th>
                       <th>Status</th>
+                      <th>Updated</th>
                   </tr>
               <thead>
               <tbody>
                 <tr ng-repeat="task in tasks">
+                    <td><i ng-class="{
+                            'fa fa-spinner fa-spin': task.state === 'submitted',
+                            'fa fa-check-circle': task.state === 'complete'
+                           }"></i></td>
                     <td>{{task.headline}}</td>
                     <td>{{task.state}}</td>
+                    <td>{{task.time}}</td>
                 </tr>
               <tbody>
           </table>

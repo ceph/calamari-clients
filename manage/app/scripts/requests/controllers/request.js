@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash'], function() {
+    define(['lodash', 'moment'], function(_, moment) {
 
         var RequestController = function($log, $scope, ClusterResolver, RequestService, $aside) {
             ClusterResolver.then(function() {
@@ -13,6 +13,15 @@
                 $scope.show = function() {
                     RequestService.getList().then(function(response) {
                         myAside.show();
+                        response = _.map(response, function(request) {
+                            /* jshint camelcase: false */
+                            var time = request.state === 'complete' ? request.completed_at : request.requested_at;
+                            return {
+                                headline: request.headline,
+                                state: request.state,
+                                time: moment(time).fromNow()
+                            };
+                        });
                         myAside.$scope.tasks = response;
                     });
                 };
