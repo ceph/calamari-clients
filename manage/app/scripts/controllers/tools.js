@@ -1,13 +1,22 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash'], function() {
+    define(['lodash', 'moment'], function(_, moment) {
 
         var ToolController = function($scope, ClusterService, ToolService) {
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.logui = 'spinner';
             ToolService.log().then(function(logs) {
-                $scope.logs = logs.lines.split('\n');
+                var lines = logs.lines.split('\n');
+                $scope.logs = _.map(lines, function(log) {
+                    var line = log.split(' ');
+                    return {
+                        timestamp: moment(line[0] + ' ' + line[1]).fromNow(),
+                        unit: line[2],
+                        address: line[3] + ' ' + line[4],
+                        rest: line.slice(6).join(' '),
+                    };
+                });
                 $scope.logui = 'logs';
             });
             ToolService.config().then(function(config) {
