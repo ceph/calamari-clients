@@ -5,6 +5,7 @@
         var app = angular.module('manageApp', [
                 'ngAnimate',
                 APIModule,
+                RequestModule,
                 'ngCookies',
                 'ngResource',
                 'ngSanitize',

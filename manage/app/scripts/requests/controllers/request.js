@@ -3,7 +3,7 @@
     'use strict';
     define(['lodash', 'moment'], function(_, moment) {
 
-        var RequestController = function($log, $scope, ClusterResolver, RequestService, $aside) {
+        var RequestController = function($log, $scope, ClusterResolver, RequestService, RequestTrackingService, $aside) {
             ClusterResolver.then(function() {
                 var myAside = $aside({
                     'title': 'Requested Tasks',
@@ -32,6 +32,6 @@
                 };
             });
         };
-        return ['$log', '$scope', 'ClusterResolver', 'RequestService', '$aside', RequestController];
+        return ['$log', '$scope', 'ClusterResolver', 'RequestService', 'RequestTrackingService', '$aside', RequestController];
     });
 })();

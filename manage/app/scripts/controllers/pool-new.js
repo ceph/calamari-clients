@@ -33,7 +33,7 @@
             });
         }
 
-        var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService) {
+        var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, RequestTrackingService) {
             var self = this;
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.cancel = function() {
@@ -59,6 +59,9 @@
                 }
                 PoolService.create($scope.pool).then(function(resp) {
                     console.log(resp);
+                    if (resp.status === 202) {
+                        RequestTrackingService.add(resp.data.request_id);
+                    }
                 }, function(error) {
                     console.log(error);
                 });
@@ -143,6 +146,7 @@
             'ClusterService',
             'CrushService',
             'ToolService',
+            'RequestTrackingService',
             PoolNewController];
     });
 })();
