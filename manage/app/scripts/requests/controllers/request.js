@@ -8,10 +8,10 @@
                 var myAside = $aside({
                     'title': 'Requested Tasks',
                     'template': 'views/request.html',
-                    'container': 'body',
-                    'animation': 'am-fade-and-slide-left',
+                    'animation': 'am-fade-and-slide-right',
                     'backdropAnimation': 'animation-fade',
-                    'show': false
+                    'show': false,
+                    'container': '.RequestManagement'
                 });
                 myAside.$scope.empty = true;
                 $scope.show = function() {
