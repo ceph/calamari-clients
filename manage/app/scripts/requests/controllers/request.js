@@ -20,9 +20,15 @@
                         response = _.map(response.reverse(), function(request) {
                             /* jshint camelcase: false */
                             var time = request.state === 'complete' ? request.completed_at : request.requested_at;
+                            var headline = request.headline;
+                            var state = request.state;
+                            if (request.error) {
+                                headline += ' ' + request.error_message;
+                                state = 'error';
+                            }
                             return {
                                 headline: request.headline,
-                                state: request.state,
+                                state: state,
                                 time: moment(time).fromNow()
                             };
                         });

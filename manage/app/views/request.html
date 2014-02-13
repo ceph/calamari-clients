@@ -21,8 +21,9 @@
                 </tr>
                 <tr ng-repeat="task in tasks">
                     <td><i ng-class="{
-                            'fa fa-spinner fa-spin': task.state === 'submitted',
-                            'fa fa-check-circle': task.state === 'complete'
+                            'text-info fa fa-spinner fa-spin': task.state === 'submitted',
+                            'text-success fa fa-check-circle': task.state === 'complete',
+                            'text-warning fa fa-exclamation-circle': task.state === 'error'
                            }"></i></td>
                     <td>{{task.headline}}</td>
                     <td>{{task.state}}</td>
