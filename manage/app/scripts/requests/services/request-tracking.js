@@ -4,28 +4,16 @@ define(['lodash'], function(_) {
     /* Bind this service as soon as App is running otherwise it doesn't get
      * invoked until the first time it's needed because of dependency injection defering.
      */
-    var RequestTrackingService = function($log, $timeout, RequestService) {
+    var defaultTimer = 10000; // TODO Make this configurable
+    var shortTimer = 1000; // TODO Make this configurable
+    var myid = 0;
+    var requestTrackingService = function($log, $timeout, RequestService, growl) {
         var Service = function() {
-            var self = this;
+            this.myid = myid++;
+            $log.debug(this.myid + ' Creating Request Tracking Service');
             this.requests = [];
-            $timeout(function checkQueue() {
-                if (self.requests.length === 0) {
-                    $log.debug('No tasks to track.');
-                    return;
-                }
-                $log.debug('tracking ' + self.requests.length);
-                self.complete = RequestService.getComplete().then(function(completedRequests) {
-                    self.requests = _.filter(self.requests, function(id) {
-                        var found = _.find(completedRequests, function(request) {
-                            return request.id === id;
-                        });
-                        $log.debug('task ' + id + ' is now complete');
-                        return found === undefined;
-                    });
-                    $log.debug('complete ', completedRequests.length);
-                });
-                $timeout(checkQueue, 10000);
-            }, 10000);
+            _.bindAll(this, 'checkCompleted');
+            this.timeout = $timeout(this.checkCompleted, shortTimer);
         };
         Service.prototype = _.extend(Service.prototype, {
             add: function(id) {
@@ -34,10 +22,56 @@ define(['lodash'], function(_) {
             },
             list: function() {
                 return _.clone(this.requests);
+            },
+            checkCompleted: function() {
+                if (this.requests.length === 0) {
+                    $log.debug(this.myid + ' No tasks to track. sleeping ' + defaultTimer);
+                    this.timeout = $timeout(this.checkCompleted, defaultTimer);
+                    return;
+                }
+                $log.debug(this.id + ' tracking ' + this.requests.length);
+                var self = this;
+                RequestService.getComplete().then(function(completedRequests) {
+                    self.requests = _.filter(self.requests, function(id) {
+                        var found = _.find(completedRequests, function(request) {
+                            return request.id === id;
+                        });
+                        $log.debug('task ' + id + ' is now complete');
+                        if (found !== undefined) {
+                            if (found.error) {
+                                /*jshint camelcase: false */
+                                // TODO too tightly coupled use $broadcast
+                                growl.addErrorMessage('ERRROR: ' + found.headline + ' - ' + found.error_message, {
+                                    ttl: -1
+                                });
+                            } else {
+                                // TODO too tightly coupled use $broadcast
+                                growl.addSuccessMessage(found.headline + ' completed');
+                            }
+                        }
+                        return found === undefined;
+                    });
+                    $log.debug('complete ', completedRequests.length);
+                    self.timeout = $timeout(self.checkCompleted, shortTimer);
+                }, function() {
+                    self.timeout = $timeout(self.checkCompleted, defaultTimer);
+                });
             }
         });
-        var service = new Service();
-        return service;
+        return new Service();
     };
-    return ['$log', '$timeout', 'RequestService', RequestTrackingService];
+    var service = null;
+    return function RequestTrackingProvider() {
+        // This is an App Wide singleton
+        this.$get = ['$log', '$timeout', 'RequestService', 'growl',
+            function($log, $timeout, RequestService, growl) {
+                if (service === null) {
+                    // This truely needs to be a singleton
+                    // This *only* works because JS is single threaded
+                    service = requestTrackingService($log, $timeout, RequestService, growl);
+                }
+                return service;
+            }
+        ];
+    };
 });

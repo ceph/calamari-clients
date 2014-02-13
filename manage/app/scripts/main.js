@@ -3,6 +3,9 @@
     'use strict';
     require.config({
         shim: {
+            'angular-growl': {
+                deps: ['angular']
+            },
             'angular-resource': {
                 deps: ['angular']
             },
@@ -44,7 +47,8 @@
             'angular-animate': '../bower_components/angular-animate/angular-animate',
             'restangular': '../bower_components/restangular/dist/restangular',
             'lodash': '../bower_components/lodash/dist/lodash',
-            'moment': '../bower_components/momentjs/moment'
+            'moment': '../bower_components/momentjs/moment',
+            'angular-growl': '../bower_components/angular-growl/build/angular-growl'
         }
     });
 
