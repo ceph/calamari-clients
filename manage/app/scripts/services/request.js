@@ -7,13 +7,20 @@ define(['lodash'], function(_) {
         };
         Service.prototype = _.extend(Service.prototype, {
             getList: function() {
-                return this.restangular.cluster().all('request').getList().then(function(keys) {
-                    return keys;
+                return this.restangular.cluster().all('request').getList().then(function(requests) {
+                    return requests;
                 });
             },
             get: function(id) {
-                return this.restangular.cluster().one('request', id).get().then(function(key) {
-                    return key[0];
+                return this.restangular.cluster().one('request', id).get().then(function(request) {
+                    return request[0];
+                });
+            },
+            getComplete: function() {
+                return this.restangular.cluster().customGETLIST('request', {
+                    state: 'complete'
+                }).then(function(requests) {
+                    return requests;
                 });
             }
         });
