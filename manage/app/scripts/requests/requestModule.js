@@ -8,7 +8,7 @@
             .provider('RequestTrackingService', RequestTrackingService)
             .config(['growlProvider',
             function(growlProvider) {
-                growlProvider.globalTimeToLive(5000);
+                growlProvider.globalTimeToLive(10000);
             }
         ]);
         return moduleName;

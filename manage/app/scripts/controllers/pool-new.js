@@ -33,7 +33,7 @@
             });
         }
 
-        var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, RequestTrackingService) {
+        var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, RequestTrackingService, $modal) {
             var self = this;
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.cancel = function() {
@@ -59,11 +59,53 @@
                 }
                 PoolService.create($scope.pool).then(function(resp) {
                     console.log(resp);
+                    var modal;
                     if (resp.status === 202) {
                         RequestTrackingService.add(resp.data.request_id);
+                        modal = $modal({
+                            title: 'Create Pool Request Submitted',
+                            content: 'This may take a few seconds. We\'ll let you know when it\'s done.',
+                            container: '.manageApp',
+                            show: true,
+                            keyboard: false,
+                            template: 'views/custom-modal.html'
+                        });
+                        modal.$scope._hide = function() {
+                            modal.$scope.$hide();
+                            $location.path('/pool');
+                        };
+                    } else {
+                        modal = $modal({
+                            title: 'Create Pool Request Completed',
+                            content: resp.data,
+                            container: '.manageApp',
+                            show: true,
+                            keyboard: false,
+                            template: 'views/custom-modal.html'
+                        });
+                        modal.$scope._hide = function() {
+                            modal.$scope.$hide();
+                            $location.path('/pool');
+                        };
                     }
                 }, function(error) {
                     console.log(error);
+                    var data = error.data;
+                    $scope.error = true;
+                    if (error.status === 403) {
+                        data = 'Unauthorized access to API. It looks like your authentication tokens are invalid. Please try logging out and back in again.';
+                    }
+                    var modal = $modal({
+                        title: 'Unexpected Error',
+                        content: data,
+                        container: '.manageApp',
+                        show: true,
+                        template: 'views/custom-modal.html'
+                    });
+                    modal.$scope._hide = function() {
+                        console.log('closing');
+                        modal.$scope.$hide();
+                    };
                 });
             };
 
@@ -147,6 +189,7 @@
             'CrushService',
             'ToolService',
             'RequestTrackingService',
+            '$modal',
             PoolNewController];
     });
 })();
