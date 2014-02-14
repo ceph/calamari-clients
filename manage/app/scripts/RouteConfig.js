@@ -27,6 +27,10 @@
                 templateUrl: 'views/pool-new.html',
                 controller: 'PoolNewController',
                 resolve: { 'Resolver': 'ClusterResolver' }
+            }).when('/pool/modify/:id', {
+                templateUrl: 'views/pool-modify.html',
+                controller: 'PoolModifyController',
+                resolve: { 'Resolver': 'ClusterResolver' }
             })
                 .otherwise({
                 redirectTo: '/'

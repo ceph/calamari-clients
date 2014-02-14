@@ -1,0 +1,62 @@
+<div class="header">
+  <h3 class="text-muted">manage</h3>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="navbar navbar-default" role="navigation" bs-navbar>
+            <ul class="nav navbar-nav">
+                <li><a ng-href="#/">Cluster</a></li>
+                <li><a ng-href="#/osd">OSD</a></li>
+                <li class="active"><a ng-href="#/pool">Pool</a></li>
+                <li><a ng-href="#/tools">Tools</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<h2 class="text-muted">CLUSTER {{clusterName}} &raquo; POOL &raquo; MODIFY</h2>
+<div class="container">
+
+<div class="row" style="border:0px solid black; padding: 20px 40px;">
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+        <form name='poolForm' role="form" novalidate>
+            <div class="form-group" ng-class="{ 'has-error': poolForm.name.$invalid && !poolForm.name.$pristine}">
+                <label for="name">Name</label>
+                <input id="name" type="text" required ng-maxlength=64 ng-minlength=3 name="name" class="form-control" ng-model='pool.name' placeholder="New Pool Name"></input>
+                <p ng-show='poolForm.name.$error.minlength' class='help-block'>Name is too short (at least 3 characters)</p>
+                <p ng-show='poolForm.name.$error.maxlength' class='help-block'>Name is too long (64 characters max)</p>
+                <p ng-show='poolForm.name.$error.pattern' class='help-block'>Invalid Characters</p>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': poolForm.size.$invalid && !poolForm.size.$pristine}">
+                <label for="size">Replicas (size)</label>
+                <input id="size" type="number" name="size" required class="form-control" placeholder="Size" ng-model='pool.size'></input>
+                <p ng-show='poolForm.size.$error.number' class='help-block'>Invalid Number</p>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': poolForm.pg_num.$invalid && !poolForm.pg_num.$pristine}">
+                <label for="pg_num" >Placement Groups (pg_num)</label>
+                <input id="pg_num" type="number" name="pg_num" required class="form-control" ng-model='pool.pg_num' placeholder="Placement Groups"></input>
+                <p ng-show='poolForm.pg_num.$error.number' class='help-block'>Invalid Number</p>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': poolForm.crush_ruleset.$invalid && !poolForm.crush_ruleset.$pristine}">
+                <label for="crush_ruleset">Crush Ruleset</label>
+                <select id="crush_ruleset" class="form-control" name="crush_ruleset" required ng-model='pool.crush_ruleset'>
+                    <option ng-repeat='crush in crushrulesets' value='{{crush.id}}'>{{crush.id}}: {{crush.rules[crush.active_sub_rule].name}}</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div style="height: 10px"></div>
+        <div>
+        <button style="min-width: 100px;" type="button" class="btn btn-sm btn-danger" ng-click='cancel()' data-placement="center">CANCEL</button>
+        <button style="min-width: 100px;" type="button" class="btn btn-sm btn-warning" ng-click='reset()' data-placement="center">RESET</button>
+        <button style="min-width: 100px;" type="button" ng-class="{ 'disabled': poolForm.$invalid }" class="btn btn-sm btn-primary" ng-click='modify()' data-placement="center">MODIFY</button>
+        <button style="min-width: 100px; margin-left: 100px;" type="button" ng-class="{ 'disabled': poolForm.$invalid }" class="btn btn-sm btn-danger" ng-click='delete()' data-placement="center">DELETE</button>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div class="footer">
+</div>
+</div>
