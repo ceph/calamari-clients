@@ -2,14 +2,7 @@
 (function() {
     'use strict';
     define(['lodash', 'helpers/pool-helpers'], function(_, helpers) {
-        var poolDefaults = {
-            /* jshint camelcase:false */
-            name: '',
-            size: 2,
-            crush_ruleset: 0,
-            pg_num: 100
-        };
-
+        var poolDefaults = helpers.defaults();
         var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, RequestTrackingService, $modal) {
             var self = this;
             $scope.clusterName = ClusterService.clusterModel.name;
@@ -25,6 +18,7 @@
                     console.log(resp);
                     var modal;
                     if (resp.status === 202) {
+                        /*jshint camelcase: false */
                         RequestTrackingService.add(resp.data.request_id);
                         modal = $modal({
                             title: 'Create Pool Request Submitted',
@@ -88,24 +82,7 @@
                 });
 
                 $scope.defaults = mergedDefaults;
-                $scope.crushraw = self.crushrulesets;
-                var crushruleSets = _.map(self.crushrulesets, function(set) {
-                    var rules = _.map(set.rules, function(rule, index) {
-                        return {
-                            id: index,
-                            name: rule.name,
-                            min_size: rule.min_size,
-                            max_size: rule.max_size,
-                            osd_count: rule.osd_count
-                        };
-                    });
-                    return {
-                        id: set.id,
-                        rules: rules,
-                        active_sub_rule: 0
-                    };
-                });
-                $scope.crushrulesets = crushruleSets;
+                $scope.crushrulesets = helpers.normalizeCrushRulesets(self.crushrulesets);
 
                 $scope.pool = {
                     name: mergedDefaults.name,
