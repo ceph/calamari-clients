@@ -60,25 +60,38 @@
             });
         }
 
-        function makeReset($scope) {
+        /*
+         * options:
+         *   pgnumReset: used to control whether to use recommend pg value or reset back to default.
+         *   Use case is modify wants the old value back and create wants the recommend value.
+         */
+        function makeReset($scope, options) {
             /* jshint camelcase: false */
+            options = options || {
+                pgnumReset: true
+            };
             return function() {
                 var defaults = $scope.defaults;
-                $scope.pool.name = '';
+                $scope.pool.name = defaults.name;
                 $scope.pool.size = defaults.size;
                 $scope.pool.crush_ruleset = defaults.crush_ruleset;
-                var ruleset = $scope.crushrulesets[defaults.crush_ruleset];
-                var limits = getActiveRule(ruleset, defaults.mon_max_pool_pg_num, $scope.pool.size);
-                var pgnum = calculatePGNum(limits.osd_count, $scope.pool.size, defaults.mon_max_pool_pg_num);
-                if ($scope.pool.pg_num !== pgnum) {
-                    // Only reset pg num if it's different from calculated default
-                    // This catches where size isn't change but pg has been
-                    $scope.pool.pg_num = pgnum;
+                if (options.pgnumReset) {
+                    var ruleset = $scope.crushrulesets[defaults.crush_ruleset];
+                    var limits = getActiveRule(ruleset, defaults.mon_max_pool_pg_num, $scope.pool.size);
+                    var pgnum = calculatePGNum(limits.osd_count, $scope.pool.size, defaults.mon_max_pool_pg_num);
+                    if ($scope.pool.pg_num !== pgnum) {
+                        // Only reset pg num if it's different from calculated default
+                        // This catches where size isn't change but pg has been
+                        $scope.pool.pg_num = pgnum;
+                    }
+                } else {
+                    $scope.pool.pg_num = defaults.pg_num;
                 }
             };
         }
 
         /* Business Logic for crush rule sets pool replicas and placement groups */
+
         function addWatches($scope) {
             /* jshint camelcase: false */
             $scope.$watch('pool.size', function(newValue /*, oldValue*/ ) {
@@ -109,13 +122,45 @@
                 $scope.crushrulesets[oldValue].active_sub_rule = 0;
             });
         }
+
+        function normalizeCrushRulesets(crushrulesets) {
+            /* jshint camelcase: false */
+            return _.map(crushrulesets, function(set) {
+                var rules = _.map(set.rules, function(rule, index) {
+                    return {
+                        id: index,
+                        name: rule.name,
+                        min_size: rule.min_size,
+                        max_size: rule.max_size,
+                        osd_count: rule.osd_count
+                    };
+                });
+                return {
+                    id: set.id,
+                    rules: rules,
+                    active_sub_rule: 0
+                };
+            });
+        }
+
+        function poolDefaults() {
+            return {
+                /* jshint camelcase:false */
+                name: '',
+                size: 2,
+                crush_ruleset: 0,
+                pg_num: 100
+            };
+        }
         return {
             calculatePGNum: calculatePGNum,
             validateMaxMin: validateMaxMin,
             roundUpToNextPowerOfTwo: roundUpToNextPowerOfTwo,
             getActiveRule: getActiveRule,
             makeReset: makeReset,
-            addWatches: addWatches
+            addWatches: addWatches,
+            defaults: poolDefaults,
+            normalizeCrushRulesets: normalizeCrushRulesets
         };
     });
 })();

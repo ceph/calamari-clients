@@ -12,8 +12,9 @@ define(['lodash'], function(_) {
                 });
             },
             get: function(id) {
+                id = _.isString(id) ? parseInt(id,10) : id;
                 return this.restangular.cluster().one('pool', id).get().then(function(pool) {
-                    return pool[0];
+                    return pool;
                 });
             },
             create: function(pool) {
