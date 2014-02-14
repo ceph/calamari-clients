@@ -68,8 +68,8 @@
                 $scope.pool.size = defaults.size;
                 $scope.pool.crush_ruleset = defaults.crush_ruleset;
                 var ruleset = $scope.crushrulesets[defaults.crush_ruleset];
-                var limits = getActiveRule(ruleset, defaults.mon_max_pool_pg_num, $scope.size);
-                var pgnum = calculatePGNum(limits.osd_count, $scope.size, defaults.mon_max_pool_pg_num);
+                var limits = getActiveRule(ruleset, defaults.mon_max_pool_pg_num, $scope.pool.size);
+                var pgnum = calculatePGNum(limits.osd_count, $scope.pool.size, defaults.mon_max_pool_pg_num);
                 if ($scope.pool.pg_num !== pgnum) {
                     // Only reset pg num if it's different from calculated default
                     // This catches where size isn't change but pg has been
