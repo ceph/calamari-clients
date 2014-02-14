@@ -40,7 +40,7 @@
             <div class="form-group" ng-class="{ 'has-error': poolForm.crush_ruleset.$invalid && !poolForm.crush_ruleset.$pristine}">
                 <label for="crush_ruleset">Crush Ruleset</label>
                 <select id="crush_ruleset" class="form-control" name="crush_ruleset" required ng-model='pool.crush_ruleset'>
-                    <option ng-repeat='crush in crushrulesets' value='{{crush.id}}'>{{crush.id}}: {{crush.rules[crush.active_sub_rule].name}}</option>
+                    <option ng-repeat='crush in crushrulesets' ng-selected="crush.id == pool.crush_ruleset" value='{{crush.id}}'>{{crush.id}}: {{crush.rules[crush.active_sub_rule].name}}</option>
                 </select>
             </div>
         </form>
