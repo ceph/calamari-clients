@@ -18,7 +18,7 @@ define(['lodash'], function(_) {
         Service.prototype = _.extend(Service.prototype, {
             add: function(id) {
                 this.requests.push(id);
-                $log.debug('new id ' + id);
+                $log.debug('tracking new request ' + id);
             },
             list: function() {
                 return _.clone(this.requests);
@@ -29,15 +29,15 @@ define(['lodash'], function(_) {
                     this.timeout = $timeout(this.checkCompleted, defaultTimer);
                     return;
                 }
-                $log.debug(this.id + ' tracking ' + this.requests.length);
+                $log.debug(this.myid + ' tracking ' + this.requests.length);
                 var self = this;
                 RequestService.getComplete().then(function(completedRequests) {
                     self.requests = _.filter(self.requests, function(id) {
                         var found = _.find(completedRequests, function(request) {
                             return request.id === id;
                         });
-                        $log.debug('task ' + id + ' is now complete');
                         if (found !== undefined) {
+                            $log.debug('task ' + id + ' is now complete');
                             if (found.error) {
                                 /*jshint camelcase: false */
                                 // TODO too tightly coupled use $broadcast
@@ -48,6 +48,8 @@ define(['lodash'], function(_) {
                                 // TODO too tightly coupled use $broadcast
                                 growl.addSuccessMessage(found.headline + ' completed');
                             }
+                        } else {
+                           $log.debug('task ' + id + ' is still active');
                         }
                         return found === undefined;
                     });
