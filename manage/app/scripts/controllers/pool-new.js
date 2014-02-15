@@ -21,28 +21,24 @@
                         RequestTrackingService.add(resp.data.request_id);
                         modal = modalHelpers.SuccessfulRequest($modal, {
                             title: 'Create Pool Request Successful',
-                            keyboard: false,
                             container: '.manageApp'
                         });
                         modal.$scope._hide = function() {
                             modal.$scope.$hide();
                             $location.path('/pool');
                         };
-                    } else {
-                        modal = $modal({
-                            title: 'Create Pool Request Completed',
-                            content: resp.data,
-                            container: '.manageApp',
-                            keyboard: false,
-                            template: 'views/custom-modal.html'
-                        });
-                        modal.$scope._hide = function() {
-                            modal.$scope.$hide();
-                            $location.path('/pool');
-                        };
+                        return;
                     }
+                    modal = modalHelpers.SuccessfulRequest($modal, {
+                        title: 'Create Pool Request Completed',
+                        content: resp.data,
+                        container: '.manageApp'
+                    });
+                    modal.$scope._hide = function() {
+                        modal.$scope.$hide();
+                        $location.path('/pool');
+                    };
                 }, function(error) {
-                    var data = error.data;
                     $scope.error = true;
                     var modal;
                     if (error.status === 403) {
@@ -54,12 +50,10 @@
                         };
                         return;
                     }
-                    modal = $modal({
-                        title: 'Unexpected Error',
-                        content: data,
+                    modal = modalHelpers.UnexpectedError($modal, {
+                        status: error.status,
+                        content: error.data,
                         container: '.manageApp',
-                        show: true,
-                        template: 'views/custom-modal.html'
                     });
                     modal.$scope._hide = function() {
                         modal.$scope.$hide();

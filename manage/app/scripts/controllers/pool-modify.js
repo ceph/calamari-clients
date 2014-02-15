@@ -42,19 +42,19 @@
                             };
                             return;
                         }
-                        var umodal = $modal({
-                            title: 'Unexpected Response from Server (' + result.status + ')',
-                            content: 'We got an unexpected reponse code while deleting this pool.',
-                            template: 'views/custom-modal.html'
+                        var umodal = modalHelpers.SuccessfulRequest($modal, {
+                            title: 'Delete Pool Request Completed',
+                            content: result.data,
+                            container: '.manageApp'
                         });
                         umodal.$scope._hide = function() {
                             umodal.$scope.$hide();
                             $location.path('/pool');
                         };
-                    }, function(result) {
-                        $log.error(result);
+                    }, function(error) {
+                        $log.error(error);
                         var errModal;
-                        if (result.status === 403) {
+                        if (error.status === 403) {
                             errModal = modalHelpers.UnAuthorized($modal, {
                                 container: '.manageApp'
                             });
@@ -64,13 +64,13 @@
                             };
                             return;
                         }
-                        errModal = $modal({
-                            title: 'Unexpected Response from Server (' + result.status + ')',
-                            content: 'We got an unexpected error code while deleting this pool.',
-                            template: 'views/custom-modal.html'
+                        errModal = modalHelpers.UnexpectedError($modal, {
+                            status: error.status,
+                            content: error.data,
+                            container: '.manageApp',
                         });
                         errModal.$scope._hide = function() {
-                            errModal.$scope.$hide();
+                            modal.$scope.$hide();
                             $location.path('/pool');
                         };
                     });
@@ -102,13 +102,34 @@
                                 okmodal.$scope.$hide();
                                 $location.path('/pool');
                             };
+                            return;
                         }
-                    }, function(result) {
-                        $log.error(result);
-                        var errModal = $modal({
-                            title: 'Unexpected Response from Server (' + result.status + ')',
-                            content: 'We got an unexpected error code while deleting this pool.',
-                            template: 'views/custom-modal.html'
+                        var umodal = modalHelpers.SuccessfulRequest($modal, {
+                            title: 'Modify Pool Request Completed',
+                            content: result.data,
+                            container: '.manageApp'
+                        });
+                        umodal.$scope._hide = function() {
+                            umodal.$scope.$hide();
+                            $location.path('/pool');
+                        };
+                    }, function(error) {
+                        $log.error(error);
+                        var errModal;
+                        if (error.status === 403) {
+                            errModal = modalHelpers.UnAuthorized($modal, {
+                                container: '.manageApp'
+                            });
+                            errModal.$scope._hide = function() {
+                                errModal.$scope.$hide();
+                                $location.path('/pool');
+                            };
+                            return;
+                        }
+                        errModal = modalHelpers.UnexpectedError($modal, {
+                            status: error.status,
+                            content: error.data,
+                            container: '.manageApp',
                         });
                         errModal.$scope._hide = function() {
                             errModal.$scope.$hide();
