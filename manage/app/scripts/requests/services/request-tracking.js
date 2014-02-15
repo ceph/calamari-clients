@@ -18,6 +18,8 @@ define(['lodash'], function(_) {
         Service.prototype = _.extend(Service.prototype, {
             add: function(id) {
                 this.requests.push(id);
+                $timeout.cancel(this.timeout);
+                this.timeout = $timeout(this.checkCompleted, 0);
                 $log.debug('tracking new request ' + id);
             },
             list: function() {
