@@ -12,16 +12,22 @@ define(['lodash'], function(_) {
                 });
             },
             get: function(id) {
-                id = _.isString(id) ? parseInt(id,10) : id;
+                id = _.isString(id) ? parseInt(id, 10) : id;
                 return this.restangular.cluster().one('pool', id).get().then(function(pool) {
                     return pool;
                 });
+            },
+            remove: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('pool', id).remove();
             },
             create: function(pool) {
                 return this.restangular.clusterFull().all('pool').post(pool);
             },
             defaults: function() {
-                return this.restangular.cluster().one('pool').get({ defaults: '' });
+                return this.restangular.cluster().one('pool').get({
+                    defaults: ''
+                });
             }
         });
         return new Service();
