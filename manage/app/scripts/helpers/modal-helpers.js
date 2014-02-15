@@ -17,7 +17,8 @@
                 return $modal(_.extend({
                     content: 'This may take a few seconds. We\'ll let you know when it\'s done.',
                     container: 'body',
-                    template: 'views/custom-modal.html'
+                    template: 'views/custom-modal.html',
+                    backdrop: 'static' // disable mouse clicks for now since I can't wrap them or supply a callback
                 }, options));
             }
         };

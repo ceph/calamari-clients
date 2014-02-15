@@ -1,32 +1,28 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash', 'helpers/pool-helpers'], function(_, helpers) {
-        var poolDefaults = helpers.defaults();
+    define(['lodash', 'helpers/pool-helpers', 'helpers/modal-helpers'], function(_, poolHelpers, modalHelpers) {
+        var poolDefaults = poolHelpers.defaults();
         var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, RequestTrackingService, $modal) {
             var self = this;
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.cancel = function() {
                 $location.path('/pool');
             };
-            $scope.reset = helpers.makeReset($scope);
+            $scope.reset = poolHelpers.makeReset($scope);
             $scope.create = function() {
                 if ($scope.poolForm.$invalid) {
                     return;
                 }
                 PoolService.create($scope.pool).then(function(resp) {
-                    console.log(resp);
                     var modal;
                     if (resp.status === 202) {
                         /*jshint camelcase: false */
                         RequestTrackingService.add(resp.data.request_id);
-                        modal = $modal({
-                            title: 'Create Pool Request Submitted',
-                            content: 'This may take a few seconds. We\'ll let you know when it\'s done.',
-                            container: '.manageApp',
-                            show: true,
+                        modal = modalHelpers.SuccessfulRequest($modal, {
+                            title: 'Create Pool Request Successful',
                             keyboard: false,
-                            template: 'views/custom-modal.html'
+                            container: '.manageApp'
                         });
                         modal.$scope._hide = function() {
                             modal.$scope.$hide();
@@ -37,7 +33,6 @@
                             title: 'Create Pool Request Completed',
                             content: resp.data,
                             container: '.manageApp',
-                            show: true,
                             keyboard: false,
                             template: 'views/custom-modal.html'
                         });
@@ -47,13 +42,19 @@
                         };
                     }
                 }, function(error) {
-                    console.log(error);
                     var data = error.data;
                     $scope.error = true;
+                    var modal;
                     if (error.status === 403) {
-                        data = 'Unauthorized access to API. It looks like your authentication tokens are invalid. Please try logging out and back in again.';
+                        modal = modalHelpers.UnAuthorized($modal, {
+                            container: '.manageApp'
+                        });
+                        modal.$scope._hide = function() {
+                            modal.$scope.$hide();
+                        };
+                        return;
                     }
-                    var modal = $modal({
+                    modal = $modal({
                         title: 'Unexpected Error',
                         content: data,
                         container: '.manageApp',
@@ -61,7 +62,6 @@
                         template: 'views/custom-modal.html'
                     });
                     modal.$scope._hide = function() {
-                        console.log('closing');
                         modal.$scope.$hide();
                     };
                 });
@@ -82,7 +82,7 @@
                 });
 
                 $scope.defaults = mergedDefaults;
-                $scope.crushrulesets = helpers.normalizeCrushRulesets(self.crushrulesets);
+                $scope.crushrulesets = poolHelpers.normalizeCrushRulesets(self.crushrulesets);
 
                 $scope.pool = {
                     name: mergedDefaults.name,
@@ -90,7 +90,7 @@
                     crush_ruleset: mergedDefaults.crush_ruleset,
                     pg_num: mergedDefaults.pg_num
                 };
-                helpers.addWatches($scope);
+                poolHelpers.addWatches($scope);
             });
         };
         return [

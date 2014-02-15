@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash', 'helpers/pool-helpers'], function(_, helpers) {
+    define(['lodash', 'helpers/pool-helpers', 'helpers/modal-helpers'], function(_, poolHelpers, modalHelpers) {
 
         var PoolModifyController = function($log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, $location, $routeParams, $modal, RequestTrackingService) {
             var self = this;
@@ -11,7 +11,7 @@
             $scope.cancel = function() {
                 $location.path('/pool');
             };
-            $scope.reset = helpers.makeReset($scope, {
+            $scope.reset = poolHelpers.makeReset($scope, {
                 pgnumReset: false
             });
             var promises = [PoolService.get($scope.id), CrushService.getList(), ToolService.config('mon_max_pool_pg_num')];
@@ -20,7 +20,7 @@
                 $log.debug('deleting ' + id);
                 var modal = $modal({
                     title: 'This will DELETE the \'' + $scope.pool.name + '\' Pool. Are you sure?',
-                    content: 'There is no way to undo this operation. Please be very sure this is what you want to do.',
+                    content: 'There is no way to undo this operation. Please be sure this is what you are trying to do.',
                     template: 'views/delete-modal.html'
                 });
                 modal.$scope.id = id;
@@ -33,10 +33,8 @@
                         if (result.status === 202) {
                             /* jshint camelcase: false */
                             RequestTrackingService.add(result.data.request_id);
-                            var okmodal = $modal({
-                                title: 'Delete sent successfully',
-                                content: 'This may take a little while. We\'ll let you know when it\'s done.',
-                                template: 'views/custom-modal.html'
+                            var okmodal = modalHelpers.SuccessfulRequest($modal, {
+                                title: 'Delete Request Successful'
                             });
                             okmodal.$scope._hide = function() {
                                 okmodal.$scope.$hide();
@@ -55,7 +53,26 @@
                         };
                     }, function(result) {
                         $log.error(result);
-                        // TODO Write an error handler
+                        var errModal;
+                        if (result.status === 403) {
+                            errModal = modalHelpers.UnAuthorized($modal, {
+                                container: '.manageApp'
+                            });
+                            errModal.$scope._hide = function() {
+                                errModal.$scope.$hide();
+                                $location.path('/pool');
+                            };
+                            return;
+                        }
+                        errModal = $modal({
+                            title: 'Unexpected Response from Server (' + result.status + ')',
+                            content: 'We got an unexpected error code while deleting this pool.',
+                            template: 'views/custom-modal.html'
+                        });
+                        errModal.$scope._hide = function() {
+                            errModal.$scope.$hide();
+                            $location.path('/pool');
+                        };
                     });
                 };
             };
@@ -63,6 +80,9 @@
             $scope.modify = function(id) {
                 $log.debug(id);
                 $log.debug('form is dirty ' + $scope.poolForm.$dirty);
+                if ($scope.poolForm.$invalid) {
+                    return;
+                }
                 var changes = _.reduce(['name', 'size', 'pg_num', 'crush_ruleset'], function(result, key) {
                     if ($scope.poolForm[key].$dirty) {
                         result[key] = $scope.poolForm[key].$modelValue;
@@ -75,10 +95,8 @@
                         if (result.status === 202) {
                             /* jshint camelcase: false */
                             RequestTrackingService.add(result.data.request_id);
-                            var okmodal = $modal({
-                                title: 'Modify sent successfully',
-                                content: 'This may take a little while. We\'ll let you know when it\'s done.',
-                                template: 'views/custom-modal.html'
+                            var okmodal = modalHelpers.SuccessfulRequest($modal, {
+                                title: 'Modify Request Successful'
                             });
                             okmodal.$scope._hide = function() {
                                 okmodal.$scope.$hide();
@@ -87,7 +105,15 @@
                         }
                     }, function(result) {
                         $log.error(result);
-                        // TODO Write an error handler
+                        var errModal = $modal({
+                            title: 'Unexpected Response from Server (' + result.status + ')',
+                            content: 'We got an unexpected error code while deleting this pool.',
+                            template: 'views/custom-modal.html'
+                        });
+                        errModal.$scope._hide = function() {
+                            errModal.$scope.$hide();
+                            $location.path('/pool');
+                        };
                     });
                 }
             };
@@ -99,7 +125,7 @@
                 $scope.defaults = _.clone($scope.pool);
                 self.crushrulesets = result.shift().value();
 
-                $scope.crushrulesets = helpers.normalizeCrushRulesets(self.crushrulesets);
+                $scope.crushrulesets = poolHelpers.normalizeCrushRulesets(self.crushrulesets);
                 //helpers.addWatches($scope);
             });
         };
