@@ -15,7 +15,7 @@
             });
             var promises = [PoolService.get($scope.id), CrushService.getList(), ToolService.config('mon_max_pool_pg_num')];
 
-            $scope.delete = function(id) {
+            $scope.remove = function(id) {
                 $log.debug('deleting ' + id);
                 var modal = $modal({
                     title: 'This will DELETE the \'' + $scope.pool.name + '\' Pool. Are you sure?',
