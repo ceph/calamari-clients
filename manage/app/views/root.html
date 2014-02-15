@@ -51,21 +51,39 @@
     </div>
     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
         <h3 class="text-center text-muted">CLUSTER MEMBERSHIP</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
         <table style="margin-top: 40px;" class='table table-condensed'>
             <thead>
-            <thead>
+                {{ minions | json }}
+            </thead>
             <tbody>
-              <tr ng-repeat="minion in minions" class="am-fade-and-slide-left">
+              <tr ng-repeat="minion in leftminions" class="am-fade-and-slide-left">
                   <td><i class='fa fa-lg'
-                          ng-class="{ 'fa-check-circle text-success': minion[0].status == 'accepted',
-                                      'fa-question-circle text-warning': minion[0].status != 'accepted' }"
+                          ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
+                                      'fa-question-circle text-warning': minion.status != 'accepted' }"
                           ></i></td>
-                  <td class='text-primary' data-id='{{minion[0].id}}'>{{minion[0].shortName}}</td>
-                  <td><i class='fa fa-lg' 
-                          ng-class="{ 'fa-check-circle text-success': minion[0].status == 'accepted',
-                                      'fa-question-circle text-warning': minion[0].status != 'accepted' }"
+                  <td style='text-align: center;' class='text-primary' data-id='{{minion[0].id}}'>{{minion.shortName}}</td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <table style="margin-top: 40px;" class='table table-condensed'>
+            <thead>
+                {{ minions | json }}
+            </thead>
+            <tbody>
+              <tr ng-repeat="minion in rightminions" class="am-fade-and-slide-right">
+                  <td style='text-align: center;' class='text-primary' data-id='{{minion[0].id}}'>{{minion.shortName}}</td>
+                  <td style='text-align: right;' ><i class='fa fa-lg'
+                          ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
+                                      'fa-question-circle text-warning': minion.status != 'accepted' }"
                           ></i></td>
-                  <td class='text-primary' data-id='{{minion[1].id}}'>{{minion[1].shortName}}</td>
               </tr>
             </tbody>
         </table>

@@ -12,7 +12,7 @@
                 $scope.minionsCounts = {
                     total: minions.length
                 };
-                $scope.minions = _.zip(_.reduce(minions, function(results, minion, index) {
+                var m = _.reduce(minions, function(results, minion, index) {
                     var shortName = _.first(__split.call(minion.id, '.'));
                     minion.shortName = shortName;
                     results[index % 2].push(minion);
@@ -20,7 +20,9 @@
                 }, [
                     [],
                     []
-                ]));
+                ]);
+                $scope.leftminions = m[0];
+                $scope.rightminions = m[1];
             });
         };
         return ['$log', '$scope', 'KeyService', 'ClusterService', RootController];
