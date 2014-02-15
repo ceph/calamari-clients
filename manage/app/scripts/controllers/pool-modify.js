@@ -5,6 +5,7 @@
 
         var PoolModifyController = function($log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, $location, $routeParams, $modal, RequestTrackingService) {
             var self = this;
+            $scope.modify = false;
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.id = $routeParams.id;
             $scope.cancel = function() {
@@ -52,9 +53,45 @@
                             umodal.$scope.$hide();
                             $location.path('/pool');
                         };
+                    }, function(result) {
+                        $log.error(result);
+                        // TODO Write an error handler
                     });
                 };
             };
+
+            $scope.modify = function(id) {
+                $log.debug(id);
+                $log.debug('form is dirty ' + $scope.poolForm.$dirty);
+                var changes = _.reduce(['name', 'size', 'pg_num', 'crush_ruleset'], function(result, key) {
+                    if ($scope.poolForm[key].$dirty) {
+                        result[key] = $scope.poolForm[key].$modelValue;
+                    }
+                    return result;
+                }, {});
+                $log.debug(changes);
+                if (!_.isEmpty(changes)) {
+                    PoolService.patch(id, changes).then(function(result) {
+                        if (result.status === 202) {
+                            /* jshint camelcase: false */
+                            RequestTrackingService.add(result.data.request_id);
+                            var okmodal = $modal({
+                                title: 'Modify sent successfully',
+                                content: 'This may take a little while. We\'ll let you know when it\'s done.',
+                                template: 'views/custom-modal.html'
+                            });
+                            okmodal.$scope._hide = function() {
+                                okmodal.$scope.$hide();
+                                $location.path('/pool');
+                            };
+                        }
+                    }, function(result) {
+                        $log.error(result);
+                        // TODO Write an error handler
+                    });
+                }
+            };
+
             $q.all(promises).then(function(results) {
                 /* jshint camelcase:false */
                 var result = _.chain(results);
@@ -63,7 +100,6 @@
                 self.crushrulesets = result.shift().value();
 
                 $scope.crushrulesets = helpers.normalizeCrushRulesets(self.crushrulesets);
-
                 //helpers.addWatches($scope);
             });
         };

@@ -50,7 +50,7 @@
         <div>
         <button style="min-width: 100px;" type="button" class="btn btn-sm btn-danger" ng-click='cancel()' data-placement="center">CANCEL</button>
         <button style="min-width: 100px;" type="button" class="btn btn-sm btn-warning" ng-click='reset()' data-placement="center">RESET</button>
-        <button style="min-width: 100px;" type="button" ng-class="{ 'disabled': poolForm.$invalid }" class="btn btn-sm btn-primary" ng-click='modify()' data-placement="center">MODIFY</button>
+        <button style="min-width: 100px;" type="button" ng-class="{ 'disabled': !poolForm.$dirty }" class="btn btn-sm btn-primary" ng-click='modify(id)' data-placement="center">MODIFY</button>
         <button style="min-width: 100px; margin-left: 100px;" type="button" ng-class="{ 'disabled': poolForm.$invalid }" class="btn btn-sm btn-danger" ng-click='remove(id)' data-placement="center">DELETE</button>
         </div>
     </div>

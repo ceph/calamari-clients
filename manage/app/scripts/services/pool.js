@@ -21,6 +21,10 @@ define(['lodash'], function(_) {
                 id = _.isString(id) ? parseInt(id, 10) : id;
                 return this.restangular.clusterFull().one('pool', id).remove();
             },
+            patch: function(id, update) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('pool', id).patch(update);
+            },
             create: function(pool) {
                 return this.restangular.clusterFull().all('pool').post(pool);
             },
