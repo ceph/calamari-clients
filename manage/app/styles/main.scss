@@ -2,13 +2,11 @@
 @import 'modules/bootstrap-additions.min';
 @import 'modules/angular-motion';
 @import 'modules/angular-growl.min';
-/* Space out content a bit */
- body {
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
+@import 'modules/bootstrap3_vars';
+@import 'modules/inktank_colors';
+@import 'partials/base.scss';
 /* Everything but the jumbotron gets side spacing for mobile first views */
- .header, .marketing, .footer {
+.header, .marketing, .footer {
     padding-left: 15px;
     padding-right: 15px;
 }

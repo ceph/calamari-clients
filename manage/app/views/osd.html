@@ -1,11 +1,8 @@
-<div class="header">
-  <h3 class="text-muted">manage</h3>
-</div>
-
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="navbar navbar-default" role="navigation" bs-navbar>
             <ul class="nav navbar-nav">
+                <li class="navbar-brand">MANAGE</li>
                 <li><a ng-href="#/">Cluster</a></li>
                 <li class="active"><a ng-href="#/osd">OSD</a></li>
                 <li><a ng-href="#/pool">Pool</a></li>
@@ -14,16 +11,16 @@
         </div>
     </div>
 </div>
+<div class="card">
 <h2 class="text-muted">CLUSTER {{clusterName}} &raquo; OSD HOSTS &raquo;</h2>
-<div class="container">
+<div class="container-fluid">
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div ng-repeat='server in servers' class="am-fade-and-slide-left">
-            <button style="min-width: 200px;" type="button" class="btn btn-lg btn-primary" ng-click="hostClickHandler(server.fqdn)" data-placement="center">{{server.hostname}}</button>
+            <button style="min-width: 200px;" type="button" class="btn btn-md btn-primary" ng-click="hostClickHandler(server.fqdn)" data-placement="center">{{server.hostname}}</button>
             <div style="height: 10px"></div>
         </div>
     </div>
 </div>
 
-<div class="footer">
-</div>
+</div !-- card -->
