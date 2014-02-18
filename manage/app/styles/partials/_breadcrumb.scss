@@ -201,13 +201,14 @@ $bc-height: 33;
 $bc-line-width: 40;
 $bc-width: $bc-height;
 $bc-margin: 4;
+$bc-item-count: 4;
 .nav.navbar {
     border-bottom: 1px solid $itgray;
 }
 .inknav {
     @include user-select(none);	
     display: inline-block;
-    max-width: #{(($bc-item-width *3) + ($bc-line-width)* 2) + 12}px;
+    max-width: #{(($bc-item-width * $bc-item-count) + ($bc-line-width)* ($bc-item-count - 1)) + 12}px;
     position: absolute;
     left: 0;
     right: 0;

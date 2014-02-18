@@ -25,7 +25,10 @@
             <a class="navbar-brand" href="http://www.inktank.com"><img class='image-responsive' src="images/logo.png" alt="Inktank Logo"/></a>
         </div>
         <ul style='display:none;' class="navbar-nav clustermenu"></ul>
-        <div class='inknav'></div>
+        <div class='inknav'>
+           <div ng-include="navbarTemplate" ng-controller='NavbarController'>
+           </div>
+        </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right usermenu"></ul>
         </div>

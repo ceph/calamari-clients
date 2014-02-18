@@ -1,22 +1,30 @@
 <div class='bc-item'>
     <div class='bc-circle'>
-        <span title='<%- title.dashboard %>' data-action='dashboard' class='bc-entry bc-active'>
-            <i title='<%- title.dashboard %>' class="fa fa-tachometer fa-lg"></i>
+        <span title='{{title.dashboard}}' class='bc-entry'>
+            <i title='{{title.dashboard}}' class="fa fa-tachometer fa-lg"></i>
         </span>
     </div>
-    <div class='bc-title bc-title-one'><%- dashboard %></div>
+    <div class='bc-title bc-title-one'>{{title.dashboard}}</div>
 </div><div class="bc-line"></div><div class='bc-item'>
     <div class='bc-circle'>
-        <span title='<%- title.bench %>' data-action='bench' class='bc-entry'>
-            <i title='<%- title.bench %>' class="fa fa-sitemap fa-lg"></i>
+        <span title='{{title.bench}}' data-action='bench' class='bc-entry'>
+            <i title='{{title.bench}}' class="fa fa-sitemap fa-lg"></i>
         </span>
     </div>
-    <div class='bc-title bc-title-two'><%- workbench %></div>
+    <div class='bc-title bc-title-two'>{{title.bench}}</div>
 </div><div class="bc-line"></div><div class='bc-item'>
     <div class='bc-circle'>
-        <span title='<%- title.chart %>' data-action='chart' class='bc-entry'>
-            <i title="<%- title.chart %>" class="fa fa-bar-chart-o fa-lg"></i>
+        <span title='{{title.chart}}' data-action='chart' class='bc-entry'>
+            <i title="{{title.chart}}" class="fa fa-bar-chart-o fa-lg"></i>
         </span>
     </div>
-    <div class='bc-title bc-title-three'><%- graph %></div>
+    <div class='bc-title bc-title-three'>{{title.chart}}</div>
+</div>
+</div><div class="bc-line"></div><div class='bc-item'>
+    <div class='bc-circle'>
+        <span title='{{title.manage}}' data-action='chart' class='bc-entry bc-active'>
+            <i title="{{title.manage}}" class="fa fa-wrench fa-lg"></i>
+        </span>
+    </div>
+    <div class='bc-title bc-title-four'>{{title.manage}}</div>
 </div>
