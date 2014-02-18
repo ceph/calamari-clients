@@ -8,6 +8,7 @@
                 $scope.clusterName = cluster.name;
             });
             ServerService.getList().then(function(servers) {
+                $scope.up = true;
                 $scope.servers = servers;
             });
             $scope.hostClickHandler = function(fqdn) {

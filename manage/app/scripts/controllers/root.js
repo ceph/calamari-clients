@@ -9,6 +9,7 @@
                 $scope.clusterName = cluster.name;
             });
             KeyService.getList().then(function(minions) {
+                $scope.up = true;
                 $scope.minionsCounts = {
                     total: minions.length
                 };

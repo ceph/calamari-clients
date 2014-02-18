@@ -26,6 +26,7 @@
                         osds: osds,
                     };
                 });
+                $scope.up = true;
             });
 
         };

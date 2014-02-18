@@ -11,19 +11,17 @@
         </div>
     </div>
 </div>
-<div class="card">
+<div class="card ng-hide am-fade-and-slide-top" ng-show='up'>
 <h2 class="text-muted">CLUSTER {{clusterName}} &raquo; POOL &raquo;</h2>
 <div class="container">
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <button style="min-width: 200px;" type="button" ng-click="create()" class="btn btn-sm btn-primary" data-placement="center">Create Pool</button>
-        <div style="margin-top: 10px;" ng-repeat="pool in pools" class="am-fade-and-slide-right">
+        <div style="margin-top: 10px;" ng-repeat="pool in pools">
             <button style="min-width: 200px;" type="button" class="btn btn-sm btn-success" ng-click='modify(pool.id)' data-id='{{pool.id}}' data-placement="center">{{pool.name}}</button>
         </div>
     </div>
 </div>
 
-<div class="footer">
-</div>
 </div>
 </div !-- card -->

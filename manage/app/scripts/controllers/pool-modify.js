@@ -147,6 +147,7 @@
                 self.crushrulesets = result.shift().value();
 
                 $scope.crushrulesets = poolHelpers.normalizeCrushRulesets(self.crushrulesets);
+                $scope.up = true;
                 //helpers.addWatches($scope);
             });
         };

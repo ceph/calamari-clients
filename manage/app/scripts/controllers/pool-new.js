@@ -85,6 +85,7 @@
                     pg_num: mergedDefaults.pg_num
                 };
                 poolHelpers.addWatches($scope);
+                $scope.up = true;
             });
         };
         return [
