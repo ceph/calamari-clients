@@ -1,6 +1,6 @@
-/*global require */
+/*global require, Uri */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
+require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'jsuri', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
     /* Default Configuration */
     var config = {
         'offline': false,
@@ -227,10 +227,23 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
             App.start({
                 appRouter: appRouter
             });
+            var uri = new Uri(document.URL);
+            var target = uri.getQueryParamValue('target');
+            if (target) {
+                console.log(target);
+                if (target === 'workbench') {
+                    App.vent.trigger('app:fullscreen');
+                } else if (target === 'graph') {
+                    App.vent.trigger('app:graph');
+                } else {
+                    appRouter.navigate('dashboard');
+                }
+            } else {
+                appRouter.navigate('dashboard');
+            }
         });
         /* Defer Visualization startup to after loading the cluster metadata */
         Backbone.history.start();
-        appRouter.navigate('dashboard');
     });
 
 

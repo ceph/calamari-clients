@@ -65,7 +65,8 @@ require.config({
         react: '../bower_components/react/react-with-addons',
         loglevel: '../bower_components/loglevel/dist/loglevel',
         l20n: 'vendor/l20n.min',
-        l20nCtx: 'l20nCtxPlugin'
+        l20nCtx: 'l20nCtxPlugin',
+        jsuri: '../bower_components/jsuri/Uri'
     }
 });
 
