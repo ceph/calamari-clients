@@ -42,7 +42,9 @@
     "grunt-bower-requirejs": "~0.8.4",
     "grunt-requirejs": "~0.4.0",
     "grunt-connect-proxy": "~0.1.7",
-    "grunt-symbolic-link": "~0.3.1"
+    "grunt-symbolic-link": "~0.3.1",
+    "grunt-git-describe": "~2.3.2",
+    "grunt-contrib-symlink": "~0.3.0"
   },
   "engines": {
     "node": ">=0.8.0"
