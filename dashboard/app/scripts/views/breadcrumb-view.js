@@ -38,11 +38,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                 title: {
                     dashboard: l10n.getSync('dashboardTitle'),
                     bench: l10n.getSync('workbenchTitle'),
-                    chart: l10n.getSync('graphTitle')
+                    chart: l10n.getSync('graphTitle'),
+                    manage: l10n.getSync('manageTitle')
                 },
                 dashboard: l10n.getSync('dashboard'),
                 workbench: l10n.getSync('workbench'),
-                graph: l10n.getSync('graph')
+                graph: l10n.getSync('graph'),
+                manage: l10n.getSync('manage')
             };
         },
         switcher: function(evt) {
@@ -63,6 +65,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             }
             if (action === 'chart') {
                 this.App.vent.trigger('app:graph');
+            }
+            if (action === 'manage') {
+                document.location = '/manage/';
             }
         }
     });

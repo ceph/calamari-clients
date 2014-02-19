@@ -2,9 +2,11 @@
 <workbench "WORKBENCH">
 <graph "GRAPH">
 <dashboard "DASHBOARD">
+<manage "MANAGE">
 <workbenchTitle "OSD Workbench">
 <graphTitle "Charting">
 <dashboardTitle "Dashboard">
+<manageTitle "Management">
 <healthOSDTitle "Health">
 <pleaseContactAdmin "Please contact Administrator">
 <serverErrorMessage """
