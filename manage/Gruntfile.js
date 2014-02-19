@@ -445,6 +445,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'symlink',
+      'saveRevision',
       'clean:server',
       'configureProxies:server',
       'concurrent:server',
