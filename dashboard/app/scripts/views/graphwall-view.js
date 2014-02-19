@@ -309,7 +309,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteRequestDelayMs = Backbone.Marionette.getOption(this, 'graphiteRequestDelayMs');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph', 'poolIopsGraphTitleTemplate');
+            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph', 'poolIopsGraphTitleTemplate', 'clusterUpdate');
 
             _.each(this.graphs, this.makeGraphFunctions);
             this.wrapTitleTemplate('makePoolIOPSGraphURL', this.poolIopsGraphTitleTemplate);
@@ -325,7 +325,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             });
             var self = this;
             this.iopsTargetModels = new models.GraphitePoolIOPSModel(undefined, {
-                graphiteHost: this.graphiteHost
+                graphiteHost: this.graphiteHost,
+                clusterName: this.App.ReqRes.request('get:cluster').get('name')
             });
             this.iopsTargetModels.filter = function(res) {
                 var pools = self.App.ReqRes.request('get:pools');
@@ -336,7 +337,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             };
             this.render = _.wrap(this.render, this.renderWrapper);
             this.listenTo(this, 'item:before:close', this.onItemBeforeClose);
+            this.listenTo(this.App.vent, 'cluster:update', this.clusterUpdate);
             this.debouncedChangedGraph = _.debounce(this.debouncedChangedGraph, 500);
+        },
+        clusterUpdate: function(model) {
+            // re-init models that depend on cluster name issue #7140
+            this.iopsTargetModels = new models.GraphitePoolIOPSModel(undefined, {
+                graphiteHost: this.graphiteHost,
+                clusterName: model.get('name')
+            });
         },
         // Wrap render so we can augment it with ui elements and
         // redelegate events on new ui elements
@@ -435,8 +444,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 }
 
             };
+            var clusterName  = this.App.ReqRes.request('get:cluster').get('name');
             var r = _.map(['makePoolIOPSGraphURL', 'makePoolDiskFreeGraphURL'], function(graph) {
-                return self.makePerHostModelGraphs('', graph, model);
+                return self.makePerHostModelGraphs('', graph, model, clusterName);
             });
             return $.when.apply(undefined, r).then(function(a, b) {
                 return a.concat(b);
@@ -464,7 +474,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 options: options
             };
         },
-        makePerHostModelGraphs: function(hostname, fnName, model) {
+        makePerHostModelGraphs: function(hostname, fnName, model, clusterName) {
             var self = this;
             var titleFn = this.graphTitleTemplates[fnName];
             var fn = this[fnName];
@@ -485,7 +495,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                         });
                     }
                     return {
-                        url: fn.call(self, hostname, id),
+                        url: fn.call(self, hostname, id, clusterName),
                         title: title,
                         options: options
                     };
