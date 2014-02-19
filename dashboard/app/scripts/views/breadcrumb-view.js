@@ -67,7 +67,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                 this.App.vent.trigger('app:graph');
             }
             if (action === 'manage') {
-                document.location = '/manage/';
+                document.location = '/manage/#/';
             }
         }
     });
