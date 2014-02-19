@@ -31,14 +31,15 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
         var template = JST[path];
         return function(metrics) {
             // pre-bind the metrics list using partial application
-            return function(hostname, id) {
+            return function(hostname, id, clusterName) {
                 // returns a list of metrics target values as an array
                 // e.g. [ 'servers.mira064.memory.Active' ]
                 return _.map(metrics, function(metric) {
                     return $.trim(template({
                         metric: metric,
                         hostname: hostname,
-                        id: id
+                        id: id,
+                        clusterName: clusterName
                     }));
                 });
             };

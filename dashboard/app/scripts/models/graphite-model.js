@@ -18,6 +18,7 @@ define([
         },
         initialize: function(attrs, options) {
             this.graphiteHost = Backbone.Marionette.getOption(options, 'graphiteHost');
+            this.clusterName = Backbone.Marionette.getOption(options, 'clusterName');
         },
         fetchMetrics: function(host) {
             this.host = host;
