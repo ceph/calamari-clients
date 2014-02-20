@@ -22,7 +22,7 @@ SRC := $(shell pwd)
 INSTALL=/usr/bin/install
 
 UI_BASEDIR = $(DESTDIR)/opt/calamari/webapp/content
-UI_SUBDIRS = admin login dashboard
+UI_SUBDIRS = manage admin login dashboard
 CONFIG_JSON = dashboard/dist/scripts/config.json
 
 FINDCMD =find . \
