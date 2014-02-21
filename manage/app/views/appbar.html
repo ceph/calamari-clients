@@ -3,7 +3,7 @@
         <div class="navbar navbar-default" role="navigation" bs-navbar>
             <ul class="nav navbar-nav">
                 <li class="navbar-brand">MANAGE</li>
-                <li ng-class="{'active' : menu.active}" ng-repeat="menu in menus"><a ng-click="route(menu.target)">{{menu.label}}</a></li>
+                <li ng-class="{'active' : menu.active}" ng-repeat="menu in menus"><a ng-href='{{menu.href}}'>{{menu.label}}</a></li>
             </ul>
         </div>
     </div>
