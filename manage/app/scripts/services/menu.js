@@ -19,7 +19,7 @@
                     href: '/#pool',
                     active: false
                 }, {
-                    label: 'Tools',
+                    label: 'Logs',
                     id: 'tools',
                     href: '/#tools',
                     active: false

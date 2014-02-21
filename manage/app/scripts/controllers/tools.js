@@ -3,11 +3,10 @@
     'use strict';
     define(['lodash', 'moment'], function(_, moment) {
 
-        var ToolController = function($q, $scope, ClusterService, ToolService) {
+        var ToolController = function($q, $timeout, $scope, ClusterService, ToolService) {
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.logui = 'spinner';
-            var promises = [ToolService.log(), ToolService.config()];
-                    $scope.up = true;
+            var promises = [ToolService.log()];
             $q.all(promises).then(function(results) {
                 (function(logs) {
                     var lines = logs.lines.split('\n');
@@ -22,20 +21,9 @@
                     });
                     $scope.logui = 'logs';
                 })(results[0]);
-                (function(config) {
-                    var sortedConfig = config.sort(function(a, b) {
-                        if (a.key === b.key) {
-                            return 0;
-                        }
-                        if (a.key < b.key) {
-                            return -1;
-                        }
-                        return 1;
-                    });
-                    $scope.configs = sortedConfig;
-                })(results[1]);
+                $scope.up = true;
             });
         };
-        return ['$q', '$scope', 'ClusterService', 'ToolService', ToolController];
+        return ['$q', '$timeout', '$scope', 'ClusterService', 'ToolService', ToolController];
     });
 })();
