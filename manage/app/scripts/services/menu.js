@@ -4,7 +4,7 @@
     define(['lodash'], function(_) {
         var Service = function() {
             this.menus = [{
-                    label: 'CLUSTER',
+                    label: 'Cluster',
                     id: 'cluster',
                     href: '/#',
                     active: true
@@ -14,12 +14,12 @@
                     href: '/#osd',
                     active: false
                 }, {
-                    label: 'POOLS',
+                    label: 'Pools',
                     id: 'pool',
                     href: '/#pool',
                     active: false
                 }, {
-                    label: 'TOOLS',
+                    label: 'Tools',
                     id: 'tools',
                     href: '/#tools',
                     active: false

@@ -1,59 +1,53 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card ng-hide am-fade-and-slide-top" ng-show='up'>
-<h2 class="text-muted">CLUSTER {{clusterName}} &raquo; Tools &raquo;</h2>
-<div class="container-fluid">
-<div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <h3>Log Tail</h3>
-        <div>
-          <div style='background: #eee; padding: 10px;' ng-switch on="logui">
-            <span ng-switch-when="logs" >
+     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; Tools &raquo;</h4>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                 <h4>Log Tail</h4>
+
+                <div>
+                    <div style='background: #eee; padding: 10px;' ng-switch on="logui"> <span ng-switch-when="logs">
               <p class='small' ng-repeat='line in logs'>
                 <span style='display: inline-block; min-width: 80px; text-align: left;' class='text-primary'>{{line.timestamp}}</span>
-                <span style='display: inline-block; min-width: 50px; text-align: left;' class='text-success'>{{line.unit}}</span>
-                <span style='display: inline-block; min-width: 180px;' class='text-info'>{{line.address}}</span>
-                <span style='' class='text-success'>{{line.rest}}</span>
-              </p>
-            </span>
-            <span class="text-muted" ng-switch-default>
+
+                        <span
+                        style='display: inline-block; min-width: 50px; text-align: left;' class='text-success'>{{line.unit}}</span> <span style='display: inline-block; min-width: 180px;' class='text-info'>{{line.address}}</span>
+
+                            <span
+                            style='' class='text-success'>{{line.rest}}</span>
+                                </p>
+                                </span> <span class="text-muted" ng-switch-default>
                 <i class="fa fa-spinner fa-spin fa-lg"></i> Loading...
             </span>
-          </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-        <h3>Config</h3>
-        <form>
-            <input type='text' placeholder='filter keys' ng-model='searchText'></input>
-        </form>
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            key
-                        </th>
-                        <th>
-                            value
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='config in configs | filter:searchText'>
-                        <td>
-                            {{config.key}}
-                        </td>
-                        <td>
-                            {{config.value}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 
-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+             <h4>Config</h4>
+
+            <form>
+                <input type='text' placeholder='filter keys' ng-model='searchText'></input>
+            </form>
+            <div class='table-responsive'>
+                <table class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat='config in configs | filter:searchText'>
+                            <td>{{config.key}}</td>
+                            <td>{{config.value}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div !-- card -->
