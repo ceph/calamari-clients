@@ -57,16 +57,9 @@ $third-row-height: 120px;
     width: 100%;
     padding: 9px;
     margin-top: 8px;
-    @include breakpoint(screen-xs) {
-	min-width: 200px;
-    }
     h1, h2, h3, h4, h5, h6 {
         font-family: ApexSansMedium;
     }
-}
-
-.pgmap.card, .pgstat.card {
-    min-height: #{$itapp-card-height*1.1}px;
 }
 
 .custom-gutter {
@@ -83,24 +76,8 @@ $third-row-height: 120px;
 	min-width: 90px;
 }
 
-.gauge {
-    min-height: #{$itapp-card-height}px;
-    text-align: left;
-    line-height: 1.25;
-}
-
 $color-width: 5px;
 
-$hr-width: auto;
-hr.style-two {
-    display: none;
-    border: 0;
-    margin: 0 0 0 0;
-    height: 3px;
-    width: 33%;
-    right: 0;
-    background: #ccc;
-}
 .card-title {
     color: $itdarkgray;
     text-transform: uppercase;
@@ -117,22 +94,6 @@ hr.style-two {
        color: $color;
        opacity: 0.95;
 }
-.mon-state {
-    margin-top: 20px;
-}
-.pg-state {
-  margin-top: 40px;
-}
-.pg-count {
-}
-.pg-count-top {
-  display: inline-block;
-  margin-bottom: 5px;
-}
-.pg-count-bottom {
-  font-size: 0.8em;
-  text-transform: capitalize;
-}
 .warn {
        @include textalert(orange);
 }
@@ -145,9 +106,6 @@ hr.style-two {
 .notifications {
     min-height: $third-row-height;
     margin-bottom: 10px;
-}
-.container {
-    position: relative;
 }
 $bc-item-width: 52;
 $bc-height: 33;
