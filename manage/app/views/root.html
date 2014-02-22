@@ -1,8 +1,7 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card am-fade-and-slide-top" ng-show='up'>
     <div class="container" style='min-height: 1000px;'>
-        
-        <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo;</h4>
+         <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo;</h4>
 
         <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
@@ -14,28 +13,36 @@
         <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-                <table style="margin-top: 40px;" class='table table-condensed'>
-                    <thead>{{ minions | json }}</thead>
+                <table style="margin-top: 40px;" class='table'>
+                    <thead></thead>
                     <tbody>
                         <tr ng-repeat="minion in leftminions" class="am-fade-and-slide-left">
-                            <td><i class='fa fa-lg' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
+                            <td> <i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
                                       'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
 
                             </td>
-                            <td style='text-align: center;' class='text-primary' data-id='{{minion[0].id}}'>{{minion.shortName}}</td>
+                            <td class='text-primary' data-id='{{minion[0].id}}'>{{minion.shortName}}</td>
+                            <td>
+                                <button class='btn btn-primary btn-cluster' ng-if="minion.status != 'accepted'">ACCEPT</button>
+                                <button class='btn btn-danger btn-cluster' ng-if="minion.status == 'accepted'">REMOVE</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-                <table style="margin-top: 40px;" class='table table-condensed'>
+                <table style="margin-top: 40px;" class='table'>
                     <thead>{{ minions | json }}</thead>
                     <tbody>
                         <tr ng-repeat="minion in rightminions" class="am-fade-and-slide-right">
-                            <td style='text-align: center;' class='text-primary' data-id='{{minion[0].id}}'>{{minion.shortName}}</td>
-                            <td style='text-align: right;'><i class='fa fa-lg' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
+                            <td><i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
                                       'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
 
+                            </td>
+                            <td class='text-primary' data-id='{{minion[0].id}}'>{{minion.shortName}}</td>
+                            <td>
+                                <button class='btn btn-primary btn-cluster' ng-if="minion.status != 'accepted'">ACCEPT</button>
+                                <button class='btn btn-danger btn-cluster' ng-if="minion.status == 'accepted'">REMOVE</button>
                             </td>
                         </tr>
                     </tbody>
