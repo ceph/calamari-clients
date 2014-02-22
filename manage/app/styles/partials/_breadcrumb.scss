@@ -73,6 +73,15 @@ $third-row-height: 120px;
     padding-left: 4px;
     padding-right: 4px;
 }
+.btn {
+    font-family: ApexSansLight;
+}
+.btn-pool {
+	min-width: 150px;
+}
+.btn-cluster {
+	min-width: 90px;
+}
 
 .gauge {
     min-height: #{$itapp-card-height}px;
@@ -98,67 +107,11 @@ hr.style-two {
     font-family: ApexSansLight;
     font-size: 1.5em;
 }
-table.metrics tr td:first-child {
-    text-align: right;
-    color: $itapp-subtext-font-color;
-}
-.table.metrics td, .table.metrics th {
-    line-height: 1em;
-}
-table.metrics td {
-    width: auto;
-}
-table.metric td:last-child {
-}
-.table th, .table td {
-    padding: 4px;
-}
-.table tbody td, .table thead th {
-	text-align: right;
-}
 .table tbody td {
 	font-family: ApexSansLight;
 }
-span.infotext {
-    font-size: 25px;
-    text-align: center;
-    display: inline-block;
-    margin: 10px auto auto 50px;
-}
-span.infotext-2 {
-    position: absolute;
-    right: 26px;
-    bottom: 70px;
-    display: inline-block;
-    margin: 10px auto auto 4px;
-    color: $itapp-subtext-font-color;
-}
-span.health-text {
-    font-size: 45px;
-    width: $hr-width;
-    text-align: center;
-    display: block;
-    margin: 40px auto 0px auto;
-}
-span.mon-text {
-    text-align: center;
-    width: $hr-width;
-    display: inline-block;
-    margin: 5px auto auto auto;
-    color: $itgray;
-}
-span.mon-text-2 {
-    text-align: right;
-    width: $hr-width;
-    display: inline-block;
-    margin: 10px auto auto 15px;
-    color: #aaa;
-}
 .icon-target {
 	padding: 2px;
-}
-.table tr:first-child > th, .table tr:first-child > td {
-    border-top: 0px;
 }
 @mixin textalert($color) {
        color: $color;
