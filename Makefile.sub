@@ -1,0 +1,27 @@
+SHELL=/bin/bash
+# this bears some explanation.  
+#
+# 1) get the list of source files from git ls-files
+# 2) output it as a NUL-terminated list, because some of them have spaces
+# 3) IFS= read -d $'\0' causes the shell to read each NUL-terminated item
+# 4) replacing ' ' with '?' causes the file to be expressible as one token,
+#    but also allows shell operations to find the file using that string 
+#    (since '?' matches ' ').  I wish I could take credit for this last
+#    bit of trickery.
+
+QUOTED_SRCS=$(shell git ls-files -z | while IFS= read -d $$'\0' f; do echo "$$f" | sed 's/ /\?/g' ; done)
+
+default: build
+
+build: build-stamp
+
+clean:
+	if [ -d node_modules ] ; then grunt --no-color clean; fi
+	rm -f build-stamp
+
+build-stamp: $(QUOTED_SRCS)
+	npm install --loglevel warn
+	bower --allow-root install
+	grunt --no-color saveRevision
+	grunt --no-color build
+	touch build-stamp

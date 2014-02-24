@@ -33,14 +33,7 @@ FINDCMD =find . \
         -o -name debian -prune \
         -o -print0
 
-# add in just the debian files we want
-DEBFILES = \
-	changelog \
-	compat \
-	control \
-	copyright \
-	rules \
-	source/format
+default: build
 
 DATESTR=$(shell /bin/echo -n "built on "; date)
 set_deb_version:
@@ -54,12 +47,12 @@ build-ui:
 	@echo "building ui"
 	set -e ;\
 	for d in $(UI_SUBDIRS); do \
-		echo $$d; \
-		(cd $$d; \
-		npm install --loglevel warn && \
-		bower --allow-root install && \
-		grunt --no-color saveRevision && \
-		grunt --no-color build; ) \
+		echo $$d; cd $$d; $(MAKE) build; cd .. ; \
+	done
+
+clean:
+	for d in $(UI_SUBDIRS); do \
+		echo $$d; cd $$d; $(MAKE) clean; cd .. ; \
 	done
 
 # for right now, this contains two useful things that should be set
@@ -83,12 +76,6 @@ install: build
 		cp -rp $$d/dist/* $(UI_BASEDIR)/$$instdir; \
 	done
 
-clean:
-	for d in $(UI_SUBDIRS); do \
-		echo $$d; \
-		(cd $$d; \
-		if [ -d node_modules ] ; then grunt --no-color clean; fi) \
-	done
 
 dist:
 	@echo "making dist tarball in $(TARNAME)"
