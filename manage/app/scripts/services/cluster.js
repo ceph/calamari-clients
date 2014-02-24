@@ -1,7 +1,7 @@
 /*global define*/
 define(['lodash'], function(_) {
     'use strict';
-    var ClusterService = function(Restangular) {
+    var ClusterService = function(Restangular, $location) {
         var djangoPaginationResponseExtractor = function(response /*, operation, what, url */ ) {
             if (response.count !== undefined && response.results !== undefined) {
                 var newResponse = response.results;
@@ -28,9 +28,15 @@ define(['lodash'], function(_) {
             initialize: function() {
                 var self = this;
                 return this.getList().then(function(clusters) {
-                    var cluster = _.first(clusters);
-                    self.clusterId = cluster.id;
-                    self.clusterModel = cluster;
+                    if (clusters.length) {
+                        var cluster = _.first(clusters);
+                        self.clusterId = cluster.id;
+                        self.clusterModel = cluster;
+                        return;
+                    }
+                    self.clusterId = null;
+                    self.clusterModel = null;
+                    $location.path('/first');
                 });
             },
             getList: function() {
@@ -60,5 +66,5 @@ define(['lodash'], function(_) {
         service.initialize = _.once(service.initialize);
         return service;
     };
-    return ['Restangular', ClusterService];
+    return ['Restangular', '$location', ClusterService];
 });

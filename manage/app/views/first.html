@@ -1,0 +1,38 @@
+<div ng-include="'views/appbar.html'"></div>
+<div class="card am-fade-and-slide-top" ng-show='up'>
+    <div class="container-fluid">
+         <h3 class="text-info">New Calamari Installation</h3>
+
+        <p>This appears to be the first time you have started Calamari and there are no clusters
+            currently configured.</p>
+        <div ng-if='keys'>
+            <p>I have detected <span class='text-info'>{{keys.length}}</span> host(s) requesting to be added to Calamari</p>
+            <div
+            class="row">
+                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                     <h4 class='text-info'>Hosts Requesting Membership to Cluster</h4>
+
+                    <ol>
+                        <li ng-if="key.status=='pre'" ng-repeat='key in keys'><span class='text-primary'>{{key.id}}</span></li>
+                    </ol>
+                </div>
+        </div>
+        <div class='row'>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 col-md-offset-1 col-lg-offset-1">
+                <div style='margin-top: 15px;'>
+                    <button class='btn btn-primary'>ADD</button>
+                </div>
+            </div>
+            <div style='margin-top: 30px;' class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                <p class='text-warning'>You will not be able to perform any other actions until some hosts have been added
+                    to Calamari, either via this page or from the Command Line.</p>
+            </div>
+        </div>
+    </div>
+    <div ng-if='!keys'>
+        <p>I have not detected any hosts waiting to Join calamari. Please follow the instructions
+            for adding new members to the cluster
+            <p>
+    </div>
+    <div ng-show='debug'>{{ keys | json }}</div>
+</div !-- card -->

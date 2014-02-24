@@ -1,6 +1,6 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card am-fade-and-slide-top" ng-show='up'>
-    <div class="container" style='min-height: 1000px;'>
+    <div class="container-fluid" style='min-height: 1000px;'>
          <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo;</h4>
 
         <div class="row">
@@ -57,9 +57,9 @@
                     <input type='text' placeholder='filter keys' ng-model='searchText'></input>
                 </form>
             </div>
-            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+            <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6">
                 <div class='table-responsive'>
-                    <table class="table table-condensed table-striped">
+                    <table class='table'>
                         <thead>
                             <tr>
                                 <th>Key</th>

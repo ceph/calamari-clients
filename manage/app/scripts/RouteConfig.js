@@ -45,6 +45,10 @@
                 resolve: {
                     'Resolver': 'ClusterResolver'
                 }
+            }).when('/first', {
+                templateUrl: 'views/first.html',
+                menuId: 'cluster',
+                controller: 'FirstTimeController'
             }).when('/pool/modify/:id', {
                 templateUrl: 'views/pool-modify.html',
                 menuId: 'pool',
