@@ -30,8 +30,8 @@
                     $scope.rightminions = m[1];
                 })(results[1]);
 
-                $timeout(function() {
-                    (function(config) {
+                (function(config) {
+                    $timeout(function() {
                         var sortedConfig = config.sort(function(a, b) {
                             if (a.key === b.key) {
                                 return 0;
@@ -42,8 +42,8 @@
                             return 1;
                         });
                         $scope.configs = sortedConfig;
-                    })(results[2]);
-                }, 250);
+                    }, 500);
+                })(results[2]);
 
             });
         };
