@@ -28,12 +28,6 @@
         console.log(app);
         angular.element(document).ready(function() {
             _.each([{
-                    clazz: 'RequestManagement',
-                    module: [RequestModule]
-                }, {
-                    clazz: 'inknav',
-                    module: [NavbarModule]
-                }, {
                     clazz: 'manageApp',
                     module: ['manageApp']
                 }

@@ -15,8 +15,8 @@
                 });
                 myAside.$scope.empty = true;
                 $scope.show = function() {
+                    myAside.$scope.$show();
                     RequestService.getList().then(function(response) {
-                        myAside.show();
                         response = _.map(response, function(request) {
                             /* jshint camelcase: false */
                             var time = request.state === 'complete' ? request.completed_at : request.requested_at;
@@ -27,13 +27,16 @@
                                 state = 'error';
                             }
                             return {
-                                headline: request.headline,
+                                headline: angular.copy(request.headline),
                                 state: state,
                                 time: moment(time).fromNow()
                             };
                         });
-                        myAside.$scope.tasks = response;
+                        myAside.$scope.tasks = angular.copy(response);
                         myAside.$scope.empty = response.length === 0;
+                        myAside.$scope._hide = function() {
+                            myAside.$scope.$hide();
+                        };
                     });
                 };
             });

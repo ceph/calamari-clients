@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body>
+  <body class='manageApp'>
     <div class="nav navbar hidden-xs" role='navigation'>
         <div class="navbar-header">
             <a class="navbar-brand" href="http://www.inktank.com"><img class='image-responsive' src="images/logo.png" alt="Inktank Logo"/></a>
@@ -36,15 +36,15 @@
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
+
+    <!-- Add your site or application content here -->
+    <div class="">
     <div class='RequestManagement' ng-controller='RequestController'>
         <div growl></div>
         <!--div class='container'>
             <button type="button" class="btn btn-lg btn-primary" ng-click='show()'>Requests</button>
         </div-->
     </div>
-
-    <!-- Add your site or application content here -->
-    <div class="manageApp">
       <div class="container" ng-view></div>
     </div>
 
