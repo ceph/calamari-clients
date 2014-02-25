@@ -30,6 +30,7 @@
                             'title': 'Accept Request Sent',
                             'template': '/views/new-install-modal.html',
                             'content': '<p><i class="fa fa-spinner fa-spin"></i> Waiting for First Cluster to Join</p>',
+                            'background': 'static',
                             'html': true
                         });
                         modal.$scope.closeDisabled = true;
@@ -57,7 +58,8 @@
                             }
                             $scope.addDisabled = false;
 
-                        }, function( /*resp*/ ) {
+                        }, function(resp) {
+                            modal.$scope.content = '<i class="text-danger fa fa-exclamation-circle fa-lg"></i> Error ' + resp.status + '. Please try reloading the page and logging in again.</p><h4>Raw Response</h4><p><pre>' + resp.data + '</pre></p>';
                             $scope.addDisabled = false;
                         });
                         return;
