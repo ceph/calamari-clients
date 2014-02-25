@@ -4,7 +4,11 @@
     var __split = String.prototype.split;
     define(['lodash'], function(_) {
 
-        var RootController = function($q, $log, $timeout, $scope, KeyService, ClusterService, ToolService) {
+        var RootController = function($q, $log, $timeout, $location, $scope, KeyService, ClusterService, ToolService) {
+            if (ClusterService.id === null) {
+                $location.path('/first');
+                return;
+            }
             var promises = [ClusterService.get(), KeyService.getList(), ToolService.config()];
             $q.all(promises).then(function(results) {
 
@@ -47,6 +51,6 @@
 
             });
         };
-        return ['$q', '$log', '$timeout', '$scope', 'KeyService', 'ClusterService', 'ToolService', RootController];
+        return ['$q', '$log', '$timeout', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', RootController];
     });
 })();

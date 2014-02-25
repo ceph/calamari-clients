@@ -4,11 +4,15 @@
     define([], function() {
 
         var PoolController = function($log, $scope, PoolService, ClusterService, $location) {
+            if (ClusterService.clusterId === null) {
+                $location.path('/first');
+                return;
+            }
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.up = false;
             PoolService.getList().then(function(pools) {
                 $scope.pools = pools;
-                $scope.up=true;
+                $scope.up = true;
             });
             $scope.create = function() {
                 $location.path('/pool/new');

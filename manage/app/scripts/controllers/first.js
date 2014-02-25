@@ -28,21 +28,36 @@
                         $scope.addDisabled = true;
                         var modal = $modal({
                             'title': 'Accept Request Sent',
-                            'template': '/views/new-install-modal.html'
+                            'template': '/views/new-install-modal.html',
+                            'content': '<p><i class="fa fa-spinner fa-spin"></i> Waiting for First Cluster to Join</p>',
+                            'html': true
                         });
                         modal.$scope.closeDisabled = true;
                         modal.$scope._hide = function() {
                             modal.$scope.$hide();
-                            window.location = '/';
+                            ClusterService.initialize().then(function() {
+                                $location.path('/');
+                            });
                         };
+
+                        function checkClusterUp() {
+                            ClusterService.getList().then(function(clusters) {
+                                if (clusters.length) {
+                                    modal.$scope.closeDisabled = false;
+                                    modal.$scope.content = 'Cluster Initialized.';
+                                    return;
+                                }
+                                $timeout(checkClusterUp, 1000);
+                            });
+                        }
                         KeyService.accept(ids).then(function(resp) {
                             $log.debug(resp);
                             if (resp.status === 204) {
-                                modal.$scope.closeDisabled = false;
+                                $timeout(checkClusterUp, 1000);
                             }
                             $scope.addDisabled = false;
-                            
-                        }, function(/*resp*/) {
+
+                        }, function( /*resp*/ ) {
                             $scope.addDisabled = false;
                         });
                         return;

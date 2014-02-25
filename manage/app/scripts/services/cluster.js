@@ -63,7 +63,6 @@ define(['lodash'], function(_) {
             }
         });
         var service = new Service();
-        service.initialize = _.once(service.initialize);
         return service;
     };
     return ['Restangular', '$location', ClusterService];
