@@ -3,30 +3,7 @@
     'use strict';
     var __split = String.prototype.split;
 
-    define(['lodash'], function(_) {
-        function formatCpuFlags(flags) {
-            if (flags) {
-                return flags.join(', ');
-            }
-            return '';
-        }
-
-        function formatIPAddresses(ips) {
-            if (ips) {
-                return ips.join(', ');
-            }
-            return '';
-        }
-
-        function formatInterfaces(interfaces) {
-            if (interfaces) {
-                return _.reduce(interfaces, function(results, value, key) {
-                    results.push(key + ': ' + value);
-                    return results;
-                }, []).join(', ');
-            }
-            return '';
-        }
+    define(['lodash', 'helpers/grainHelpers'], function(_, grainHelpers) {
 
         var RootController = function($q, $log, $timeout, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal) {
             if (ClusterService.id === null) {
@@ -41,10 +18,10 @@
                 });
                 ServerService.getGrains(id).then(function(data) {
                     /* jshint camelcase: false */
-                    data.cpu_flags = formatCpuFlags(data.cpu_flags);
-                    data.ipv4 = formatIPAddresses(data.ipv4);
-                    data.ipv6 = formatIPAddresses(data.ipv6);
-                    data.ip_interfaces = formatInterfaces(data.ip_interfaces);
+                    data.cpu_flags = grainHelpers.formatCpuFlags(data.cpu_flags);
+                    data.ipv4 = grainHelpers.formatIPAddresses(data.ipv4);
+                    data.ipv6 = grainHelpers.formatIPAddresses(data.ipv6);
+                    data.ip_interfaces = grainHelpers.formatInterfaces(data.ip_interfaces);
                     var pairs = _.map([
                             'lsb_distrib_description',
                             'osarch',
