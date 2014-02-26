@@ -2,7 +2,31 @@
 (function() {
     'use strict';
     var __split = String.prototype.split;
+
     define(['lodash'], function(_) {
+        function formatCpuFlags(flags) {
+            if (flags) {
+                return flags.join(', ');
+            }
+            return '';
+        }
+
+        function formatIPAddresses(ips) {
+            if (ips) {
+                return ips.join(', ');
+            }
+            return '';
+        }
+
+        function formatInterfaces(interfaces) {
+            if (interfaces) {
+                return _.reduce(interfaces, function(results, value, key) {
+                    results.push(key + ': ' + value);
+                    return results;
+                }, []).join(', ');
+            }
+            return '';
+        }
 
         var RootController = function($q, $log, $timeout, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal) {
             if (ClusterService.id === null) {
@@ -11,17 +35,35 @@
             }
             $scope.detailView = function(id) {
                 var modal = $modal({
-                    title: 'Detailed View ' + id,
+                    title: id,
                     template: 'views/detail-grains-modal.html',
                     show: true
                 });
                 ServerService.getGrains(id).then(function(data) {
-                    modal.$scope.pairs = _.map(['kernelrelease', 'ip_interfaces', 'mem_total', 'lsb_distrib_description', 'ipv4', 'ipv6', 'cpu_model', 'saltversion', 'osarch', 'num_cpus', 'cpu_flags'], function(key) {
+                    /* jshint camelcase: false */
+                    data.cpu_flags = formatCpuFlags(data.cpu_flags);
+                    data.ipv4 = formatIPAddresses(data.ipv4);
+                    data.ipv6 = formatIPAddresses(data.ipv6);
+                    data.ip_interfaces = formatInterfaces(data.ip_interfaces);
+                    var pairs = _.map([
+                            'lsb_distrib_description',
+                            'osarch',
+                            'kernelrelease',
+                            'saltversion',
+                            'cpu_model',
+                            'num_cpus',
+                            'cpu_flags',
+                            'mem_total',
+                            'ip_interfaces',
+                            'ipv4',
+                            'ipv6'
+                    ], function(key) {
                         return {
                             key: key,
                             value: data[key] || 'Unknown'
                         };
                     });
+                    modal.$scope.pairs = pairs;
                 });
             };
             var promises = [ClusterService.get(), KeyService.getList(), ToolService.config()];

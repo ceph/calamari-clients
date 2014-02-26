@@ -3,11 +3,12 @@
         <div class="modal-content">
             <div class="modal-header" ng-show="title">
                 <button type="button" class="close" ng-click="$hide()">&times;</button>
-                 <h4 class="modal-title" ng-bind="title"></h4>
+                <i class='fa fa-desktop fa-lg'></i>
+                 <h4 style='display: inline-block; margin-left: 10px;' class="modal-title" ng-bind="title"></h4>
 
             </div>
             <div class="modal-body">
-                <table>
+                <table class='table table-condensed'>
                     <thead>
                         <tr>
                             <th>Key</th>
@@ -16,7 +17,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="pair in pairs">
-                            <td>{{pair.key}}</td>
+                            <td><em>{{pair.key}}</em></td>
                             <td>{{pair.value}}</td>
                         </tr>
                     </tbody>
