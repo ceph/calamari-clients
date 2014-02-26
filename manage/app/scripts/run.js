@@ -2,7 +2,7 @@
 (function() {
     'use strict';
     define(['angular'], function() {
-        var runBlock = function($rootScope, MenuService) {
+        var runBlock = function($rootScope, MenuService, $location) {
             // set up route change handler
             $rootScope.$on('$routeChangeSuccess', function(event, to) {
                 MenuService.setActive(to.menuId);
@@ -12,7 +12,10 @@
             $rootScope.showRequests = function() {
                 angular.element(document.getElementsByClassName('RequestManagement')[0]).scope().show();
             };
+            $rootScope.switchView = function(view) {
+                $location.path(view);
+            };
         };
-        return ['$rootScope', 'MenuService', runBlock];
+        return ['$rootScope', 'MenuService', '$location', runBlock];
     });
 })();

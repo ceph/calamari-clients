@@ -6,22 +6,22 @@
             this.menus = [{
                     label: 'Cluster',
                     id: 'cluster',
-                    href: '/#',
+                    href: '/',
                     active: true
                 }, {
                     label: 'OSD',
                     id: 'osd',
-                    href: '/#osd',
+                    href: '/osd',
                     active: false
                 }, {
                     label: 'Pools',
                     id: 'pool',
-                    href: '/#pool',
+                    href: '/pool',
                     active: false
                 }, {
                     label: 'Logs',
                     id: 'tools',
-                    href: '/#tools',
+                    href: '/tools',
                     active: false
                 }
             ];
