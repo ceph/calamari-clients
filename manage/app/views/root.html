@@ -21,10 +21,12 @@
                                       'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
 
                             </td>
-                            <td class='text-primary' data-id='{{minion[0].id}}'>{{minion.shortName}}</td>
+                            <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
                             <td>
                                 <button class='btn btn-primary btn-cluster' ng-if="minion.status != 'accepted'">ACCEPT</button>
-                                <button class='btn btn-danger btn-cluster' ng-if="minion.status == 'accepted'">REMOVE</button>
+                                <button class='btn btn-info btn-cluster'
+                                    ng-click='detailView(minion.id)'
+                                    ng-if="minion.status == 'accepted'">DETAIL</button>
                             </td>
                         </tr>
                     </tbody>
@@ -39,10 +41,12 @@
                                       'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
 
                             </td>
-                            <td class='text-primary' data-id='{{minion[0].id}}'>{{minion.shortName}}</td>
+                            <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
                             <td>
                                 <button class='btn btn-primary btn-cluster' ng-if="minion.status != 'accepted'">ACCEPT</button>
-                                <button class='btn btn-danger btn-cluster' ng-if="minion.status == 'accepted'">REMOVE</button>
+                                <button class='btn btn-info btn-cluster' 
+                                    ng-click='detailView(minion.id)'
+                                    ng-if="minion.status == 'accepted'">DETAIL</button>
                             </td>
                         </tr>
                     </tbody>

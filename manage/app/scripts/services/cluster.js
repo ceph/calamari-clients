@@ -60,6 +60,9 @@ define(['lodash'], function(_) {
                     id = this.clusterId;
                 }
                 return this.restangularFull.one('cluster', id);
+            },
+            base: function() {
+                return this.restangular;
             }
         });
         var service = new Service();

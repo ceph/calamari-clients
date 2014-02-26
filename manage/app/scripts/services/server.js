@@ -15,6 +15,11 @@ define(['lodash'], function(_) {
                 return this.restangular.cluster().one('server', id).get().then(function(server) {
                     return server[0];
                 });
+            },
+            getGrains: function(id) {
+                return this.restangular.base().one('server', id).one('grains').get().then(function(server) {
+                    return server;
+                });
             }
         });
         return new Service();

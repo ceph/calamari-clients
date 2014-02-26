@@ -4,11 +4,26 @@
     var __split = String.prototype.split;
     define(['lodash'], function(_) {
 
-        var RootController = function($q, $log, $timeout, $location, $scope, KeyService, ClusterService, ToolService) {
+        var RootController = function($q, $log, $timeout, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal) {
             if (ClusterService.id === null) {
                 $location.path('/first');
                 return;
             }
+            $scope.detailView = function(id) {
+                var modal = $modal({
+                    title: 'Detailed View ' + id,
+                    template: 'views/detail-grains-modal.html',
+                    show: true
+                });
+                ServerService.getGrains(id).then(function(data) {
+                    modal.$scope.pairs = _.map(['kernelrelease', 'ip_interfaces', 'mem_total', 'lsb_distrib_description', 'ipv4', 'ipv6', 'cpu_model', 'saltversion', 'osarch', 'num_cpus', 'cpu_flags'], function(key) {
+                        return {
+                            key: key,
+                            value: data[key] || 'Unknown'
+                        };
+                    });
+                });
+            };
             var promises = [ClusterService.get(), KeyService.getList(), ToolService.config()];
             $q.all(promises).then(function(results) {
 
@@ -51,6 +66,6 @@
 
             });
         };
-        return ['$q', '$log', '$timeout', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', RootController];
+        return ['$q', '$log', '$timeout', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', RootController];
     });
 })();
