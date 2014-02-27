@@ -31,20 +31,62 @@
                     }, {});
                     var left = $scope.leftminions;
                     var right = $scope.rightminions;
-                    var newMinions = _.reduce(left.concat(right), function(result, minion) {
-                        delete result[minion.id];
-                        return result;
-                    }, extract);
-                    newMinions = _.map(newMinions, function(n) {
-                        return n;
-                    });
-                    _.each(newMinions, function(noo) {
-                        if ($scope.leftminions.length <= $scope.rightminions.length) {
-                            $scope.leftminions.push(noo);
+                    var collection = _.reduce(left.concat(right), function(result, minion) {
+                        var entry = result.add[minion.id];
+                        if (entry) {
+                            // key exists still
+                            delete result.add[minion.id];
+                            if (entry.status !== minion.status) {
+                                // minion key has changed status
+                                result.change[minion.id] = minion;
+                            }
                         } else {
-                            $scope.rightminions.push(noo);
+                            // key has been removed
+                            result.remove[minion.id] = true;
+                        }
+                        return result;
+                    }, {
+                        add: extract,
+                        change: {},
+                        remove: {}
+                    });
+                    if (collection.remove.length) {
+                        // remove hosts
+                        left = _.filter(left, function(minion) {
+                            return !(collection.remove[minion.id]);
+                        });
+                        left = _.filter(right, function(minion) {
+                            return !(collection.remove[minion.id]);
+                        });
+                    }
+                    if (collection.change.length) {
+                        // change hosts
+                        left = _.map(left, function(minion) {
+                            if (collection.change[minion.id]) {
+                                return collection.change[minion.id];
+                            }
+                            return minion;
+                        });
+                        right = _.map(right, function(minion) {
+                            if (collection.change[minion.id]) {
+                                return collection.change[minion.id];
+                            }
+                            return minion;
+                        });
+                    }
+                    var adds = _.map(collection.add, function(value) {
+                        return value;
+                    });
+                    _.each(adds, function(add) {
+                        // add hosts
+                        if (left.length <= right.length) {
+                            left.push(add);
+                        } else {
+                            right.push(add);
                         }
                     });
+                    $scope.leftminions = left;
+                    $scope.rightminions = right;
                 });
                 $rootScope.keyTimer = $timeout(refreshKeys, 20000);
             }
