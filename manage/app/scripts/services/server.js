@@ -13,7 +13,7 @@ define(['lodash'], function(_) {
             },
             get: function(id) {
                 return this.restangular.cluster().one('server', id).get().then(function(server) {
-                    return server[0];
+                    return server;
                 });
             },
             getGrains: function(id) {
