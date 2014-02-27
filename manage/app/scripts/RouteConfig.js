@@ -17,7 +17,7 @@
                 resolve: {
                     'Resolver': 'ClusterResolver'
                 }
-            }).when('/osd/:fqdn', {
+            }).when('/osd/server/:fqdn', {
                 templateUrl: 'views/osd-host.html',
                 menuId: 'osd',
                 controller: 'OSDHostController',

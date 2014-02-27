@@ -18,7 +18,7 @@
                 });
             });
             $scope.hostClickHandler = function(fqdn) {
-                $location.path('/osd/' + fqdn);
+                $location.path('/osd/server/' + fqdn);
             };
         };
         return ['$scope', 'ClusterService', 'ServerService', '$location', OSDController];
