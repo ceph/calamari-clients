@@ -6,13 +6,14 @@
     define(['lodash', 'helpers/grainHelpers'], function(_, grainHelpers) {
 
 
-        var RootController = function($q, $log, $timeout, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal) {
+        var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal) {
             if (ClusterService.id === null) {
                 $location.path('/first');
                 return;
             }
 
             function refreshKeys() {
+                $log.debug('refreshing keys');
                 KeyService.getList().then(function(minions) {
                     $scope.minionsCounts = {
                         total: minions.length
@@ -45,7 +46,7 @@
                         }
                     });
                 });
-                $timeout(refreshKeys, 20000);
+                $rootScope.keyTimer = $timeout(refreshKeys, 20000);
             }
 
             $scope.acceptMinion = function acceptMinion(side, id) {
@@ -144,9 +145,9 @@
                     }, 500);
                 })(results[2]);
 
-                $timeout(refreshKeys, 20000);
+                $rootScope.keyTimer = $timeout(refreshKeys, 20000);
             });
         };
-        return ['$q', '$log', '$timeout', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', RootController];
+        return ['$q', '$log', '$timeout', '$rootScope', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', RootController];
     });
 })();

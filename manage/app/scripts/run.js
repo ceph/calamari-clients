@@ -2,11 +2,17 @@
 (function() {
     'use strict';
     define(['angular'], function() {
-        var runBlock = function($rootScope, MenuService, $location) {
+        var runBlock = function($rootScope, MenuService, $location, $timeout, $log) {
             // set up route change handler
-            $rootScope.$on('$routeChangeSuccess', function(event, to) {
+            $rootScope.$on('$routeChangeSuccess', function(event, to, from) {
                 MenuService.setActive(to.menuId);
                 $rootScope.menus = MenuService.getMenus();
+                $log.debug('from ' + from + ' to ' + to, to, from);
+                if (from && from.loadedTemplateUrl ==='views/root.html' && $rootScope.keyTimer) {
+                    $timeout.cancel($rootScope.keyTimer);
+                    $rootScope.keyTimer = undefined;
+                    $log.debug('canceling key timer');
+                }
             });
             // add show requests handler for request queue
             $rootScope.showRequests = function() {
@@ -16,6 +22,6 @@
                 $location.path(view);
             };
         };
-        return ['$rootScope', 'MenuService', '$location', runBlock];
+        return ['$rootScope', 'MenuService', '$location', '$timeout', '$log', runBlock];
     });
 })();
