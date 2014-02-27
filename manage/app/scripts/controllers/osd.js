@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define([], function() {
+    define(['lodash'], function(_) {
 
         var OSDController = function($scope, ClusterService, ServerService, $location) {
             if (ClusterService.clusterId === null) {
@@ -13,7 +13,9 @@
             });
             ServerService.getList().then(function(servers) {
                 $scope.up = true;
-                $scope.servers = servers;
+                $scope.servers = _.sortBy(servers, function(server) {
+                    return server.hostname;
+                });
             });
             $scope.hostClickHandler = function(fqdn) {
                 $location.path('/osd/' + fqdn);
