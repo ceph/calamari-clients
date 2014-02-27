@@ -7,7 +7,7 @@
             $rootScope.$on('$routeChangeSuccess', function(event, to, from) {
                 MenuService.setActive(to.menuId);
                 $rootScope.menus = MenuService.getMenus();
-                $log.debug('from ' + from + ' to ' + to, to, from);
+                $log.debug('from ' + (from && from.loadedTemplateUrl) + ' to ' + (to && to.loadedTemplateUrl), to, from);
                 if (from && from.loadedTemplateUrl ==='views/root.html' && $rootScope.keyTimer) {
                     $timeout.cancel($rootScope.keyTimer);
                     $rootScope.keyTimer = undefined;

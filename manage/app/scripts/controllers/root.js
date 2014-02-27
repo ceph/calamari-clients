@@ -31,14 +31,14 @@
                     }, {});
                     var left = $scope.leftminions;
                     var right = $scope.rightminions;
-                    var noobs = _.reduce(left.concat(right), function(result, minion) {
+                    var newMinions = _.reduce(left.concat(right), function(result, minion) {
                         delete result[minion.id];
                         return result;
                     }, extract);
-                    noobs = _.map(noobs, function(n) {
+                    newMinions = _.map(newMinions, function(n) {
                         return n;
                     });
-                    _.each(noobs, function(noo) {
+                    _.each(newMinions, function(noo) {
                         if ($scope.leftminions.length <= $scope.rightminions.length) {
                             $scope.leftminions.push(noo);
                         } else {
