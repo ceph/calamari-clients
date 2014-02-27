@@ -27,7 +27,7 @@
                         $log.debug(ids);
                         $scope.addDisabled = true;
                         var modal = $modal({
-                            'title': 'Accept Request Sent',
+                            'title': '<i class="text-success fa fa-check-circle fa-lg"></i> Accept Request Sent',
                             'template': 'views/new-install-modal.html',
                             'content': '<p><i class="fa fa-spinner fa-spin"></i> Waiting for First Cluster to Join</p>',
                             'background': 'static',

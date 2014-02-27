@@ -50,20 +50,36 @@
             }
 
             $scope.acceptMinion = function acceptMinion(side, id) {
-                var minions = side === 'l' ? $scope.leftminions : $scope.rightminions;
-                minions = _.filter(minions, function(minion) {
-                    if (minion.id === id) {
-                        return false;
-                    }
-                    return true;
-                });
-                if (side === 'l') {
-                    $scope.leftminions = minions;
-                } else {
-                    $scope.rightminions = minions;
-                }
                 KeyService.accept([id]).then(function(resp) {
-                    if (resp.status === 208) {}
+                    if (resp.status === 204) {
+                        var minions = side === 'l' ? $scope.leftminions : $scope.rightminions;
+                        minions = _.filter(minions, function(minion) {
+                            if (minion.id === id) {
+                                return false;
+                            }
+                            return true;
+                        });
+                        if (side === 'l') {
+                            $scope.leftminions = minions;
+                        } else {
+                            $scope.rightminions = minions;
+                        }
+                    }
+                }, function(resp) {
+                    var modal = $modal({
+                        template: 'views/custom-modal.html',
+                        html: true
+                    });
+                    modal.$scope._hide = function() {
+                        modal.$scope.$hide();
+                    };
+                    if (resp.status === 403) {
+                        modal.$scope.title = '<i class="text-danger fa fa-exclamation-circle fa-lg"></i> Unauthorized Access';
+                        modal.$scope.content = 'Error ' + resp.status + '. Please try reloading the page and logging in again.</p>';
+                    } else {
+                        modal.$scope.title = '<i class="text-danger fa fa-exclamation-circle fa-lg"></i> Unexpected Error';
+                        modal.$scope.content = '<i class="text-danger fa fa-exclamation-circle fa-lg"></i> Error ' + resp.status + '. Please try reloading the page and logging in again.</p><h4>Raw Response</h4><p><pre>' + resp.data + '</pre></p>';
+                    }
                 });
             };
             $scope.detailView = function detailView(id) {
