@@ -23,10 +23,10 @@
                             </td>
                             <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
                             <td>
-                                <button class='btn btn-primary btn-cluster' ng-if="minion.status != 'accepted'">ACCEPT</button>
-                                <button class='btn btn-info btn-cluster'
-                                    ng-click='detailView(minion.id)'
-                                    ng-if="minion.status == 'accepted'">DETAIL</button>
+                                <button class='btn btn-primary btn-cluster' ng-click="acceptMinion('l', minion.id)"
+                                ng-if="minion.status != 'accepted'">ACCEPT</button>
+                                <button class='btn btn-info btn-cluster' ng-click='detailView(minion.id)'
+                                ng-if="minion.status == 'accepted'">DETAIL</button>
                             </td>
                         </tr>
                     </tbody>
@@ -43,10 +43,10 @@
                             </td>
                             <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
                             <td>
-                                <button class='btn btn-primary btn-cluster' ng-if="minion.status != 'accepted'">ACCEPT</button>
-                                <button class='btn btn-info btn-cluster' 
-                                    ng-click='detailView(minion.id)'
-                                    ng-if="minion.status == 'accepted'">DETAIL</button>
+                                <button class='btn btn-primary btn-cluster' ng-click="acceptMinion('r', minion.id)"
+                                ng-if="minion.status != 'accepted'">ACCEPT</button>
+                                <button class='btn btn-info btn-cluster' ng-click='detailView(minion.id)'
+                                ng-if="minion.status == 'accepted'">DETAIL</button>
                             </td>
                         </tr>
                     </tbody>

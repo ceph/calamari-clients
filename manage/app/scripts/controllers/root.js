@@ -5,12 +5,67 @@
 
     define(['lodash', 'helpers/grainHelpers'], function(_, grainHelpers) {
 
+
         var RootController = function($q, $log, $timeout, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal) {
             if (ClusterService.id === null) {
                 $location.path('/first');
                 return;
             }
-            $scope.detailView = function(id) {
+
+            function refreshKeys() {
+                KeyService.getList().then(function(minions) {
+                    $scope.minionsCounts = {
+                        total: minions.length
+                    };
+                    var extract = _.reduce(_.sortBy(minions, function(m) {
+                        return m.id;
+                    }), function(results, minion) {
+                        var shortName = _.first(__split.call(minion.id, '.'));
+                        results[minion.id] = {
+                            id: minion.id,
+                            status: minion.status,
+                            shortName: shortName
+                        };
+                        return results;
+                    }, {});
+                    var left = $scope.leftminions;
+                    var right = $scope.rightminions;
+                    var noobs = _.reduce(left.concat(right), function(result, minion) {
+                        delete result[minion.id];
+                        return result;
+                    }, extract);
+                    noobs = _.map(noobs, function(n) {
+                        return n;
+                    });
+                    _.each(noobs, function(noo) {
+                        if ($scope.leftminions.length <= $scope.rightminions.length) {
+                            $scope.leftminions.push(noo);
+                        } else {
+                            $scope.rightminions.push(noo);
+                        }
+                    });
+                });
+                $timeout(refreshKeys, 20000);
+            }
+
+            $scope.acceptMinion = function acceptMinion(side, id) {
+                var minions = side === 'l' ? $scope.leftminions : $scope.rightminions;
+                minions = _.filter(minions, function(minion) {
+                    if (minion.id === id) {
+                        return false;
+                    }
+                    return true;
+                });
+                if (side === 'l') {
+                    $scope.leftminions = minions;
+                } else {
+                    $scope.rightminions = minions;
+                }
+                KeyService.accept([id]).then(function(resp) {
+                    if (resp.status === 208) {}
+                });
+            };
+            $scope.detailView = function detailView(id) {
                 var modal = $modal({
                     title: id,
                     template: 'views/detail-grains-modal.html',
@@ -55,10 +110,16 @@
                     $scope.minionsCounts = {
                         total: minions.length
                     };
-                    var m = _.reduce(minions, function(results, minion, index) {
+                    var m = _.reduce(_.sortBy(minions, function(m) {
+                        return m.id;
+                    }), function(results, minion, index) {
                         var shortName = _.first(__split.call(minion.id, '.'));
                         minion.shortName = shortName;
-                        results[index % 2].push(minion);
+                        results[index % 2].push({
+                            id: minion.id,
+                            status: minion.status,
+                            shortName: shortName
+                        });
                         return results;
                     }, [
                         [],
@@ -83,6 +144,7 @@
                     }, 500);
                 })(results[2]);
 
+                $timeout(refreshKeys, 20000);
             });
         };
         return ['$q', '$log', '$timeout', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', RootController];
