@@ -1,18 +1,38 @@
 <div ng-include="'views/appbar.html'"></div>
-<div class="card ng-hide am-fade-and-slide-bottom" ng-show='up'>
+<div class="card ng-hide am-fade-and-slide-bottom" style='min-height: 500px;' ng-show='up'>
     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; OSD HOST <span class='text-primary'>{{fqdn}}</span> &raquo;</h4>
 <div class="container">
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
-    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
         <table class='table table-condensed'>
             <thead>
                 <tr>
-                    <th>osd id</th>
+                    <th>ID</th>
+                    <th>Daemon</th>
+                    <th>State</th>
+                    <th>Re-Weight</th>
+                    <th>Commands</th>
                 </tr>
             </thead>
             </tbody>
-                <tr class='am-fade-and-slide-top' ng-repeat='osd in services.osds'>
+                <tr class='am-fade-and-slide-bottom' ng-repeat='osd in services.osds'>
                     <td>{{osd.id}}</td>
+                    <td>
+                        <span ng-if="osd.running" class="label label-success">Running</span>
+                        <span ng-if="!osd.running" class="label label-warning">Stopped</span>
+                    </td>
+                    <td>
+                        <span ng-if="osd.up" class="label label-success">Up</span>
+                        <span ng-if="!osd.up" class="label label-danger">Down</span>
+                        <span ng-if="osd.in" class="label label-success">In</span>
+                        <span ng-if="!osd.in" class="label label-danger">Out</span>
+                    </td>
+                    <td>
+                        {{osd.reweight}}
+                    </td>
+                    <td>
+                        <button class='btn btn-primary'>Modify</button>
+                    </td>
                 </tr>
             </tbody>
         </table>

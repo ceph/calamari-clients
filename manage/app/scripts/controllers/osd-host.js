@@ -3,33 +3,41 @@
     'use strict';
     define(['lodash'], function(_) {
 
-        var OSDHostController = function($log, $scope, $routeParams, Restangular) {
+        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, OSDService) {
             $scope.fqdn = $routeParams.fqdn;
-            var baseClusters = Restangular.setBaseUrl('/api/v2').all('cluster');
-            baseClusters.getList().then(function(clusters) {
-                var cluster = _.first(clusters);
-                $scope.clusterName = cluster.name;
-                var baseServer = Restangular.one('cluster', cluster.id).one('server', $routeParams.fqdn);
-                baseServer.get().then(function(server) {
-                    //console.log(server);
-                    $scope.server = server;
-                    var osds = [];
-                    _.each(server.services, function(service) {
-                        if (service.type === 'osd') {
-                            var osd = {
-                                id: service.id
-                            };
-                            osds.push(osd);
-                        }
-                    });
-                    $scope.services = {
-                        osds: osds,
-                    };
+            $scope.clusterName = ClusterService.clusterModel.name;
+            ServerService.get($scope.fqdn).then(function(server) {
+                //console.log(server);
+                $scope.server = server;
+                var r = _.reduce(_.sortBy(server.services, function(service) {
+                    var id = parseInt(service.id, 10);
+                    return _.isNaN(id) ? 0 : id;
+                }), function(results, service) {
+                    if (service.type === 'osd') {
+                        var osd = {
+                            id: service.id,
+                            running: true
+                        };
+                        results.osds.push(osd);
+                        results.promises.push(OSDService.get(osd.id));
+                    }
+                    return results;
+                }, {
+                    osds: [],
+                    promises: []
                 });
                 $scope.up = true;
+                $q.all(r.promises).then(function(results) {
+                    _.each(results, function(result, index) {
+                        r.osds[index] = _.extend(r.osds[index], result);
+                    });
+                    $scope.services = {
+                        osds: r.osds
+                    };
+                });
             });
 
         };
-        return ['$log', '$scope', '$routeParams', 'Restangular', OSDHostController];
+        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', 'OSDService', OSDHostController];
     });
 })();
