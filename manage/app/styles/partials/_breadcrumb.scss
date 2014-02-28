@@ -37,6 +37,9 @@ $third-row-height: 120px;
 	&:active {
 	}
 }
+.table > tbody > tr > td {
+	vertical-align: middle;
+}
 .dropdown-menu {
 	background-color: $itlightgray;
     span {
