@@ -1,14 +1,18 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card ng-hide am-fade-and-slide-top" ng-show='up'>
-    <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; OSD HOSTS &raquo;</h4>
-<div class="container-fluid">
-<div class="row" style="border:0px solid black; padding: 20px 40px;">
-    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-        <div ng-repeat='server in servers' class="am-fade-and-slide-left">
-            <button style="min-width: 200px;" type="button" class="btn btn-md btn-primary" ng-click="hostClickHandler(server.fqdn)" data-placement="center">{{server.hostname}}</button>
-            <div style="height: 10px"></div>
-        </div>
-    </div>
-</div>
+     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; OSD HOSTS &raquo;</h4>
 
-</div !-- card -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <div class='standard-spacing'>
+                    <div ng-repeat='server in servers' class="am-fade-and-slide-left">
+                        <button type="button" class="btn btn-md btn-primary btn-osd" ng-click="hostClickHandler(server.fqdn)"
+                        data-placement="center">{{server.hostname}}</button>
+                        <div style="height: 10px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div !-- card -->
+</div>

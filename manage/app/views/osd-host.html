@@ -1,46 +1,49 @@
 <div ng-include="'views/appbar.html'"></div>
-<div class="card ng-hide am-fade-and-slide-bottom" style='min-height: 500px;' ng-show='up'>
-    <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; OSD &raquo; SERVER <span class='text-primary'>{{fqdn}}</span> &raquo;</h4>
-<div class="container">
-<div class="row" style="border:0px solid black; padding: 20px 40px;">
-    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-        <table class='table table-condensed'>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Daemon</th>
-                    <th>State</th>
-                    <th>Re-Weight</th>
-                    <th>Commands</th>
-                </tr>
-            </thead>
-            </tbody>
-                <tr class='am-fade-and-slide-bottom' ng-repeat='osd in services.osds'>
-                    <td>{{osd.id}}</td>
-                    <td>
-                        <span ng-if="osd.running" class="label label-success">Running</span>
-                        <span ng-if="!osd.running" class="label label-warning">Stopped</span>
-                    </td>
-                    <td>
-                        <span ng-if="osd.up" class="label label-success">UP</span>
-                        <span ng-if="!osd.up" class="label label-danger">DOWN</span>
-                        <span ng-if="osd.in" class="label label-success">IN</span>
-                        <span ng-if="!osd.in" class="label label-danger">OUT</span>
-                    </td>
-                    <td>
-                        {{osd.reweight}}
-                    </td>
-                    <td>
-                        <button ng-click='' class='btn btn-warning'>SCRUB</button>
-                        <button ng-click='modify(osd.id)' style='margin-left: 10px;' class='btn btn-primary'>ADVANCED</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+<div class="card ng-hide am-fade-and-slide-bottom" style='min-height: 500px;'
+ng-show='up'>
+     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; OSD &raquo; SERVER <span class='text-primary'>{{fqdn}}</span> &raquo;</h4>
 
-<div class="footer">
-</div>
-</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                <div class="standard-spacing">
+                    <table class='table table-condensed'>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Daemon</th>
+                                <th>State</th>
+                                <th>Re-Weight</th>
+                                <th>Commands</th>
+                            </tr>
+                        </thead>
+                        </tbody>
+                        <tr class='am-fade-and-slide-bottom' ng-repeat='osd in services.osds'>
+                            <td>{{osd.id}}</td>
+                            <td> <span ng-if="osd.running" class="label label-success">RUNNING</span>
+ <span ng-if="!osd.running"
+                                class="label label-warning">DEAD</span>
+
+                            </td>
+                            <td> <span ng-if="osd.up" class="label label-success">UP</span>
+ <span ng-if="!osd.up"
+                                class="label label-danger">DOWN</span>
+ <span ng-if="osd.in" class="label label-success">IN</span>
+
+                                <span
+                                ng-if="!osd.in" class="label label-danger">OUT</span>
+                            </td>
+                            <td>{{osd.reweight}}</td>
+                            <td>
+                                <button ng-click='' class='btn btn-warning'>SCRUB</button>
+                                <button ng-click='modify(osd.id)' style='margin-left: 10px;' class='btn btn-primary'>ADVANCED</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="footer"></div>
+    </div>
 </div !-- card -->
