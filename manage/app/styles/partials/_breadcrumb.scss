@@ -75,7 +75,13 @@ $third-row-height: 120px;
 .btn-cluster {
 	min-width: 90px;
 }
-
+.btn-osd {
+	min-width: 120px;
+}
+.osd-cmd-text {
+	min-width: 130px;
+	display: inline-block;
+}
 $color-width: 5px;
 
 .card-title {

@@ -24,6 +24,13 @@
                 resolve: {
                     'Resolver': 'ClusterResolver'
                 }
+            }).when('/osd/id/:id', {
+                templateUrl: 'views/osd-modify.html',
+                menuId: 'osd',
+                controller: 'OSDModifyController',
+                resolve: {
+                    'Resolver': 'ClusterResolver'
+                }
             }).when('/pool', {
                 templateUrl: 'views/pool.html',
                 menuId: 'pool',

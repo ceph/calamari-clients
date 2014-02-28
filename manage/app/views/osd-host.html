@@ -1,9 +1,9 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card ng-hide am-fade-and-slide-bottom" style='min-height: 500px;' ng-show='up'>
-    <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; OSD HOST <span class='text-primary'>{{fqdn}}</span> &raquo;</h4>
+    <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; OSD &raquo; SERVER <span class='text-primary'>{{fqdn}}</span> &raquo;</h4>
 <div class="container">
 <div class="row" style="border:0px solid black; padding: 20px 40px;">
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
         <table class='table table-condensed'>
             <thead>
                 <tr>
@@ -22,16 +22,17 @@
                         <span ng-if="!osd.running" class="label label-warning">Stopped</span>
                     </td>
                     <td>
-                        <span ng-if="osd.up" class="label label-success">Up</span>
-                        <span ng-if="!osd.up" class="label label-danger">Down</span>
-                        <span ng-if="osd.in" class="label label-success">In</span>
-                        <span ng-if="!osd.in" class="label label-danger">Out</span>
+                        <span ng-if="osd.up" class="label label-success">UP</span>
+                        <span ng-if="!osd.up" class="label label-danger">DOWN</span>
+                        <span ng-if="osd.in" class="label label-success">IN</span>
+                        <span ng-if="!osd.in" class="label label-danger">OUT</span>
                     </td>
                     <td>
                         {{osd.reweight}}
                     </td>
                     <td>
-                        <button class='btn btn-primary'>Modify</button>
+                        <button ng-click='' class='btn btn-warning'>SCRUB</button>
+                        <button ng-click='modify(osd.id)' style='margin-left: 10px;' class='btn btn-primary'>ADVANCED</button>
                     </td>
                 </tr>
             </tbody>
