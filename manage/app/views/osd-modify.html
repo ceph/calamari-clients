@@ -48,19 +48,19 @@ ng-show='up'>
                         <span class="osd-cmd-text">
                             Set OSD {{osd.id}} to
                         </span>
-                        <button type="button" class="btn btn-warning btn-osd">DOWN</button>
+                        <button type="button" ng-click="down(osd.id)" class="btn btn-warning btn-osd">DOWN</button>
                     </p>
                     <p ng-if="osd.in">
                       <span class="osd-cmd-text">
                          Set OSD {{osd.id}} to
                       </span>
-                      <button type="button" class="btn btn-warning btn-osd">OUT</button>
+                      <button type="button" ng-click="out(osd.id)" class="btn btn-warning btn-osd">OUT</button>
                     </p>
                     <p ng-if="!osd.in">
                       <span class="osd-cmd-text">
                          Set OSD {{osd.id}} to
                        </span>
-                       <button type="button" class="btn btn-warning btn-osd">IN</button>
+                       <button type="button" ng-click="in(osd.id)" class="btn btn-warning btn-osd">IN</button>
                     </p>
                     <p>
                       <span class="osd-cmd-text">
