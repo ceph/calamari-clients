@@ -130,6 +130,7 @@
                     template: 'views/detail-grains-modal.html',
                     show: true
                 });
+                // TODO need a special path for the calamari server itself using /grains
                 ServerService.getGrains(id).then(function(data) {
                     /* jshint camelcase: false */
                     data.cpu_flags = grainHelpers.formatCpuFlags(data.cpu_flags);

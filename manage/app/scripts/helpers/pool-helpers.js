@@ -65,6 +65,7 @@
          *   pgnumReset: used to control whether to use recommend pg value or reset back to default.
          *   Use case is modify wants the old value back and create wants the recommend value.
          */
+
         function makeReset($scope, options) {
             /* jshint camelcase: false */
             options = options || {
@@ -93,6 +94,15 @@
         /* Business Logic for crush rule sets pool replicas and placement groups */
 
         function addWatches($scope) {
+            $scope.$watch('pool.name', function(newValue) {
+                if (_.find($scope.poolNames, function(name) {
+                    return name === newValue;
+                })) {
+                    $scope.poolForm.name.$setValidity('duplicate', false);
+                    return;
+                }
+                $scope.poolForm.name.$setValidity('duplicate', true);
+            });
             /* jshint camelcase: false */
             $scope.$watch('pool.size', function(newValue /*, oldValue*/ ) {
                 if (!_.isNumber(newValue)) {

@@ -12,6 +12,7 @@
                 <p ng-show='poolForm.name.$error.minlength' class='help-block'>Name is too short (at least 3 characters)</p>
                 <p ng-show='poolForm.name.$error.maxlength' class='help-block'>Name is too long (64 characters max)</p>
                 <p ng-show='poolForm.name.$error.pattern' class='help-block'>Invalid Characters</p>
+                <p ng-show='poolForm.name.$error.duplicate' class='help-block'>Pool name is already in use</p>
             </div>
             <div class="form-group" ng-class="{ 'has-error': poolForm.size.$invalid && !poolForm.size.$pristine}">
                 <label for="size">Replicas (size)</label>

@@ -62,7 +62,7 @@
             };
 
             // Initialize Controller
-            var promises = [PoolService.defaults(), CrushService.getList(), ToolService.config('mon_max_pool_pg_num')];
+            var promises = [PoolService.defaults(), CrushService.getList(), ToolService.config('mon_max_pool_pg_num'), PoolService.getList()];
 
             $q.all(promises).then(function(results) {
                 /* jshint camelcase:false */
@@ -74,7 +74,9 @@
                     crush_ruleset: cephDefaults.crush_ruleset,
                     mon_max_pool_pg_num: parseInt(result.shift().value().value, 10)
                 });
+                var poolNames = _.pluck(result.shift().value(), 'name');
 
+                $scope.poolNames = poolNames;
                 $scope.defaults = mergedDefaults;
                 $scope.crushrulesets = poolHelpers.normalizeCrushRulesets(self.crushrulesets);
 
