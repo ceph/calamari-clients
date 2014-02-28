@@ -1,9 +1,9 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash'], function() {
+    define(['lodash'], function(_) {
 
-        var OSDModifyController = function($scope, ClusterService, OSDService, $location, $routeParams, $window, $modal) {
+        var OSDModifyController = function($log, $scope, ClusterService, OSDService, $location, $routeParams, $window, $modal) {
             if (ClusterService.clusterId === null) {
                 $location.path('/first');
                 return;
@@ -18,6 +18,9 @@
                         background: 'static'
                     });
                     modal.$scope.closeDisabled = true;
+                    if (_.isFunction(operation)) {
+                        operation = operation.call(undefined);
+                    }
                     OSDService.patch(id, operation).then(function( /*resp*/ ) {
                         modal.$scope.title = prefix + ' Request Sent Successfully to OSD ' + id;
                         modal.$scope.content = 'Complete.';
@@ -50,9 +53,17 @@
             $scope.out = makeOSDPatchFn('Out', {
                 'in': false
             });
-            $scope.in = makeOSDPatchFn('In', {
+            $scope['in'] = makeOSDPatchFn('In', {
                 'in': true
             });
+            $scope.updateFn = makeOSDPatchFn('Update', function() {
+                return {
+                    'reweight': $scope.osd.reweight
+                };
+            });
+            $scope.resetFn = function() {
+                $scope.osd.reweight = $scope.defaults.reweight;
+            };
             $scope.tooltip = {
                 title: 'Use Advanced Operations to change this'
             };
@@ -61,11 +72,12 @@
                 $location.path('/osd/server/' + fqdn);
             };
             OSDService.get($routeParams.id).then(function(osd) {
+                $scope.defaults = angular.copy(osd);
                 $scope.osd = osd;
                 $scope.keys = ['uuid', 'up', 'in', 'reweight', 'server', 'pools'];
                 $scope.up = true;
             });
         };
-        return ['$scope', 'ClusterService', 'OSDService', '$location', '$routeParams', '$window', '$modal', OSDModifyController];
+        return ['$log', '$scope', 'ClusterService', 'OSDService', '$location', '$routeParams', '$window', '$modal', OSDModifyController];
     });
 })();

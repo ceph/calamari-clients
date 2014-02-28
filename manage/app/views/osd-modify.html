@@ -7,7 +7,7 @@ ng-show='up'>
         <h3>OSD <span class="text-primary">{{osd.id}}</span> Settings</h3>
         <div class="row">
             <div class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
-                <form role="form" name="osdForm">
+                <form role="form" name="osdForm" novalidate>
                     <div class="form-group">
                         <label for="uuid">UUID <i class="fa fa-lock"></i></label>
                         <input id="uuid" class="form-control" length="64" type="text" readonly ng-model="osd.uuid"></input>
@@ -21,9 +21,12 @@ ng-show='up'>
                             <span ng-if="!osd.in" data-trigger="hover" data-type="info" title="{{tooltip.title}}" class="label label-warning" bs-tooltip>OUT</span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Re-Weight</label>
-                        <input min="0" max="1" type="number" class="form-control" ng-model="osd.reweight"></input>
+                    <div class="form-group" ng-class="{ 'has-error': osdForm.reweight.$invalid && !osdForm.reweight.$pristine }">
+                        <label for="reweight">Re-Weight</label>
+                        <input required id="reweight" min="0" max="1" name="reweight" type="number" class="form-control" ng-model="osd.reweight"></input>
+                        <p ng-show='osdForm.reweight.$error.required' class='help-block'>Required Field</p>
+                        <p ng-show='osdForm.reweight.$error.min' class='help-block'>Must be a value between 0 and 1 Inclusive</p>
+                        <p ng-show='osdForm.reweight.$error.max' class='help-block'>Must be a value between 0 and 1 Inclusive</p>
                     </div>
                     <div class="form-group">
                         <label>Server <i class="fa fa-lock"></i></label>
@@ -32,8 +35,8 @@ ng-show='up'>
                 
                     <div class="form-group">
                         <button type="button" ng-click="cancelFn()" class="btn btn-danger btn-osd">CANCEL</button>
-                        <button type="button" class="btn btn-warning btn-osd">RESET</button>
-                        <button type="button" class="btn btn-primary btn-osd">UPDATE</button>
+                        <button type="button" ng-click="resetFn()" class="btn btn-warning btn-osd">RESET</button>
+                        <button type="button" ng-click="updateFn(osd.id)" class="btn btn-primary btn-osd">UPDATE</button>
                     </div>
                 </form>
 
