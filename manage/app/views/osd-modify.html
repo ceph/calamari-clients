@@ -48,7 +48,7 @@ ng-show='up'>
                         <div class="form-group">
                             <button type="button" ng-click="cancelFn()" class="btn btn-danger btn-osd">CANCEL</button>
                             <button type="button" ng-click="resetFn()" class="btn btn-warning btn-osd">RESET</button>
-                            <button type="button" ng-click="updateFn(osd.id)" class="btn btn-primary btn-osd">UPDATE</button>
+                            <button type="button" ng-click="updateFn(osd.id)" ng-disabled="!osdForm.$valid || osdForm.$pristine" class="btn btn-primary btn-osd">UPDATE</button>
                         </div>
                     </form>
                 </div>

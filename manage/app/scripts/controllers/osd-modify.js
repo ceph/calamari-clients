@@ -63,6 +63,7 @@
             });
             $scope.resetFn = function() {
                 $scope.osd.reweight = $scope.defaults.reweight;
+                $scope.osdForm.$setPristine(true);
             };
             $scope.tooltip = {
                 title: 'Use Advanced Operations to change this'
