@@ -8,6 +8,26 @@
                 $location.path('/first');
                 return;
             }
+
+            function makeOSDCommand(prefix, callback) {
+                return function(id) {
+                    var modal = $modal({
+                        html: true,
+                        title: '<i class="fa fa-spinner fa-spin"></i> Sending ' + prefix + ' Request',
+                        backdrop: 'static',
+                        template: 'views/osd-cmd-modal.html'
+                    });
+                    modal.$scope.disableClose = true;
+                    modal.$scope._hide = function() {
+                        modal.$scope.$hide();
+                    };
+                    callback.call(OSDService, id).then(function() {
+                        modal.$scope.title = '<i class="text-success fa fa-check-circle"></i> Successfully Sent ' + prefix + ' to OSD ' + id;
+                        modal.$scope.content = 'This may take quite a while. Use the dashboard to monitor progress.';
+                        modal.$scope.disableClose = false;
+                    }, modalHelpers.makeOnError(modal));
+                };
+            }
             var makeOSDPatchFn = function(prefix, operation) {
                 return function(id) {
                     var modal = $modal({
@@ -15,7 +35,7 @@
                         title: 'Sending ' + prefix + ' Request to OSD ' + id,
                         html: true,
                         content: '<i class="fa fa-spinner fa-spin fa-lg"></i> Waiting...',
-                        background: 'static'
+                        backdrop: 'static'
                     });
                     modal.$scope.closeDisabled = true;
                     if (_.isFunction(operation)) {
@@ -38,6 +58,8 @@
             $scope.down = makeOSDPatchFn('Down', {
                 'up': false
             });
+            $scope.deepScrubFn = makeOSDCommand('Deep Scrub', OSDService.deepScrub);
+            $scope.repairFn = makeOSDCommand('Repair', OSDService.repair);
             $scope.out = makeOSDPatchFn('Out', {
                 'in': false
             });

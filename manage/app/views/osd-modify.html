@@ -81,13 +81,13 @@ ng-show='up'>
                          Request OSD {{osd.id}}
                        </span>
 
-                        <button type="button" class="btn btn-warning btn-osd">DEEP SCRUB</button>
+                        <button type="button" ng-click="deepScrubFn(osd.id)" class="btn btn-warning btn-osd">DEEP SCRUB</button>
                     </p>
                     <p> <span class="osd-cmd-text">
                          Request OSD {{osd.id}}
                      </span>
 
-                        <button type="button" class="btn btn-danger btn-osd">REPAIR</button>
+                        <button type="button" ng-click="repairFn(osd.id)" class="btn btn-danger btn-osd">REPAIR</button>
                     </p>
                 </div>
             </div>
