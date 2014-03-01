@@ -20,6 +20,18 @@ define(['lodash'], function(_) {
             patch: function(id, update) {
                 id = _.isString(id) ? parseInt(id, 10) : id;
                 return this.restangular.clusterFull().one('osd', id).patch(update);
+            },
+            scrub: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('osd', id).all('command').all('scrub').post({});
+            },
+            deepScrub: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('osd', id).all('command').all('deep_scrub').post({});
+            },
+            repair: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('osd', id).all('command').all('repair').post({});
             }
         });
         return new Service();

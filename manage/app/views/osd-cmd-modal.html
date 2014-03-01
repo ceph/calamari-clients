@@ -7,7 +7,7 @@
       </div>
       <div class="modal-body" ng-bind="content"></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-success" ng-disabled='closeDisabled' ng-click="_hide()">Close</button>
+        <button type="button" class="btn btn-default btn-success" ng-disabled='!disableClose' ng-click="_hide()">Close</button>
       </div>
     </div>
   </div>

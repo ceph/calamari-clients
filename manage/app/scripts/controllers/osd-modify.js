@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash'], function(_) {
+    define(['lodash', 'helpers/modal-helpers'], function(_, modalHelpers) {
 
         var OSDModifyController = function($log, $scope, ClusterService, OSDService, $location, $routeParams, $window, $modal) {
             if (ClusterService.clusterId === null) {
@@ -24,24 +24,12 @@
                     OSDService.patch(id, operation).then(function( /*resp*/ ) {
                         modal.$scope.title = prefix + ' Request Sent Successfully to OSD ' + id;
                         modal.$scope.content = 'Complete.';
-                        modal.$scope.closeDisabled = false;
+                        modal.$scope.disableClose = true;
                         modal.$scope._hide = function() {
                             modal.$scope.$hide();
                             $window.history.back();
                         };
-                    }, function(resp) {
-                        if (resp.status === 403) {
-                            modal.$scope.title = '<i class="text-danger fa fa-exclamation-circle"></i> Unauthorized Access';
-                            modal.$scope.content = 'Try logging out and back in again.';
-                        } else {
-                            modal.$scope.title = 'Unexpected Error ' + resp.status;
-                            modal.$scope.content = '<pre>' + resp.data + '</pre>';
-                        }
-                        modal.$scope._hide = function() {
-                            modal.$scope.$hide();
-                        };
-                        modal.$scope.closeDisabled = false;
-                    });
+                    }, modalHelpers.makeOnError(modal));
                 };
             };
             $scope.cancelFn = function() {

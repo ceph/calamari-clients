@@ -31,6 +31,21 @@
                     backdrop: 'static', // disable mouse clicks for now since I can't wrap them or supply a callback
                     keyboard: false
                 }, options));
+            },
+            makeOnError: function(modal) {
+                return function onError(resp) {
+                    if (resp.status === 403) {
+                        modal.$scope.title = '<i class="text-danger fa fa-exclamation-circle"></i> Unauthorized Access';
+                        modal.$scope.content = 'Try logging out and back in again.';
+                    } else {
+                        modal.$scope.title = 'Unexpected Error ' + resp.status;
+                        modal.$scope.content = '<pre>' + resp.data + '</pre>';
+                    }
+                    modal.$scope._hide = function() {
+                        modal.$scope.$hide();
+                    };
+                    modal.$scope.disableClose = false;
+                };
             }
         };
     });

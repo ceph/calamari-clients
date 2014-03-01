@@ -35,8 +35,8 @@ ng-show='up'>
                             </td>
                             <td>{{osd.reweight}}</td>
                             <td>
-                                <button ng-click='' class='btn btn-warning'>SCRUB</button>
-                                <button ng-click='modify(osd.id)' style='margin-left: 10px;' class='btn btn-primary'>ADVANCED</button>
+                                <button ng-click='scrubFn(osd.id)' class='btn btn-warning'>SCRUB</button>
+                                <button ng-click='modifyFn(osd.id)' style='margin-left: 10px;' class='btn btn-primary'>ADVANCED</button>
                             </td>
                         </tr>
                         </tbody>

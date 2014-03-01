@@ -6,8 +6,10 @@
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService) {
             $scope.fqdn = $routeParams.fqdn;
             $scope.clusterName = ClusterService.clusterModel.name;
-            $scope.modify = function(id) {
+            $scope.modifyFn = function(id) {
                 $location.path('/osd/id/' + id);
+            };
+            $scope.scrubFn = function() {
             };
             ServerService.get($scope.fqdn).then(function(server) {
                 //console.log(server);
