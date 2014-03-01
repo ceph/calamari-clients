@@ -4,48 +4,88 @@
          <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo;</h4>
 
         <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                 <h3 class="text-center text-muted">CLUSTER MEMBERSHIP</h3>
-
+                 <h3 class="">MANAGED SERVERS</h3>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-                <table style="margin-top: 40px;" class='table'>
-                    <thead></thead>
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <table class='table'>
+                    <thead>
+                    </thead>
                     <tbody>
-                        <tr ng-repeat="minion in leftminions" class="am-fade-and-slide-left">
+                        <tr ng-repeat="minion in cols[0]" class="am-fade-and-slide-left">
                             <td> <i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
                                       'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
 
                             </td>
                             <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
                             <td>
-                                <button class='btn btn-primary btn-cluster' ng-click="acceptMinion('l', minion.id)"
+                                <button class='btn btn-primary btn-sm btn-cluster' ng-click="acceptMinion(0, minion.id)"
                                 ng-if="minion.status != 'accepted'">ACCEPT</button>
-                                <button class='btn btn-info btn-cluster' ng-click='detailView(minion.id)'
+                                <button class='btn btn-info btn-sm btn-cluster' ng-click='detailView(minion.id)'
                                 ng-if="minion.status == 'accepted'">DETAIL</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-                <table style="margin-top: 40px;" class='table'>
-                    <thead>{{ minions | json }}</thead>
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <table class='table'>
+                    <thead>
+                    </thead>
                     <tbody>
-                        <tr ng-repeat="minion in rightminions" class="am-fade-and-slide-right">
+                        <tr ng-repeat="minion in cols[1]" class="am-fade-and-slide-left">
                             <td><i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
                                       'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
 
                             </td>
                             <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
                             <td>
-                                <button class='btn btn-primary btn-cluster' ng-click="acceptMinion('r', minion.id)"
+                                <button class='btn btn-primary btn-sm btn-cluster' ng-click="acceptMinion(1, minion.id)"
                                 ng-if="minion.status != 'accepted'">ACCEPT</button>
-                                <button class='btn btn-info btn-cluster' ng-click='detailView(minion.id)'
+                                <button class='btn btn-info  btn-sm btn-cluster' ng-click='detailView(minion.id)'
+                                ng-if="minion.status == 'accepted'">DETAIL</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <table class='table'>
+                    <thead>
+                    <tbody>
+                        <tr ng-repeat="minion in cols[2]" class="am-fade-and-slide-right">
+                            <td> <i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
+                                      'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
+
+                            </td>
+                            <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
+                            <td>
+                                <button class='btn btn-primary btn-sm btn-cluster' ng-click="acceptMinion(2, minion.id)"
+                                ng-if="minion.status != 'accepted'">ACCEPT</button>
+                                <button class='btn btn-info btn-sm btn-cluster' ng-click='detailView(minion.id)'
+                                ng-if="minion.status == 'accepted'">DETAIL</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <table class='table'>
+                    <thead>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="minion in cols[3]" class="am-fade-and-slide-right">
+                            <td><i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
+                                      'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
+
+                            </td>
+                            <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
+                            <td>
+                                <button class='btn btn-primary btn-sm btn-cluster' ng-click="acceptMinion(3, minion.id)"
+                                ng-if="minion.status != 'accepted'">ACCEPT</button>
+                                <button class='btn btn-info  btn-sm btn-cluster' ng-click='detailView(minion.id)'
                                 ng-if="minion.status == 'accepted'">DETAIL</button>
                             </td>
                         </tr>

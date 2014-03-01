@@ -29,9 +29,8 @@
                         };
                         return results;
                     }, {});
-                    var left = $scope.leftminions;
-                    var right = $scope.rightminions;
-                    var collection = _.reduce(left.concat(right), function(result, minion) {
+                    var all = $scope.cols;
+                    var collection = _.reduce(_.flatten(all), function(result, minion) {
                         var entry = result.add[minion.id];
                         if (entry) {
                             // key exists still
@@ -52,26 +51,20 @@
                     });
                     if (collection.remove.length) {
                         // remove hosts
-                        left = _.filter(left, function(minion) {
-                            return !(collection.remove[minion.id]);
-                        });
-                        left = _.filter(right, function(minion) {
-                            return !(collection.remove[minion.id]);
+                        all = _.map(all, function(col) {
+                            return _.filter(col, function(minion) {
+                                return !(collection.remove[minion.id]);
+                            });
                         });
                     }
                     if (collection.change.length) {
-                        // change hosts
-                        left = _.map(left, function(minion) {
-                            if (collection.change[minion.id]) {
-                                return collection.change[minion.id];
-                            }
-                            return minion;
-                        });
-                        right = _.map(right, function(minion) {
-                            if (collection.change[minion.id]) {
-                                return collection.change[minion.id];
-                            }
-                            return minion;
+                        all = _.map(all, function(col) {
+                            return _.map(col, function(minion) {
+                                if (collection.change[minion.id]) {
+                                    return collection.change[minion.id];
+                                }
+                                return minion;
+                            });
                         });
                     }
                     var adds = _.map(collection.add, function(value) {
@@ -79,33 +72,31 @@
                     });
                     _.each(adds, function(add) {
                         // add hosts
-                        if (left.length <= right.length) {
-                            left.push(add);
-                        } else {
-                            right.push(add);
-                        }
+                        var col = _.reduce(_.rest(all), function(result, col) {
+                            if (result.length <= col.length) {
+                                return result;
+                            } else {
+                                return col;
+                            }
+                        }, _.first(all));
+                        col.push(add);
                     });
-                    $scope.leftminions = left;
-                    $scope.rightminions = right;
+                    $scope.cols = all;
                 });
                 $rootScope.keyTimer = $timeout(refreshKeys, 20000);
             }
 
-            $scope.acceptMinion = function acceptMinion(side, id) {
+            $scope.acceptMinion = function acceptMinion(colnum, id) {
                 KeyService.accept([id]).then(function(resp) {
                     if (resp.status === 204) {
-                        var minions = side === 'l' ? $scope.leftminions : $scope.rightminions;
+                        var minions = $scope.cols[colnum];
                         minions = _.filter(minions, function(minion) {
                             if (minion.id === id) {
                                 return false;
                             }
                             return true;
                         });
-                        if (side === 'l') {
-                            $scope.leftminions = minions;
-                        } else {
-                            $scope.rightminions = minions;
-                        }
+                        $scope.cols[colnum] = minions;
                     }
                 }, function(resp) {
                     var modal = $modal({
@@ -175,7 +166,7 @@
                     }), function(results, minion, index) {
                         var shortName = _.first(__split.call(minion.id, '.'));
                         minion.shortName = shortName;
-                        results[index % 2].push({
+                        results[index % 4].push({
                             id: minion.id,
                             status: minion.status,
                             shortName: shortName
@@ -183,10 +174,11 @@
                         return results;
                     }, [
                         [],
+                        [],
+                        [],
                         []
                     ]);
-                    $scope.leftminions = m[0];
-                    $scope.rightminions = m[1];
+                    $scope.cols = m;
                 })(results[1]);
 
                 (function(config) {
