@@ -37,14 +37,14 @@
                         content: '<i class="fa fa-spinner fa-spin fa-lg"></i> Waiting...',
                         backdrop: 'static'
                     });
-                    modal.$scope.closeDisabled = true;
+                    modal.$scope.disableClose = true;
                     if (_.isFunction(operation)) {
                         operation = operation.call(undefined);
                     }
                     OSDService.patch(id, operation).then(function( /*resp*/ ) {
                         modal.$scope.title = prefix + ' Request Sent Successfully to OSD ' + id;
                         modal.$scope.content = 'Complete.';
-                        modal.$scope.disableClose = true;
+                        modal.$scope.disableClose = false;
                         modal.$scope._hide = function() {
                             modal.$scope.$hide();
                             $window.history.back();
