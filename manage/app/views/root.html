@@ -9,83 +9,21 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            <div ng-repeat="index in [0,1,2,3]" class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                 <table class='table'>
                     <thead>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="minion in cols[0]" class="am-fade-and-slide-left">
+                        <tr ng-repeat="minion in cols[index]" class="am-fade-and-slide-left">
                             <td> <i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
                                       'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
 
                             </td>
                             <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
                             <td>
-                                <button class='btn btn-primary btn-sm btn-cluster' ng-click="acceptMinion(0, minion.id)"
-                                ng-if="minion.status != 'accepted'">ACCEPT</button>
+                                <button ng-bind-html='minion.label' class='btn btn-primary btn-sm btn-cluster' ng-click="acceptMinion(index, minion)"
+                                    ng-if="minion.status != 'accepted'"></button>
                                 <button class='btn btn-info btn-sm btn-cluster' ng-click='detailView(minion.id)'
-                                ng-if="minion.status == 'accepted'">DETAIL</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                <table class='table'>
-                    <thead>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="minion in cols[1]" class="am-fade-and-slide-left">
-                            <td><i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
-                                      'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
-
-                            </td>
-                            <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
-                            <td>
-                                <button class='btn btn-primary btn-sm btn-cluster' ng-click="acceptMinion(1, minion.id)"
-                                ng-if="minion.status != 'accepted'">ACCEPT</button>
-                                <button class='btn btn-info  btn-sm btn-cluster' ng-click='detailView(minion.id)'
-                                ng-if="minion.status == 'accepted'">DETAIL</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                <table class='table'>
-                    <thead>
-                    <tbody>
-                        <tr ng-repeat="minion in cols[2]" class="am-fade-and-slide-right">
-                            <td> <i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
-                                      'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
-
-                            </td>
-                            <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
-                            <td>
-                                <button class='btn btn-primary btn-sm btn-cluster' ng-click="acceptMinion(2, minion.id)"
-                                ng-if="minion.status != 'accepted'">ACCEPT</button>
-                                <button class='btn btn-info btn-sm btn-cluster' ng-click='detailView(minion.id)'
-                                ng-if="minion.status == 'accepted'">DETAIL</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                <table class='table'>
-                    <thead>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="minion in cols[3]" class="am-fade-and-slide-right">
-                            <td><i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-circle text-success': minion.status == 'accepted',
-                                      'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
-
-                            </td>
-                            <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
-                            <td>
-                                <button class='btn btn-primary btn-sm btn-cluster' ng-click="acceptMinion(3, minion.id)"
-                                ng-if="minion.status != 'accepted'">ACCEPT</button>
-                                <button class='btn btn-info  btn-sm btn-cluster' ng-click='detailView(minion.id)'
                                 ng-if="minion.status == 'accepted'">DETAIL</button>
                             </td>
                         </tr>

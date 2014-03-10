@@ -37,6 +37,7 @@
                             delete result.add[minion.id];
                             if (entry.status !== minion.status) {
                                 // minion key has changed status
+                                minion.status = entry.status;
                                 result.change[minion.id] = minion;
                             }
                         } else {
@@ -49,7 +50,7 @@
                         change: {},
                         remove: {}
                     });
-                    if (collection.remove.length) {
+                    if (!_.isEmpty(collection.remove)) {
                         // remove hosts
                         all = _.map(all, function(col) {
                             return _.filter(col, function(minion) {
@@ -57,7 +58,7 @@
                             });
                         });
                     }
-                    if (collection.change.length) {
+                    if (!_.isEmpty(collection.change)) {
                         all = _.map(all, function(col) {
                             return _.map(col, function(minion) {
                                 if (collection.change[minion.id]) {
@@ -86,18 +87,21 @@
                 $rootScope.keyTimer = $timeout(refreshKeys, 20000);
             }
 
-            $scope.acceptMinion = function acceptMinion(colnum, id) {
-                KeyService.accept([id]).then(function(resp) {
+            $scope.acceptMinion = function acceptMinion(colnum, minion) {
+                minion.label = '<i class="fa fa-spinner fa-spin"></i>';
+                KeyService.accept([minion.id]).then(function(/*resp*/) {
+                    /*
                     if (resp.status === 204) {
                         var minions = $scope.cols[colnum];
-                        minions = _.filter(minions, function(minion) {
-                            if (minion.id === id) {
+                        minions = _.filter(minions, function(_minion) {
+                            if (_minion.id === minion.id) {
                                 return false;
                             }
                             return true;
                         });
                         $scope.cols[colnum] = minions;
                     }
+                    */
                 }, function(resp) {
                     var modal = $modal({
                         template: 'views/custom-modal.html',
@@ -169,7 +173,8 @@
                         results[index % 4].push({
                             id: minion.id,
                             status: minion.status,
-                            shortName: shortName
+                            shortName: shortName,
+                            label: 'ACCEPT'
                         });
                         return results;
                     }, [
