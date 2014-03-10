@@ -1,0 +1,15 @@
+<div ng-include="'views/appbar.html'"></div>
+<div class="card ng-hide am-fade-and-slide-top" ng-show='up'>
+     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; CONFIG &raquo;</h4>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                {{ config | json }}
+                <div class='standard-spacing disable-user-select'>
+                    <toggle-switch model='config.pause' on-label="ON" off-label='OFF' knob-label="Pause"></toggle-switch>
+                </div>
+            </div>
+        </div>
+    </div !-- card -->
+</div>
