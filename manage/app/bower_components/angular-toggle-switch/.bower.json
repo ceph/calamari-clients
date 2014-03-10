@@ -1,0 +1,31 @@
+{
+  "name": "angular-toggle-switch",
+  "version": "0.3.0",
+  "main": "angular-toggle-switch.min.js",
+  "homepage": "http://cgarvis.github.io/angular-toggle-switch/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cgarvis/angular-toggle-switch.git"
+  },
+  "devDependencies": {
+    "angular": ">=1.0",
+    "angular-mocks": ">=1.0"
+  },
+  "ignore": [
+    "**/.*",
+    "Gruntfile.js",
+    "karma.conf.js",
+    "package.json",
+    ".travis.yml"
+  ],
+  "_release": "0.3.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.3.0",
+    "commit": "72462861f751f1d8e17d1f942778871821111f46"
+  },
+  "_source": "git://github.com/cgarvis/angular-toggle-switch.git",
+  "_target": "~0.3.0",
+  "_originalSource": "angular-toggle-switch",
+  "_direct": true
+}
