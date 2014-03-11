@@ -55,7 +55,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
             switch (model.report.overall_status) {
                 case 'HEALTH_WARN':
                     subtext = this.getSummary(model.report);
-                    evt = 'status:warn';
                     break;
                 case 'HEALTH_ERR':
                     healthText = 'ERROR';
