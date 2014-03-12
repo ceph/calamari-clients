@@ -63,6 +63,13 @@
                 resolve: {
                     'Resolver': 'ClusterResolver'
                 }
+            }).when('/config', {
+                templateUrl: 'views/osd-config.html',
+                menuId: 'cluster',
+                controller: 'OSDConfigController',
+                resolve: {
+                    'Resolver': 'ClusterResolver'
+                }
             })
                 .otherwise({
                 redirectTo: '/'

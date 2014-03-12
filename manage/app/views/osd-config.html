@@ -1,14 +1,127 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card ng-hide am-fade-and-slide-top" ng-show='up'>
-     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; CONFIG &raquo;</h4>
+     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; Cluster-Wide OSD Settings &raquo;</h4>
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                {{ config | json }}
-                <div class='standard-spacing disable-user-select'>
-                    <toggle-switch model='config.pause' on-label="ON" off-label='OFF' knob-label="Pause"></toggle-switch>
+            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3">
+                <form name="osdmapForm">
+                    <div class='standard-spacing disable-user-select' style='margin-right: 0'>
+                        <div class="checkbox">
+                            <label data-target='noin' ng-mouseover='helpInfo($event)'>
+                                <input ng-model="configs.noin" type="checkbox">No In</input>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label data-target='noout' ng-mouseover='helpInfo($event)'>
+                                <input ng-model="configs.noout" type="checkbox">No Out</label>
+                        </div>
+                        <div class="checkbox">
+                            <label data-target='noup' ng-mouseover='helpInfo($event)'>
+                                <input ng-model="configs.noup" type="checkbox">No Up</input>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label data-target='nodown' ng-mouseover='helpInfo($event)'>
+                                <input ng-model="configs.nodown" type="checkbox">No Down</input>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label data-target='pause' ng-mouseover='helpInfo($event)'>
+                                <input ng-model="configs.pause" type="checkbox">Pause</label>
+                        </div>
+                        <div class="checkbox">
+                            <label data-target='noscrub' ng-mouseover='helpInfo($event)'>
+                                <input ng-model="configs.noscrub" type="checkbox">No Scrub</input>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label data-target='nodeep-scrub' ng-mouseover='helpInfo($event)'>
+                                <input ng-model="configs['nodeep-scrub']" type="checkbox">No Deep Scrub</input>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label data-target='nobackfill' ng-mouseover='helpInfo($event)'>
+                                <input ng-model="configs.nobackfill" type="checkbox">No Backfill</label>
+                        </div>
+                        <div class="checkbox">
+                            <label data-target='norecover' ng-mouseover='helpInfo($event)'>
+                                <input ng-model="configs.norecover" type="checkbox">No Recover</input>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                <div class='standard-spacing' style='margin-left: 0'>
+                    <div ng-show="helpDiv == undefined" class="am-fade">
+                        <h3 class="text-primary">Cluster Wide OSD Settings</h3>
+                        <p>Please be aware, settings on this screen affect the <em>entire</em> cluster. This <em>may</em> cause unexpected behavior, including data-loss, and prevent normal operation of service.</p>
+                    </div>
+                    <div ng-show="helpDiv == 'pause'" class="am-fade">
+                         <h3 class='text-primary'><i class="fa fa-info-circle fa-lg"></i> Pause</h3>
+
+                        <p class='text-info'>Disable IO requests to all OSDs in cluster.</p>
+                    </div>
+                    <div ng-show="helpDiv == 'nobackfill'" class="am-fade">
+                         <h3 class='text-primary'><i class="fa fa-info-circle fa-lg"></i> No Backfill</h3>
+
+                        <p class='text-info'>Disable backfill operations on cluster.</p>
+                    </div>
+                    <div ng-show="helpDiv == 'noout'" class="am-fade">
+                         <h3 class='text-primary'><i class="fa fa-info-circle fa-lg"></i> No Out</h3>
+
+                        <p class='text-info'>Prevent Down OSDs from being marked as out.</p>
+                    </div>
+                    <div ng-show="helpDiv == 'nodeep-scrub'" class="am-fade">
+                         <h3 class='text-primary'><i class="fa fa-info-circle fa-lg"></i> No Deep Scrub</h3>
+
+                        <p class='text-info'>Disables automatic periodic deep scrub operations on OSDs. May still be initiated
+                            on demand.</p>
+                    </div>
+                    <div ng-show="helpDiv == 'noscrub'" class="am-fade">
+                         <h3 class='text-primary'><i class="fa fa-info-circle fa-lg"></i> No Scrub</h3>
+
+                        <p class='text-info'>Disables automatic periodic scrub operations on OSDs. May still be initiated on
+                            demand.</p>
+                    </div>
+                    <div ng-show="helpDiv == 'noin'" class="am-fade">
+                         <h3 class='text-primary'><i class="fa fa-info-circle fa-lg"></i> No In</h3>
+
+                        <p class='text-info'>Prevent OSDs from booting OSDs from being marked as IN. Will cause cluster health
+                            to be set to WARNING.</p>
+                        <p class='text-warning'>Be advised the No in flag prevents OSDs from being marked as in on boot and any
+                            OSDs that started with the flag set will remain that way until restarted.</p>
+                    </div>
+                    <div ng-show="helpDiv == 'noup'" class="am-fade">
+                         <h3 class='text-primary'><i class="fa fa-info-circle fa-lg"></i> No Up</h3>
+
+                        <p class='text-info'>Prevent OSDs from automatically getting marked as Up by the monitors. This setting
+                            is useful for troubleshooting <a href="http://ceph.com/docs/master/rados/troubleshooting/troubleshooting-osd/#flapping-osds">flapping OSDs.</a>
+
+                        </p>
+                    </div>
+                    <div ng-show="helpDiv == 'norecover'" class="am-fade">
+                         <h3 class='text-primary'><i class="fa fa-info-circle fa-lg"></i> No Recover</h3>
+
+                        <p class='text-info'>Disable replication of Placement Groups.</p>
+                    </div>
+                    <div ng-show="helpDiv == 'nodown'" class="am-fade">
+                         <h3 class='text-primary'><i class="fa fa-info-circle fa-lg"></i> No Down</h3>
+
+                        <p class='text-info'>Prevent OSDs from automatically getting marked as Down by the monitors. This setting
+                            is useful for troubleshooting <a href="http://ceph.com/docs/master/rados/troubleshooting/troubleshooting-osd/#flapping-osds">flapping OSDs.</a>
+
+                        </p>
+                    </div>
                 </div>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+            <div class='standard-spacing'>
+                <button ng-click="cancel()" class="btn btn-danger">CANCEL</button>
+                <button ng-click="reset()" class="btn btn-warning">RESET</button>
+                <button class="btn btn-primary" ng-class="{ 'disabled': osdmapForm.$pristine }">UPDATE</button>
             </div>
         </div>
     </div !-- card -->

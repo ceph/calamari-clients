@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+         <h3>CONFIG VIEWER</h3>
+         <input type='text' placeholder='filter keys' ng-model='searchText'>
+             <i class="fa fa-search"></i>
+         </input>
+    </div>
+</div>
+<div class="row">
+    <!--div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"-->
+        <div class='table-responsive'>
+            <table class='table table-striped'>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat='config in configs | filter:searchText'>
+                        <td>{{config.key}}</td>
+                        <td title={{config.value}} class='truncate'>{{config.value}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    <!--/div-->
+</div>

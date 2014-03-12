@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash', 'angular', 'RouteConfig', 'ApiModule', 'requests/requestModule', 'controllers/root', 'controllers/pool', 'controllers/osd', 'controllers/osd-host', 'controllers/pool-new', 'controllers/tools', 'controllers/pool-modify', 'navbar/navbarModule', 'services/menu', 'run', 'controllers/first', 'controllers/osd-modify', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate', 'restangular'], function(_, angular, RouteConfig, APIModule, RequestModule, RootController, PoolController, OSDController, OSDHostController, PoolNewController, ToolsController, PoolModifyController, NavbarModule, MenuService, PostInitRunBlock, FirstTimeController, OSDModifyController) {
+    define(['lodash', 'angular', 'RouteConfig', 'ApiModule', 'requests/requestModule', 'controllers/root', 'controllers/pool', 'controllers/osd', 'controllers/osd-host', 'controllers/pool-new', 'controllers/tools', 'controllers/pool-modify', 'navbar/navbarModule', 'services/menu', 'run', 'controllers/first', 'controllers/osd-modify', 'controllers/osd-config', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate', 'restangular'], function(_, angular, RouteConfig, APIModule, RequestModule, RootController, PoolController, OSDController, OSDHostController, PoolNewController, ToolsController, PoolModifyController, NavbarModule, MenuService, PostInitRunBlock, FirstTimeController, OSDModifyController, OSDConfigController) {
         var app = angular.module('manageApp', [
                 'ngAnimate',
             APIModule,
@@ -11,7 +11,7 @@
                 'ngResource',
                 'ngSanitize',
                 'ngRoute',
-                'mgcrea.ngStrap',
+                'mgcrea.ngStrap'
         ])
             .controller('RootController', RootController)
             .controller('PoolController', PoolController)
@@ -22,6 +22,7 @@
             .controller('PoolModifyController', PoolModifyController)
             .controller('FirstTimeController', FirstTimeController)
             .controller('OSDModifyController', OSDModifyController)
+            .controller('OSDConfigController', OSDConfigController)
             .service('MenuService', MenuService)
             .run(PostInitRunBlock)
             .config(RouteConfig);

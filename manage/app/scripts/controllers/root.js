@@ -6,12 +6,13 @@
     define(['lodash', 'helpers/grainHelpers'], function(_, grainHelpers) {
 
 
-        var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal) {
+        var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal, OSDConfigService) {
             if (ClusterService.id === null) {
                 $location.path('/first');
                 return;
             }
 
+            /* servers --- start */
             function refreshKeys() {
                 $log.debug('refreshing keys');
                 KeyService.getList().then(function(minions) {
@@ -89,19 +90,8 @@
 
             $scope.acceptMinion = function acceptMinion(colnum, minion) {
                 minion.label = '<i class="fa fa-spinner fa-spin"></i>';
-                KeyService.accept([minion.id]).then(function(/*resp*/) {
-                    /*
-                    if (resp.status === 204) {
-                        var minions = $scope.cols[colnum];
-                        minions = _.filter(minions, function(_minion) {
-                            if (_minion.id === minion.id) {
-                                return false;
-                            }
-                            return true;
-                        });
-                        $scope.cols[colnum] = minions;
-                    }
-                    */
+                KeyService.accept([minion.id]).then(function( /*resp*/ ) {
+                    /* Do nothing - refresh code will handle UI updates */
                 }, function(resp) {
                     var modal = $modal({
                         template: 'views/custom-modal.html',
@@ -153,7 +143,30 @@
                     modal.$scope.pairs = pairs;
                 });
             };
-            var promises = [ClusterService.get(), KeyService.getList(), ToolService.config()];
+            /* servers --- end */
+            /* cluster settings --- start */
+            $scope.button = {
+                radio: 'servers'
+            };
+
+            $scope.helpInfo = function($event) {
+                var $el = angular.element($event.target);
+                var id = $el.attr('data-target');
+                if (id !== undefined) {
+                    $log.debug('helpInfo ' + $el.attr('data-target'));
+                    $scope.helpDiv = id;
+                }
+            };
+            $scope.reset = function() {
+                $scope.osdconfigs = angular.copy($scope.osdconfigsdefaults);
+                $scope.osdmapForm.$setPristine();
+                $scope.helpDiv = undefined;
+            };
+            $scope.$watch('button.radio', function() {
+                $scope.helpDiv = undefined;
+            });
+            /* cluster settings --- end */
+            var promises = [ClusterService.get(), KeyService.getList(), ToolService.config(), OSDConfigService.get()];
             $q.all(promises).then(function(results) {
 
                 (function(cluster) {
@@ -197,13 +210,26 @@
                             }
                             return 1;
                         });
-                        $scope.configs = sortedConfig;
+                        $scope.configs = _.map(sortedConfig, function(config) {
+                            return {
+                                key: config.key,
+                                value: config.value
+                            };
+                        });
                     }, 500);
                 })(results[2]);
 
                 $rootScope.keyTimer = $timeout(refreshKeys, 20000);
+
+                (function(config) {
+                    $scope.osdconfigs = _.reduce(['pause', 'nobackfill', 'noout', 'nodeep-scrub', 'noscrub', 'noin', 'noup', 'norecover', 'nodown'], function(result, key) {
+                        result[key] = config[key];
+                        return result;
+                    }, {});
+                    $scope.osdconfigsdefaults = angular.copy($scope.osdconfigs);
+                })(results[3]);
             });
         };
-        return ['$q', '$log', '$timeout', '$rootScope', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', RootController];
+        return ['$q', '$log', '$timeout', '$rootScope', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', 'OSDConfigService', RootController];
     });
 })();
