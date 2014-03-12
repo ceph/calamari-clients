@@ -1,15 +1,15 @@
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-         <h3>CONFIG VIEWER</h3>
-         <input type='text' placeholder='filter keys' ng-model='searchText'>
-             <i class="fa fa-search"></i>
+         <h3 style="display: inline-block;">CONFIG VIEWER</h3>
+         <input type="text" style="margin-left: 30px;" placeholder="Match Config" ng-model="searchText">
+         <i style="margin-left: -1.25em; margin-top: -1em;" class="fa fa-lg fa-search"></i>
          </input>
     </div>
 </div>
 <div class="row">
-    <!--div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"-->
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class='table-responsive'>
-            <table class='table table-striped'>
+            <table class='table table-condensed'>
                 <thead>
                     <tr>
                         <th>Key</th>
@@ -24,5 +24,5 @@
                 </tbody>
             </table>
         </div>
-    <!--/div-->
+    </div>
 </div>

@@ -13,7 +13,7 @@
                                       'fa-question-circle text-warning': minion.status != 'accepted' }"></i>
 
                 </td>
-                <td class='text-primary' data-id='{{minion.id}}'>{{minion.shortName}}</td>
+                <td class='text-primary' style="min-width: 100px;" data-id='{{minion.id}}'>{{minion.shortName}}</td>
                 <td>
                     <button ng-bind-html='minion.label' class='btn btn-primary btn-sm btn-cluster'
                     ng-click="acceptMinion(index, minion)" ng-if="minion.status != 'accepted'"></button>
