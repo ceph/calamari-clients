@@ -3,9 +3,6 @@
     'use strict';
     require.config({
         shim: {
-            'angular-toggle-switch': {
-                deps: ['angular', 'angular-animate']
-            },
             'angular-growl': {
                 deps: ['angular']
             },
@@ -51,8 +48,7 @@
             'restangular': '../bower_components/restangular/dist/restangular',
             'lodash': '../bower_components/lodash/dist/lodash',
             'moment': '../bower_components/momentjs/moment',
-            'angular-growl': '../bower_components/angular-growl/build/angular-growl',
-            'angular-toggle-switch': '../bower_components/angular-toggle-switch/angular-toggle-switch.min'
+            'angular-growl': '../bower_components/angular-growl/build/angular-growl'
         }
     });
 
