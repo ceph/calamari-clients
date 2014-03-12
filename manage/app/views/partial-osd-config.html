@@ -9,44 +9,44 @@
         <div class='standard-spacing disable-user-select' style='margin-right: 0'>
             <div class="checkbox">
                 <label data-target='noin' ng-mouseover='helpInfo($event)'>
-                    <input ng-model="osdconfigs.noin" type="checkbox">No In</input>
+                    <input ng-model="osdconfigs.noin" name="noin" type="checkbox">No In</input>
                 </label>
             </div>
             <div class="checkbox">
                 <label data-target='noout' ng-mouseover='helpInfo($event)'>
-                    <input ng-model="osdconfigs.noout" type="checkbox">No Out</label>
+                    <input ng-model="osdconfigs.noout" name="noout" type="checkbox">No Out</label>
             </div>
             <div class="checkbox">
                 <label data-target='noup' ng-mouseover='helpInfo($event)'>
-                    <input ng-model="osdconfigs.noup" type="checkbox">No Up</input>
+                    <input ng-model="osdconfigs.noup" name="noup" type="checkbox">No Up</input>
                 </label>
             </div>
             <div class="checkbox">
                 <label data-target='nodown' ng-mouseover='helpInfo($event)'>
-                    <input ng-model="osdconfigs.nodown" type="checkbox">No Down</input>
+                    <input ng-model="osdconfigs.nodown" name="nodown" type="checkbox">No Down</input>
                 </label>
             </div>
             <div class="checkbox">
                 <label data-target='pause' ng-mouseover='helpInfo($event)'>
-                    <input ng-model="osdconfigs.pause" type="checkbox">Pause</label>
+                    <input ng-model="osdconfigs.pause" name="pause" type="checkbox">Pause</label>
             </div>
             <div class="checkbox">
                 <label data-target='noscrub' ng-mouseover='helpInfo($event)'>
-                    <input ng-model="osdconfigs.noscrub" type="checkbox">No Scrub</input>
+                    <input ng-model="osdconfigs.noscrub" name="noscrub" type="checkbox">No Scrub</input>
                 </label>
             </div>
             <div class="checkbox">
                 <label data-target='nodeep-scrub' ng-mouseover='helpInfo($event)'>
-                    <input ng-model="configs['nodeep-scrub']" type="checkbox">No Deep Scrub</input>
+                    <input ng-model="osdconfigs['nodeep-scrub']" name="nodeep-scrub" type="checkbox">No Deep Scrub</input>
                 </label>
             </div>
             <div class="checkbox">
                 <label data-target='nobackfill' ng-mouseover='helpInfo($event)'>
-                    <input ng-model="osdconfigs.nobackfill" type="checkbox">No Backfill</label>
+                    <input ng-model="osdconfigs.nobackfill" name="nobackfill" type="checkbox">No Backfill</label>
             </div>
             <div class="checkbox">
                 <label data-target='norecover' ng-mouseover='helpInfo($event)'>
-                    <input ng-model="osdconfigs.norecover" type="checkbox">No Recover</input>
+                    <input ng-model="osdconfigs.norecover" name="norecover" type="checkbox">No Recover</input>
                 </label>
             </div>
         </div>
@@ -121,6 +121,6 @@
 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
     <div>
         <button ng-click="reset()" class="btn btn-warning">RESET</button>
-        <button class="btn btn-primary" ng-class="{ 'disabled': osdmapForm.$pristine }">UPDATE</button>
+        <button style="min-width: 100px;" ng-click="updateSettings()" ng-bind-html="updateLabel" class="btn" ng-class="{'btn-primary': updatePrimary, 'btn-success': updateSuccess, 'disabled': osdmapForm.$pristine || !updatePrimary }"></button>
     </div>
 </div>

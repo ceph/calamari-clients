@@ -2,10 +2,28 @@
 (function() {
     'use strict';
     var __split = String.prototype.split;
+    var osdConfigKeys = [
+            'noin',
+            'noout',
+            'noup',
+            'nodown',
+            'pause',
+            'noscrub',
+            'nodeep-scrub',
+            'nobackfill',
+            'norecover'
+    ];
+
 
     define(['lodash', 'helpers/grainHelpers'], function(_, grainHelpers) {
-
-
+        function getDirtyOSDConfigKeys($scope) {
+            return _.reduce(osdConfigKeys, function(results, key) {
+                if ($scope.osdmapForm[key].$dirty) {
+                    results[key] = $scope.osdconfigs[key];
+                }
+                return results;
+            }, {});
+        }
         var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal, OSDConfigService) {
             if (ClusterService.id === null) {
                 $location.path('/first');
@@ -13,6 +31,7 @@
             }
 
             /* servers --- start */
+
             function refreshKeys() {
                 $log.debug('refreshing keys');
                 KeyService.getList().then(function(minions) {
@@ -163,8 +182,50 @@
                 $scope.helpDiv = undefined;
             };
             $scope.$watch('button.radio', function() {
+                // reset help message when switching sub-view
                 $scope.helpDiv = undefined;
             });
+            $scope.updateLabel = 'UPDATE';
+            $scope.updatePrimary = true;
+            $scope.updateSuccess = false;
+            $scope.updateSettings = function updateSettings() {
+                $scope.updateLabel = '<i class="fa fa-spinner fa-spin"></i>';
+                var patchList = getDirtyOSDConfigKeys($scope);
+                $log.debug(patchList);
+                var startTime = Date.now();
+                OSDConfigService.patch(patchList).then(function osdConfigPatchHandler() {
+                    var totalTime = Date.now() - startTime;
+                    $log.debug('took ' + totalTime + 'ms');
+                    var waitTimeout = totalTime > 1000 ? 0 : 1000 - totalTime;
+                    $timeout(function() {
+                        $scope.updatePrimary = false;
+                        $scope.updateSuccess = true;
+                        $scope.updateLabel = '<i class="fa fa-check-circle"></i>';
+                        $timeout(function() {
+                            $scope.updateLabel = 'UPDATE';
+                            $scope.updatePrimary = true;
+                            $scope.updateSuccess = false;
+                            $scope.osdmapForm.$setPristine();
+                            $scope.osdconfigsdefaults = angular.copy($scope.osdconfigs);
+                        }, 1000);
+                    }, waitTimeout);
+                }, function osdConfigPatchErrorHandler(resp) {
+                    var modal = $modal({
+                        template: 'views/custom-modal.html',
+                        html: true
+                    });
+                    modal.$scope._hide = function() {
+                        modal.$scope.$hide();
+                    };
+                    if (resp.status === 403) {
+                        modal.$scope.title = '<i class="text-danger fa fa-exclamation-circle fa-lg"></i> Unauthorized Access';
+                        modal.$scope.content = 'Error ' + resp.status + '. Please try reloading the page and logging in again.</p>';
+                    } else {
+                        modal.$scope.title = '<i class="text-danger fa fa-exclamation-circle fa-lg"></i> Unexpected Error';
+                        modal.$scope.content = '<i class="text-danger fa fa-exclamation-circle fa-lg"></i> Error ' + resp.status + '. Please try reloading the page and logging in again.</p><h4>Raw Response</h4><p><pre>' + resp.data + '</pre></p>';
+                    }
+                });
+            };
             /* cluster settings --- end */
             var promises = [ClusterService.get(), KeyService.getList(), ToolService.config(), OSDConfigService.get()];
             $q.all(promises).then(function(results) {
@@ -222,7 +283,7 @@
                 $rootScope.keyTimer = $timeout(refreshKeys, 20000);
 
                 (function(config) {
-                    $scope.osdconfigs = _.reduce(['pause', 'nobackfill', 'noout', 'nodeep-scrub', 'noscrub', 'noin', 'noup', 'norecover', 'nodown'], function(result, key) {
+                    $scope.osdconfigs = _.reduce(osdConfigKeys, function(result, key) {
                         result[key] = config[key];
                         return result;
                     }, {});
