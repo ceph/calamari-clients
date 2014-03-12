@@ -12,7 +12,9 @@
 .disable-user-select {
     @include user-select(none);
 }
-.switch-animate.ng-animate {
-  transition:none 0s;
-  -webkit-transition:none 0s;
+.truncate {
+	max-width: 250px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
