@@ -174,13 +174,6 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 }
             });
 
-            var breadcrumbView = new views.BreadCrumbView({
-                App: App,
-                AppRouter: appRouter,
-                el: '.inknav'
-            });
-            breadcrumbView.render();
-
             appRouter.on('route:workbench', function() {
                 App.fsm.viz();
             });
@@ -197,6 +190,31 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                     // run this callback after the app has been set up
                     waitFn.call(window);
                 }
+            });
+
+            var uri = new Uri(document.URL);
+            var target = uri.getQueryParamValue('target');
+            var initial = 'dashmode';
+            if (target) {
+                console.log(target);
+                if (target === 'workbench') {
+                    initial = 'vizmode';
+                } else if (target === 'graph') {
+                    initial = 'graphmode';
+                }
+            }
+
+            var breadcrumbView = new views.BreadCrumbView({
+                App: App,
+                AppRouter: appRouter,
+                initial: initial,
+                el: '.inknav'
+            });
+            breadcrumbView.render();
+
+            App.start({
+                appRouter: appRouter,
+                initial: initial
             });
 
             // Global Exports
@@ -224,26 +242,8 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 HealthView: healthView
             };
 
-            App.start({
-                appRouter: appRouter
-            });
-            var uri = new Uri(document.URL);
-            var target = uri.getQueryParamValue('target');
-            if (target) {
-                console.log(target);
-                if (target === 'workbench') {
-                    App.vent.trigger('app:fullscreen');
-                } else if (target === 'graph') {
-                    App.vent.trigger('app:graph');
-                } else {
-                    appRouter.navigate('dashboard');
-                }
-            } else {
-                appRouter.navigate('dashboard');
-            }
         });
-        /* Defer Visualization startup to after loading the cluster metadata */
-        Backbone.history.start();
+
     });
 
 

@@ -11,9 +11,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             if (options.appRouter) {
                 this.appRouter = options.appRouter;
             }
-            _.bindAll(this);
+            _.bindAll(this); // bind Application functions to this instance
             this.fsm = StateMachine.create({
-                initial: 'dashmode',
+                initial: options.initial || 'dashmode',
                 events: [{
                         name: 'dashboard',
                         from: ['vizmode', 'graphmode'],
@@ -39,7 +39,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     ondashboard: this.ondashboard
                 }
             });
-            _.bindAll(this.fsm);
+            _.bindAll(this.fsm); // bind Finite State Machine functions to FSM instance
             this.listenTo(this.vent, 'app:fullscreen', function() {
                 this.appRouter.navigate('workbench', {
                     trigger: true
@@ -58,6 +58,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     trigger: true
                 });
             });
+        },
+        onInitializeAfter: function( /*options*/ ) {
+            if (Backbone.history) {
+                Backbone.history.start();
+            }
         },
         graphEvents: {
             'cpudetail': {
@@ -121,7 +126,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         }), function() {
                             return _.flatten(result);
                         });
-                    }).fail(function(/*result*/) {
+                    }).fail(function( /*result*/ ) {
                         // TODO Handle errors gracefully
                     });
                     return;
@@ -154,9 +159,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             }
             d.promise().then(function() {
                 $body.addClass('workbench-mode');
-                vent.trigger('viz:fullscreen', _.once(function() {
+                var fn = function() {
                     vent.trigger('gauges:collapse');
-                }));
+                };
+                vent.trigger('viz:fullscreen', _.once(fn));
             });
         },
         onleavevizmode: function(event, from, to) {
@@ -179,7 +185,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 }));
             });
         },
-        onenterdashmode: function() {},
+        onenterdashmode: function() {
+            $('.initial-hide').removeClass('initial-hide');
+        },
         onleavedashmode: function() {},
         ondashboard: function( /*event, from, to, host, id*/ ) {
             this.vent.trigger('dashboard:refresh');

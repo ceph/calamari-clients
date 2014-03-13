@@ -16,10 +16,20 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.AppRouter = Backbone.Marionette.getOption(this, 'AppRouter');
+            this.initial = Backbone.Marionette.getOption(this, 'initial') || 'dashboard';
             _.bindAll(this, 'dashboardIcon', 'fullscreenIcon');
             this.listenTo(this.AppRouter, 'route:dashboard', this.dashboardIcon);
             this.listenTo(this.AppRouter, 'route:workbench', this.fullscreenIcon);
             this.listenTo(this.AppRouter, 'route:graph', this.graphIcon);
+            var self = this;
+            this.listenTo(this, 'render', _.once(function() {
+                if (self.initial === 'vizmode') {
+                    self.fullscreenIcon();
+                } else if (self.initial === 'graphmode') {
+                    self.graphIcon();
+                }
+            }));
+
         },
         dashboardIcon: function() {
             this.$('.bc-active').removeClass('bc-active');
