@@ -18,6 +18,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         customSort: false,
         delay: 20000,
         timeout: 3000,
+        readyPromise: null,
         ui: {
             'cardTitle': '.card-title',
             viz: '.viz',
@@ -49,6 +50,32 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'viz:dashboard': 'dashboard',
             'viz:filter': 'filter',
             'viz:pulse': 'pulse'
+        },
+        /* 
+         * #ready is an idempotent function that allows objects that need services
+         * from this object to wait until the object is ready.
+         * It uses a promise which is set up when this object is created that is
+         * resolved once the first successful load of the collection is completed.
+         * Future calls against this promise will always return true.
+         *
+         * In the case of network failure, other UI elements should compensate
+         * by reporting errors.
+         *
+         * You use this call by doing a RequestResponse call against Wreqr for
+         * 'get:ready' and receiving a promise object which you then wrap the code
+         * that needs to be invoked after this promise has been resolved.
+         *
+         * e.g.
+         *
+         * var promise = this.App.ReqRes('get:ready')
+         * promise.then(function() {
+         *  // code I want to be called
+         * });
+         *
+         * @see Issue 7473 wait until first OSD Map is loaded
+         */
+        ready: function() {
+            return this.readyPromise;
         },
         toggleSortOrder: function(deferred) {
             this.customSort = !this.customSort;
@@ -146,6 +173,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             if (this.App.Config) {
                 this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.timeout;
             }
+            var deferred = $.Deferred();
+            this.listenToOnce(this.App.vent, 'filter:update', function() {
+                // resolve readyPromise once collection has been loaded
+                deferred.resolve();
+            });
+            this.readyPromise = deferred.promise();
             this.columns = 16;
             this.rows = 10;
             this.width = (this.columns + 1) * this.step;
@@ -165,6 +198,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             Backbone.Marionette.bindEntityEvents(this, this.App.vent, Backbone.Marionette.getOption(this, 'appEvents'));
 
             // App Level Request Responses
+            this.App.ReqRes.setHandler('get:ready', this.ready);
             this.App.ReqRes.setHandler('get:hosts', this.getHosts);
             this.App.ReqRes.setHandler('get:osdcounts', this.getOSDCounters);
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);

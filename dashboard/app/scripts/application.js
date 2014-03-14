@@ -1,12 +1,7 @@
 /*global define*/
-define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine', 'marionette'], function($, _, Backbone, animation, StateMachine) {
+define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine', 'loglevel', 'marionette'], function($, _, Backbone, animation, StateMachine, log) {
     'use strict';
     var Application = Backbone.Marionette.Application.extend({
-        onentergraphmode: function( /*event, from, to, host, osd */ ) {
-            $('.row').css('display', 'none');
-            this.graphWall.render();
-            $('.container').append(this.graphWall.$el);
-        },
         onInitializeBefore: function(options) {
             if (options.appRouter) {
                 this.appRouter = options.appRouter;
@@ -98,30 +93,45 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 title: _.template('Host <%- host %> Network Interface Bytes TX/RX')
             }
         },
-        ongraph: function(event, from, to, host, id) {
-            this.graphWall.hideGraphs();
-            var hosts;
+        onentergraphmode: function(event, from, to /*, host, osd*/ ) {
+            log.debug('ENTER ' + event + ', FROM ' + from + ', TO ' + to);
+            $('.row').css('display', 'none');
+            var ready = this.ReqRes.request('get:ready');
             var self = this;
+            ready.then(function() {
+                self.graphWall.render();
+                $('.container').append(self.graphWall.$el);
+                if (event === 'startup' && from === 'none') {
+                    self.ongraph(event, from, to, 'all');
+                }
+            });
+        },
+        ongraph: function(event, from, to, host, id) {
+            log.debug('AFTER ' + event + ', FROM ' + from + ', TO ' + to);
+            var graphWall = this.graphWall;
+            var self = this;
+            graphWall.hideGraphs();
+            var hosts;
             if (host === 'all') {
-                this.graphWall.hideButtons();
-                this.graphWall.makeClusterWideMetrics.call(this.graphWall).then(function(result) {
-                    self.graphWall.renderGraphs('Cluster', function() {
+                graphWall.hideButtons();
+                graphWall.makeClusterWideMetrics.call(graphWall).then(function(result) {
+                    graphWall.renderGraphs('Cluster', function() {
                         return _.flatten(result);
                     });
                 });
             } else if (host === 'iops') {
-                this.graphWall.hideButtons();
-                this.graphWall.makePoolIOPS.call(this.graphWall).then(function(result) {
-                    self.graphWall.renderGraphs('Per Pool IOPS', function() {
+                graphWall.hideButtons();
+                graphWall.makePoolIOPS.call(this.graphWall).then(function(result) {
+                    graphWall.renderGraphs('Per Pool IOPS', function() {
                         return _.flatten(result);
                     });
                 });
             } else if (id !== undefined && id !== null) {
-                this.graphWall.showButtons();
+                graphWall.showButtons();
                 var graphEvent = this.graphEvents[id];
                 if (graphEvent !== undefined) {
-                    this.graphWall[graphEvent.fn].call(this.graphWall, host, id).then(function(result) {
-                        self.graphWall.renderGraphs(graphEvent.title({
+                    graphWall[graphEvent.fn].call(this.graphWall, host, id).then(function(result) {
+                        graphWall.renderGraphs(graphEvent.title({
                             host: host
                         }), function() {
                             return _.flatten(result);
@@ -132,13 +142,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     return;
                 }
             } else {
-                hosts = this.ReqRes.request('get:hosts');
+                hosts = self.ReqRes.request('get:hosts');
                 if (_.contains(hosts, host)) {
-                    this.graphWall.showButtons();
-                    this.graphWall.updateSelect(host);
-                    this.graphWall.updateBtns('overview');
-                    this.graphWall.hostname = host;
-                    this.graphWall.renderGraphs('Host Graphs for ' + host, this.graphWall.makeHostOverviewGraphUrl(host));
+                    graphWall.showButtons();
+                    graphWall.updateSelect(host);
+                    graphWall.updateBtns('overview');
+                    graphWall.hostname = host;
+                    graphWall.renderGraphs('Host Graphs for ' + host, this.graphWall.makeHostOverviewGraphUrl(host));
                 }
             }
         },
