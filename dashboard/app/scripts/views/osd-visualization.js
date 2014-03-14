@@ -187,7 +187,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             ui.viz.addClass('viz-fullscreen');
             ui.filterpanel.css('display', 'block');
             this.App.vent.trigger('filter:update');
-            return this.fadeInAnimation(ui.filterpanel);
+            var resetFn = this.reset;
+            return this.fadeInAnimation(ui.filterpanel, function() {
+                resetFn();
+            });
         },
         fullscreen: function(callback) {
             this.state = 'fullscreen';
@@ -198,7 +201,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         toDashboardTransitionOne: function() {
             var ui = this.ui;
             ui.filterpanel.hide();
-            this.reset();
         },
         dashboard: function(callback) {
             this.state = 'dashboard';
