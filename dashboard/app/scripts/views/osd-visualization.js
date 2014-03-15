@@ -7,8 +7,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         serializeData: function() {
             return {};
         },
-        originX: 0,
-        originY: 0,
         step: 40,
         timer: null,
         pulseTimer: null,
@@ -179,14 +177,32 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 deferred.resolve();
             });
             this.readyPromise = deferred.promise();
+            this.legendHeight = 75;
+            this.legendOffset = 25;
+            this.originX = 0;
+            this.originY = this.legendHeight;
             this.columns = 16;
-            this.rows = 10;
+            this.rows = 16;
             this.width = (this.columns + 1) * this.step;
             this.height = (this.rows + 1) * this.step;
-            this.w = 720;
-            this.h = 520;
+            this.w = ((this.columns + 2) * this.step);
+            this.h = ((this.rows + 2) * this.step) + this.legendHeight;
             this.threshx = this.w / 2;
             this.threshy = this.h / 2;
+            this.startPosition = [{
+                    x: 40,
+                    y: 40
+                }, {
+                    x: 40 + ((this.columns) * this.step),
+                    y: 40
+                }, {
+                    x: 40 + ((this.columns) * this.step),
+                    y: 40 + ((this.rows - 1) * this.step)
+                }, {
+                    x: 40,
+                    y: 40 + ((this.columns - 1) * this.step)
+                }
+            ];
             _.bindAll(this);
 
             this.setupAnimations(this);
@@ -278,40 +294,26 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             m.set(m.attributes);
         },
         drawGrid: function(d) {
+            this.drawLegend();
             var path = Rs.calcGrid(this.originX, this.originY, this.width, this.height, this.step);
             var path1 = this.paper.path('M0,0').attr({
                 'stroke-width': 1,
                 'stroke': '#5e6a71',
                 'opacity': 0.40
             });
-            this.drawLegend(285, 475);
             var anim = Raphael.animation({
                 path: path,
                 callback: d.resolve
             }, 250);
             path1.animate(anim);
         },
-        startPosition: [{
-                x: 40,
-                y: 40
-            }, {
-                x: 600,
-                y: 40
-            }, {
-                x: 600,
-                y: 400
-            }, {
-                x: 40,
-                y: 400
-            }
-        ],
         moveCircle: function(model, index) {
             if (model === null) {
                 return;
             }
             var start = this.startPosition[Math.floor(Math.random() * 4)];
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
-            this.animateCircleTraversal(start.x, start.y, 8, pos.nx, pos.ny, model);
+            this.animateCircleTraversal(start.x + this.originX, start.y + this.originY, 8, pos.nx, pos.ny, model);
         },
         hex: function(value) {
             var hex = '00' + value.toString(16);
@@ -346,7 +348,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return false;
         },
         renderOSDViews: function(filterFn) {
-            var coll = this.collection.models;
+            var coll = _.first(this.collection.models, this.columns * this.rows);
             if (filterFn) {
                 coll = _.filter(coll, filterFn);
             }
@@ -514,12 +516,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             return c.animate(aFn);
         },
-        drawLegend: function(originX, originY) {
+        drawLegend: function() {
             // Calls legend circle to place in viz.
-            var xp = originX;
-            _.each(_.range(4), function(index) {
-                this.legendCircle(xp, originY, index);
-                xp += 50;
+            var y = this.originY - (this.legendHeight - this.legendOffset);
+            var legendGap = 50;
+            var legendCount = 4;
+            var xp = (this.width / 2) - ((legendGap * (legendCount - 1)) / 2);
+            console.log(xp);
+            _.each(_.range(legendCount), function(index) {
+                this.legendCircle(xp, y, index);
+                xp += legendGap;
             }, this);
         },
         getColor: function(model) {
