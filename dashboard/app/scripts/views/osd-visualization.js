@@ -798,6 +798,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     $('.viz').tooltip('destroy').tooltip({
                         title: hostGroup
                     }).tooltip('show');
+                    var y = el.attr('y');
+                    $('.viz').data('tooltip').$tip[0].style.top = (y - 64) + 'px';
                     this.curHostGroup = hostGroup;
                 }
             }
