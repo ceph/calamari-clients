@@ -106,11 +106,6 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
         });
         iopsLayout.render();
 
-        var iopsView = new views.IopsView({
-            'graphiteHost': config['iops-host'],
-            App: App
-        });
-        iopsLayout.a.show(iopsView);
         var hostsView = new views.HostsView({
             App: App
         });
@@ -152,6 +147,11 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
             clusterDeferred.resolve(clusterMenu.collection.at(0));
         });
         clusterDeferred.promise().done(function(cluster) {
+            var iopsView = new views.IopsView({
+                'graphiteHost': config['iops-host'],
+                App: App
+            });
+            iopsLayout.a.show(iopsView);
             var alertsView = new views.AlertsView({
                 App: App
             });

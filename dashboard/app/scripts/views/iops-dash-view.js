@@ -35,7 +35,7 @@ define([
                 gutils.makeParam('from', '-1d'),
                 targetParam
             ];
-            this.getUrl = _.partial(gutils.makeGraphURL(this.baseUrl, fns), '', 'all');
+            this.getUrl = gutils.makeGraphURL(this.baseUrl, fns);
             _.bindAll(this, 'postRender', 'updateGraph');
             this.listenToOnce(this, 'render', this.postRender);
             this.listenTo(this.App.vent, 'iops:update', this.updateGraph);
@@ -47,8 +47,9 @@ define([
             [4, 70, 80]
         ],
         getData: function() {
+            var clusterName = this.App.ReqRes.request('get:cluster').get('name');
             return $.ajax({
-                url: this.getUrl('', 'all'),
+                url: this.getUrl('', 'all', clusterName),
                 dataType: 'json'
             });
         },
