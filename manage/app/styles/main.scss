@@ -21,8 +21,11 @@
 
 .btn-osd-id {
 	margin: 2px;
-	width: 3em;
+	width: 3.5em;
 }
 .servers.table {
 	margin-bottom: 0;
+}
+.osd-hosts.table>tbody>tr>td {
+	vertical-align: top;
 }
