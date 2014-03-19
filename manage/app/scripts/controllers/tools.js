@@ -13,6 +13,10 @@
             var promises = [ToolService.log()];
             $q.all(promises).then(function(results) {
                 (function(logs) {
+                    if (logs.length === 0) {
+                        $scope.logui = 'empty';
+                        return;
+                    }
                     var lines = logs.lines.split('\n');
                     $scope.logs = _.map(lines, function(log) {
                         var line = log.split(' ');
