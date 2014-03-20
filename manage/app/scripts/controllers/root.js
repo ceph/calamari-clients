@@ -45,7 +45,8 @@
                         results[minion.id] = {
                             id: minion.id,
                             status: minion.status,
-                            shortName: shortName
+                            shortName: shortName,
+                            label: 'ACCEPT'
                         };
                         return results;
                     }, {});

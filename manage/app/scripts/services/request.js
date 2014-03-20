@@ -16,17 +16,20 @@ define(['lodash'], function(_) {
                 });
             },
             get: function(id) {
-                return this.restangular.cluster().one('request', id).get().then(function(request) {
-                    return request[0];
-                });
+                return this.restangular.cluster().one('request', id).get();
             },
             getComplete: function() {
                 /* jshint camelcase: false */
                 return this.restangular.cluster().customGETLIST('request', {
                     state: 'complete',
                     page_size: pageSize
-                }).then(function(requests) {
-                    return requests;
+                });
+            },
+            getSubmitted: function() {
+                /* jshint camelcase: false */
+                return this.restangular.cluster().customGETLIST('request', {
+                    state: 'submitted',
+                    page_size: pageSize
                 });
             }
         });
