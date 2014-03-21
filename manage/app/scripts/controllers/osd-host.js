@@ -12,7 +12,8 @@
             'repair': '<i class="fa fa-ambulance fa-fw fa-lg"></i>&nbsp;REPAIR',
             'repairButton': '<i class="fa fa-medkit fa-fw fa-lg"></i>',
             'configButton': '<i class="fa fa-gear fa-fw fa-lg"></i>',
-            'spinner': '<i class="fa fa-spinner fa-spin fa-fw fa-lg"></i>'
+            'spinner': '<i class="fa fa-spinner fa-spin fa-fw fa-lg"></i>',
+            'success': '<i class="fa fa-check-circle-o fa-fw fa-lg"></i>'
         };
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout) {
             $scope.fqdn = $routeParams.fqdn;
@@ -54,10 +55,17 @@
                 $timeout(function() {
                     osd.disabled = false;
                     if (cmd === 'down' || cmd === 'out' || cmd === 'in') {
-                        osd.configText = text.configButton;
+                        osd.configText = text.success;
                     } else {
-                        osd.repairText = text.repairButton;
+                        osd.repairText = text.success;
                     }
+                    $timeout(function() {
+                        if (cmd === 'down' || cmd === 'out' || cmd === 'in') {
+                            osd.configText = text.configButton;
+                        } else {
+                            osd.repairText = text.repairButton;
+                        }
+                    }, 1000);
                 }, 1000);
                 return false;
             };
