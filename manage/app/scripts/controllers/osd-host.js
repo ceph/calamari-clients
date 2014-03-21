@@ -66,7 +66,7 @@
                 $q.all(r.promises).then(function(results) {
                     _.each(results, function(result, index) {
                         /* jshint camelcase:false */
-                        result.dropdown = _.reduce(result.valid_commands, function(newdropdown, cmd) {
+                        result.repairDropdown = _.reduce(result.valid_commands, function(newdropdown, cmd) {
                             if (cmd === 'scrub') {
                                 newdropdown.push({
                                     'text': '<i class="fa fa-medkit fa-fw fa-lg"></i>&nbsp;SCRUB',
