@@ -29,7 +29,19 @@
                     }, modalHelpers.makeOnError(modal));
                 };
             }
+            $scope.clickHandler = function($event) {
+                $log.debug('CLICKED!', $event);
+                $event.preventDefault();
+                $event.stopPropagation();
+                return false;
+            };
             $scope.scrubFn = makeOSDCommand('Scrub', OSDService.scrub);
+            $scope.ddconfig = [{
+                    'text': '<i class="fa fa-arrow-circle-down fa-fw fa-lg"></i>&nbsp;DOWN'
+                }, {
+                    'text': '<i class="fa fa-sign-out fa-fw fa-lg"></i>&nbsp;OUT'
+                }
+            ];
             ServerService.get($scope.fqdn).then(function(server) {
                 //console.log(server);
                 $scope.server = server;
@@ -53,6 +65,29 @@
                 $scope.up = true;
                 $q.all(r.promises).then(function(results) {
                     _.each(results, function(result, index) {
+                        /* jshint camelcase:false */
+                        result.dropdown = _.reduce(result.valid_commands, function(newdropdown, cmd) {
+                            if (cmd === 'scrub') {
+                                newdropdown.push({
+                                    'text': '<i class="fa fa-medkit fa-fw fa-lg"></i>&nbsp;SCRUB',
+                                    'id': result.id,
+                                    'cmd': cmd
+                                });
+                            } else if (cmd === 'deep_scrub') {
+                                newdropdown.push({
+                                    'text': '<i class="fa fa-stethoscope fa-fw fa-lg"></i>&nbsp;DEEP SCRUB',
+                                    'id': result.id,
+                                    'cmd': cmd
+                                });
+                            } else if (cmd === 'repair') {
+                                newdropdown.push({
+                                    'text': '<i class="fa fa-ambulance fa-fw fa-lg"></i>&nbsp;REPAIR',
+                                    'id': result.id,
+                                    'cmd': cmd
+                                });
+                            }
+                            return newdropdown;
+                        }, []);
                         r.osds[index] = _.extend(r.osds[index], result);
                     });
                     $scope.services = {

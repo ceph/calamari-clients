@@ -35,8 +35,15 @@ ng-show='up'>
                             </td>
                             <td>{{osd.reweight}}</td>
                             <td>
-                                <button ng-click='scrubFn(osd.id)' class='btn btn-warning'>SCRUB</button>
-                                <button ng-click='modifyFn(osd.id)' style='margin-left: 10px;' class='btn btn-primary'>ADVANCED</button>
+                                <button  type='button' ng-click='modifyFn(osd.id)' class='btn btn-md btn-primary'> <i class='fa fa-edit fa-fw fa-lg'></i>
+
+                                </button>
+                                <button type='button' data-html='true' class='btn btn-md btn-danger' data-template="views/dropdown.tpl.html"
+                                bs-dropdown='osd.repairDropdown'> <i class='fa fa-medkit fa-fw fa-lg'></i> 
+                                </button>
+                                <button  type='button' data-html='true' class='btn btn-md btn-warning' data-template="views/dropdown.tpl.html"
+                                bs-dropdown='ddconfig'> <i class='fa fa-gear fa-fw fa-lg'></i>
+                                </button>
                             </td>
                         </tr>
                         </tbody>
