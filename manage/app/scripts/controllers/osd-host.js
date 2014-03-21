@@ -5,7 +5,7 @@
 
         var text = {
             'down': '<i class="fa fa-arrow-circle-down fa-fw fa-lg"></i>&nbsp;DOWN',
-            'in': '<i class="fa fa-sign-out fa-fw fa-lg"></i>&nbsp;IN',
+            'in': '<i class="fa fa-sign-in fa-fw fa-lg"></i>&nbsp;IN',
             'out': '<i class="fa fa-sign-out fa-fw fa-lg"></i>&nbsp;OUT',
             'scrub': '<i class="fa fa-medkit fa-fw fa-lg"></i>&nbsp;SCRUB',
             'deep_scrub': '<i class="fa fa-stethoscope fa-fw fa-lg"></i>&nbsp;DEEP SCRUB',
@@ -89,32 +89,18 @@
                         result.repairText = text.repairButton;
                         result.configText = text.configButton;
                         result.repairDropdown = _.reduce(result.valid_commands, function(newdropdown, cmd) {
-                            if (cmd === 'scrub') {
-                                newdropdown.push({
-                                    'text': text.scrub,
-                                    'id': result.id,
-                                    'cmd': cmd,
-                                    'index': index
-                                });
-                            } else if (cmd === 'deep_scrub') {
-                                newdropdown.push({
-                                    'text': text.deep_scrub,
-                                    'id': result.id,
-                                    'cmd': cmd,
-                                    'index': index
-                                });
-                            } else if (cmd === 'repair') {
-                                newdropdown.push({
-                                    'text': text.repair,
-                                    'id': result.id,
-                                    'cmd': cmd,
-                                    'index': index
-                                });
-                            }
+                            newdropdown.push({
+                                'text': text[cmd],
+                                'id': result.id,
+                                'cmd': cmd,
+                                'index': index
+                            });
                             return newdropdown;
                         }, []);
                         result.configDropdown = [];
                         if (result.up) {
+                            // One can only set an OSD down. The Cluster automatically promotes the OSD
+                            // to Up unless the noup flag is set on the cluster
                             result.configDropdown.push({
                                 'text': text.down,
                                 'id': result.id,
