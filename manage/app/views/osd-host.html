@@ -35,15 +35,15 @@ ng-show='up'>
                             </td>
                             <td>{{osd.reweight}}</td>
                             <td>
-                                <button  type='button' ng-click='modifyFn(osd.id)' class='btn btn-md btn-primary'> <i class='fa fa-edit fa-fw fa-lg'></i>
+                                <button ng-disabled='osd.disabled' type='button' ng-click='modifyFn(osd.id)' class='btn btn-md btn-primary'> <i class='fa fa-edit fa-fw fa-lg'></i>
 
                                 </button>
-                                <button type='button' data-html='true' class='btn btn-md btn-danger' data-template="views/dropdown.tpl.html"
-                                bs-dropdown='osd.repairDropdown'> <i class='fa fa-medkit fa-fw fa-lg'></i> 
-                                </button>
-                                <button  type='button' data-html='true' class='btn btn-md btn-warning' data-template="views/dropdown.tpl.html"
-                                bs-dropdown='ddconfig'> <i class='fa fa-gear fa-fw fa-lg'></i>
-                                </button>
+                                <button ng-bind-html='osd.repairText' ng-disabled='osd.disabled' type='button'
+                                data-html='true' class='btn btn-md btn-danger' data-template="views/dropdown.tpl.html"
+                                bs-dropdown='osd.repairDropdown'></button>
+                                <button ng-bind-html='osd.configText' ng-disabled='osd.disabled' type='button'
+                                data-html='true' class='btn btn-md btn-warning' data-template="views/dropdown.tpl.html"
+                                bs-dropdown='osd.configDropdown'></button>
                             </td>
                         </tr>
                         </tbody>
