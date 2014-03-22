@@ -38,7 +38,7 @@ ng-show='up'>
                                 <button ng-disabled='osd.disabled' type='button' ng-click='modifyFn(osd.id)' class='btn btn-md btn-primary'> <i class='fa fa-edit fa-fw fa-lg'></i>
 
                                 </button>
-                                <button ng-bind-html='osd.repairText' ng-disabled='osd.disabled' type='button'
+                                <button ng-disabled='osd.repairDisabled || osd.disabled' ng-bind-html='osd.repairText' type='button'
                                 data-html='true' class='btn btn-md btn-danger' data-template="views/dropdown.tpl.html"
                                 bs-dropdown='osd.repairDropdown'></button>
                                 <button ng-bind-html='osd.configText' ng-disabled='osd.disabled' type='button'

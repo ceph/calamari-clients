@@ -10,66 +10,98 @@
             'scrub': '<i class="fa fa-medkit fa-fw fa-lg"></i>&nbsp;SCRUB',
             'deep_scrub': '<i class="fa fa-stethoscope fa-fw fa-lg"></i>&nbsp;DEEP SCRUB',
             'repair': '<i class="fa fa-ambulance fa-fw fa-lg"></i>&nbsp;REPAIR',
-            'repairButton': '<i class="fa fa-medkit fa-fw fa-lg"></i>',
-            'configButton': '<i class="fa fa-gear fa-fw fa-lg"></i>',
+            'repairText': '<i class="fa fa-medkit fa-fw fa-lg"></i>',
+            'configText': '<i class="fa fa-gear fa-fw fa-lg"></i>',
             'spinner': '<i class="fa fa-spinner fa-spin fa-fw fa-lg"></i>',
             'success': '<i class="fa fa-check-circle-o fa-fw fa-lg"></i>'
         };
-        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout) {
+        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService) {
             $scope.fqdn = $routeParams.fqdn;
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.modifyFn = function(id) {
                 $location.path('/osd/id/' + id);
             };
 
-            function makeOSDCommand(prefix, callback) {
-                return function(id) {
+            function generateConfigDropdown(result, handler) {
+                result.configDropdown = [];
+                if (result.up) {
+                    // One can only set an OSD down. The Cluster automatically promotes the OSD
+                    // to Up unless the noup flag is set on the cluster
+                    result.configDropdown.push({
+                        'text': text.down,
+                        'id': result.id,
+                        'cmd': 'down',
+                        'index': result.index,
+                        'handler': handler
+                    });
+                }
+                if (result['in']) {
+                    result.configDropdown.push({
+                        'text': text.out,
+                        'id': result.id,
+                        'cmd': 'out',
+                        'index': result.index,
+                        'handler': handler
+                    });
+                } else {
+                    result.configDropdown.push({
+                        'text': text['in'],
+                        'id': result.id,
+                        'cmd': 'in',
+                        'index': result.index,
+                        'handler': handler
+                    });
+                }
+            }
+
+            function makeCommandHandler(buttonLabel) {
+                return function($event, id, cmd, index) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                    $log.debug('CLICKED osd ' + id + ' command ' + cmd);
+                    var osd = $scope.services.osds[index];
+                    osd.disabled = true;
+                    osd[buttonLabel] = text.spinner;
+                    var start = Date.now();
                     var modal = $modal({
                         html: true,
-                        title: '<i class="fa fa-spinner fa-spin"></i> Sending ' + prefix + ' Request',
+                        title: '',
                         backdrop: 'static',
-                        template: 'views/osd-cmd-modal.html'
+                        template: 'views/osd-cmd-modal.html',
+                        show: false
                     });
-                    modal.$scope.disableClose = true;
-                    modal.$scope._hide = function() {
-                        modal.$scope.$hide();
-                    };
-                    callback.call(OSDService, id).then(function() {
-                        modal.$scope.title = '<i class="text-success fa fa-check-circle"></i> Successfully Sent ' + prefix + ' to OSD ' + id;
-                        modal.$scope.content = 'This may take quite a while. Use the dashboard to monitor progress.';
-                        modal.$scope.disableClose = false;
+                    OSDService[cmd].call(OSDService, id).then(function success(resp) {
+                        /* jshint camelcase: false */
+                        RequestTrackingService.add(resp.data.request_id);
+                        var spindelay = 1000;
+                        var end = Date.now();
+                        spindelay = ((end - start) > 1000) ? 0 : spindelay - (end - start);
+                        modal.$scope.disableClose = true;
+                        modal.$scope._hide = function() {
+                            modal.$scope.$hide();
+                        };
+                        $timeout(function() {
+                            osd[buttonLabel] = text.success;
+                            $timeout(function() {
+                                osd[buttonLabel] = text[buttonLabel];
+                                OSDService.get(id).then(function(_osd) {
+                                    // refresh osd state
+                                    osd['in'] = _osd['in'];
+                                    osd.up = _osd.up;
+                                    osd.repairDisabled = !osd.up;
+                                    generateConfigDropdown(osd, configClickHandler);
+                                    osd.disabled = false;
+                                });
+                            }, 1000);
+                        }, spindelay);
                     }, modalHelpers.makeOnError(modal));
+                    return false;
                 };
             }
-            $scope.clickHandler = function($event, id, cmd, index) {
-                $event.preventDefault();
-                $event.stopPropagation();
-                $log.debug('CLICKED osd ' + id + ' command ' + cmd);
-                var osd = $scope.services.osds[index];
-                osd.disabled = true;
-                if (cmd === 'down' || cmd === 'out' || cmd === 'in') {
-                    osd.configText = text.spinner;
-                } else {
-                    osd.repairText = text.spinner;
-                }
-                $timeout(function() {
-                    osd.disabled = false;
-                    if (cmd === 'down' || cmd === 'out' || cmd === 'in') {
-                        osd.configText = text.success;
-                    } else {
-                        osd.repairText = text.success;
-                    }
-                    $timeout(function() {
-                        if (cmd === 'down' || cmd === 'out' || cmd === 'in') {
-                            osd.configText = text.configButton;
-                        } else {
-                            osd.repairText = text.repairButton;
-                        }
-                    }, 1000);
-                }, 1000);
-                return false;
-            };
-            $scope.scrubFn = makeOSDCommand('Scrub', OSDService.scrub);
+
+            var configClickHandler = makeCommandHandler('configText');
+            var repairClickHandler = makeCommandHandler('repairText');
+
             ServerService.get($scope.fqdn).then(function(server) {
                 //console.log(server);
                 $scope.server = server;
@@ -94,43 +126,24 @@
                 $q.all(r.promises).then(function(results) {
                     _.each(results, function(result, index) {
                         /* jshint camelcase:false */
-                        result.repairText = text.repairButton;
-                        result.configText = text.configButton;
-                        result.repairDropdown = _.reduce(result.valid_commands, function(newdropdown, cmd) {
-                            newdropdown.push({
-                                'text': text[cmd],
-                                'id': result.id,
-                                'cmd': cmd,
-                                'index': index
-                            });
-                            return newdropdown;
-                        }, []);
-                        result.configDropdown = [];
-                        if (result.up) {
-                            // One can only set an OSD down. The Cluster automatically promotes the OSD
-                            // to Up unless the noup flag is set on the cluster
-                            result.configDropdown.push({
-                                'text': text.down,
-                                'id': result.id,
-                                'cmd': 'down',
-                                'index': index
-                            });
-                        }
-                        if (result['in']) {
-                            result.configDropdown.push({
-                                'text': text.out,
-                                'id': result.id,
-                                'cmd': 'out',
-                                'index': index
-                            });
+                        result.index = index;
+                        result.repairText = text.repairText;
+                        result.configText = text.configText;
+                        if (result.valid_commands.length) {
+                            result.repairDropdown = _.reduce(result.valid_commands, function(newdropdown, cmd) {
+                                newdropdown.push({
+                                    'text': text[cmd],
+                                    'id': result.id,
+                                    'cmd': cmd,
+                                    'index': index,
+                                    'handler': repairClickHandler
+                                });
+                                return newdropdown;
+                            }, []);
                         } else {
-                            result.configDropdown.push({
-                                'text': text['in'],
-                                'id': result.id,
-                                'cmd': 'in',
-                                'index': index
-                            });
+                            result.repairDisabled = true;
                         }
+                        generateConfigDropdown(result, configClickHandler);
                         r.osds[index] = _.extend(r.osds[index], result);
                     });
                     $scope.services = {
@@ -140,6 +153,6 @@
             });
 
         };
-        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', OSDHostController];
+        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', 'RequestTrackingService', OSDHostController];
     });
 })();

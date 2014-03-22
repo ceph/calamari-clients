@@ -21,11 +21,27 @@ define(['lodash'], function(_) {
                 id = _.isString(id) ? parseInt(id, 10) : id;
                 return this.restangular.clusterFull().one('osd', id).patch(update);
             },
+            down: function(id) {
+                return this.patch(id, {
+                    up: false
+                });
+            },
+            out: function(id) {
+                return this.patch(id, {
+                    'in': false
+                });
+            },
+            in: function(id) {
+                return this.patch(id, {
+                    'in': true
+                });
+            },
             scrub: function(id) {
                 id = _.isString(id) ? parseInt(id, 10) : id;
                 return this.restangular.clusterFull().one('osd', id).all('command').all('scrub').post({});
             },
-            deepScrub: function(id) {
+            /* jshint camelcase: false */
+            deep_scrub: function(id) {
                 id = _.isString(id) ? parseInt(id, 10) : id;
                 return this.restangular.clusterFull().one('osd', id).all('command').all('deep_scrub').post({});
             },
