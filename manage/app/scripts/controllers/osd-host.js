@@ -72,7 +72,10 @@
                     });
                     OSDService[cmd].call(OSDService, id).then(function success(resp) {
                         /* jshint camelcase: false */
-                        RequestTrackingService.add(resp.data.request_id);
+                        var deferred = $q.defer();
+                        RequestTrackingService.add(resp.data.request_id, function() {
+                            $q.resolve();
+                        });
                         var spindelay = 1000;
                         var end = Date.now();
                         spindelay = ((end - start) > 1000) ? 0 : spindelay - (end - start);
@@ -84,13 +87,15 @@
                             osd[buttonLabel] = text.success;
                             $timeout(function() {
                                 osd[buttonLabel] = text[buttonLabel];
-                                OSDService.get(id).then(function(_osd) {
-                                    // refresh osd state
-                                    osd['in'] = _osd['in'];
-                                    osd.up = _osd.up;
-                                    osd.repairDisabled = !osd.up;
-                                    generateConfigDropdown(osd, configClickHandler);
-                                    osd.disabled = false;
+                                deferred.promise.then(function() {
+                                    OSDService.get(id).then(function(_osd) {
+                                        // refresh osd state
+                                        osd['in'] = _osd['in'];
+                                        osd.up = _osd.up;
+                                        osd.repairDisabled = !osd.up;
+                                        generateConfigDropdown(osd, configClickHandler);
+                                        osd.disabled = false;
+                                    });
                                 });
                             }, 1000);
                         }, spindelay);

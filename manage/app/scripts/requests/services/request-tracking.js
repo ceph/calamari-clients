@@ -17,8 +17,11 @@ define(['lodash'], function(_) {
             this.timeout = $timeout(this.checkCompleted, shortTimer);
         };
         Service.prototype = _.extend(Service.prototype, {
-            add: function(id) {
-                this.requests.push(id);
+            add: function(id, callback) {
+                this.requests.push({
+                    id: id,
+                    callback: callback
+                });
                 $timeout.cancel(this.timeout);
                 this.timeout = $timeout(this.checkCompleted, 0);
                 $log.debug('tracking new request ' + id);
@@ -45,29 +48,32 @@ define(['lodash'], function(_) {
                 $log.debug(this.myid + ' tracking ' + this.requests.length);
                 var self = this;
                 RequestService.getSubmitted().then(function(submittedRequests) {
-                    self.requests = _.filter(self.requests, function(id) {
+                    self.requests = _.filter(self.requests, function(tracked) {
                         var foundTask = _.find(submittedRequests, function(request) {
                             // search for tracked id in submitted tasks
-                            return request.id === id;
+                            return request.id === tracked.id;
                         });
                         if (foundTask === undefined) {
                             // Task may be completed Verify
-                            RequestService.get(id).then(function(request) {
-                                $log.debug('task ' + id + ' is probably complete');
+                            RequestService.get(tracked.id).then(function(request) {
+                                $log.debug('task ' + tracked.id + ' is probably complete');
                                 if (request.error) {
                                     self.showError(request);
                                 } else {
                                     if (request.state === 'complete') {
-                                        $log.debug('task ' + id + ' is complete');
+                                        $log.debug('task ' + tracked.id + ' is complete');
                                         self.showNotification(request);
+                                        if (tracked.callback) {
+                                            tracked.callback.call(tracked);
+                                        }
                                     } else {
-                                        $log.debug('task ' + id + ' is still active. Re-adding.');
-                                        self.add(id);
+                                        $log.debug('task ' + tracked.id + ' is still active. Re-adding.');
+                                        self.add(tracked.id, tracked.callback);
                                     }
                                 }
                             });
                         } else {
-                            $log.debug('task ' + id + ' is still active');
+                            $log.debug('task ' + tracked.id + ' is still active');
                         }
                         return foundTask !== undefined;
                     });
