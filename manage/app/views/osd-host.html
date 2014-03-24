@@ -35,7 +35,7 @@ ng-show='up'>
                             </td>
                             <td>{{osd.reweight}}</td>
                             <td>
-                                <button ng-disabled='osd.disabled' type='button' ng-click='modifyFn(osd.id)' class='btn btn-md btn-primary'> <i class='fa fa-edit fa-fw fa-lg'></i>
+                                <button ng-disabled='osd.disabled' type='button' ng-click='displayFn(osd.id)' class='btn btn-md btn-info'> <i class='fa fa-info-circle fa-fw fa-lg'></i>
 
                                 </button>
                                 <button ng-disabled='osd.repairDisabled || osd.disabled' ng-bind-html='osd.repairText' type='button'

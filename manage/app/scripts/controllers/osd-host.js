@@ -15,11 +15,50 @@
             'spinner': '<i class="fa fa-spinner fa-spin fa-fw fa-lg"></i>',
             'success': '<i class="fa fa-check-circle-o fa-fw fa-lg"></i>'
         };
+
+        function formatOSDData(osd) {
+            var pairs = _.reduce(['uuid', 'up', 'in', 'reweight', 'server', 'pools', 'public_addr', 'cluster_addr'], function(result, key) {
+                var value = osd[key];
+                if (value || value !== '') {
+                    if (key === 'up' || key === 'in') {
+                        result.state = result.state || [];
+                        var markup = '<div class="label label-danger">DOWN</div>';
+                        if (key === 'up') {
+                            if (value) {
+                                markup = '<div class="label label-success">UP</div>';
+                            }
+                        } else {
+                            if (value) {
+                                markup = '<div class="label label-success">IN</div>';
+                            } else {
+                                markup = '<div class="label label-danger">OUT</div>';
+                            }
+                        }
+                        result.state.push(markup);
+                    } else {
+                        result[key] = value;
+                    }
+                }
+                return result;
+            }, {});
+            if (pairs.state) {
+                pairs.state = pairs.state.join(' &nbsp; ');
+            }
+            if (pairs.reweight) {
+                pairs.reweight = '' + pairs.reweight;
+            }
+        }
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService) {
             $scope.fqdn = $routeParams.fqdn;
             $scope.clusterName = ClusterService.clusterModel.name;
-            $scope.modifyFn = function(id) {
-                $location.path('/osd/id/' + id);
+            $scope.displayFn = function(id) {
+                OSDService.get(id).then(function(_osd) {
+                    var modal = $modal({
+                        title: 'OSD ' + _osd.id + ' Info',
+                        template: 'views/osd-info-modal.html'
+                    });
+                    modal.$scope.pairs = formatOSDData(_osd);
+                });
             };
 
             function generateConfigDropdown(result, handler) {
@@ -74,7 +113,7 @@
                         /* jshint camelcase: false */
                         var deferred = $q.defer();
                         RequestTrackingService.add(resp.data.request_id, function() {
-                            $q.resolve();
+                            deferred.resolve();
                         });
                         var spindelay = 1000;
                         var end = Date.now();
@@ -87,6 +126,7 @@
                             osd[buttonLabel] = text.success;
                             $timeout(function() {
                                 osd[buttonLabel] = text[buttonLabel];
+                                osd.disabled = false;
                                 deferred.promise.then(function() {
                                     OSDService.get(id).then(function(_osd) {
                                         // refresh osd state
@@ -94,7 +134,6 @@
                                         osd.up = _osd.up;
                                         osd.repairDisabled = !osd.up;
                                         generateConfigDropdown(osd, configClickHandler);
-                                        osd.disabled = false;
                                     });
                                 });
                             }, 1000);
