@@ -1,6 +1,23 @@
 /*global require, Uri */
 'use strict';
 require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'jsuri', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
+    var uri = new Uri(document.URL);
+    var target = uri.getQueryParamValue('target');
+    var initial = 'dashmode';
+    var anchor = 'dashboard';
+    if (target) {
+        console.log(target);
+        if (target === 'workbench') {
+            initial = 'vizmode';
+            anchor = 'workbench';
+        } else if (target === 'graph') {
+            initial = 'graphmode';
+            anchor = 'graph/all';
+        }
+        uri.deleteQueryParam('target');
+        uri.setAnchor(anchor);
+        history.pushState('', 'Dashboard', uri.toString());
+    }
     /* Default Configuration */
     var config = {
         'offline': false,
@@ -192,17 +209,6 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 }
             });
 
-            var uri = new Uri(document.URL);
-            var target = uri.getQueryParamValue('target');
-            var initial = 'dashmode';
-            if (target) {
-                console.log(target);
-                if (target === 'workbench') {
-                    initial = 'vizmode';
-                } else if (target === 'graph') {
-                    initial = 'graphmode';
-                }
-            }
 
             var breadcrumbView = new views.BreadCrumbView({
                 App: App,

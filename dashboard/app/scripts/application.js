@@ -109,48 +109,50 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
         ongraph: function(event, from, to, host, id) {
             log.debug('AFTER ' + event + ', FROM ' + from + ', TO ' + to);
             var graphWall = this.graphWall;
-            var self = this;
-            graphWall.hideGraphs();
-            var hosts;
-            if (host === 'all') {
-                graphWall.hideButtons();
-                graphWall.makeClusterWideMetrics.call(graphWall).then(function(result) {
-                    graphWall.renderGraphs('Cluster', function() {
-                        return _.flatten(result);
-                    });
-                });
-            } else if (host === 'iops') {
-                graphWall.hideButtons();
-                graphWall.makePoolIOPS.call(this.graphWall).then(function(result) {
-                    graphWall.renderGraphs('Per Pool IOPS', function() {
-                        return _.flatten(result);
-                    });
-                });
-            } else if (id !== undefined && id !== null) {
-                graphWall.showButtons();
-                var graphEvent = this.graphEvents[id];
-                if (graphEvent !== undefined) {
-                    graphWall[graphEvent.fn].call(this.graphWall, host, id).then(function(result) {
-                        graphWall.renderGraphs(graphEvent.title({
-                            host: host
-                        }), function() {
+            graphWall.isReady().then(function() {
+                var self = this;
+                graphWall.hideGraphs();
+                var hosts;
+                if (host === 'all') {
+                    graphWall.hideButtons();
+                    graphWall.makeClusterWideMetrics.call(graphWall).then(function(result) {
+                        graphWall.renderGraphs('Cluster', function() {
                             return _.flatten(result);
                         });
-                    }).fail(function( /*result*/ ) {
-                        // TODO Handle errors gracefully
                     });
-                    return;
-                }
-            } else {
-                hosts = self.ReqRes.request('get:hosts');
-                if (_.contains(hosts, host)) {
+                } else if (host === 'iops') {
+                    graphWall.hideButtons();
+                    graphWall.makePoolIOPS.call(this.graphWall).then(function(result) {
+                        graphWall.renderGraphs('Per Pool IOPS', function() {
+                            return _.flatten(result);
+                        });
+                    });
+                } else if (id !== undefined && id !== null) {
                     graphWall.showButtons();
-                    graphWall.updateSelect(host);
-                    graphWall.updateBtns('overview');
-                    graphWall.hostname = host;
-                    graphWall.renderGraphs('Host Graphs for ' + host, this.graphWall.makeHostOverviewGraphUrl(host));
+                    var graphEvent = this.graphEvents[id];
+                    if (graphEvent !== undefined) {
+                        graphWall[graphEvent.fn].call(this.graphWall, host, id).then(function(result) {
+                            graphWall.renderGraphs(graphEvent.title({
+                                host: host
+                            }), function() {
+                                return _.flatten(result);
+                            });
+                        }).fail(function( /*result*/ ) {
+                            // TODO Handle errors gracefully
+                        });
+                        return;
+                    }
+                } else {
+                    hosts = self.ReqRes.request('get:hosts');
+                    if (_.contains(hosts, host)) {
+                        graphWall.showButtons();
+                        graphWall.updateSelect(host);
+                        graphWall.updateBtns('overview');
+                        graphWall.hostname = host;
+                        graphWall.renderGraphs('Host Graphs for ' + host, this.graphWall.makeHostOverviewGraphUrl(host));
+                    }
                 }
-            }
+            });
         },
         onleavegraphmode: function() {
             this.graphWall.close();

@@ -21,13 +21,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             'input .graph-range input': 'changeGraphRange'
         },
         rangeText: [
-                l10n.getSync('Graph1Week'), l10n.getSync('Graph3Days'), l10n.getSync('Graph24Hours'), l10n.getSync('Graph12Hours'), l10n.getSync('GraphHour')
+            l10n.getSync('Graph1Week'), l10n.getSync('Graph3Days'), l10n.getSync('Graph24Hours'), l10n.getSync('Graph12Hours'), l10n.getSync('GraphHour')
         ],
         rangeQuery: [
                 '-7d', '-3d', '-1d', '-12hour', '-1hour'
         ],
         rangeLabel: [
-                l10n.getSync('GraphLabelWeek'), l10n.getSync('GraphLabel3Days'), l10n.getSync('GraphLabel24Hours'), l10n.getSync('GraphLabel12Hours'), l10n.getSync('GraphLabelHour')
+            l10n.getSync('GraphLabelWeek'), l10n.getSync('GraphLabel3Days'), l10n.getSync('GraphLabel24Hours'), l10n.getSync('GraphLabel12Hours'), l10n.getSync('GraphLabelHour')
         ],
         debouncedChangedGraph: function($parent, url, opts) {
             this.dygraphLoader($parent, url, opts);
@@ -293,7 +293,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             ];
             this[options.fn] = gutils.makeGraphURL(this.baseUrl, fns);
             this.graphTitleTemplates[options.fn] = function() {
-                var args = Array.prototype.slice.call(arguments,0);
+                var args = Array.prototype.slice.call(arguments, 0);
                 args.unshift(options.titleTemplate);
                 return l10n.getSync.apply(null, args);
             };
@@ -339,6 +339,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.listenTo(this, 'item:before:close', this.onItemBeforeClose);
             this.listenTo(this.App.vent, 'cluster:update', this.clusterUpdate);
             this.debouncedChangedGraph = _.debounce(this.debouncedChangedGraph, 500);
+            this.readyDeferred = $.Deferred();
+            this.readyPromise = this.readyDeferred.promise();
+        },
+        isReady: function() {
+            return this.readyPromise;
         },
         clusterUpdate: function(model) {
             // re-init models that depend on cluster name issue #7140
@@ -354,6 +359,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.renderGraphTemplates();
             this.renderHostSelector();
             this.delegateEvents(this.events);
+            this.readyDeferred.resolve();
         },
         renderGraphTemplates: function() {
             var self = this;
@@ -444,7 +450,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 }
 
             };
-            var clusterName  = this.App.ReqRes.request('get:cluster').get('name');
+            var clusterName = this.App.ReqRes.request('get:cluster').get('name');
             var r = _.map(['makePoolIOPSGraphURL', 'makePoolDiskFreeGraphURL'], function(graph) {
                 return self.makePerHostModelGraphs('', graph, model, clusterName);
             });
@@ -683,7 +689,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         },
         updateSelect: function(id) {
             this.$('select option[selected]').prop('selected', false);
-            this.$('select option[value="'+ id +'"]').prop('selected', true);
+            this.$('select option[value="' + id + '"]').prop('selected', true);
         }
     });
 
