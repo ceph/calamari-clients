@@ -109,8 +109,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
         ongraph: function(event, from, to, host, id) {
             log.debug('AFTER ' + event + ', FROM ' + from + ', TO ' + to);
             var graphWall = this.graphWall;
+            var self = this;
             graphWall.isReady().then(function() {
-                var self = this;
                 graphWall.hideGraphs();
                 var hosts;
                 if (host === 'all') {
@@ -122,16 +122,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     });
                 } else if (host === 'iops') {
                     graphWall.hideButtons();
-                    graphWall.makePoolIOPS.call(this.graphWall).then(function(result) {
+                    graphWall.makePoolIOPS.call(graphWall).then(function(result) {
                         graphWall.renderGraphs('Per Pool IOPS', function() {
                             return _.flatten(result);
                         });
                     });
                 } else if (id !== undefined && id !== null) {
                     graphWall.showButtons();
-                    var graphEvent = this.graphEvents[id];
+                    var graphEvent = self.graphEvents[id];
                     if (graphEvent !== undefined) {
-                        graphWall[graphEvent.fn].call(this.graphWall, host, id).then(function(result) {
+                        graphWall[graphEvent.fn].call(graphWall, host, id).then(function(result) {
                             graphWall.renderGraphs(graphEvent.title({
                                 host: host
                             }), function() {
@@ -149,7 +149,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         graphWall.updateSelect(host);
                         graphWall.updateBtns('overview');
                         graphWall.hostname = host;
-                        graphWall.renderGraphs('Host Graphs for ' + host, this.graphWall.makeHostOverviewGraphUrl(host));
+                        graphWall.renderGraphs('Host Graphs for ' + host, graphWall.makeHostOverviewGraphUrl(host));
                     }
                 }
             });
