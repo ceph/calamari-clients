@@ -45,7 +45,7 @@
                         modal.$scope.$hide();
                     };
                     modal.$scope.disableClose = false;
-                    modal.$scope.show = true;
+                    modal.$scope.$show();
                     if (_.isFunction(callback)) {
                         callback.call(undefined);
                     }
