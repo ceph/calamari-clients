@@ -130,6 +130,34 @@
                 }
             }
 
+            function addUIMetadataToOSDData(osd, index) {
+                /* jshint camelcase:false */
+                _.extend(osd, {
+                    index: index,
+                    repairText: text.repairText,
+                    configText: text.configText,
+                    hasError: false,
+                    editing: false,
+                    saved: false
+                });
+                if (osd.valid_commands.length) {
+                    osd.repairDropdown = _.reduce(osd.valid_commands, function(newdropdown, cmd) {
+                        newdropdown.push({
+                            'text': text[cmd],
+                            'id': osd.id,
+                            'cmd': cmd,
+                            'index': index,
+                            'handler': repairClickHandler
+                        });
+                        return newdropdown;
+                    }, []);
+                } else {
+                    osd.repairDisabled = true;
+                }
+                generateConfigDropdown(osd, configClickHandler);
+                transformOSDToUI(osd);
+            }
+
             function makeCommandHandler(buttonLabel) {
                 return function($event, id, cmd, index) {
                     $event.preventDefault();
@@ -208,29 +236,7 @@
                 $scope.up = true;
                 $q.all(r.promises).then(function(results) {
                     _.each(results, function(result, index) {
-                        /* jshint camelcase:false */
-                        result.index = index;
-                        result.repairText = text.repairText;
-                        result.configText = text.configText;
-                        if (result.valid_commands.length) {
-                            result.repairDropdown = _.reduce(result.valid_commands, function(newdropdown, cmd) {
-                                newdropdown.push({
-                                    'text': text[cmd],
-                                    'id': result.id,
-                                    'cmd': cmd,
-                                    'index': index,
-                                    'handler': repairClickHandler
-                                });
-                                return newdropdown;
-                            }, []);
-                        } else {
-                            result.repairDisabled = true;
-                        }
-                        generateConfigDropdown(result, configClickHandler);
-                        transformOSDToUI(result);
-                        result.hasError = false;
-                        result.editing = false;
-                        result.saved = false;
+                        addUIMetadataToOSDData(result, index);
                         r.osds[index] = _.extend(r.osds[index], result);
                     });
                     $scope.services = {
