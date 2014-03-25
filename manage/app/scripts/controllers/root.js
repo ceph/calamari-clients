@@ -15,7 +15,7 @@
     ];
 
 
-    define(['lodash', 'helpers/grainHelpers'], function(_, grainHelpers) {
+    define(['lodash', 'helpers/grain-helpers'], function(_, grainHelpers) {
         function getDirtyOSDConfigKeys($scope) {
             return _.reduce(osdConfigKeys, function(results, key) {
                 if ($scope.osdmapForm[key].$dirty) {

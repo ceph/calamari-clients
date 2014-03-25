@@ -1,9 +1,9 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash'], function(_) {
+    define(['lodash', 'helpers/osd-helpers'], function(_, osdHelpers) {
 
-        var OSDController = function($scope, ClusterService, ServerService, $location) {
+        var OSDController = function($scope, ClusterService, ServerService, $location, OSDService, $modal) {
             if (ClusterService.clusterId === null) {
                 $location.path('/first');
                 return;
@@ -11,8 +11,14 @@
             ClusterService.get().then(function(cluster) {
                 $scope.clusterName = cluster.name;
             });
-            $scope.gotoOSD = function(id) {
-                $location.path('/osd/id/' + id);
+            $scope.displayOSD = function(id) {
+                OSDService.get(id).then(function(_osd) {
+                    var modal = $modal({
+                        title: 'OSD ' + _osd.id + ' Info',
+                        template: 'views/osd-info-modal.html'
+                    });
+                    modal.$scope.pairs = osdHelpers.formatOSDData(_osd);
+                });
             };
             ServerService.getList().then(function(servers) {
                 $scope.up = true;
@@ -45,6 +51,6 @@
                 $location.path('/osd/server/' + fqdn);
             };
         };
-        return ['$scope', 'ClusterService', 'ServerService', '$location', OSDController];
+        return ['$scope', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', OSDController];
     });
 })();

@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash', 'helpers/modal-helpers'], function(_, modalHelpers) {
+    define(['lodash', 'helpers/modal-helpers', 'helpers/osd-helpers'], function(_, modalHelpers, osdHelpers) {
 
         var text = {
             'down': '<i class="fa fa-arrow-circle-down fa-fw fa-lg"></i>&nbsp;DOWN',
@@ -16,38 +16,6 @@
             'success': '<i class="fa fa-check-circle-o fa-fw fa-lg"></i>'
         };
 
-        function formatOSDData(osd) {
-            var pairs = _.reduce(['id', 'uuid', 'up', 'in', 'reweight', 'server', 'pools', 'public_addr', 'cluster_addr'], function(result, key) {
-                var value = osd[key];
-                if (_.isObject(value) || _.isNumber(value) || (_.isString(value) && value !== '')) {
-                    if (key === 'up' || key === 'in') {
-                        result.state = result.state || [];
-                        var markup = '<div class="label label-danger">DOWN</div>';
-                        if (key === 'up') {
-                            if (value) {
-                                markup = '<div class="label label-success">UP</div>';
-                            }
-                        } else {
-                            if (value) {
-                                markup = '<div class="label label-success">IN</div>';
-                            } else {
-                                markup = '<div class="label label-danger">OUT</div>';
-                            }
-                        }
-                        result.state.push(markup);
-                    } else {
-                        result[key] = value;
-                    }
-                }
-                return result;
-            }, {});
-            if (pairs.state) {
-                pairs.state = pairs.state.join(' &nbsp; ');
-            }
-            pairs.reweight = Math.round(Math.min(pairs.reweight * 100, 100)) + '%';
-            pairs.id = '' + pairs.id;
-            return pairs;
-        }
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService) {
             $scope.fqdn = $routeParams.fqdn;
             $scope.clusterName = ClusterService.clusterModel.name;
@@ -57,7 +25,7 @@
                         title: 'OSD ' + _osd.id + ' Info',
                         template: 'views/osd-info-modal.html'
                     });
-                    modal.$scope.pairs = formatOSDData(_osd);
+                    modal.$scope.pairs = osdHelpers.formatOSDData(_osd);
                 });
             };
             $scope.changedFn = function(osd) {
