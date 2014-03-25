@@ -328,7 +328,7 @@ module.exports = function (grunt) {
       dist: {
         options: {
             mangle: false,
-            beautify: true
+            beautify: false
         },
         files: {
           '<%= yeoman.dist %>/scripts/main.js': ['.tmp/concat/scripts/main.js']
