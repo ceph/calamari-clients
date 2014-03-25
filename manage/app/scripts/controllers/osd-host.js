@@ -84,9 +84,15 @@
                     return;
                 }
                 osd.timeout = $timeout(function() {
-                    console.log('would have saved ' + osd.reweight);
                     osd.editing = true;
                     var start = Date.now();
+                    var modal = $modal({
+                        html: true,
+                        title: '',
+                        backdrop: 'static',
+                        template: 'views/osd-cmd-modal.html',
+                        show: false
+                    });
                     OSDService.patch(osd.id, {
                         reweight: osd.reweight / 100
                     }).then(function(resp) {
@@ -106,7 +112,7 @@
                                 osd.saved = false;
                             });
                         }, timer);
-                    });
+                    }, modalHelpers.makeOnError(modal));
 
                     $timeout(function() {
                         osd.saved = true;
@@ -204,7 +210,6 @@
             var repairClickHandler = makeCommandHandler('repairText');
 
             ServerService.get($scope.fqdn).then(function(server) {
-                //console.log(server);
                 $scope.server = server;
                 var r = _.reduce(_.sortBy(server.services, function(service) {
                     var id = parseInt(service.id, 10);

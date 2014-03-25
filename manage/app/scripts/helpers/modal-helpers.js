@@ -45,6 +45,7 @@
                         modal.$scope.$hide();
                     };
                     modal.$scope.disableClose = false;
+                    modal.$scope.show = true;
                 };
             }
         };
