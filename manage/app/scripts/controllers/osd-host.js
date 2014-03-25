@@ -45,8 +45,9 @@
                 pairs.state = pairs.state.join(' &nbsp; ');
             }
             if (pairs.reweight) {
-                pairs.reweight = '' + pairs.reweight;
+                pairs.reweight = Math.round(Math.max(pairs.reweight*100, 100)) + '%';
             }
+            return pairs;
         }
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService) {
             $scope.fqdn = $routeParams.fqdn;
@@ -59,6 +60,24 @@
                     });
                     modal.$scope.pairs = formatOSDData(_osd);
                 });
+            };
+            $scope.changedFn = function(osd) {
+                $log.debug('changed ' + osd.id);
+                if (osd.timeout) {
+                    $timeout.cancel(osd.timeout);
+                    osd.timeout = undefined;
+                }
+                osd.timeout = $timeout(function() {
+                    console.log('would have saved ' + osd.reweight);
+                    osd.editing = true;
+                    $timeout(function() {
+                        osd.saved = true;
+                        osd.editing = false;
+                        $timeout(function() {
+                            osd.saved = false;
+                        }, 1000);
+                    }, 1000);
+                }, 5000);
             };
 
             function generateConfigDropdown(result, handler) {
@@ -188,6 +207,10 @@
                             result.repairDisabled = true;
                         }
                         generateConfigDropdown(result, configClickHandler);
+                        result.reweight = Math.min(result.reweight * 100, 100);
+                        result.reweight = Math.max(result.reweight, 0);
+                        result.editing = false;
+                        result.saved = false;
                         r.osds[index] = _.extend(r.osds[index], result);
                     });
                     $scope.services = {
