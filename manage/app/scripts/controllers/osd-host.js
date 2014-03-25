@@ -17,6 +17,12 @@
         };
 
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService) {
+            function transformOSDToUI(osd) {
+                osd.reweight = Math.min(osd.reweight * 100, 100);
+                osd.reweight = Math.max(osd.reweight, 0);
+                osd.reweight = Math.round(osd.reweight);
+                osd._reweight = angular.copy(osd.reweight);
+            }
             $scope.fqdn = $routeParams.fqdn;
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.displayFn = function(id) {
@@ -161,6 +167,7 @@
                                 deferred.promise.then(function() {
                                     OSDService.get(id).then(function(_osd) {
                                         // refresh osd state
+                                        transformOSDToUI(_osd);
                                         _.extend(osd, _osd);
                                         osd.repairDisabled = !osd.up;
                                         generateConfigDropdown(osd, configClickHandler);
@@ -220,10 +227,7 @@
                             result.repairDisabled = true;
                         }
                         generateConfigDropdown(result, configClickHandler);
-                        result.reweight = Math.min(result.reweight * 100, 100);
-                        result.reweight = Math.max(result.reweight, 0);
-                        result.reweight = Math.round(result.reweight);
-                        result._reweight = angular.copy(result.reweight);
+                        transformOSDToUI(result);
                         result.hasError = false;
                         result.editing = false;
                         result.saved = false;
