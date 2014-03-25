@@ -161,8 +161,7 @@
                                 deferred.promise.then(function() {
                                     OSDService.get(id).then(function(_osd) {
                                         // refresh osd state
-                                        osd['in'] = _osd['in'];
-                                        osd.up = _osd.up;
+                                        _.extend(osd, _osd);
                                         osd.repairDisabled = !osd.up;
                                         generateConfigDropdown(osd, configClickHandler);
                                     });
