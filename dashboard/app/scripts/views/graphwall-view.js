@@ -263,7 +263,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 metrics: ['total_avail', 'total_used'],
                 fn: 'makePoolDiskFreeGraphURL',
                 util: 'makePoolDiskFreeTargets',
-                titleTemplate: 'TitleGraphPoolIOPS',
+                titleTemplate: 'TitleGraphPoolTotalDiskFree',
                 options: {
                     labelsKMG2: true,
                     ylabel: 'Bytes',
