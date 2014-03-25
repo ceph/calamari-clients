@@ -5,8 +5,8 @@ define(['lodash'], function(_) {
     /* Bind this service as soon as App is running otherwise it doesn't get
      * invoked until the first time it's needed because of dependency injection defering.
      */
-    var defaultTimer = 10000; // TODO Make this configurable
-    var shortTimer = 1000; // TODO Make this configurable
+    var defaultTimer = 15000; // TODO Make this configurable
+    var shortTimer = 5000; // TODO Make this configurable
     var myid = 0;
     var requestTrackingService = function($log, $timeout, RequestService, growl) {
         var Service = function() {
