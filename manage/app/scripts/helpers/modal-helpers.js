@@ -32,7 +32,7 @@
                     keyboard: false
                 }, options));
             },
-            makeOnError: function(modal) {
+            makeOnError: function(modal, callback) {
                 return function onError(resp) {
                     if (resp.status === 403) {
                         modal.$scope.title = '<i class="text-danger fa fa-exclamation-circle"></i> Unauthorized Access';
@@ -46,6 +46,9 @@
                     };
                     modal.$scope.disableClose = false;
                     modal.$scope.show = true;
+                    if (_.isFunction(callback)) {
+                        callback.call(undefined);
+                    }
                 };
             }
         };

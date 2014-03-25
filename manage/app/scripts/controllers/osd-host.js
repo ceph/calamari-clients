@@ -169,7 +169,10 @@
                                 });
                             }, 1000);
                         }, spindelay);
-                    }, modalHelpers.makeOnError(modal));
+                    }, modalHelpers.makeOnError(modal, function cleanup() {
+                        osd[buttonLabel] = text[buttonLabel];
+                        osd.disabled = false;
+                    }));
                     return false;
                 };
             }
