@@ -33,17 +33,22 @@ ng-show='up'>
                                 <span
                                 ng-if="!osd.in" class="label label-danger">OUT</span>
                             </td>
-                            <td><input type='number' min="0" max="100" ng-disabled='osd.editing' required=true name="reweight" ng-model='osd.reweight' ng-change='changedFn(osd)' />
-                                &nbsp;
-                                <i ng-show="osd.editing" class='fa fa-spinner fa-spin fa-lg fa-fw'></i>
-                                <i ng-show="osd.saved" class='text-success fa fa-check-circle fa-lg fa-fw'></i>
+                            <td>
+                                <input type='number' min="0" max="100" ng-disabled='osd.editing' required=true
+                                name="reweight" ng-model='osd.reweight' ng-change='changedFn(osd)' />&nbsp; <i ng-show="osd.editing" class='fa fa-spinner fa-spin fa-lg fa-fw'></i>
+
+                                <i
+                                ng-show="osd.saved" class='text-success fa fa-check-circle fa-lg fa-fw'></i>
+                                <i
+                                ng-show="osd.hasError" class='text-danger fa fa-exclamation-triangle fa-lg fa-fw'></i>
                             </td>
                             <td>
-                                <button ng-disabled='osd.disabled' type='button' ng-click='displayFn(osd.id)' class='btn btn-md btn-info'> <i class='fa fa-info-circle fa-fw fa-lg'></i>
+                                <button ng-disabled='osd.disabled' type='button' ng-click='displayFn(osd.id)'
+                                class='btn btn-md btn-info'> <i class='fa fa-info-circle fa-fw fa-lg'></i>
 
                                 </button>
-                                <button ng-disabled='osd.repairDisabled || osd.disabled' ng-bind-html='osd.repairText' type='button'
-                                data-html='true' class='btn btn-md btn-danger' data-template="views/dropdown.tpl.html"
+                                <button ng-disabled='osd.repairDisabled || osd.disabled' ng-bind-html='osd.repairText'
+                                type='button' data-html='true' class='btn btn-md btn-danger' data-template="views/dropdown.tpl.html"
                                 bs-dropdown='osd.repairDropdown'></button>
                                 <button ng-bind-html='osd.configText' ng-disabled='osd.disabled' type='button'
                                 data-html='true' class='btn btn-md btn-warning' data-template="views/dropdown.tpl.html"

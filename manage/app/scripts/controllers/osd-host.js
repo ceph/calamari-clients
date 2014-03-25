@@ -17,9 +17,9 @@
         };
 
         function formatOSDData(osd) {
-            var pairs = _.reduce(['uuid', 'up', 'in', 'reweight', 'server', 'pools', 'public_addr', 'cluster_addr'], function(result, key) {
+            var pairs = _.reduce(['id', 'uuid', 'up', 'in', 'reweight', 'server', 'pools', 'public_addr', 'cluster_addr'], function(result, key) {
                 var value = osd[key];
-                if (value || value !== '') {
+                if (_.isObject(value) || _.isNumber(value) || (_.isString(value) && value !== '')) {
                     if (key === 'up' || key === 'in') {
                         result.state = result.state || [];
                         var markup = '<div class="label label-danger">DOWN</div>';
@@ -44,9 +44,8 @@
             if (pairs.state) {
                 pairs.state = pairs.state.join(' &nbsp; ');
             }
-            if (pairs.reweight) {
-                pairs.reweight = Math.round(Math.max(pairs.reweight*100, 100)) + '%';
-            }
+            pairs.reweight = Math.round(Math.min(pairs.reweight * 100, 100)) + '%';
+            pairs.id = '' + pairs.id;
             return pairs;
         }
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService) {
@@ -67,9 +66,48 @@
                     $timeout.cancel(osd.timeout);
                     osd.timeout = undefined;
                 }
+                $log.debug('reweight: ' + osd.reweight);
+                if (osd.reweight === '' || osd.reweight === void 0) {
+                    osd.hasError = true;
+                    return;
+                }
+                if (_.isNumber(osd.reweight) && (osd.reweight > 100 || osd.reweight < 0)) {
+                    osd.reweight = angular.copy(osd._reweight);
+                    return;
+                }
+                if (_.isNaN(osd.reweight)) {
+                    osd.hasError = true;
+                    return;
+                }
+                osd.hasError = false;
+                if (osd.reweight === osd._reweight) {
+                    return;
+                }
                 osd.timeout = $timeout(function() {
                     console.log('would have saved ' + osd.reweight);
                     osd.editing = true;
+                    var start = Date.now();
+                    OSDService.patch(osd.id, {
+                        reweight: osd.reweight / 100
+                    }).then(function(resp) {
+                        var deferred = $q.defer();
+                        /* jshint camelcase: false */
+                        RequestTrackingService.add(resp.data.request_id, function() {
+                            deferred.resolve();
+                        });
+                        var end = Date.now();
+                        var timer = end - start;
+                        timer = timer > 1000 ? 0 : 1000 - timer;
+                        $timeout(function() {
+                            osd.saved = true;
+                            deferred.promise.then(function() {
+                                osd._reweight = angular.copy(osd.reweight);
+                                osd.editing = false;
+                                osd.saved = false;
+                            });
+                        }, timer);
+                    });
+
                     $timeout(function() {
                         osd.saved = true;
                         osd.editing = false;
@@ -77,7 +115,7 @@
                             osd.saved = false;
                         }, 1000);
                     }, 1000);
-                }, 5000);
+                }, 3000);
             };
 
             function generateConfigDropdown(result, handler) {
@@ -209,6 +247,9 @@
                         generateConfigDropdown(result, configClickHandler);
                         result.reweight = Math.min(result.reweight * 100, 100);
                         result.reweight = Math.max(result.reweight, 0);
+                        result.reweight = Math.round(result.reweight);
+                        result._reweight = angular.copy(result.reweight);
+                        result.hasError = false;
                         result.editing = false;
                         result.saved = false;
                         r.osds[index] = _.extend(r.osds[index], result);
