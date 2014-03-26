@@ -389,7 +389,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             return this.makePerHostModelGraphs(hostname, 'makeHostDeviceRWAwaitGraphUrl', this.ioTargetModels);
         },
         makePoolIOPS: function() {
-            return this.makePerHostModelGraphs('', 'makePoolIOPSGraphURL', this.iopsTargetModels);
+            return this.makePerHostModelGraphs('', 'makePoolIOPSGraphURL', this.iopsTargetModels, this.iopsTargetModels.clusterName);
         },
         updateBtns: function(id) {
             this.ui.buttons.find('.btn').removeClass('active');
