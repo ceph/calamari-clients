@@ -17,12 +17,11 @@
                         $scope.logui = 'empty';
                         return;
                     }
-                    var lines = logs.lines.split('\n').reverse();
+                    var lines = _.filter(logs.lines.split('\n').reverse(), function(line) {
+                        return !(line === '' || line === undefined);
+                    });
                     $scope.logs = _.map(lines, function(log) {
                         var line = log.split(' ');
-                        if (line === '' || line === undefined) {
-                            return;
-                        }
                         return {
                             timestamp: moment(line[0] + ' ' + line[1]).fromNow(),
                             unit: line[2],
