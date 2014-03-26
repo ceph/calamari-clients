@@ -138,7 +138,8 @@
                     configText: text.configText,
                     hasError: false,
                     editing: false,
-                    saved: false
+                    saved: false,
+                    editDisabled: false
                 });
                 if (osd.valid_commands.length) {
                     osd.repairDropdown = _.reduce(osd.valid_commands, function(newdropdown, cmd) {
@@ -198,6 +199,7 @@
                                         transformOSDToUI(_osd);
                                         _.extend(osd, _osd);
                                         osd.repairDisabled = !osd.up;
+                                        osd.editDisabled = !osd.up || !osd.in;
                                         generateConfigDropdown(osd, configClickHandler);
                                     });
                                 });
