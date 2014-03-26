@@ -17,7 +17,7 @@
                         $scope.logui = 'empty';
                         return;
                     }
-                    var lines = logs.lines.split('\n');
+                    var lines = logs.lines.split('\n').reverse();
                     $scope.logs = _.map(lines, function(log) {
                         var line = log.split(' ');
                         return {
