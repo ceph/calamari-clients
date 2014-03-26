@@ -20,6 +20,9 @@
                     var lines = logs.lines.split('\n').reverse();
                     $scope.logs = _.map(lines, function(log) {
                         var line = log.split(' ');
+                        if (line === '' || line === undefined) {
+                            return;
+                        }
                         return {
                             timestamp: moment(line[0] + ' ' + line[1]).fromNow(),
                             unit: line[2],
