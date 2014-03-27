@@ -8,26 +8,23 @@
                 <div class='standard-spacing'>
                     <table class="osd-hosts table condensed">
                         <thead>
-                            <th>Host</th>
-                            <th>OSD IDs</th>
-                            <th>OSD Count</th>
+                            <th class="text-muted">HOST</th>
+                            <th class="text-muted">OSD IDS</th>
+                            <th class="text-muted">OSD COUNT</th>
                         </thead>
                         <tbody>
                             <tr ng-repeat='server in servers' class="am-fade-and-slide-left">
                                 <td>
                                     <button type="button" class="btn btn-md btn-primary btn-osd" ng-click="hostClickHandler(server.fqdn)"
-                                    data-placement="center">{{server.hostname}}</button>
+                                    data-placement="center" ng-bind="server.hostname"></button>
                                 </td>
-                                <td>
-                                    <span ng-repeat="id in server.services.osdID">
-                                        <button ng-click='displayOSD(id)' class="btn btn-sm btn-info btn-osd-id">
-                                            {{id}}
+                                <td> <span ng-repeat="id in server.services.osdID">
+                                        <button ng-bind='id' ng-click='displayOSD(id)' class="btn btn-sm btn-info btn-osd-id">
                                         </button>
                                     </span>
+
                                 </td>
-                                <td>
-                                    {{server.services.osdCount}}
-                                </td>
+                                <td ng-bind="server.services.osdCount"></td>
                             </tr>
                         </tbody>
                 </div>
