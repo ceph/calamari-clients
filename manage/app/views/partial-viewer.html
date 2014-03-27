@@ -18,7 +18,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat='config in configs | filter:searchText'>
-                        <td>{{config.key}}</td>
+                        <td class="text-muted">{{config.key}}</td>
                         <td title={{config.value}} class='truncate'>{{config.value}}</td>
                     </tr>
                 </tbody>
