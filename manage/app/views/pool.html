@@ -1,15 +1,39 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card ng-hide am-fade-and-slide-top" ng-show='up'>
-    <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; POOLS &raquo;</h4>
-<div class="container">
-<div class="row" style="border:0px solid black; padding: 20px 40px;">
-    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-        <button type="button" ng-click="create()" class="btn btn-md btn-primary btn-pool" data-placement="center">CREATE POOL</button>
-        <div style="margin-top: 10px;" ng-repeat="pool in pools">
-            <button type="button" class="btn btn-md btn-success btn-pool" ng-click='modify(pool.id)' data-id='{{pool.id}}' data-placement="center">{{pool.name}}</button>
+     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; POOLS &raquo;</h4>
+
+    <div class="container">
+        <div class="row" style="border:0px solid black; padding: 20px 40px;">
+            <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                <button type="button" ng-click="create()" class="btn btn-md btn-primary pull-right"
+                data-placement="center"><i class="fa fa-lg fa-fw fa-plus-square" bs-tooltip="ttCreate"></i>
+                </button>
+                <table class="table condensed">
+                    <thead>
+                        <th>Name</th>
+                        <th>ID</th>
+                        <th>Replicas (size)</th>
+                        <th>Placement Groups</th>
+                        <th>Controls</th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="pool in pools">
+                            <td class="text-info" ng-bind="pool.name"></td>
+                            <td ng-bind="pool.id"></td>
+                            <td ng-bind="pool.size"></td>
+                            <td ng-bind="pool.pg_num"></td>
+                            <td>
+                                <button type="button" ng-click="modify(pool.id)" class="btn btn-md btn-primary"> <i class="fa fa-lg fa-fw fa-edit" bs-tooltip="ttEdit"></i>
+
+                                </button>
+                                <button type="button" class="btn btn-md btn-danger"> <i class="fa fa-lg fa-fw fa-trash-o" bs-tooltip="ttDelete"></i>
+
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-
-</div>
 </div !-- card -->

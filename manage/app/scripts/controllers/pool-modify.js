@@ -16,6 +16,18 @@
             });
             var promises = [PoolService.get($scope.id), CrushService.getList(), ToolService.config('mon_max_pool_pg_num')];
 
+            $scope.ttBack = {
+                'title': 'Back'
+            };
+            $scope.ttReset = {
+                'title': 'Reset to Default'
+            };
+            $scope.ttSave = {
+                'title': 'Save Changes'
+            };
+            $scope.ttDelete = {
+                'title': 'Delete Pool'
+            };
             $scope.remove = function(id) {
                 $log.debug('deleting ' + id);
                 var modal = $modal({

@@ -10,6 +10,15 @@
                 $location.path('/pool');
             };
             $scope.reset = poolHelpers.makeReset($scope);
+            $scope.ttReset = {
+                title: 'Reset to Defaults'
+            };
+            $scope.ttCancel = {
+                title: 'Cancel'
+            };
+            $scope.ttCreate = {
+                title: 'Create Pool'
+            };
             $scope.create = function() {
                 if ($scope.poolForm.$invalid) {
                     return;

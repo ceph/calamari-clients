@@ -8,6 +8,15 @@
                 $location.path('/first');
                 return;
             }
+            $scope.ttEdit = {
+                title: 'Edit Pool'
+            };
+            $scope.ttDelete = {
+                title: 'Delete Pool'
+            };
+            $scope.ttCreate = {
+                title: 'Create Pool'
+            };
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.up = false;
             PoolService.getList().then(function(pools) {
