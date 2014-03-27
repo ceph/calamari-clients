@@ -12,14 +12,13 @@
                 <table class='table table-condensed'>
                     <thead>
                         <tr>
-                            <th>Key</th>
-                            <th>Value</th>
+                            <th class='text-muted'>Key</th>
+                            <th class='text-muted'>Value</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="(key, value) in pairs">
-                            <td><em>{{key}}</em>
-                            </td>
+                            <td class='text-muted'>{{key}}</td>
                             <td ng-bind-html='value'></td>
                         </tr>
                     </tbody>
