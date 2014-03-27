@@ -16,13 +16,24 @@
                 }
 
                 (function(keys) {
-                    $scope.keys = keys;
+                    $scope.hosts = _.reduce(keys, function(result, key) {
+                        if (key.status === 'pre') {
+                            result.pre.push(key);
+                        } else if (key.status === 'accepted') {
+                            result.accepted.push(key);
+                        } else {
+                            result.blocked.push(key);
+                        }
+                        return result;
+                    }, {
+                        accepted: [{},{}],
+                        pre: [],
+                        blocked: []
+                    });
+                    $scope.addDisabled = false;
                     $scope.acceptAll = function() {
-                        var ids = _.map(keys, function(key) {
-                            if (key.status === 'pre') {
-                                return key.id;
-                            }
-                            return;
+                        var ids = _.map($scope.hosts.pre, function(key) {
+                            return key.id;
                         });
                         $log.debug(ids);
                         $scope.addDisabled = true;
@@ -64,7 +75,6 @@
                         });
                         return;
                     };
-                    $scope.addDisabled = false;
                 })(results[0]);
 
 
