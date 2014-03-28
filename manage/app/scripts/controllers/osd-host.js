@@ -31,7 +31,7 @@
                     text: 'OSD',
                     href: '#/osd'
                 }, {
-                    text: 'HOST',
+                    text: 'Host (' + $scope.fqdn + ')',
                     active: true
                 }
             ];

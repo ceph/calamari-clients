@@ -1,34 +1,42 @@
-@import 'font-awesome/scss/font-awesome';
-@import 'modules/bootstrap-additions.min';
-@import 'modules/angular-motion';
-@import 'modules/angular-growl.min';
-@import 'modules/bootstrap3_vars';
-@import 'modules/inktank_colors';
-@import 'partials/base.scss';
-@import 'modules/angular-toggle-switch';
-@import 'modules/angular-toggle-switch-bootstrap';
-@import 'compass/css3/user-interface';
-
-.disable-user-select {
+@import'font-awesome/scss/font-awesome';
+ @import'modules/bootstrap-additions.min';
+ @import'modules/angular-motion';
+ @import'modules/angular-growl.min';
+ @import'modules/bootstrap3_vars';
+ @import'modules/inktank_colors';
+ @import'partials/base.scss';
+ @import'modules/angular-toggle-switch';
+ @import'modules/angular-toggle-switch-bootstrap';
+ @import'compass/css3/user-interface';
+ .disable-user-select {
     @include user-select(none);
 }
 .truncate {
-	max-width: 250px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
 .btn-osd-id {
-	margin: 2px;
-	width: 3.5em;
+    margin: 2px;
+    width: 3.5em;
 }
 .servers.table {
-	margin-bottom: 0;
+    margin-bottom: 0;
 }
 .osd-hosts.table>tbody>tr>td {
-	vertical-align: top;
+    vertical-align: top;
 }
 .osd-state-width {
-	min-width: 7.5em;
+    min-width: 7.5em;
+}
+.breadcrumb>li+li:before {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content:"\0f054";
 }
