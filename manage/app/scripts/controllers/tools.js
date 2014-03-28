@@ -9,6 +9,13 @@
                 return;
             }
             $scope.clusterName = ClusterService.clusterModel.name;
+            $scope.breadcrumbs = [{
+                    text: 'Manage (' + $scope.clusterName + ')'
+                }, {
+                    text: 'Logs',
+                    active: true
+                }
+            ];
             $scope.logui = 'spinner';
             var promises = [ToolService.log()];
             $q.all(promises).then(function(results) {

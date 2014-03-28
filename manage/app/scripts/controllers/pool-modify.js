@@ -7,6 +7,15 @@
             var self = this;
             $scope.modify = false;
             $scope.clusterName = ClusterService.clusterModel.name;
+            $scope.breadcrumbs = [{
+                    text: 'Manage (' + $scope.clusterName + ')'
+                }, {
+                    text: 'Pools'
+                }, {
+                    text: 'Edit',
+                    active: true
+                }
+            ];
             $scope.id = $routeParams.id;
             $scope.cancel = function() {
                 $location.path('/pool');

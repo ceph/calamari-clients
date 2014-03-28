@@ -1,7 +1,6 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card ng-hide am-fade-and-slide-bottom" ng-show='up'>
-     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; POOLS &raquo; CREATE</h4>
-
+    <div ng-include="'views/breadcrumb-nav.html'"></div>
     <div class="container">
         <div class="row" style="border:0px solid black; padding: 20px 40px;">
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
@@ -43,11 +42,14 @@
                 <div style="height: 10px"></div>
                 <div>
                     <button type="button" class="btn btn-md btn-danger" ng-click='cancel()' data-placement="center"><i class="fa fa-fw fa-lg fa-arrow-left" bs-tooltip="ttCancel"></i>
+
                     </button>
                     <button type="button" class="btn btn-md btn-warning" ng-click='reset()' data-placement="center"><i class="fa fa-fw fa-lg fa-rotate-left" bs-tooltip="ttReset"></i>
+
                     </button>
                     <button type="button" ng-class="{ 'disabled': poolForm.$invalid }" class="btn btn-md btn-primary"
                     ng-click='create()' data-placement="center" bs-tooltip="ttCreate"><i class="fa fa-fw fa-lg fa-plus-square"></i>
+
                     </button>
                 </div>
             </div>

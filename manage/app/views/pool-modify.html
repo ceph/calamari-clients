@@ -1,7 +1,6 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class='card ng-hide am-fade-and-slide-bottom' ng-show='up'>
-     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; POOLS <span class='text-primary'>{{pool.name}}</span> &raquo; MODIFY</h4>
-
+    <div ng-include="'views/breadcrumb-nav.html'"></div>
     <div class="container">
         <div class="row" style="border:0px solid black; padding: 20px 40px;">
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
@@ -18,8 +17,8 @@
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': poolForm.size.$invalid && !poolForm.size.$pristine}">
                         <label for="size">Replicas (size)</label>
-                        <input id="size" type="number" min="{{pool.min_size}}" name="size" required class="form-control"
-                        placeholder="Size" ng-model='pool.size'></input>
+                        <input id="size" type="number" min="{{pool.min_size}}"
+                        name="size" required class="form-control" placeholder="Size" ng-model='pool.size'></input>
                         <p ng-show='poolForm.size.$error.number' class='help-block'>Invalid Number</p>
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': poolForm.pg_num.$invalid && !poolForm.pg_num.$pristine}">
@@ -42,13 +41,16 @@
                 <div style="height: 10px"></div>
                 <div>
                     <button type="button" class="btn btn-md btn-danger" ng-click='cancel()' data-placement="center"><i class="fa fa-lg fa-fw fa-arrow-left" bs-tooltip="ttBack"></i>
+
                     </button>
-                    <button type="button" class="btn btn-md btn-warning"
-                        ng-click='reset()' data-placement="center"><i class="fa fa-lg fa-fw fa-rotate-left" bs-tooltip="ttReset"></i></button>
+                    <button type="button" class="btn btn-md btn-warning" ng-click='reset()' data-placement="center"><i class="fa fa-lg fa-fw fa-rotate-left" bs-tooltip="ttReset"></i>
+                    </button>
                     <button type="button" ng-class="{ 'disabled': !poolForm.$dirty || poolForm.$invalid }"
-                        class="btn btn-md btn-primary" ng-click='modify(id)' data-placement="center"><i class="fa fa-fw fa-lg fa-save" bs-tooltip="ttSave"></i></button>
-                    <button style="margin-left: 100px;" type="button"
-                        class="btn btn-md btn-danger" ng-click='remove(id)' data-placement="center"><i class="fa fa-fw fa-lg fa-trash-o" bs-tooltip="ttDelete"></i></button>
+                    class="btn btn-md btn-primary" ng-click='modify(id)' data-placement="center"><i class="fa fa-fw fa-lg fa-save" bs-tooltip="ttSave"></i>
+                    </button>
+                    <button style="margin-left: 100px;" type="button" class="btn btn-md btn-danger"
+                    ng-click='remove(id)' data-placement="center"><i class="fa fa-fw fa-lg fa-trash-o" bs-tooltip="ttDelete"></i>
+                    </button>
                 </div>
             </div>
         </div>

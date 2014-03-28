@@ -8,9 +8,14 @@
                 $location.path('/first');
                 return;
             }
-            ClusterService.get().then(function(cluster) {
-                $scope.clusterName = cluster.name;
-            });
+            $scope.clusterName = ClusterService.clusterModel.name;
+            $scope.breadcrumbs = [{
+                    text: 'Manage (' + $scope.clusterName + ')'
+                }, {
+                    text: 'OSD',
+                    active: true
+                }
+            ];
             $scope.displayOSD = function(id) {
                 OSDService.get(id).then(function(_osd) {
                     var modal = $modal({

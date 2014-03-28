@@ -8,6 +8,7 @@
                 $location.path('/first');
                 return;
             }
+
             function refreshPools() {
                 if ($rootScope.keyTimer) {
                     $timeout.cancel($rootScope.keyTimer);
@@ -28,6 +29,13 @@
                 title: 'Create Pool'
             };
             $scope.clusterName = ClusterService.clusterModel.name;
+            $scope.breadcrumbs = [{
+                    text: 'Manage (' + $scope.clusterName + ')'
+                }, {
+                    text: 'Pools',
+                    active: true
+                }
+            ];
             $scope.up = false;
             PoolService.getList().then(function(pools) {
                 $scope.pools = pools;

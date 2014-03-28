@@ -1,8 +1,7 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card ng-hide am-fade-and-slide-bottom" style='min-height: 500px;'
 ng-show='up'>
-     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; OSD &raquo; SERVER <span class='text-primary'>{{fqdn}}</span> &raquo;</h4>
-
+    <div ng-include="'views/breadcrumb-nav.html'"></div>
     <div class="container">
         <div class="row">
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
@@ -14,7 +13,8 @@ ng-show='up'>
                                 <th>ID</th>
                                 <th>Daemon</th>
                                 <th class="osd-state-width">State</th>
-                                <th class="osd-state-width">Re-Weight %<sup class="text-info">*</sup></th>
+                                <th class="osd-state-width">Re-Weight %<sup class="text-info">*</sup>
+                                </th>
                                 <th>Commands</th>
                             </tr>
                         </thead>
@@ -35,13 +35,13 @@ ng-show='up'>
                                 ng-if="!osd.in" class="label label-danger">OUT</span>
                             </td>
                             <td>
-                                <input type='number' min="0" max="100" ng-disabled='osd.editing || osd.editDisabled' required=true
-                                name="reweight" ng-model='osd.reweight' ng-change='changedFn(osd)' />&nbsp; <i ng-show="osd.editing" class='fa fa-spinner fa-spin fa-lg fa-fw'></i>
+                                <input type='number' min="0" max="100" ng-disabled='osd.editing || osd.editDisabled'
+                                required=true name="reweight" ng-model='osd.reweight' ng-change='changedFn(osd)'
+                                />&nbsp; <i ng-show="osd.editing" class='fa fa-spinner fa-spin fa-lg fa-fw'></i>
 
                                 <i
-                                ng-show="osd.saved" class='text-success fa fa-check-circle fa-lg fa-fw'></i>
-                                <i
-                                ng-show="osd.hasError" class='text-danger fa fa-exclamation-triangle fa-lg fa-fw'></i>
+                                ng-show="osd.saved" class='text-success fa fa-check-circle fa-lg fa-fw'></i> <i ng-show="osd.hasError" class='text-danger fa fa-exclamation-triangle fa-lg fa-fw'></i>
+
                             </td>
                             <td>
                                 <button ng-disabled='osd.disabled' type='button' ng-click='displayFn(osd.id)'

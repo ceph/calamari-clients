@@ -185,6 +185,7 @@
             $scope.$watch('button.radio', function() {
                 // reset help message when switching sub-view
                 $scope.helpDiv = undefined;
+                $scope.breadcrumbs = breadcrumbs[$scope.button.radio];
             });
             $scope.updateLabel = 'UPDATE';
             $scope.updatePrimary = true;
@@ -228,6 +229,39 @@
                 });
             };
             /* cluster settings --- end */
+            var breadcrumbs = {
+                'servers': [{
+                        text: 'Manage (' + ClusterService.clusterModel.name + ')'
+                    }, {
+                        text: 'Cluster',
+                        active: true
+                    }, {
+                        text: 'Hosts',
+                        active: true
+                    }
+                ],
+                'osdmap': [{
+                        text: 'Manage (' + ClusterService.clusterModel.name + ')'
+                    }, {
+                        text: 'Cluster',
+                        active: true
+                    }, {
+                        text: 'Cluster Settings',
+                        active: true
+                    }
+                ],
+                'viewer': [{
+                        text: 'Manage (' + ClusterService.clusterModel.name + ')'
+                    }, {
+                        text: 'Cluster',
+                        active: true
+                    }, {
+                        text: 'Config Viewer',
+                        active: true
+                    }
+                ]
+            };
+            $scope.breadcrumbs = breadcrumbs.servers;
             var promises = [ClusterService.get(), KeyService.getList(), ToolService.config(), OSDConfigService.get()];
             $q.all(promises).then(function(results) {
 

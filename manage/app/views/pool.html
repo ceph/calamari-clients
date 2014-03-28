@@ -1,7 +1,6 @@
 <div ng-include="'views/appbar.html'"></div>
 <div class="card ng-hide am-fade-and-slide-top" ng-show='up'>
-     <h4 class="text-info">CLUSTER <span class='text-primary'>{{clusterName}}</span> &raquo; POOLS &raquo;</h4>
-
+    <div ng-include="'views/breadcrumb-nav.html'"></div>
     <div class="container-fluid">
         <div class="row" style="padding: 20px 40px;">
             <div class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
@@ -24,8 +23,10 @@
                             <td ng-bind="pool.size"></td>
                             <td ng-bind="pool.pg_num"></td>
                             <td>
-                                <button type="button" ng-click="modify(pool.id)" class="btn btn-md btn-primary"><i class="fa fa-lg fa-fw fa-edit" bs-tooltip="ttEdit"></i></button>
-                                <button type="button" ng-click="remove(pool)" class="btn btn-md btn-danger"><i class="fa fa-lg fa-fw fa-trash-o" bs-tooltip="ttDelete"></i></button>
+                                <button type="button" ng-click="modify(pool.id)" class="btn btn-md btn-primary"><i class="fa fa-lg fa-fw fa-edit" bs-tooltip="ttEdit"></i>
+                                </button>
+                                <button type="button" ng-click="remove(pool)" class="btn btn-md btn-danger"><i class="fa fa-lg fa-fw fa-trash-o" bs-tooltip="ttDelete"></i>
+                                </button>
                             </td>
                         </tr>
                     </tbody>

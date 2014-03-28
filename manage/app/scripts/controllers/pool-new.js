@@ -6,6 +6,15 @@
         var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, RequestTrackingService, $modal) {
             var self = this;
             $scope.clusterName = ClusterService.clusterModel.name;
+            $scope.breadcrumbs = [{
+                    text: 'Manage (' + $scope.clusterName + ')'
+                }, {
+                    text: 'Pools'
+                }, {
+                    text: 'Create',
+                    active: true
+                }
+            ];
             $scope.cancel = function() {
                 $location.path('/pool');
             };

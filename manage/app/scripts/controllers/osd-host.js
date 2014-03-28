@@ -25,6 +25,15 @@
             }
             $scope.fqdn = $routeParams.fqdn;
             $scope.clusterName = ClusterService.clusterModel.name;
+            $scope.breadcrumbs = [{
+                    text: 'Manage (' + $scope.clusterName + ')'
+                }, {
+                    text: 'OSD'
+                }, {
+                    text: 'HOST',
+                    active: true
+                }
+            ];
             $scope.displayFn = function(id) {
                 OSDService.get(id).then(function(_osd) {
                     var modal = $modal({
@@ -199,7 +208,7 @@
                                         transformOSDToUI(_osd);
                                         _.extend(osd, _osd);
                                         osd.repairDisabled = !osd.up;
-                                        osd.editDisabled = !osd.up || !osd.in;
+                                        osd.editDisabled = !osd.up || !osd. in ;
                                         generateConfigDropdown(osd, configClickHandler);
                                     });
                                 });
