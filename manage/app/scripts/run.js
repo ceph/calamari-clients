@@ -11,7 +11,12 @@
                 if (from && from.loadedTemplateUrl ==='views/root.html' && $rootScope.keyTimer) {
                     $timeout.cancel($rootScope.keyTimer);
                     $rootScope.keyTimer = undefined;
-                    $log.debug('canceling key timer');
+                    $log.debug('canceling root key timer');
+                }
+                if (from && from.loadedTemplateUrl ==='views/pool.html' && $rootScope.keyTimer) {
+                    $timeout.cancel($rootScope.keyTimer);
+                    $rootScope.keyTimer = undefined;
+                    $log.debug('canceling pool key timer');
                 }
             });
             // add show requests handler for request queue

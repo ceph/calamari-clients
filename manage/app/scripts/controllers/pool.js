@@ -3,10 +3,20 @@
     'use strict';
     define(['helpers/modal-helpers'], function(modalHelpers) {
 
-        var PoolController = function($log, $scope, PoolService, ClusterService, $location, $modal, RequestTrackingService) {
+        var PoolController = function($log, $scope, PoolService, ClusterService, $location, $modal, RequestTrackingService, $rootScope, $timeout) {
             if (ClusterService.clusterId === null) {
                 $location.path('/first');
                 return;
+            }
+            function refreshPools() {
+                if ($rootScope.keyTimer) {
+                    $timeout.cancel($rootScope.keyTimer);
+                    $rootScope.keyTimer = undefined;
+                }
+                PoolService.getList().then(function(pools) {
+                    $scope.pools = pools;
+                });
+                $rootScope.keyTimer = $timeout(refreshPools, 20000);
             }
             $scope.ttEdit = {
                 title: 'Edit Pool'
@@ -22,6 +32,7 @@
             PoolService.getList().then(function(pools) {
                 $scope.pools = pools;
                 $scope.up = true;
+                $rootScope.keyTimer = $timeout(refreshPools, 20000);
             });
             $scope.create = function() {
                 $location.path('/pool/new');
@@ -29,6 +40,7 @@
             $scope.modify = function(id) {
                 $location.path('/pool/modify/' + id);
             };
+
             $scope.remove = function(pool) {
                 $log.debug('deleting ' + pool.id);
                 var modal = $modal({
@@ -45,11 +57,7 @@
                     PoolService.remove(modal.$scope.id).then(function(result) {
                         if (result.status === 202) {
                             /* jshint camelcase: false */
-                            RequestTrackingService.add(result.data.request_id, function() {
-                                PoolService.getList().then(function(pools) {
-                                    $scope.pools = pools;
-                                });
-                            });
+                            RequestTrackingService.add(result.data.request_id, refreshPools);
                             var okmodal = modalHelpers.SuccessfulRequest($modal, {
                                 title: 'Delete Request Successful'
                             });
@@ -90,6 +98,6 @@
                 };
             };
         };
-        return ['$log', '$scope', 'PoolService', 'ClusterService', '$location', '$modal', 'RequestTrackingService', PoolController];
+        return ['$log', '$scope', 'PoolService', 'ClusterService', '$location', '$modal', 'RequestTrackingService', '$rootScope', '$timeout', PoolController];
     });
 })();
