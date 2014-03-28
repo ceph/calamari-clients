@@ -9,7 +9,8 @@
             $scope.breadcrumbs = [{
                     text: 'Manage (' + $scope.clusterName + ')'
                 }, {
-                    text: 'Pools'
+                    text: 'Pools',
+                    href: '#/pool'
                 }, {
                     text: 'Create',
                     active: true

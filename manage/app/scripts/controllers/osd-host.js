@@ -26,9 +26,10 @@
             $scope.fqdn = $routeParams.fqdn;
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.breadcrumbs = [{
-                    text: 'Manage (' + $scope.clusterName + ')'
+                    text: 'Manage (' + $scope.clusterName + ')',
                 }, {
-                    text: 'OSD'
+                    text: 'OSD',
+                    href: '#/osd'
                 }, {
                     text: 'HOST',
                     active: true
