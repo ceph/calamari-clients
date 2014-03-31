@@ -1,13 +1,20 @@
-@import'font-awesome/scss/font-awesome';
- @import'modules/bootstrap-additions.min';
- @import'modules/angular-motion';
- @import'modules/angular-growl.min';
- @import'modules/bootstrap3_vars';
- @import'modules/inktank_colors';
- @import'partials/base.scss';
- @import'modules/angular-toggle-switch';
- @import'modules/angular-toggle-switch-bootstrap';
- @import'compass/css3/user-interface';
+@import 'font-awesome/scss/font-awesome';
+@import 'modules/bootstrap-additions.min';
+@import 'modules/angular-motion';
+@import 'modules/angular-growl.min';
+@import 'modules/bootstrap3_vars';
+@import 'modules/inktank_colors';
+@import 'compass/css3/user-interface';
+@import 'compass/css3/border-radius';
+@import 'compass/css3/box-shadow';
+@import 'compass/css3/box-sizing';
+@import 'compass/css3/images';
+@import 'compass/css3/transform';
+@import 'compass/typography/text/force-wrap';
+@import 'compass/typography/text/nowrap';
+@import 'partials/base.scss';
+@import 'modules/angular-toggle-switch';
+@import 'modules/angular-toggle-switch-bootstrap';
  .disable-user-select {
     @include user-select(none);
 }

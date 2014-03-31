@@ -20,7 +20,7 @@ $third-row-height: 120px;
 .navbar {
     margin-bottom:0;
     min-height: 58px;
-    @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+    @include background(linear-gradient(bottom, darken($itdarkred, 20%), darken($itred, 40%)));
     @include border-radius(3px);
     @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
     border: 1px solid darken($itdarkred, 15%);
@@ -30,7 +30,7 @@ $third-row-height: 120px;
 .navbar .navbar-nav > li > a {
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
-        @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+        @include background(linear-gradient(bottom, darken($itdarkred, 20%), darken($itred, 40%)));
 	&:hover {
 		color: darken($itlightgray, 15%);
 	}

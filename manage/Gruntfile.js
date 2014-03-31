@@ -44,7 +44,7 @@ module.exports = function (grunt) {
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-        tasks: ['newer:copy:styles', 'autoprefixer']
+        tasks: ['newer:copy:styles']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -208,21 +208,6 @@ module.exports = function (grunt) {
         }]
       },
       server: '.tmp'
-    },
-
-    // Add vendor prefixed styles
-    autoprefixer: {
-      options: {
-        browsers: ['last 1 version']
-      },
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '.tmp/styles/',
-          src: '{,*/}*.css',
-          dest: '.tmp/styles/'
-        }]
-      }
     },
 
     // Automatically inject Bower components into the app
@@ -448,7 +433,6 @@ module.exports = function (grunt) {
       'clean:server',
       'configureProxies:server',
       'concurrent:server',
-      'autoprefixer',
       'connect:livereload',
       'watch'
     ]);
@@ -463,7 +447,6 @@ module.exports = function (grunt) {
     'symlink',
     'clean:server',
     'concurrent:test',
-    'autoprefixer',
     'connect:test',
     'karma'
   ]);
@@ -474,7 +457,6 @@ module.exports = function (grunt) {
     'saveRevision',
     'useminPrepare',
     'concurrent:dist',
-    'autoprefixer',
     'concat',
     'requirejs',
     'ngmin',
