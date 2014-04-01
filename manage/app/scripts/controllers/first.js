@@ -26,7 +26,7 @@
                         }
                         return result;
                     }, {
-                        accepted: [{},{}],
+                        accepted: [],
                         pre: [],
                         blocked: []
                     });
