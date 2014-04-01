@@ -245,7 +245,6 @@
                     osds: [],
                     ids: []
                 });
-                $scope.up = true;
                 $q.all(OSDService.getSet(r.ids)).then(function(results) {
                     _.each(results, function(result, index) {
                         addUIMetadataToOSDData(result, index);
@@ -254,6 +253,7 @@
                     $scope.services = {
                         osds: r.osds
                     };
+                    $scope.up = true;
                 });
             });
 
