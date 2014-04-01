@@ -20,7 +20,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             this.serverUnreachable = _.once(this.serverUnreachable);
             this.configError = _.once(this.configError);
             this.timeout = _.after(this.throttleCount, this.timeout);
-            this.clusterUpdateTimeout = _.throttle(this.clusterUpdateTimeout, this.krakenFailThreshold);
             this.clusterAPITimeout = _.throttle(this.clusterAPITimeout, this.krakenFailThreshold);
             _.bindAll(this, 'neterrorHandler', 'heartBeat');
         },
@@ -30,21 +29,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                 //jshint camelcase: false
                 if (attrs) {
                     var now = Date.now();
-                    var deltaAttemptMs = now - attrs.cluster_update_attempt_time_unix;
                     var deltaSuccessMs = now - attrs.cluster_update_time_unix;
                     // If time since last success exceeds threshold we
                     // have a problem with kraken
                     if (deltaSuccessMs > this.krakenFailThreshold) {
                         var msg = _.extend({}, this.notyDefaults);
-                        if (deltaAttemptMs > deltaSuccessMs) {
-                            // if last attempt is older than last success
-                            // then it's likely kraken has failed
-                            this.clusterUpdateTimeout(msg);
-                        } else {
-                            // kraken's still trying, we suspect cluster
-                            // API communication issues
-                            this.clusterAPITimeout(msg);
-                        }
+                        // kraken's still trying, we suspect cluster
+                        // API communication issues
+                        this.clusterAPITimeout(msg);
                     }
                 }
             }
@@ -66,10 +58,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             this.timeoutCount++;
             this.error(msg);
             console.log('timeout count ' + this.timeoutCount);
-        },
-        clusterUpdateTimeout: function(msg) {
-            msg.text = l10n.getSync('clusterUpdatesAreStale');
-            this.warning(msg);
         },
         clusterAPITimeout: function(msg) {
             msg.text = l10n.getSync('clusterNotResponding');
