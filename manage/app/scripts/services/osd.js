@@ -7,7 +7,18 @@ define(['lodash'], function(_) {
         };
         Service.prototype = _.extend(Service.prototype, {
             getList: function() {
-                return this.restangular.cluster().all('osd').getList().then(function(pools) {
+                return this.restangular.cluster().getList('osd').then(function(pools) {
+                    return pools;
+                });
+            },
+            getSet: function(ids) {
+                var idargs = _.reduce(ids, function(result, id) {
+                    result.push(id);
+                    return result;
+                }, []);
+                return this.restangular.cluster().getList('osd', {
+                    'id__in[]': idargs
+                }).then(function(pools) {
                     return pools;
                 });
             },
@@ -31,7 +42,7 @@ define(['lodash'], function(_) {
                     'in': false
                 });
             },
-            in: function(id) {
+            in : function(id) {
                 return this.patch(id, {
                     'in': true
                 });

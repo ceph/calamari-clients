@@ -238,15 +238,15 @@
                             running: true
                         };
                         results.osds.push(osd);
-                        results.promises.push(OSDService.get(osd.id));
+                        results.ids.push(osd.id);
                     }
                     return results;
                 }, {
                     osds: [],
-                    promises: []
+                    ids: []
                 });
                 $scope.up = true;
-                $q.all(r.promises).then(function(results) {
+                $q.all(OSDService.getSet(r.ids)).then(function(results) {
                     _.each(results, function(result, index) {
                         addUIMetadataToOSDData(result, index);
                         r.osds[index] = _.extend(r.osds[index], result);
