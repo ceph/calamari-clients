@@ -9,8 +9,7 @@
         <thead></thead>
         <tbody>
             <tr ng-repeat="minion in cols[index]" class="am-fade-and-slide-left">
-                <td> <i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-square-o text-success': minion.status == 'accepted',
-                                      'fa-square-o text-warning': minion.status != 'accepted' }"></i>
+                <td> <i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-square-o text-success': minion.status == 'accepted', 'fa-square-o text-warning icon-adjust-down': minion.status != 'accepted' }"></i>
 
                 </td>
                 <td class="" style="min-width: 100px;" data-id='{{minion.id}}'>{{minion.shortName}}</td>
