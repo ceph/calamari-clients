@@ -22,7 +22,7 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                     $log.info('Inktank User Request Store ready!');
                 }
             });
-            _.bindAll(this, 'remove', 'add', 'checkWorkToDo', 'processTasks', 'getAll', 'getLength', '_resolvePromise', '_rejectPromise');
+            _.bindAll(this, 'remove', 'add', 'checkWorkToDo', 'processTasks', 'getTrackedTasks', 'getLength', '_resolvePromise', '_rejectPromise');
             this.timeout = $timeout(this.checkWorkToDo, shortTimer);
         };
         Service.prototype = _.extend(Service.prototype, {
@@ -59,7 +59,7 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                 this.requests.count(d.resolve, d.reject);
                 return d.promise;
             },
-            getAll: function() {
+            getTrackedTasks: function() {
                 var d = $q.defer();
                 this.requests.getAll(d.resolve, d.reject);
                 return d.promise;
@@ -145,7 +145,9 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                     }
                     $log.debug('[' + self.myid + '] tracking ' + requestLen + ' tasks');
                     RequestService.getSubmitted().then(function(runningTasks) {
-                        self.getAll().then(_.partial(self.processTasks, runningTasks));
+                        self.getTrackedTasks().then(_.partial(self.processTasks, runningTasks), function(error) {
+                            $log.error('Unexpected DB error getting tracked task list ', error);
+                        });
                     }, function(error) {
                         $log.error(error);
                         self.timeout = $timeout(self.checkWorkToDo, defaultTimer);
