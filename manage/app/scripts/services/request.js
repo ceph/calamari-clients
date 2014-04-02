@@ -16,7 +16,9 @@ define(['lodash'], function(_) {
                 });
             },
             get: function(id) {
-                return this.restangular.cluster().one('request', id).get();
+                return this.restangular.clusterFull().one('request', id).get().then(function(resp) {
+                    return resp.data;
+                });
             },
             getComplete: function() {
                 /* jshint camelcase: false */

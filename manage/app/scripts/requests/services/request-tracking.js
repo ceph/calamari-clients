@@ -1,6 +1,6 @@
 /*global define*/
 /*jshint camelcase: false */
-define(['lodash', 'idbwrapper'], function(_, IDBStore) {
+define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
     'use strict';
     /* Bind this service as soon as App is running otherwise it doesn't get
      * invoked until the first time it's needed because of dependency injection defering.
@@ -11,10 +11,10 @@ define(['lodash', 'idbwrapper'], function(_, IDBStore) {
     var requestTrackingService = function($q, $log, $timeout, RequestService, growl) {
         var Service = function() {
             this.myid = myid++;
-            $log.debug(this.myid + ' Creating Request Tracking Service');
+            $log.debug('Creating Request Tracking Service [' + this.myid + ']');
             this.deferred = {};
             this.requests = new IDBStore({
-                dbVersion: 1,
+                dbVersion: 2,
                 storeName: 'InktankUserRequest',
                 keyPath: 'id',
                 autoIncrement: false,
@@ -22,22 +22,23 @@ define(['lodash', 'idbwrapper'], function(_, IDBStore) {
                     $log.info('Inktank User Request Store ready!');
                 }
             });
-            _.bindAll(this, 'checkCompleted');
-            this.timeout = $timeout(this.checkCompleted, shortTimer);
+            _.bindAll(this, 'remove', 'add', 'checkWorkToDo', 'processTasks', 'getAll', 'getLength', '_resolvePromise', '_rejectPromise');
+            this.timeout = $timeout(this.checkWorkToDo, shortTimer);
         };
         Service.prototype = _.extend(Service.prototype, {
             add: function(id) {
                 var d = $q.defer();
                 this.deferred[id] = d;
                 this.requests.put({
-                    id: id
+                    id: id,
+                    timestamp: Date.now()
                 }, function(id) {
                     $log.debug('tracking new request ' + id);
                 }, function(error) {
                     $log.error('error inserting request ' + id + ' error ', error);
                 });
                 $timeout.cancel(this.timeout);
-                this.timeout = $timeout(this.checkCompleted, 0);
+                this.timeout = $timeout(this.checkWorkToDo, 0);
                 return d.promise;
             },
             list: function() {
@@ -53,77 +54,105 @@ define(['lodash', 'idbwrapper'], function(_, IDBStore) {
                 // TODO too tightly coupled use $broadcast
                 growl.addSuccessMessage(request.headline + ' completed');
             },
-            checkCompleted: function() {
-                var countDeferred = $q.defer();
-                this.requests.count(function(count) {
-                    countDeferred.resolve(count);
-                }, function(error) {
-                    countDeferred.reject(error);
-                });
+            getLength: function() {
+                var d = $q.defer();
+                this.requests.count(d.resolve, d.reject);
+                return d.promise;
+            },
+            getAll: function() {
+                var d = $q.defer();
+                this.requests.getAll(d.resolve, d.reject);
+                return d.promise;
+            },
+            _resolvePromise: function(ttID) {
+                if (this.deferred[ttID]) {
+                    this.deferred[ttID].resolve(ttID);
+                    delete this.deferred[ttID];
+                }
+            },
+            _rejectPromise: function(ttID, error) {
+                if (this.deferred[ttID]) {
+                    this.deferred[ttID].reject(ttID, error);
+                    delete this.deferred[ttID];
+                }
+            },
+            remove: function(ttID) {
+                var d = $q.defer();
+                this.requests.remove(ttID, d.resolve, d.reject);
                 var self = this;
-                countDeferred.promise.then(function(requestLen) {
+                d.promise.then(function() {
+                    $log.debug('Removed task id ' + ttID);
+                    self._resolvePromise(ttID);
+                }, function(error) {
+                    $log.error('Error removing task id ' + ttID, error);
+                    self._rejectPromise(ttID, error);
+                });
+                return d.promise;
+            },
+            processTasks: function(runningTasks, trackedTasks) {
+                _.each(trackedTasks, function(trackedTask) {
+                    var ttID = trackedTask.id;
+                    var foundTask = _.find(runningTasks, function(runningTask) {
+                        // search for tracked id in submitted tasks
+                        return runningTask.id === ttID;
+                    });
+                    if (foundTask === undefined) {
+                        // Task ID No Longer in Submitted List
+                        var self = this;
+                        RequestService.get(ttID).then(function(request) {
+                            $log.debug('Checking task ' + ttID);
+                            if (request.error) {
+                                self.showError(request);
+                                self.remove(ttID);
+                            } else {
+                                if (request.state === 'complete') {
+                                    $log.debug('Task ' + ttID + ' is complete');
+                                    self.showNotification(request);
+                                    self.remove(ttID);
+                                } else {
+                                    $log.debug('task ' + ttID + ' is still active.');
+                                    if (trackedTask.timestamp) {
+                                        var timestamp = momentjs(trackedTask.timestamp);
+                                        var now = momentjs();
+                                        if (now.diff(timestamp, 'days') >= 1) {
+                                            $log.warn('task ' + ttID + ' is older than 24 hours. Reaping old task.');
+                                            self.remove(ttID);
+                                        }
+                                    }
+                                }
+                            }
+                        }, function(resp) {
+                            $log.debug('Error ' + resp.status + ' checking task ' + ttID, resp);
+                            if (resp.status === 404) {
+                                $log.warn('Task ' + ttID + ' NOT FOUND');
+                                self.remove(ttID);
+                            }
+                        });
+                    } else {
+                        $log.debug('Task ' + ttID + ' is still executing');
+                    }
+                }, this);
+                $log.debug('Server has ' + runningTasks.length + ' running tasks');
+                this.timeout = $timeout(this.checkWorkToDo, shortTimer);
+            },
+            checkWorkToDo: function() {
+                var self = this;
+                this.getLength().then(function doWork(requestLen) {
                     if (requestLen === 0) {
-                        $log.debug(self.myid + ' No tasks to track. sleeping ' + defaultTimer);
-                        self.timeout = $timeout(self.checkCompleted, defaultTimer);
+                        $log.debug('[' + self.myid + ']' + ' No tasks to track. sleeping ' + defaultTimer);
+                        self.timeout = $timeout(self.checkWorkToDo, defaultTimer);
                         return;
                     }
-                    $log.debug(self.myid + ' tracking ' + requestLen);
-                    RequestService.getSubmitted().then(function(submittedRequests) {
-
-                        var d = $q.defer();
-                        self.requests.getAll(function(requests) {
-                            d.resolve(requests);
-                        }, function(error) {
-                            d.reject(error);
-                        });
-                        d.promise.then(function(requests) {
-                            _.filter(requests, function(tracked) {
-                                var foundTask = _.find(submittedRequests, function(request) {
-                                    // search for tracked id in submitted tasks
-                                    return request.id === tracked.id;
-                                });
-                                if (foundTask === undefined) {
-                                    // Task may be completed Verify
-                                    RequestService.get(tracked.id).then(function(request) {
-                                        $log.debug('task ' + tracked.id + ' is probably complete');
-                                        if (request.error) {
-                                            self.showError(request);
-                                        } else {
-                                            if (request.state === 'complete') {
-                                                $log.debug('task ' + tracked.id + ' is complete');
-                                                self.showNotification(request);
-                                                self.requests.remove(tracked.id, function() {
-                                                    $log.debug('removed task ' + tracked.id);
-                                                    if (self.deferred[tracked.id]) {
-                                                        self.deferred[tracked.id].resolve(tracked.id);
-                                                        delete self.deferred[tracked.id];
-                                                    }
-                                                }, function(error) {
-                                                    $log.error('Error removing id ' + tracked.id, error);
-                                                    if (self.deferred[tracked.id]) {
-                                                        self.deferred[tracked.id].reject(tracked.id, error);
-                                                        delete self.deferred[tracked.id];
-                                                    }
-                                                });
-                                            } else {
-                                                $log.debug('task ' + tracked.id + ' is still active. Re-adding.');
-                                                self.add(tracked.id, tracked.callback);
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    $log.debug('task ' + tracked.id + ' is still active');
-                                }
-                                return foundTask !== undefined;
-                            });
-                            $log.debug('processed ' + submittedRequests.length + ' tasks');
-                            self.timeout = $timeout(self.checkCompleted, shortTimer);
-                        });
-                    }, function() {
-                        self.timeout = $timeout(self.checkCompleted, defaultTimer);
+                    $log.debug('[' + self.myid + '] tracking ' + requestLen + ' tasks');
+                    RequestService.getSubmitted().then(function(runningTasks) {
+                        self.getAll().then(_.partial(self.processTasks, runningTasks));
+                    }, function(error) {
+                        $log.error(error);
+                        self.timeout = $timeout(self.checkWorkToDo, defaultTimer);
                     });
                 }, function(error) {
                     $log.error('Error Counting Request DB ', error);
+                    self.timeout = $timeout(self.checkWorkToDo, defaultTimer);
                 });
             }
         });
