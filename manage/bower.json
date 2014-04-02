@@ -16,7 +16,8 @@
     "angular-motion": "~0.3.1",
     "font-awesome": "~4.0.3",
     "momentjs": "~2.5.1",
-    "angular-growl": "~0.4.0"
+    "angular-growl": "~0.4.0",
+    "idbwrapper": "~1.4.1"
   },
   "devDependencies": {
     "angular-mocks": "1.2.6",
