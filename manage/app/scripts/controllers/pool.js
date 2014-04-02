@@ -65,7 +65,7 @@
                     PoolService.remove(modal.$scope.id).then(function(result) {
                         if (result.status === 202) {
                             /* jshint camelcase: false */
-                            RequestTrackingService.add(result.data.request_id, refreshPools);
+                            RequestTrackingService.add(result.data.request_id).then(refreshPools);
                             var okmodal = modalHelpers.SuccessfulRequest($modal, {
                                 title: 'Delete Request Successful'
                             });

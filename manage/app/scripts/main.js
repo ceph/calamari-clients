@@ -48,7 +48,8 @@
             'restangular': '../bower_components/restangular/dist/restangular',
             'lodash': '../bower_components/lodash/dist/lodash',
             'moment': '../bower_components/momentjs/moment',
-            'angular-growl': '../bower_components/angular-growl/build/angular-growl'
+            'angular-growl': '../bower_components/angular-growl/build/angular-growl',
+            'idbwrapper': '../bower_components/idbwrapper/idbstore'
         }
     });
 

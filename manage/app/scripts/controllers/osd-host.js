@@ -80,17 +80,14 @@
                     OSDService.patch(osd.id, {
                         reweight: osd.reweight / 100
                     }).then(function(resp) {
-                        var deferred = $q.defer();
                         /* jshint camelcase: false */
-                        RequestTrackingService.add(resp.data.request_id, function() {
-                            deferred.resolve();
-                        });
+                        var promise = RequestTrackingService.add(resp.data.request_id);
                         var end = Date.now();
                         var timer = end - start;
                         timer = timer > 1000 ? 0 : 1000 - timer;
                         $timeout(function() {
                             osd.saved = true;
-                            deferred.promise.then(function() {
+                            promise.then(function() {
                                 osd._reweight = angular.copy(osd.reweight);
                                 osd.editing = false;
                                 osd.saved = false;
@@ -187,10 +184,7 @@
                     });
                     OSDService[cmd].call(OSDService, id).then(function success(resp) {
                         /* jshint camelcase: false */
-                        var deferred = $q.defer();
-                        RequestTrackingService.add(resp.data.request_id, function() {
-                            deferred.resolve();
-                        });
+                        var promise = RequestTrackingService.add(resp.data.request_id);
                         var spindelay = 1000;
                         var end = Date.now();
                         spindelay = ((end - start) > 1000) ? 0 : spindelay - (end - start);
@@ -203,7 +197,7 @@
                             $timeout(function() {
                                 osd[buttonLabel] = text[buttonLabel];
                                 osd.disabled = false;
-                                deferred.promise.then(function() {
+                                promise.then(function() {
                                     OSDService.get(id).then(function(_osd) {
                                         // refresh osd state
                                         transformOSDToUI(_osd);
