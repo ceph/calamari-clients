@@ -18,7 +18,7 @@
                                     data-placement="center" ng-bind="server.hostname"></button>
                                 </td>
                                 <td> <span ng-repeat="id in server.services.osdID">
-                                        <button ng-bind='id' ng-click='displayOSD(id)' class="btn btn-sm btn-info btn-osd-id">
+                                        <button ng-bind='id' ng-click='displayOSD(id)' class="btn btn-sm btn-osd-id" ng-class="{2: 'btn-success', 1: 'btn-warning', 0: 'btn-danger'}[server.services.state[$index]]">
                                         </button>
                                     </span>
 

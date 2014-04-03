@@ -41,6 +41,22 @@
                     services.osdID = _.sortBy(services.osdID, function(id) {
                         return parseInt(id, 10);
                     });
+                    services.state = _.reduce(services.osdID, function(result) {
+                        result.push(2);
+                        return result;
+                    }, []);
+                    OSDService.getSet(services.osdID).then(function(osds) {
+                        services.state = _.reduce(osds, function(result, osd) {
+                            var state = 2;
+                            if (!osd.up && !osd['in']) {
+                                state = 0;
+                            } else if (!osd.up || !osd['in']) {
+                                state = 1;
+                            }
+                            result.push(state);
+                            return result;
+                        }, []);
+                    });
                     results.push({
                         hostname: server.hostname,
                         fqdn: server.fqdn,
