@@ -47,7 +47,7 @@ define([
             [4, 70, 80]
         ],
         getData: function() {
-            var clusterName = this.App.ReqRes.request('get:cluster').get('name');
+            var clusterName = this.App.ReqRes.request('get:cluster').get('id');
             return $.ajax({
                 url: this.getUrl('', 'all', clusterName),
                 dataType: 'json'

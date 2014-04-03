@@ -38,7 +38,7 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
                 markup.push(t(m.toJSON()));
             });
             this.ui.menu.html(markup.join(''));
-            this.cluster = this.collection.at(0);
+            this.cluster = this.collection.first();
             this.ui.label.text('Cluster ' + this.cluster.get('name'));
             this.App.vent.trigger('cluster:update', this.cluster);
         },
