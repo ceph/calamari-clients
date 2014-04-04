@@ -106,21 +106,21 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 }
             });
         },
-        ongraph: function(event, from, to, host, id) {
+        ongraph: function(event, from, to, fqdn, id) {
             log.debug('AFTER ' + event + ', FROM ' + from + ', TO ' + to);
             var graphWall = this.graphWall;
             var self = this;
             graphWall.isReady().then(function() {
                 graphWall.hideGraphs();
-                var hosts;
-                if (host === 'all') {
+                var fqdns;
+                if (fqdn === 'all') {
                     graphWall.hideButtons();
                     graphWall.makeClusterWideMetrics.call(graphWall).then(function(result) {
                         graphWall.renderGraphs('Cluster', function() {
                             return _.flatten(result);
                         });
                     });
-                } else if (host === 'iops') {
+                } else if (fqdn === 'iops') {
                     graphWall.hideButtons();
                     graphWall.makePoolIOPS.call(graphWall).then(function(result) {
                         graphWall.renderGraphs('Per Pool IOPS', function() {
@@ -131,9 +131,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     graphWall.showButtons();
                     var graphEvent = self.graphEvents[id];
                     if (graphEvent !== undefined) {
-                        graphWall[graphEvent.fn].call(graphWall, host, id).then(function(result) {
+                        graphWall[graphEvent.fn].call(graphWall, fqdn, id).then(function(result) {
                             graphWall.renderGraphs(graphEvent.title({
-                                host: host
+                                host: fqdn
                             }), function() {
                                 return _.flatten(result);
                             });
@@ -143,13 +143,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         return;
                     }
                 } else {
-                    hosts = self.ReqRes.request('get:hosts');
-                    if (_.contains(hosts, host)) {
+                    fqdns = self.ReqRes.request('get:fqdns');
+                    if (_.contains(fqdns, fqdn)) {
                         graphWall.showButtons();
-                        graphWall.updateSelect(host);
+                        graphWall.updateSelect(fqdn);
                         graphWall.updateBtns('overview');
-                        graphWall.hostname = host;
-                        graphWall.renderGraphs('Host Graphs for ' + host, graphWall.makeHostOverviewGraphUrl(host));
+                        graphWall.hostname = fqdn;
+                        graphWall.renderGraphs('Host Graphs for ' + fqdn, graphWall.makeHostOverviewGraphUrl(fqdn));
                     }
                 }
             });

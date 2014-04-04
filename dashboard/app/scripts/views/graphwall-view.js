@@ -525,7 +525,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             variable: 'args'
         }),
         renderHostSelector: function() {
-            var hosts = this.App.ReqRes.request('get:hosts');
+            var hosts = this.App.ReqRes.request('get:fqdns');
             var opts = _.reduce(hosts, function(memo, host) {
                 return memo + this.optionTemplate({
                     host: host
