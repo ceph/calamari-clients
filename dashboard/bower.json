@@ -24,7 +24,8 @@
     "dygraphs": "~1.0.1",
     "react": "~0.8.0",
     "loglevel": "~0.5.0",
-    "jsuri": "~1.2.2"
+    "jsuri": "~1.2.2",
+    "idbwrapper": "~1.4.1"
   },
   "devDependencies": {}
 }
