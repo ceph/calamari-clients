@@ -13,7 +13,7 @@ define(['underscore', 'backbone', 'models/user-request-model'], function(_, Back
             if (options && options.cluster) {
                 this.cluster = options.cluster;
             }
-        },
+        }
     });
 
     return UserRequestCollection;
