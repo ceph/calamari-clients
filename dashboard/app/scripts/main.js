@@ -67,7 +67,8 @@ require.config({
         l20n: 'vendor/l20n.min',
         l20nCtx: 'l20nCtxPlugin',
         jsuri: '../bower_components/jsuri/Uri',
-        idbwrapper: '../bower_components/idbwrapper/idbstore'
+        idbwrapper: '../bower_components/idbwrapper/idbstore',
+        q: '../bower_components/q/q'
     }
 });
 
