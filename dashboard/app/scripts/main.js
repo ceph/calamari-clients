@@ -68,7 +68,8 @@ require.config({
         l20nCtx: 'l20nCtxPlugin',
         jsuri: '../bower_components/jsuri/Uri',
         idbwrapper: '../bower_components/idbwrapper/idbstore',
-        q: '../bower_components/q/q'
+        q: '../bower_components/q/q',
+        moment: '../bower_components/momentjs/moment'
     }
 });
 

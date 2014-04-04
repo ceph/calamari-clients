@@ -5,6 +5,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
     var target = uri.getQueryParamValue('target');
     var initial = 'dashmode';
     var anchor = 'dashboard';
+    log.setLevel(log.levels.DEBUG);
     if (target) {
         console.log(target);
         if (target === 'workbench') {
