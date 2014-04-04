@@ -66,7 +66,8 @@ require.config({
         loglevel: '../bower_components/loglevel/dist/loglevel',
         l20n: 'vendor/l20n.min',
         l20nCtx: 'l20nCtxPlugin',
-        jsuri: '../bower_components/jsuri/Uri'
+        jsuri: '../bower_components/jsuri/Uri',
+        idbwrapper: '../bower_components/idbwrapper/idbstore'
     }
 });
 

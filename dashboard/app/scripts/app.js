@@ -1,6 +1,6 @@
 /*global require, Uri */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'jsuri', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
+require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'tracker', 'jsuri', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, UserRequestTracker) {
     var uri = new Uri(document.URL);
     var target = uri.getQueryParamValue('target');
     var initial = 'dashmode';
@@ -161,7 +161,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
             App: App
         });
         clusterMenu.fetch().done(function() {
-            clusterDeferred.resolve(clusterMenu.collection.at(0));
+            clusterDeferred.resolve(clusterMenu.collection.first());
         });
         clusterDeferred.promise().done(function(cluster) {
             var iopsView = new views.IopsView({
@@ -223,6 +223,11 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 initial: initial
             });
 
+            var userRequestTracker = new UserRequestTracker({
+                App: App,
+                cluster: cluster.get('id')
+            });
+
             // Global Exports
             window.inktank = {
                 App: App,
@@ -245,7 +250,8 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 PoolsView: poolsView,
                 IopsView: iopsView,
                 HostsView: hostsView,
-                HealthView: healthView
+                HealthView: healthView,
+                UserRequestTracker: userRequestTracker
             };
 
         });

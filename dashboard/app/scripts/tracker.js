@@ -7,7 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'idbwrapper', 'loglevel', 'collectio
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.cluster = Backbone.Marionette.getOption(this, 'cluster');
-            this.collection = new UserRequestCollection({
+            this.collection = new UserRequestCollection([], {
                 cluster: this.cluster
             });
             this.model = new UserRequestModel({
