@@ -1,203 +1,5 @@
 <!-- vim:ts=4:sts=4:sw=4:et:tw=70 -->
 
-## 2.0.0 :warning: BACKWARD INCOMPATIBILITY
-
-This is an experimental release train, based on a rewrite of Q. The full
-interface of version 1 is supported but portions of the interface issue
-deprecation warnings. Deprecated features will be removed outright in version 3.
-
- - :warning: As of `1.0`, Q will require ECMAScript 5. Using `es5-shim`,
-   nor even `es5-sham`, is not sufficient to make legacy engines
-   compatible because Q requires a WeakMap shim that depends on ES5
-   properties.  The `0.9` version train will continue to support older
-   browsers and will attempt to provide a forward-compatible feature set
-   if you take care to eliminate all deprecation warnings before
-   migrating.
- - :warning: Release management has changed.  The source for this
-   library is `q.js` and is only suitable for consumption as a CommonJS,
-   ergo Node.js, module.  Releases are created using `grunt`, including
-   `release/q.js`, which is suitable for use as a `<script>`, and
-   `release/amd/q.js`, which is suitable for use as an AMD module.  All
-   new versions will be published to S3.
- - :warning: Q now depends on an ASAP package and a WeakMap shim.  If
-   you are using an AMD loader, you will need to bring in
-   https://github.com/kriskowal/asap and
-   https://github.com/drses/weak-map.  If you are using Q as a
-   `<script>`, this has been embedded in the release.  If you are using
-   Q in Node.js, the dependency is taken care of by `npm`.
- - :warning: Withdrew support for SpiderMonkey style generators.  Only
-   ES6 generators are supported.
- - :warning: `fapply`, `fcall`, and `fbind` have been deprecated in
-   both the `Q` and `promise` forms. These methods have been replaced
-   by `apply`, `call`, and `bind` on the `Promise` prototype, making a
-   promise for a function partially “isomorphic” with the function
-   itself. The `Q.fbind` with no arguments case has been replaced by
-   `Q.function`, which is better suited for decorating methods and
-   functions to ensure that they return promises and capture errors.
-   The `Q.fcall` with no additional arguments case has been replaced
-   by `Q.try`.
- - :warning: `Q.try` is no longer an alias for `fcall`. `Q.try` does
-   not accept additional arguments. To call a promise for a function
-   with arguments, use `Q(function).call(thisp, ...args)` or `apply`.
- - :warning: `post` has been deprecated. As this is an uncommon case
-   with an inadequate name, if you need to spread arguments into
-   `invoke`, you can take the long road, either calling `invoke.apply`
-   or using `promise.dispatch("invoke", [name, args])` directly.
- - :warning: `Q.all` no longer reuses the input array for the output
-   array.
- - :warning: `Q.all` and `Q.allSettled` no longer accept a promise.  Use
-   `Q(promise).all()` or `.allSettled()`.  The original behavior is
-   deprecated.
- - :warning: `valueOf` has been removed.  Please use `inspect().value`
-   instead.
- - :warning: The promise protocol no longer supports "set", "delete",
-   and "apply" operations.  Function application is a special case of
-   "post" with an undefined method name, and an additional "thisp"
-   argument for support of "fbind". The "when" message is now called
-   simply "then".  As such, this version of Q is not compatible with
-   Q-Connection `v0.5`.
- - :warning: The old progress notification system has been removed.
-   Try the new estimated time to completion feature.
- - :warning: `denodeify` now only takes the function to decorate and does not
-   partially apply arguments. It now also takes a second argument
-   that determines whether the decorated function needs a variadic or named
-   argument nodeback.
- - :warning: `makeNodeResolver` has been deprecated and no longer
-   implicitly captures variadic arguments in an array.
- - Promises now support vicious cycle detection.  If a deferred promise
-   ultimately depends upon its own resolution, it will be rejected with
-   the singleton vicious cycle error.
- - The methods `Q.push` and `promise.pull` have been added, as well as
-   `Q.isPortable` for marking local and remote objects as portable across
-   Q Connection.
- - The method `promise.iterate` has been added to request a promise for a remote
-   iterator.
-
-### Promise Constructor
-
-Q now supports a `Promise` constructor with two forms.  `new
-Promise(callback(resolve, reject))` and `new Promise(promiseHandler)`.  Promise
-handlers are a new concept and will serve as the basis for extensibility. The
-`Promise` constructor is intended to be at least compatible with ECMAScript 6’s
-`Promise`.
-
-Introduced:
-
--   `Promise(setup(resolve, reject))` for constructing promises of all kinds.
--   `Promise.resolve` for coercing values to promises, wrapping thenables, and
-    passing other promises through.
-
-### Progress
-
-Also, this edition introduces a better way to track “progress”, that is, to
-track the estimated time to completion. Estimated time to completion allows
-promises to compose the aggregate estimate from multiple promises. Particularly,
-`Q.all` accepts the longest estimate as its own. The `then` method now accepts
-in place of a `progress` function, a number of milliseconds that the fulfillment
-handler is expected to take to resolve.
-
-The new interface is:
-
-```js
-var promise = new Q.Promise(function (resolve, reject, setEstimate) {
-    setTimeout(resolve, 1000);
-    setEstimate(Date.now() + 1000);
-});
-// or
-var deferred = Q.defer();
-setTimeout(deferred.resolve, 1000);
-deferred.setEstimate(Date.now() + 1000);
-var promise = defferred.promise;
-
-var estimate = promise.getEstimate(); // now + 1s
-promise.observeEstimate(function (estimate) {
-    // estimate === now + 1s
-});
-```
-
-The `observeEstimate` function will receive a notification in its own event once
-initially and thereafter for each time the `setEstimate` function issues an
-update. `setEstimate` does not dispatch notifications synchronously.
-
-Updates to a promise’s estimated time to completion can be converted to a
-progress ratio knowing the start time and current time.
-
-    progress = (now - start) / (estimate - start)
-
-Likewise, if a promise knows its progress percentage (perhaps in terms of bytes
-downloaded over the content length) and when it started, it can update the
-estimated time to completion.
-
-    estimate = start + (now - start) / progress
-
-The old progress notification API, including `deferred.notify` and `then(f, r,
-progress) will not cause any errors but wont’t send any notifications either.
-The feature may be partially restored as a status notification system, but the
-behavior will probably change.
-
-### Node.js Bridge
-
-Q 1 supported a wide variety of `n*` methods for bridging to Node.js. In
-practice, few of these were used. This release scales back support for the
-Node.js bridge to the essential `promise.nodeify`, `Q.denodeify`, and
-`Q.ninvoke`.
-
-The beahvior of `denodeify` has been altered to match the behavior of
-[RSVP.js][]’s `denodeify`. The version of this method in Q v1 would infer that
-the method provided a variable number of arguments (variadic arguments) if the
-nodeback was called with more than one non-error argument. This leaves a glaring
-ambiguity. With the new interface, whether to collect variadic arguments into an
-array, capture arguments by name into an object, or just pass the sole value
-argument is decided by a second parameter to `denodeify`. Omitted, you get the
-usual Node.js style callback. With `true`, you get variadic arguments. With an
-array of names, the arguments will be captured on an object literal with their
-respective name.
-
-[RSVP.js]: https://github.com/tildeio/rsvp.js/
-
-The `makeNodeResolver` function has been deprecated and no longer supports the
-implicit variadic behavior.
-
-### Deprecations
-
-These have migration shims that simply throw errors.
-
--   `Q.set`, `promise.set`
--   `Q.delete`, `promise.delete`
--   `Q.makePromise` in favor of the new `Promise` constructor and
-    promise handler.
-
-The following methods of `Q` are deprecated in favor of their equivalents on the
-`promise` prototype:
-
--   `thenResolve`, `thenReject`, `isPending`, `isFulfilled`,
-    `isRejected`, `dispatch`, `get`, `post`, `invoke`, `keys`
-
-Other deprecations:
-
--   `Q.master` is no longer needed
--   `Q.resolve` in favor of `Q` or `Promise.resolve`
--   `Q.fulfill` in favor of `Q` or `Promise.resolve`
--   `Q.isPromiseAlike` in favor of `Q.isThenable`
--   `Q.nearer` in favor of `promise.inspect`
--   `Q.fail` and `promise.fail` in favor of `promise.catch`
--   `Q.fin` and `promise.fin` in favor of `promise.finally`
--   `Q.mapply` and `promise.mapply` in favor of `promise.post`
--   `Q.send` and `promise.send` in favor of `promise.invoke`
--   `Q.mcall` and `promise.mcall` in favor of `promise.invoke`
--   `Q.promise` in favor of `new Q.Promise` with a function
--   `Q.makePromise` in favor of `new Q.Promise` with a handler object
--   `promise.fbind` in favor of `Q.fbind`
--   `promise.passByCopy()` in favor of `Q.passByCopy(promise)`,
-    provisionally
-
-But the following experimental aliases are deprecated and do not exist
-in `q/node`:
-
--   `nsend` for `ninvoke`
--   `nmcall` for `ninvoke`
--   `nmapply` for `npost`
-
 ## 1.0.0
 
 :cake: This is all but a re-release of version 0.9, which has settled
@@ -619,7 +421,7 @@ Their replacements are listed here:
    enumerable property has bad side-effects.  Libraries that
    depend on this (for example, QQ) will need to be revised.
 
-## 0.7.0 - :warning: BACKWARD INCOMPATIBILITY
+## 0.7.0 - BACKWARD INCOMPATIBILITY
 
  - WARNING: Removed ``report`` and ``asap``
  - WARNING: The ``callback`` argument of the ``fin``
@@ -638,7 +440,7 @@ Their replacements are listed here:
  - Improved minification results.
  - Improved readability.
 
-## 0.6.0 - :warning: BACKWARD INCOMPATIBILITY
+## 0.6.0 - BACKWARD INCOMPATIBILITY
 
  - WARNING: In practice, the implementation of ``spy`` and
    the name ``fin`` were useful.  I've removed the old
@@ -682,7 +484,7 @@ Their replacements are listed here:
  - Switched to using ``MessageChannel`` for next tick task
    enqueue in browsers that support it.
 
-## 0.5.0 - :warning: MINOR BACKWARD INCOMPATIBILITY
+## 0.5.0 - MINOR BACKWARD INCOMPATIBILITY
 
  - Exceptions are no longer reported when consumed.
  - Removed ``error`` from the API.  Since exceptions are
@@ -728,7 +530,7 @@ Their replacements are listed here:
    be resolved gracefully, and failing to do so,
    to dump an error message.
 
-## 0.4.0 - :warning: BACKWARD INCOMPATIBLE*
+## 0.4.0 - BACKWARD INCOMPATIBLE*
 
  - *Removed the utility modules. NPM and Node no longer
    expose any module except the main module.  These have
@@ -739,7 +541,7 @@ Their replacements are listed here:
  - Fixed some issues with asap, when it resolves to
    undefined, or throws an exception.
 
-## 0.3.0 - :warning: BACKWARD-INCOMPATIBLE
+## 0.3.0 - BACKWARD-INCOMPATIBLE
 
  - The `post` method has been reverted to its original
    signature, as provided in Tyler Close's `ref_send` API.
@@ -845,7 +647,7 @@ Their replacements are listed here:
  - Deprecated `defined` from `q`, with intent to move it to
    `q/util`.
 
-## 0.2.0 - :warning: BACKWARD INCOMPATIBLE
+## 0.2.0 - BACKWARD INCOMPATIBLE
 
  - Changed post(ref, name, args) to variadic
    post(ref, name, ...args). BACKWARD INCOMPATIBLE

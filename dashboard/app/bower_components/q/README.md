@@ -5,19 +5,6 @@
          align="right" alt="Promises/A+ logo" />
 </a>
 
-*:warning: This is Q version 2 and is experimental at this time. If you install
-the latest Q from `npm`, you will get the latest from the [version 1][v1]
-release train. You will get the lastet of version 2 if you use `npm install
-q@~2`. Consult [CHANGES.md][] for details on what has changed*
-
-*Among the significant differences in version 2, the source is CommonJS only and
-versions suitable for use with AMD and plain `<script>` tags are built and
-published for [download][] with each release.*
-
-[v1]: https://github.com/kriskowal/q/tree/v1
-[download]: http://q-releases.s3-website-us-west-1.amazonaws.com/
-[CHANGES.md]: https://github.com/kriskowal/q/blob/v2/CHANGES.md
-
 If a function cannot return a value or throw an exception without
 blocking, it can return a promise instead.  A promise is an object
 that represents the return value or the thrown exception that the
@@ -26,18 +13,65 @@ proxy for a [remote object][Q-Connection] to overcome latency.
 
 [Q-Connection]: https://github.com/kriskowal/q-connection
 
+On the first pass, promises can mitigate the “[Pyramid of
+Doom][POD]”: the situation where code marches to the right faster
+than it marches forward.
+
+[POD]: http://calculist.org/blog/2011/12/14/why-coroutines-wont-work-on-the-web/
+
+```javascript
+step1(function (value1) {
+    step2(value1, function(value2) {
+        step3(value2, function(value3) {
+            step4(value3, function(value4) {
+                // Do something with value4
+            });
+        });
+    });
+});
+```
+
+With a promise library, you can flatten the pyramid.
+
+```javascript
+Q.fcall(promisedStep1)
+.then(promisedStep2)
+.then(promisedStep3)
+.then(promisedStep4)
+.then(function (value4) {
+    // Do something with value4
+})
+.catch(function (error) {
+    // Handle any error from all above steps
+})
+.done();
+```
+
+With this approach, you also get implicit error propagation, just like `try`,
+`catch`, and `finally`.  An error in `promisedStep1` will flow all the way to
+the `catch` function, where it’s caught and handled.  (Here `promisedStepN` is
+a version of `stepN` that returns a promise.)
+
+The callback approach is called an “inversion of control”.
+A function that accepts a callback instead of a return value
+is saying, “Don’t call me, I’ll call you.”.  Promises
+[un-invert][IOC] the inversion, cleanly separating the input
+arguments from control flow arguments.  This simplifies the
+use and creation of API’s, particularly variadic,
+rest and spread arguments.
+
+[IOC]: http://www.slideshare.net/domenicdenicola/callbacks-promises-and-coroutines-oh-my-the-evolution-of-asynchronicity-in-javascript
+
 
 ## Getting Started
 
 The Q module can be loaded as:
 
 -   A ``<script>`` tag (creating a ``Q`` global variable): ~2.5 KB minified and
-    gzipped.  Download the latest of [version
-    0.9](https://raw.github.com/kriskowal/q/v0.9/q.js)
+    gzipped.
 -   A Node.js and CommonJS module, available in [npm](https://npmjs.org/) as
     the [q](https://npmjs.org/package/q) package
--   An AMD module.  [Download version
-    0.9](https://raw.github.com/kriskowal/q/v0.9/q.js)
+-   An AMD module
 -   A [component](https://github.com/component/component) as ``microjs/q``
 -   Using [bower](http://bower.io/) as ``q``
 -   Using [NuGet](http://nuget.org/) as [Q](https://nuget.org/packages/q)
@@ -69,146 +103,6 @@ We'd also love to have you join the Q-Continuum [mailing list][].
 [resources]: https://github.com/kriskowal/q/wiki/General-Promise-Resources
 [jquery]: https://github.com/kriskowal/q/wiki/Coming-from-jQuery
 [mailing list]: https://groups.google.com/forum/#!forum/q-continuum
-
-
-## Introduction
-
-There are many reasons to use promises.  The first reward is that
-promises implicitly propagate errors and values downstream.  Consider
-this synchronous solution to reading a file and parsing its content.
-
-```javascript
-var FS = require("fs");
-var readJsonSync = function (path) {
-    return JSON.parse(FS.readSync(path, "utf-8"));
-};
-```
-
-The asynchronous analog would ideally look and behave exactly the same
-*except* it would explicitly mark anywhere it might yield to other
-tasks, which is to say, between calling and returning, and reading and
-parsing.  Control flow constructs like `return`, `throw`, `if`, `for`,
-`break` and `continue` would still work, except asynchronously.
-Exceptions, such as the `SyntaxError` that `JSON.parse` might throw,
-would propagate through the promise graph just as they do through the
-synchronous stack.  Forbes Lindesay illustrates the way to this happy
-ideal in his presentation, [“Promises and Generators”][PAG].
-
-[PAG]: http://pag.forbeslindesay.co.uk/
-
-```javascript
-var FS = require("q-io/fs");
-var readJsonPromise = Q.async(function *(path) {
-    return JSON.parse(yield FS.read(path));
-});
-```
-
-Explicitly marking yield points makes it possible for users to take
-advantage of the invariant that they can arrange for a consistent
-internal state between events, and be guaranteed that only they can
-alter their state during an event.  Fibers and threads do not provide
-this guarantee, so programmers must work with a heightened sense of
-caution—their work may be interrupted and their state modified at any
-function call boundary for fibers, or at *any time at all* with threads.
-
-But even without generators, by using promises, we can at least get
-exceptions to implicitly propagate asynchronously with very little
-noise.
-
-```javascript
-var FS = require("q-io/fs");
-function readJsonPromise(path) {
-    return FS.read(path).then(JSON.parse);
-}
-```
-
-Compare these solutions to the equivalent using bare callbacks.  It must
-use an explicit `try` block to `catch` the exception that `JSON.parse`
-might throw and must manually forward all errors to the subscriber.  It
-also must take care not to call the subscriber inside the try block,
-since this would catch errors thrown by `nodeback` and throw them back
-at `nodeback` in the catch block.  In general, writing callback-based
-functions that handle errors robustly is difficult and error-prone, and
-even if you do it right, rather verbose.
-
-```javascript
-var FS = require("fs");
-var readJsonWithNodebacks = function (path, nodeback) {
-    FS.readFile(path, "utf-8", function (error, content) {
-        var result;
-        if (error) {
-            return nodeback(error);
-        }
-        try {
-            result = JSON.parse(result);
-        } catch (error) {
-            return nodeback(error);
-        }
-        nodeback(null, result);
-    });
-}
-```
-
-The second reward for using promises is that they implicitly guarantee
-that interfaces you create will be strictly asynchronous.  Oliver
-Steele’s [Minimizing Code Paths in Asynchronous Code][Steele] succinctly
-captures the issue and Isaac Schlueter’s more recent treatise,
-[Designing APIs for Asynchrony][Isaac], reframed the edict as “Do Not
-Release Zalgo”.
-
-[Steele]: http://blog.osteele.com/posts/2008/04/minimizing-code-paths-in-asychronous-code
-[Isaac]: http://blog.izs.me/post/59142742143/designing-apis-for-asynchrony
-
-If you are using Q, you can cast any promise, even a [jQuery
-“promise”][jQuery], into a well-behaved promise that will not call event
-handlers until your event is done.
-
-[jQuery]: https://github.com/kriskowal/q/wiki/Coming-from-jQuery
-
-```javascript
-var x = 10;
-var part1 = Q($.ajax(...))
-.then(function () {
-    x = 20;
-});
-var part2 = Q($.ajax(...))
-.then(function () {
-    x = 30;
-});
-expect(x).toBe(10); // still, no matter what
-```
-
-Using promises also preserves the signatures of synchronous functions.
-Continuation passing style is an “inversion of control”, where you pass
-control forward instead of getting it back when a function returns.
-Promises [un-invert][IOC] the inversion, cleanly separating the input
-arguments from control flow arguments.  This simplifies the use and
-creation of API’s, particularly variadic, rest and spread arguments.
-
-[IOC]: http://www.slideshare.net/domenicdenicola/callbacks-promises-and-coroutines-oh-my-the-evolution-of-asynchronicity-in-javascript
-
-Another point to using promises is that multiple subscribers can wait
-for a result, and new subscribers can be added even after the result has
-been published.  Consider how much simpler it would be to wait for
-DOMContentLoaded with promises.  No need to worry about whether the
-event has already passed.
-
-```javascript
-return document.ready.then(setup);
-```
-
-Promises go on to be a useful primitive for capturing the “causal graph”
-of an asynchronous program, providing “long traces” that capture the
-stacks from all the events that led to an exception.  Promises are also
-useful as proxies for objects in other processes, pipelining messages
-over any inter-process message channel.
-
-The point of promises is that they have scouted the way ahead and will
-help you avoid set-backs and dead-ends, from simple problems like
-synchronizing local work, to more advanced problems [like distributed
-robust secure escrow exchange][MarkM].
-
-[MarkM]: http://scholar.google.com/citations?user=PuP2INoAAAAJ&hl=en&oi=ao
 
 
 ## Tutorial
@@ -393,7 +287,7 @@ If you have a promise for an array, you can use ``spread`` as a
 replacement for ``then``.  The ``spread`` function “spreads” the
 values over the arguments of the fulfillment handler.  The rejection handler
 will get called at the first sign of failure.  That is, whichever of
-the received promises fails first gets handled by the rejection handler.
+the recived promises fails first gets handled by the rejection handler.
 
 ```javascript
 function eventualAdd(a, b) {
@@ -457,10 +351,7 @@ funcs.forEach(function (f) {
 return result;
 ```
 
-You can make this slightly more compact using `reduce` (a
-[method][reduce] of arrays introduced in ECMAScript 5):
-
-[reduce]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+You can make this slightly more compact using `reduce`:
 
 ```javascript
 return funcs.reduce(function (soFar, f) {
@@ -468,7 +359,7 @@ return funcs.reduce(function (soFar, f) {
 }, Q(initialVal));
 ```
 
-Or, you could use the ultra-compact version:
+Or, you could use th ultra-compact version:
 
 ```javascript
 return funcs.reduce(Q.when, Q());
@@ -477,7 +368,7 @@ return funcs.reduce(Q.when, Q());
 ### Handling Errors
 
 One sometimes-unintuive aspect of promises is that if you throw an
-exception in the fulfillment handler, it will not be caught by the error
+exception in the fulfillment handler, it will not be be caught by the error
 handler.
 
 ```javascript
@@ -908,6 +799,12 @@ operation started.
 This feature does come with somewhat-serious performance and memory overhead,
 however. If you're working with lots of promises, or trying to scale a server
 to many users, you should probably keep it off. But in development, go for it!
+
+## Tests
+
+You can view the results of the Q test suite [in your browser][tests]!
+
+[tests]: https://rawgithub.com/kriskowal/q/master/spec/q-spec.html
 
 ## License
 

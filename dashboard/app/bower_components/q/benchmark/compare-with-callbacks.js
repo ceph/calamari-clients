@@ -1,6 +1,5 @@
 "use strict";
 
-var NQ = require("../node");
 var Q = require("../q");
 var fs = require("fs");
 
@@ -19,7 +18,7 @@ suite("A single simple async operation", function () {
 });
 
 suite("A fs.readFile", function () {
-    var denodeified = NQ.denodeify(fs.readFile);
+    var denodeified = Q.denodeify(fs.readFile);
 
     set("iterations", 1000);
     set("delay", 1000);
@@ -28,17 +27,17 @@ suite("A fs.readFile", function () {
         fs.readFile(__filename, done);
     });
 
-    bench("with NQ.nfcall", function (done) {
-        NQ.nfcall(fs.readFile, __filename).then(done);
+    bench("with Q.nfcall", function (done) {
+        Q.nfcall(fs.readFile, __filename).then(done);
     });
 
-    bench("with a NQ.denodeify'ed version", function (done) {
+    bench("with a Q.denodeify'ed version", function (done) {
         denodeified(__filename).then(done);
     });
 
     bench("with manual usage of deferred.makeNodeResolver", function (done) {
         var deferred = Q.defer();
-        fs.readFile(__filename, NQ.makeNodeResolver(deferred.resolve));
+        fs.readFile(__filename, deferred.makeNodeResolver());
         deferred.promise.then(done);
     });
 });

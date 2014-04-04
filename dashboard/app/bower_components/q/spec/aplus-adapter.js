@@ -2,7 +2,7 @@
 
 var Q = require("../q");
 
-exports.fulfilled = Q;
+exports.fulfilled = Q.resolve;
 exports.rejected = Q.reject;
 exports.pending = function () {
     var deferred = Q.defer();
