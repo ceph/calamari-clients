@@ -326,7 +326,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var self = this;
             this.iopsTargetModels = new models.GraphitePoolIOPSModel(undefined, {
                 graphiteHost: this.graphiteHost,
-                clusterName: this.App.ReqRes.request('get:cluster').get('name')
+                clusterName: this.App.ReqRes.request('get:cluster').get('id')
             });
             this.iopsTargetModels.filter = function(res) {
                 var pools = self.App.ReqRes.request('get:pools');
@@ -349,7 +349,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             // re-init models that depend on cluster name issue #7140
             this.iopsTargetModels = new models.GraphitePoolIOPSModel(undefined, {
                 graphiteHost: this.graphiteHost,
-                clusterName: model.get('name')
+                clusterName: model.get('id')
             });
         },
         // Wrap render so we can augment it with ui elements and
@@ -450,7 +450,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                 }
 
             };
-            var clusterName = this.App.ReqRes.request('get:cluster').get('name');
+            var clusterName = this.App.ReqRes.request('get:cluster').get('id');
             var r = _.map(['makePoolIOPSGraphURL', 'makePoolDiskFreeGraphURL'], function(graph) {
                 return self.makePerHostModelGraphs('', graph, model, clusterName);
             });
@@ -525,7 +525,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             variable: 'args'
         }),
         renderHostSelector: function() {
-            var hosts = this.App.ReqRes.request('get:hosts');
+            var hosts = this.App.ReqRes.request('get:fqdns');
             var opts = _.reduce(hosts, function(memo, host) {
                 return memo + this.optionTemplate({
                     host: host

@@ -124,6 +124,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         getHosts: function() {
             return _.uniq(this.collection.pluck('host'));
         },
+        getFQDNs: function() {
+            return _.uniq(this.collection.pluck('fqdn'));
+        },
         getOSDIdsByHost: function(host) {
             return _.pluck(this.collection.filter(function(m) {
                 return m.get('host') === host;
@@ -216,6 +219,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             // App Level Request Responses
             this.App.ReqRes.setHandler('get:ready', this.ready);
             this.App.ReqRes.setHandler('get:hosts', this.getHosts);
+            this.App.ReqRes.setHandler('get:fqdns', this.getFQDNs);
             this.App.ReqRes.setHandler('get:osdcounts', this.getOSDCounters);
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
             this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);

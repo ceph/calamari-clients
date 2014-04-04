@@ -21,7 +21,8 @@ define([
             this.clusterName = Backbone.Marionette.getOption(options, 'clusterName');
         },
         fetchMetrics: function(host) {
-            this.host = host;
+            // Escape FQDN for graphite
+            this.host = host.replace(/\./g,'_');
             return this.fetch();
         },
         defaults: {
