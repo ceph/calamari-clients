@@ -3,6 +3,11 @@
 define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbone, JST) {
     'use strict';
 
+    /* Escape FQDN for Graphite */
+    function escapeHostname(hostname) {
+        return hostname.replace(/\./g,'_');
+    }
+
     /*
      * Creates a partial applied function which is pre-bound to the underscore.template
      * to create the target.
@@ -37,7 +42,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 return _.map(metrics, function(metric) {
                     return $.trim(template({
                         metric: metric,
-                        hostname: hostname,
+                        hostname: escapeHostname(hostname),
                         id: id,
                         clusterName: clusterName
                     }));
