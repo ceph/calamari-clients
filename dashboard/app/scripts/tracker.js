@@ -27,7 +27,7 @@ define(['jquery', 'underscore', 'backbone', 'idbwrapper', 'loglevel', 'collectio
                     log.info('Inktank User Request Store ready!');
                 }
             });
-            _.bindAll(this, 'updateFSID', 'processTasks', 'checkWorkToDo', 'getTrackedTasks', '_resolvePromise', '_rejectPromise', 'remove');
+            _.bindAll(this, 'updateFSID', 'processTasks', 'checkWorkToDo', 'getTrackedTasks', '_resolvePromise', '_rejectPromise', 'remove', 'showNotification', 'showError');
             this.timeout = setTimeout(this.checkWorkToDo, this.shortTimer);
         },
         getLength: function() {
@@ -65,6 +65,12 @@ define(['jquery', 'underscore', 'backbone', 'idbwrapper', 'loglevel', 'collectio
             });
             return d.promise;
         },
+        showNotification: function(request) {
+            this.App.vent('request:success', request);
+        },
+        showError: function(request) {
+            this.App.vent('request:error', request);
+        },
         updateFSID: function(cluster) {
             this.collection.cluster = cluster.get('id');
             this.model.set('cluster', cluster.get('id'));
@@ -82,12 +88,12 @@ define(['jquery', 'underscore', 'backbone', 'idbwrapper', 'loglevel', 'collectio
                     this.model.set('id', ttID).fetch().then(function(request) {
                         log.debug('Checking task ' + ttID);
                         if (request.error) {
-                            //self.showError(request);
+                            self.showError(request);
                             self.remove(ttID);
                         } else {
                             if (request.state === 'complete') {
                                 log.debug('Task ' + ttID + ' is complete');
-                                //self.showNotification(request);
+                                self.showNotification(request);
                                 self.remove(ttID);
                             } else {
                                 log.debug('task ' + ttID + ' is still active.');
