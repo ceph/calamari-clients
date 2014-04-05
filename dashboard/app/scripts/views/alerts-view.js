@@ -13,6 +13,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             this.listenTo(this.App.vent, 'app:neterror', this.neterrorHandler);
             this.listenTo(this.App.vent, 'app:configerror', this.configError);
             this.listenTo(this.App.vent, 'krakenHeartBeat:update', this.heartBeat);
+            this.listenTo(this.App.vent, 'request:success', this.requestSuccess);
+            this.listenTo(this.App.vent, 'request:error', this.requestError);
             _.each(['timeout', 'serverError', 'unexpectedError', 'parserError'], function(fnName) {
                 this[fnName] = _.throttle(this[fnName], this.throttleMs);
             }, this);
@@ -21,7 +23,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             this.configError = _.once(this.configError);
             this.timeout = _.after(this.throttleCount, this.timeout);
             this.clusterAPITimeout = _.throttle(this.clusterAPITimeout, this.krakenFailThreshold);
-            _.bindAll(this, 'neterrorHandler', 'heartBeat');
+            _.bindAll(this, 'neterrorHandler', 'heartBeat', 'requestSuccess', 'requestError', 'configError');
         },
         heartBeat: function(model) {
             if (model) {
@@ -40,6 +42,22 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                     }
                 }
             }
+        },
+        requestSuccess: function(request) {
+            var msg = {
+                text: request.headline,
+                type: 'alert',
+                layout: 'topRight'
+            };
+            noty(msg);
+        },
+        requestError: function(request) {
+            var msg = {
+                text: request.headline,
+                type: 'alert',
+                layout: 'topRight'
+            };
+            noty(msg);
         },
         notyDefaults: {
             layout: 'top',

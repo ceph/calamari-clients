@@ -24,11 +24,14 @@ require.config({
             deps: ['jquery'],
             exports: 'noty'
         },
-        'notylayout': {
+        'notylayoutTop': {
+            deps: ['noty']
+        },
+        'notylayoutRight': {
             deps: ['noty']
         },
         'notytheme': {
-            deps: ['notylayout']
+            deps: ['notylayoutTop', 'notylayoutTopRight']
         },
         'popover': {
             deps: ['modal']
@@ -43,7 +46,8 @@ require.config({
         faker: '../bower_components/Faker/Faker',
         jquery: '../bower_components/jquery/jquery',
         noty: '../bower_components/noty/js/noty/jquery.noty',
-        notylayout: '../bower_components/noty/js/noty/layouts/top',
+        notylayoutTop: '../bower_components/noty/js/noty/layouts/top',
+        notylayoutTopRight: '../bower_components/noty/js/noty/layouts/topRight',
         notytheme: '../bower_components/noty/js/noty/themes/default',
         backbone: '../bower_components/backbone-amd/backbone',
         underscore: '../bower_components/underscore-amd/underscore',
