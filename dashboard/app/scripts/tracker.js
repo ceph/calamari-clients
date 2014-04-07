@@ -30,6 +30,21 @@ define(['jquery', 'underscore', 'backbone', 'idbwrapper', 'loglevel', 'collectio
             _.bindAll(this, 'updateFSID', 'processTasks', 'checkWorkToDo', 'getTrackedTasks', '_resolvePromise', '_rejectPromise', 'remove', 'showNotification', 'showError');
             this.timeout = setTimeout(this.checkWorkToDo, this.shortTimer);
         },
+        add: function(id) {
+            var d = $q.defer();
+            this.deferred[id] = d;
+            this.requests.put({
+                id: id,
+                timestamp: Date.now()
+            }, function(id) {
+                log.debug('tracking new request ' + id);
+            }, function(error) {
+                log.error('error inserting request ' + id + ' error ', error);
+            });
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(this.checkWorkToDo, 0);
+            return d.promise;
+        },
         getLength: function() {
             var d = $q.defer();
             this.requests.count(d.resolve, d.reject);
@@ -66,10 +81,10 @@ define(['jquery', 'underscore', 'backbone', 'idbwrapper', 'loglevel', 'collectio
             return d.promise;
         },
         showNotification: function(request) {
-            this.App.vent('request:success', request);
+            this.App.vent.trigger('request:success', request);
         },
         showError: function(request) {
-            this.App.vent('request:error', request);
+            this.App.vent.trigger('request:error', request);
         },
         updateFSID: function(cluster) {
             this.collection.cluster = cluster.get('id');

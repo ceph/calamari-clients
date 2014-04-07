@@ -30,8 +30,11 @@ require.config({
         'notylayoutRight': {
             deps: ['noty']
         },
+        'notyGrowltheme': {
+            deps: ['notylayoutTopRight']
+        },
         'notytheme': {
-            deps: ['notylayoutTop', 'notylayoutTopRight']
+            deps: ['notylayoutTop']
         },
         'popover': {
             deps: ['modal']
@@ -47,7 +50,8 @@ require.config({
         jquery: '../bower_components/jquery/jquery',
         noty: '../bower_components/noty/js/noty/jquery.noty',
         notylayoutTop: '../bower_components/noty/js/noty/layouts/top',
-        notylayoutTopRight: '../bower_components/noty/js/noty/layouts/topRight',
+        notylayoutTopRight: 'helpers/noty-topRight',
+        notyGrowltheme: 'helpers/noty-theme',
         notytheme: '../bower_components/noty/js/noty/themes/default',
         backbone: '../bower_components/backbone-amd/backbone',
         underscore: '../bower_components/underscore-amd/underscore',

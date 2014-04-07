@@ -5,6 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 
     var AlertsView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/alerts.ejs'],
+        growlTemplate: JST['app/scripts/templates/growl.ejs'],
         throttleMs: 10000,
         throttleCount: 3,
         krakenFailThreshold: 1000 * 60 * 15,
@@ -43,21 +44,41 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                 }
             }
         },
+        commonNotyNotification: {
+            layout: 'topRight',
+            template: _.template('<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>'),
+            theme: 'growlTheme',
+            animation: {
+                open: {
+                    opacity: 1,
+                    height: 'toggle'
+                },
+                close: {
+                    opacity: 0,
+                    height: 'toggle'
+                },
+                easing: 'swing',
+                speed: 500
+            }
+        },
         requestSuccess: function(request) {
             var msg = {
-                text: request.headline,
-                type: 'alert',
-                layout: 'topRight'
+                text: this.growlTemplate({
+                    text: request.headline
+                }),
+                type: 'success',
+                timeout: 10000,
             };
-            noty(msg);
+            noty(_.extend({}, this.commonNotyNotification, msg));
         },
         requestError: function(request) {
             var msg = {
-                text: request.headline,
-                type: 'alert',
-                layout: 'topRight'
+                text: this.growlTemplate({
+                    text: request.headline
+                }),
+                type: 'error',
             };
-            noty(msg);
+            noty(_.extend({}, this.commonNotyNotification, msg));
         },
         notyDefaults: {
             layout: 'top',
