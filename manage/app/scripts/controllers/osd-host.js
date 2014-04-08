@@ -16,7 +16,7 @@
             'success': '<i class="fa fa-check-circle-o fa-fw fa-lg"></i>'
         };
 
-        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService) {
+        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService) {
             function transformOSDToUI(osd) {
                 osd.reweight = Math.min(osd.reweight * 100, 100);
                 osd.reweight = Math.max(osd.reweight, 0);
@@ -41,7 +41,9 @@
                         title: 'OSD ' + _osd.id + ' Info',
                         template: 'views/osd-info-modal.html'
                     });
-                    modal.$scope.pairs = osdHelpers.formatOSDData(_osd);
+                    PoolService.getList().then(function(pools) {
+                        modal.$scope.pairs = osdHelpers.formatOSDData(_osd, pools);
+                    });
                 });
             };
             $scope.changedFn = function(osd) {
@@ -252,6 +254,6 @@
             });
 
         };
-        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', 'RequestTrackingService', OSDHostController];
+        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', 'RequestTrackingService', 'PoolService', OSDHostController];
     });
 })();

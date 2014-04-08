@@ -3,7 +3,7 @@
     'use strict';
     define(['lodash', 'helpers/osd-helpers'], function(_, osdHelpers) {
 
-        var OSDController = function($scope, ClusterService, ServerService, $location, OSDService, $modal) {
+        var OSDController = function($scope, ClusterService, ServerService, $location, OSDService, $modal, PoolService) {
             if (ClusterService.clusterId === null) {
                 $location.path('/first');
                 return;
@@ -22,7 +22,9 @@
                         title: 'OSD ' + _osd.id + ' Info',
                         template: 'views/osd-info-modal.html'
                     });
-                    modal.$scope.pairs = osdHelpers.formatOSDData(_osd);
+                    PoolService.getList().then(function(pools) {
+                        modal.$scope.pairs = osdHelpers.formatOSDData(_osd, pools);
+                    });
                 });
             };
             ServerService.getList().then(function(servers) {
@@ -72,6 +74,6 @@
                 $location.path('/osd/server/' + fqdn);
             };
         };
-        return ['$scope', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', OSDController];
+        return ['$scope', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', 'PoolService', OSDController];
     });
 })();
