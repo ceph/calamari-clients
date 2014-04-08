@@ -15,7 +15,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         to: 'dashmode'
                     }, {
                         name: 'viz',
-                        from: ['dashmode', 'graphmode'],
+                        from: ['dashmode', 'graphmode', 'vizmode'],
                         to: 'vizmode'
                     }, {
                         name: 'graph',
