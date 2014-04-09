@@ -32,9 +32,11 @@ $third-row-height: 120px;
 }
 
 .navbar .navbar-nav > li > a {
+	padding: 15px 0 10px 15px;
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
-        @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+    min-height: 48px;
+    @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
 	&:hover {
 		color: darken($itlightgray, 15%);
 	}
@@ -50,7 +52,13 @@ $third-row-height: 120px;
         margin-right: 5px;
     }
 }
-
+.bell-button {
+	margin-top: 22px;
+	color: $itlightgray;
+	&:hover {
+		color: darken($itlightgray, 15%);
+	}
+}
 .card {
     position: relative;
     color: $itapp-standard-font-color;
