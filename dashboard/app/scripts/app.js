@@ -229,6 +229,12 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 cluster: cluster.get('id')
             });
 
+            var userRequestView = new views.UserRequestView({
+                App: App,
+                cluster: cluster.get('id'),
+                el: '.userrequests'
+            });
+
             // Global Exports
             window.inktank = {
                 App: App,
@@ -252,7 +258,8 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 IopsView: iopsView,
                 HostsView: hostsView,
                 HealthView: healthView,
-                UserRequestTracker: userRequestTracker
+                UserRequestTracker: userRequestTracker,
+                UserRequestView: userRequestView
             };
 
         });

@@ -58,4 +58,7 @@ you back out. Shift-drag will pan.
 """>
 <Cluster "Cluster">
 <PoolIOPS "Pool IOPS">
-
+<UserRequestViewTitle "Requested Tasks">
+<UserRequestViewColTask "Task">
+<UserRequestViewColStatus "Status">
+<UserRequestViewColUpdated "Updated">
