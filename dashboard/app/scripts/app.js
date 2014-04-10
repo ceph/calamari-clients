@@ -237,7 +237,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
 
             App.listenToOnce(App.vent, 'UserRequestView:toggle', function() {
                 userRequestView.render();
-                App.listen(App.vent, 'UserRequestView:toggle', function() {
+                App.listenTo(App.vent, 'UserRequestView:toggle', function() {
                     userRequestView.show();
                 });
             });

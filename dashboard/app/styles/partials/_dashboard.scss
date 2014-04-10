@@ -43,8 +43,11 @@ $third-row-height: 120px;
 	&:active {
 	}
 }
-.nav .open>a.admin-menu, .nav .open>a.admin-menu:hover, .nav .open>a.admin-menu:focus {
-    background-color: transparent;
+.nav .open >a.admin-menu {
+  	background-color: transparent;
+	&:hover, &:focus {
+    	background-color: inherit;
+	}
 }
 .dropdown-menu {
 	background-color: $itlightgray;
