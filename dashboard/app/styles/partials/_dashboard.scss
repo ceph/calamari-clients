@@ -347,10 +347,6 @@ $bc-item-count: 4;
     text-align: right;
     border-top: 1px solid #e5e5e5;
 }
-.aside-backdrop.animation-fade {
-    background: rgba(0,0,0,.5);
-    opacity: 1;
-}
 .aside-backdrop {
     position: fixed;
     top: 0;
@@ -359,4 +355,16 @@ $bc-item-count: 4;
     left: 0;
     z-index: 1040;
     background-color: #000;
+}
+.aside-backdrop.fade {
+    opacity:0;
+    filter:alpha(opacity=0)
+}
+.aside-backdrop.in {
+    opacity:.5;
+    filter:alpha(opacity=50)
+}
+.aside-backdrop.animation-fade {
+    background:rgba(0, 0, 0, .5);
+    opacity:1
 }
