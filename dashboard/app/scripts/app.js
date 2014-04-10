@@ -235,6 +235,19 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 el: '.userrequests'
             });
 
+            App.listenToOnce(App.vent, 'UserRequestView:toggle', function() {
+                userRequestView.render();
+                App.listen(App.vent, 'UserRequestView:toggle', function() {
+                    userRequestView.show();
+                });
+            });
+
+
+            var notificationBellView = new views.NotificationBellView({
+                App: App,
+                el: '.bell-button'
+            });
+
             // Global Exports
             window.inktank = {
                 App: App,
@@ -259,7 +272,8 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 HostsView: hostsView,
                 HealthView: healthView,
                 UserRequestTracker: userRequestTracker,
-                UserRequestView: userRequestView
+                UserRequestView: userRequestView,
+                NotificationBellView: notificationBellView
             };
 
         });

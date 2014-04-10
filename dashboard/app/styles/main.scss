@@ -13,5 +13,24 @@
 // Standard color vars
 @import 'modules/inktank_colors';
 
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content; 
+  }
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+  @-ms-keyframes #{$name} {
+    @content;
+  }
+  @keyframes #{$name} {
+    @content;
+  } 
+}
+
+// fade-animation
+@import 'modules/fade';
+@import 'modules/fade-and-slide';
+
 // Application Specific Styles
 @import 'partials/base';

@@ -128,6 +128,10 @@ table.metric td:last-child {
 .table tbody td, .table thead th {
 	text-align: right;
 }
+.table.user-request tbody td, .table.user-request thead th {
+	text-align: left;
+	font-family: $itapp-font-family;
+}
 .table tbody td {
 	font-family: ApexSansLight;
 }

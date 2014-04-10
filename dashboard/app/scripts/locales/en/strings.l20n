@@ -62,3 +62,4 @@ you back out. Shift-drag will pan.
 <UserRequestViewColTask "Task">
 <UserRequestViewColStatus "Status">
 <UserRequestViewColUpdated "Updated">
+<UserRequestViewCloseBtn "Close">
