@@ -40,17 +40,11 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'collections/user-reque
         },
         buildCollectionView: function(results) {
             return _.reduce(results, function(result, task) {
-                var clazz;
-                switch (task.state) {
-                    case 'submitted':
-                        clazz = 'text-info fa fa-spinner fa-spin';
-                        break;
-                    case 'error':
-                        clazz = 'text-warning fa fa-exclamation-circle';
-                        break;
-                    default:
-                        clazz = 'text-success fa fa-check-circle';
-                        break;
+                var clazz = 'text-success fa fa-check-circle';
+                if (task.state === 'submitted') {
+                    clazz = 'text-info fa fa-spinner fa-spin';
+                } else if (task.error) {
+                    clazz = 'text-warning fa fa-exclamation-circle';
                 }
                 /* jshint camelcase: false */
                 var time = moment(task.state === 'complete' ? task.completed_at : task.requested_at).fromNow();
