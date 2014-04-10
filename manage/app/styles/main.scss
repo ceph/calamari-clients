@@ -50,3 +50,25 @@
 .icon-adjust-down {
 	margin-top: 5px;
 }
+.bell-button {
+	margin-top: 22px;
+	color: $itlightgray;
+	&:hover {
+		color: darken($itlightgray, 15%);
+	}
+}
+.navbar .navbar-nav > li > a {
+	padding: 15px 0 10px 15px;
+	text-shadow: 0 1px 0 $itgray;
+	color: $itlightgray;
+    min-height: 48px;
+    background-color: transparent;
+	&:hover {
+		color: darken($itlightgray, 15%);
+	}
+	&:active {
+	}
+}
+.dropdown-menu .divider {
+	background-color: darkgray;
+}

@@ -13,22 +13,23 @@
                 $scope.clusterName = ClusterService.clusterModel.name;
                 UserService.me().then(function(me) {
                     $scope.username = me.username;
-                });
-                $scope.userdropdown = [{
-                        'text': '<i class="fa fa-fw fa-cogs"></i> Settings',
-                        'href': '/admin/'
-                    },
-                    {
-                        'text': '<i class="fa fa-fw fa-power-off"></i> Logout',
-                        'click': function($event) {
-                            $event.preventDefault();
-                            $event.stopPropagation();
-                            UserService.logout().then(function() {
-                                document.location = '/login/';
-                            });
+                    $scope.userdropdown = [{
+                            'clazz': 'fa fa-user fa-lg fa-2x fa-fw',
+                            userinfo: true
+                        }, {
+                            divider: true
+                        }, {
+                            'text': '<i class="fa fa-fw fa-power-off"></i> Logout',
+                            'click': function($event) {
+                                $event.preventDefault();
+                                $event.stopPropagation();
+                                UserService.logout().then(function() {
+                                    document.location = '/login/';
+                                });
+                            }
                         }
-                    }
-                ];
+                    ];
+                });
             });
         };
         return ['$location', '$scope', 'ClusterResolver', 'ClusterService', 'UserService', UserDropDownController];
