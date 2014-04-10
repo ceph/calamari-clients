@@ -36,12 +36,15 @@ $third-row-height: 120px;
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
     min-height: 48px;
-    @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+    background-color: transparent;
 	&:hover {
 		color: darken($itlightgray, 15%);
 	}
 	&:active {
 	}
+}
+.nav .open>a.admin-menu, .nav .open>a.admin-menu:hover, .nav .open>a.admin-menu:focus {
+    background-color: transparent;
 }
 .dropdown-menu {
 	background-color: $itlightgray;
