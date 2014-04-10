@@ -298,7 +298,21 @@ module.exports = function (grunt) {
             },
             'git.js': {
             }
-        }
+        },
+        uglify: {
+            options: {
+                mangle: true,
+                beautify: false
+            }
+        },
+         license: {
+    options: {
+      // Task-specific options go here.
+    },
+    your_target: {
+      // Target-specific file lists and/or options go here.
+    },
+  },
     });
 
     grunt.renameTask('regarde', 'watch');
