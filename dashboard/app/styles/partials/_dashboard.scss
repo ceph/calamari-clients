@@ -36,11 +36,17 @@ $third-row-height: 120px;
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
     min-height: 48px;
-    @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+    background-color: transparent;
 	&:hover {
 		color: darken($itlightgray, 15%);
 	}
 	&:active {
+	}
+}
+.nav .open >a.admin-menu {
+  	background-color: transparent;
+	&:hover, &:focus {
+    	background-color: inherit;
 	}
 }
 .dropdown-menu {
@@ -127,6 +133,10 @@ table.metric td:last-child {
 }
 .table tbody td, .table thead th {
 	text-align: right;
+}
+.table.user-request tbody td, .table.user-request thead th {
+	text-align: left;
+	font-family: $itapp-font-family;
 }
 .table tbody td {
 	font-family: ApexSansLight;
@@ -343,10 +353,6 @@ $bc-item-count: 4;
     text-align: right;
     border-top: 1px solid #e5e5e5;
 }
-.aside-backdrop.animation-fade {
-    background: rgba(0,0,0,.5);
-    opacity: 1;
-}
 .aside-backdrop {
     position: fixed;
     top: 0;
@@ -355,4 +361,16 @@ $bc-item-count: 4;
     left: 0;
     z-index: 1040;
     background-color: #000;
+}
+.aside-backdrop.fade {
+    opacity:0;
+    filter:alpha(opacity=0)
+}
+.aside-backdrop.in {
+    opacity:.5;
+    filter:alpha(opacity=50)
+}
+.aside-backdrop.animation-fade {
+    background:rgba(0, 0, 0, .5);
+    opacity:1
 }
