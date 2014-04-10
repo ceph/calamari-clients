@@ -40,18 +40,20 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'collections/user-reque
         },
         buildCollectionView: function(results) {
             return _.reduce(results, function(result, task) {
+                var state = task.state;
                 var clazz = 'text-success fa fa-check-circle';
                 if (task.state === 'submitted') {
                     clazz = 'text-info fa fa-spinner fa-spin';
                 } else if (task.error) {
                     clazz = 'text-warning fa fa-exclamation-circle';
+                    state = l10n.getSync('UserRequestViewError');
                 }
                 /* jshint camelcase: false */
                 var time = moment(task.state === 'complete' ? task.completed_at : task.requested_at).fromNow();
                 result.push(this.requestTemplate({
                     clazz: clazz,
                     headline: task.headline,
-                    state: task.state,
+                    state: state,
                     time: time
                 }));
                 return result;

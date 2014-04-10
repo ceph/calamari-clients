@@ -63,3 +63,4 @@ you back out. Shift-drag will pan.
 <UserRequestViewColStatus "Status">
 <UserRequestViewColUpdated "Updated">
 <UserRequestViewCloseBtn "Close">
+<UserRequestViewError "error">
