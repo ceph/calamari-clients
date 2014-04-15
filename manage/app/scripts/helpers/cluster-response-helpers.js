@@ -3,13 +3,9 @@
     'use strict';
     var __split = String.prototype.split;
     define(['lodash'], function(_) {
-        function makeFunctions($scope, $timeout, osdConfigKeys) {
+        function makeFunctions($q, $timeout, osdConfigKeys) {
             function bucketMinions(minions) {
-                $scope.up = true;
-                $scope.minionsCounts = {
-                    total: minions.length
-                };
-                var m = _.reduce(_.sortBy(minions, function(m) {
+                return _.reduce(_.sortBy(minions, function(m) {
                     return m.id;
                 }), function(results, minion, index) {
                     var shortName = _.first(__split.call(minion.id, '.'));
@@ -27,35 +23,35 @@
                     [],
                     []
                 ]);
-                $scope.cols = m;
             }
 
-            function processConfigs(config) {
+            function configComparator(a, b) {
+                if (a.key === b.key) {
+                    return 0;
+                }
+                return (a.key < b.key) ? -1 : 1;
+            }
+
+            function processConfigs(configs) {
+                var d = $q.defer();
                 $timeout(function() {
-                    var sortedConfig = config.sort(function(a, b) {
-                        if (a.key === b.key) {
-                            return 0;
-                        }
-                        if (a.key < b.key) {
-                            return -1;
-                        }
-                        return 1;
-                    });
-                    $scope.configs = _.map(sortedConfig, function(config) {
+                    d.resolve(_.map(configs.sort(configComparator), function(config) {
                         return {
                             key: config.key,
                             value: config.value
                         };
-                    });
+                    }));
                 }, 500);
+                return d.promise;
             }
 
             function osdConfigsInit(config) {
-                $scope.osdconfigs = _.reduce(osdConfigKeys, function(result, key) {
+                var d = $q.defer();
+                d.resolve(_.reduce(osdConfigKeys, function(result, key) {
                     result[key] = config[key];
                     return result;
-                }, {});
-                $scope.osdconfigsdefaults = angular.copy($scope.osdconfigs);
+                }, {}));
+                return d.promise;
             }
 
             function makeBreadcrumbs(name) {
