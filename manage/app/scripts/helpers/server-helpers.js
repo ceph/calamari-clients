@@ -4,78 +4,109 @@
     var __split = String.prototype.split;
     define(['lodash', 'helpers/grain-helpers'], function(_, grainHelpers) {
 
+
         function makeFunctions($scope, $rootScope, $log, $timeout, ServerService, KeyService, $modal) {
+            function normalizeMinions(minions) {
+                return _.reduce(_.sortBy(minions, function(m) {
+                    return m.id;
+                }), function(results, minion) {
+                    var shortName = _.first(__split.call(minion.id, '.'));
+                    results[minion.id] = {
+                        id: minion.id,
+                        status: minion.status,
+                        shortName: shortName,
+                        label: 'ACCEPT'
+                    };
+                    return results;
+                }, {});
+            }
+
+            function classifyMinions(all, extract) {
+                return _.reduce(_.flatten(all), function(result, minion) {
+                    var entry = result.add[minion.id];
+                    if (entry) {
+                        // key exists still
+                        delete result.add[minion.id];
+                        if (entry.status !== minion.status) {
+                            // minion key has changed status
+                            minion.status = entry.status;
+                            result.change[minion.id] = minion;
+                        }
+                    } else {
+                        // key has been removed
+                        result.remove[minion.id] = true;
+                    }
+                    return result;
+                }, {
+                    add: extract,
+                    change: {},
+                    remove: {}
+                });
+            }
+
+            function removeDeletedMinions(all, remove) {
+                if (!_.isEmpty(remove)) {
+                    // remove hosts
+                    return _.map(all, function(col) {
+                        return _.filter(col, function(minion) {
+                            return !(remove[minion.id]);
+                        });
+                    });
+                }
+                return all;
+            }
+
+            function updateChangedMinions(all, change) {
+                if (!_.isEmpty(change)) {
+                    return _.map(all, function(col) {
+                        return _.map(col, function(minion) {
+                            if (change[minion.id]) {
+                                return change[minion.id];
+                            }
+                            return minion;
+                        });
+                    });
+                }
+                return all;
+            }
+
+            function addNewMinions(all, addCollection) {
+                // convert map to array
+                var adds = _.map(addCollection, function(value) {
+                    return value;
+                });
+                _.each(adds, function(add) {
+                    // find shortest column
+                    var col = _.reduce(_.rest(all), function(curColumn, nextColumn) {
+                        if (curColumn.length <= nextColumn.length) {
+                            return curColumn;
+                        } else {
+                            return nextColumn;
+                        }
+                    }, _.first(all));
+                    // append new minion
+                    col.push(add);
+                });
+                return all;
+            }
+
+            function processMinionChanges(minions) {
+                $scope.minionsCounts = {
+                    total: minions.length
+                };
+                var extract = normalizeMinions(minions);
+                var all = $scope.cols;
+
+                var collection = classifyMinions(all, extract);
+                all = removeDeletedMinions(all, collection.remove);
+                all = updateChangedMinions(all, collection.change);
+                all = addNewMinions(all, collection.add);
+                return all;
+            }
+
             function refreshKeys() {
                 $log.debug('refreshing keys');
-                KeyService.getList().then(function(minions) {
-                    $scope.minionsCounts = {
-                        total: minions.length
-                    };
-                    var extract = _.reduce(_.sortBy(minions, function(m) {
-                        return m.id;
-                    }), function(results, minion) {
-                        var shortName = _.first(__split.call(minion.id, '.'));
-                        results[minion.id] = {
-                            id: minion.id,
-                            status: minion.status,
-                            shortName: shortName,
-                            label: 'ACCEPT'
-                        };
-                        return results;
-                    }, {});
-                    var all = $scope.cols;
-                    var collection = _.reduce(_.flatten(all), function(result, minion) {
-                        var entry = result.add[minion.id];
-                        if (entry) {
-                            // key exists still
-                            delete result.add[minion.id];
-                            if (entry.status !== minion.status) {
-                                // minion key has changed status
-                                minion.status = entry.status;
-                                result.change[minion.id] = minion;
-                            }
-                        } else {
-                            // key has been removed
-                            result.remove[minion.id] = true;
-                        }
-                        return result;
-                    }, {
-                        add: extract,
-                        change: {},
-                        remove: {}
-                    });
-                    if (!_.isEmpty(collection.remove)) {
-                        // remove hosts
-                        all = _.map(all, function(col) {
-                            return _.filter(col, function(minion) {
-                                return !(collection.remove[minion.id]);
-                            });
-                        });
-                    }
-                    if (!_.isEmpty(collection.change)) {
-                        all = _.map(all, function(col) {
-                            return _.map(col, function(minion) {
-                                if (collection.change[minion.id]) {
-                                    return collection.change[minion.id];
-                                }
-                                return minion;
-                            });
-                        });
-                    }
-                    var adds = _.map(collection.add, function(value) {
-                        return value;
-                    });
-                    _.each(adds, function(add) {
-                        // add hosts
-                        var col = _.reduce(_.rest(all), function(result, col) {
-                            if (result.length <= col.length) {
-                                return result;
-                            } else {
-                                return col;
-                            }
-                        }, _.first(all));
-                        col.push(add);
-                    });
+                KeyService.getList().then(processMinionChanges).then(function(all) {
                     $scope.cols = all;
                 });
                 $rootScope.keyTimer = $timeout(refreshKeys, 20000);
