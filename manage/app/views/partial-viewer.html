@@ -3,6 +3,7 @@
          <h3 class="text-muted" style="display: inline-block;">CONFIG BROWSER</h3>
          <input type="text" style="margin-left: 30px;" placeholder="Match Config" ng-model="searchText">
          <i style="margin-left: -1.25em; margin-top: -1em;" class="fa fa-lg fa-search"></i>
+         <span class="text-info" style="display: inline-block; margin-left: 1em;">{{filtered.length}} Matches</span>
          </input>
     </div>
 </div>
@@ -17,7 +18,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat='config in configs | filter:searchText'>
+                    <tr ng-repeat='config in filtered = (configs | filter:searchText)'>
                         <td class="text-muted">{{config.key}}</td>
                         <td title={{config.value}} class='truncate'>{{config.value}}</td>
                     </tr>
