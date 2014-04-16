@@ -14,7 +14,7 @@
                         id: minion.id,
                         status: minion.status,
                         shortName: shortName,
-                        label: 'ACCEPT'
+                        label: '<i class="fa fa-fw fa-lg fa-plus-circle"></i>'
                     });
                     return results;
                 }, [

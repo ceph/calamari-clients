@@ -16,6 +16,7 @@
                     </label>
                 </div>
                 <div ng-show="button.radio == 'servers'">
+                    <div ng-include="'views/partial-authorize.html'"></div>
                     <div ng-include="'views/partial-server.html'"></div>
                 </div>
                 <div ng-show="button.radio == 'viewer'">

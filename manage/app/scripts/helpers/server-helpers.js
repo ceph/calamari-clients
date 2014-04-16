@@ -7,18 +7,27 @@
 
         function makeFunctions($scope, $rootScope, $log, $timeout, ServerService, KeyService, $modal) {
             function normalizeMinions(minions) {
+                var o;
                 return _.reduce(_.sortBy(minions, function(m) {
                     return m.id;
                 }), function(results, minion) {
                     var shortName = _.first(__split.call(minion.id, '.'));
-                    results[minion.id] = {
+                    o = {
                         id: minion.id,
                         status: minion.status,
                         shortName: shortName,
-                        label: 'ACCEPT'
+                        label: '<i class="fa fa-lg fa-fw fa-plus-circle"></i>'
                     };
+                    if (minion.status === 'pre') {
+                        results.pre[minion.id] = o;
+                    } else {
+                        results.accepted[minion.id] = o;
+                    }
                     return results;
-                }, {});
+                }, {
+                    pre: {},
+                    accepted: {}
+                });
             }
 
             function classifyMinions(all, extract) {
@@ -95,27 +104,27 @@
                     total: minions.length
                 };
                 var extract = normalizeMinions(minions);
-                var all = $scope.cols;
+                var accepted = $scope.cols;
+                var pre = $scope.pcols;
 
-                var collection = classifyMinions(all, extract);
-                all = removeDeletedMinions(all, collection.remove);
-                all = updateChangedMinions(all, collection.change);
-                all = addNewMinions(all, collection.add);
-                return all;
-            }
+                var newAccepted = classifyMinions(accepted, extract.accepted);
+                accepted = removeDeletedMinions(accepted, newAccepted.remove);
+                accepted = updateChangedMinions(accepted, newAccepted.change);
+                accepted = addNewMinions(accepted, newAccepted.add);
 
-            function refreshKeys() {
-                $log.debug('refreshing keys');
-                KeyService.getList().then(processMinionChanges).then(function(all) {
-                    $scope.cols = all;
-                });
-                $rootScope.keyTimer = $timeout(refreshKeys, 20000);
+                var newPre = classifyMinions(pre, extract.pre);
+                pre = removeDeletedMinions(pre, newPre.remove);
+                pre = addNewMinions(pre, newPre.add);
+                return {
+                    pre: pre,
+                    accepted: accepted
+                };
             }
 
             function acceptMinion(colnum, minion) {
                 minion.label = '<i class="fa fa-spinner fa-spin"></i>';
                 KeyService.accept([minion.id]).then(function( /*resp*/ ) {
-                    /* Do nothing - refresh code will handle UI updates */
+                    /* Do nothing */
                 }, function(resp) {
                     var modal = $modal({
                         template: 'views/custom-modal.html',
@@ -170,7 +179,7 @@
             }
             /* servers --- end */
             return {
-                refreshKeys: refreshKeys,
+                processMinionChanges: processMinionChanges,
                 detailView: detailView,
                 acceptMinion: acceptMinion
             };

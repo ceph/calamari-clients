@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-         <h3 class="text-muted">HOSTS</h3>
+         <h3 class="text-muted">PENDING HOSTS</h3>
 
     </div>
 </div>
@@ -9,13 +9,13 @@
         <table class='servers table'>
             <thead></thead>
             <tbody>
-                <tr ng-repeat="minion in cols[index]" class="am-fade-and-slide-left">
+                <tr ng-repeat="minion in pcols[index]" ng-if="minion.status !== 'accepted'" class="am-fade-and-slide-left">
                     <td> <i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-square-o text-success': minion.status == 'accepted', 'fa-square-o text-warning icon-adjust-down': minion.status != 'accepted' }"></i>
 
                     </td>
                     <td class="" style="min-width: 100px;" data-id='{{minion.id}}'>{{minion.shortName}}</td>
                     <td>
-                        <button ng-bind-html='minion.label' class='btn btn-primary btn-sm' ng-click="acceptMinion(index, minion)"
+                        <button ng-bind-html='minion.label' class='btn btn-primary btn-md' ng-click="acceptMinion(index, minion)"
                         ng-if="minion.status != 'accepted'"></button>
                         <button class='btn btn-info btn-md' ng-click='detailView(minion.id)'
                         ng-if="minion.status == 'accepted'"><i class="fa fa-lg fa-fw fa-info-circle"></i>
