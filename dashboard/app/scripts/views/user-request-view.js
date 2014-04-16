@@ -4,6 +4,7 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'collections/user-reque
     var UserRequestView = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/user-request.ejs'],
         requestTemplate: JST['app/scripts/templates/request.ejs'],
+        requestErrorTemplate: JST['app/scripts/templates/request-error.ejs'],
         norequestTemplate: JST['app/scripts/templates/no-request.ejs'],
         tagName: 'div',
         className: '',
@@ -42,19 +43,22 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'collections/user-reque
             return _.reduce(results, function(result, task) {
                 var state = task.state;
                 var clazz = 'text-success fa fa-check-circle';
+                var template = this.requestTemplate;
                 if (task.state === 'submitted') {
                     clazz = 'text-info fa fa-spinner fa-spin';
                 } else if (task.error) {
                     clazz = 'text-warning fa fa-exclamation-circle';
                     state = l10n.getSync('UserRequestViewError');
+                    template = this.requestErrorTemplate;
                 }
                 /* jshint camelcase: false */
                 var time = moment(task.state === 'complete' ? task.completed_at : task.requested_at).fromNow();
-                result.push(this.requestTemplate({
+                result.push(template({
                     clazz: clazz,
                     headline: task.headline,
                     state: state,
-                    time: time
+                    time: time,
+                    error_message: task.error_message
                 }));
                 return result;
             }.bind(this), []);
