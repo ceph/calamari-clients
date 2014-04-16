@@ -13,10 +13,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
   end
 
-  config.vm.synced_folder "../../", "/git"
-  config.vm.synced_folder "salt/roots/", "/srv/salt/"
+  config.vm.synced_folder "../../../", "/git"
+  config.vm.synced_folder "../salt/roots/", "/srv/salt/"
   config.vm.provision :salt do |salt|
-    salt.minion_config = "salt/minion"
+    salt.minion_config = "../salt/minion"
     salt.run_highstate = true
   end
 end
