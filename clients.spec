@@ -25,12 +25,13 @@ Contains the JavaScript GUI content for the Calamari frontend components
  (dashboard, login screens, administration screens)
 
 %prep
-%setup -q -n %{name}-%{version}
+echo "prep"
 
 %install
-make DESTDIR=${RPM_BUILD_ROOT} install
+echo "install"
 
 %clean
+echo "clean"
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
 
 %files -n calamari-clients
