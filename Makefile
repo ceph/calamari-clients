@@ -1,23 +1,18 @@
-ifndef VERSION
-    VERSION=$(shell ./get-versions.sh VERSION)
-endif
-ifndef REVISION
-    REVISION=$(shell ./get-versions.sh REVISION)
-endif
-ifndef DIST
-    DIST=unstable
-endif
-ifndef BPTAG
-    BPTAG=""
-endif
-ifndef DEBEMAIL
-    DEBEMAIL=dan.mick@inktank.com
-endif
+SHELL=bash
+SRC := $(shell pwd)
+
+# set these only if not set with ?=
+VERSION ?= $(shell $(SRC)/get-versions.sh VERSION)
+REVISION ?= $(shell $(SRC)/get-versions.sh REVISION)
+RPM_REVISION ?= $(shell $(SRC)/get-versions.sh -r REVISION)
+DIST ?= unstable
+BPTAG ?= ""
+DEBEMAIL ?= dan.mick@inktank.com
+ARCH ?= x86_64
 
 DISTNAMEVER=calamari-clients_$(VERSION)
 PKGDIR=calamari-clients-$(VERSION)
 TARNAME = ../$(DISTNAMEVER).tar.gz
-SRC := $(shell pwd)
 
 INSTALL=/usr/bin/install
 
