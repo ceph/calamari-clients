@@ -69,7 +69,7 @@ clean-real:
 	done ;
 
 # NB we do not build source packages
-dpkg:
+dpkg: set_deb_version
 	dpkg-buildpackage -b -us -uc
 
 install: build
