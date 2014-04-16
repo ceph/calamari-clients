@@ -36,18 +36,18 @@ set_deb_version:
 		--newversion $(VERSION)-$(REVISION)$(BPTAG) \
 		-D $(DIST) --force-bad-version --force-distribution "$(DATESTR)"
 
-build: build-ui $(CONFIG_JSON)
+build:
+	if [[ $$(lsb_release -is) == "Ubuntu" ]] ; then \
+		$(MAKE) build-real; \
+	fi
+
+build-real: build-ui $(CONFIG_JSON)
 
 build-ui:
 	@echo "building ui"
 	set -e ;\
 	for d in $(UI_SUBDIRS); do \
 		echo $$d; cd $$d; $(MAKE) build; cd .. ; \
-	done
-
-clean:
-	for d in $(UI_SUBDIRS); do \
-		echo $$d; cd $$d; $(MAKE) clean; cd .. ; \
 	done
 
 # for right now, this contains two useful things that should be set
@@ -58,6 +58,15 @@ $(CONFIG_JSON): build-ui
 	echo '{ "offline": false, "graphite-host": "/graphite" }' \
 		> $(CONFIG_JSON)
 
+clean:
+	if [[ $$(lsb_release -is) == "Ubuntu" ]] ; then \
+		$(MAKE) clean-real; \
+	fi
+
+clean-real:
+	for d in $(UI_SUBDIRS); do \
+		echo $$d; cd $$d; $(MAKE) clean; cd .. ; \
+	done ;
 
 # NB we do not build source packages
 dpkg:
