@@ -33,9 +33,35 @@
                 KeyService.getList().then(server.processMinionChanges).then(function(all) {
                     $scope.cols = all.accepted;
                     $scope.pcols = all.pre;
+                    $scope.hidePre = all.hidePre;
                 });
                 $rootScope.keyTimer = $timeout(refreshKeys, 20000);
             }
+
+            function approveAll() {
+                var minions = _.flatten($scope.pcols);
+                $scope.approveAllDisabled = true;
+                minions = _.map(minions, function(minion) {
+                    minion.label = '<i class="fa fa-fw fa-lg fa-spinner fa-spin"></i>';
+                    minion.disabled = true;
+                    return minion.id;
+                });
+                var start = Date.now();
+                KeyService.accept(minions).then(function( /*resp*/ ) {
+                    var elapsed = Date.now() - start;
+                    var timeout = elapsed < 1000 ? 1000 - elapsed : 0;
+                    $timeout(function() {
+                        minions = _.each(_.flatten($scope.pcols), function(minion) {
+                            minion.label = '<i class="fa fa-fw fa-lg fa-check-circle-o"></i>';
+                        });
+                    }, timeout);
+                }, function(error) {
+                    /* TODO pop a modal or use an interceptor */
+                    $log.error(error);
+                });
+            }
+
+            $scope.approveAll = approveAll;
 
             var response = responseHelpers.makeFunctions($q, $timeout, osdConfigKeys);
             var breadcrumbs = response.makeBreadcrumbs($scope.clusterName);
@@ -64,6 +90,7 @@
                 });
                 $scope.pcols = response.bucketMinions(minions.pre);
                 $scope.cols = response.bucketMinions(minions.accept);
+                $scope.hidePre = _.flatten(minions.pre).length === 0;
                 response.processConfigs(results[1]).then(function(configs) {
                     $scope.configs = configs;
                 });

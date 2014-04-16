@@ -117,7 +117,8 @@
                 pre = addNewMinions(pre, newPre.add);
                 return {
                     pre: pre,
-                    accepted: accepted
+                    accepted: accepted,
+                    hidePre: _.flatten(pre).length === 0
                 };
             }
 
