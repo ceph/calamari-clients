@@ -10,14 +10,14 @@
                 </button>
                 <table class="table condensed">
                     <thead>
-                        <th class="text-muted">NAME</th>
-                        <th class="text-muted">ID</th>
-                        <th class="text-muted">REPLICAS (SIZE)</th>
-                        <th class="text-muted">PLACEMENT GROUPS</th>
+                        <th class="text-muted width-20-perc">NAME</th>
+                        <th class="text-muted width-10-perc">ID</th>
+                        <th class="text-muted width-20-perc">REPLICAS (SIZE)</th>
+                        <th class="text-muted width-20-perc">PLACEMENT GROUPS</th>
                         <th class="text-muted">COMMANDS</th>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="pool in pools">
+                        <tr class="am-fade" ng-repeat="pool in pools">
                             <td class="text-info" ng-bind="pool.name"></td>
                             <td ng-bind="pool.id"></td>
                             <td ng-bind="pool.size"></td>

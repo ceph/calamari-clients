@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['helpers/modal-helpers'], function(modalHelpers) {
+    define(['lodash', 'helpers/modal-helpers'], function(_, modalHelpers) {
 
         var PoolController = function($log, $scope, PoolService, ClusterService, $location, $modal, RequestTrackingService, $rootScope, $timeout) {
             if (ClusterService.clusterId === null) {
@@ -9,13 +9,46 @@
                 return;
             }
 
+            function copyPools(pools) {
+                /* jshint camelcase: false */
+                return _.reduce(pools, function(_pools, pool) {
+                    _pools.push({
+                        name: pool.name,
+                        id: pool.id,
+                        size: pool.size,
+                        pg_num: pool.pg_num
+                    });
+                    return _pools;
+                }, []);
+            }
+
+            function updatePools(newValue, oldValue) {
+                // create a look up index from server response
+                var lookup = _.reduce(newValue, function(index, pool) {
+                    index[pool.id] = pool;
+                    return index;
+                }, {});
+                // remove all pool.ids that have been removed
+                var newList = _.filter(oldValue, function(pool) {
+                    return lookup[pool.id] !== undefined;
+                });
+                // update all existing values
+                newList = _.each(newList, function(pool) {
+                    _.extend(pool, lookup[pool.id]);
+                    delete lookup[pool.id];
+                });
+                // append all the new values to the list
+                return newList.concat(_.values(lookup));
+            }
+
             function refreshPools() {
+                $log.debug('refreshing pools');
                 if ($rootScope.keyTimer) {
                     $timeout.cancel($rootScope.keyTimer);
                     $rootScope.keyTimer = undefined;
                 }
                 PoolService.getList().then(function(pools) {
-                    $scope.pools = pools;
+                    $scope.pools = updatePools(copyPools(pools), $scope.pools);
                 });
                 $rootScope.keyTimer = $timeout(refreshPools, 20000);
             }
@@ -37,10 +70,15 @@
                 }
             ];
             $scope.up = false;
+            var start = Date.now();
             PoolService.getList().then(function(pools) {
-                $scope.pools = pools;
-                $scope.up = true;
+                var elapsed = Date.now() - start;
+                var timeout = elapsed < 500 ? 500 - elapsed : 0;
+                $timeout(function() {
+                    $scope.pools = copyPools(pools);
+                }, timeout);
                 $rootScope.keyTimer = $timeout(refreshPools, 20000);
+                $scope.up = true;
             });
             $scope.create = function() {
                 $location.path('/pool/new');
