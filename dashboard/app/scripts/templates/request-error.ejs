@@ -1,6 +1,6 @@
 <tr>
     <td><i class="<%- clazz %>"></i></td>
     <td><%- headline %></td>
-    <td data-toggle="popover" data-placement="top" data-content="<% error_message %>"><%- state %></td>
+    <td><a class="errorPop" data-trigger="hover" data-title="Error Message" data-toggle="popover" data-placement="bottom" data-content="<%- error_message %>"><%- state %></a></td>
     <td><%- time %></td>
 </tr>

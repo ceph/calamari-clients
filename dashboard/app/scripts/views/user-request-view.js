@@ -69,6 +69,7 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'collections/user-reque
                 return;
             }
             this.ui.tbody.html(this.buildCollectionView(resp.results).join(''));
+            this.ui.tbody.find('.errorPop').popover();
         },
         show: function() {
             this.$el.show();
