@@ -23,16 +23,16 @@
                             var headline = request.headline;
                             var state = request.state;
                             if (request.error) {
-                                headline += ' ' + request.error_message;
                                 state = 'error';
                             }
                             return {
-                                headline: angular.copy(request.headline),
+                                headline: headline,
                                 state: state,
-                                time: moment(time).fromNow()
+                                time: moment(time).fromNow(),
+                                error_message: request.error_message
                             };
                         });
-                        myAside.$scope.tasks = angular.copy(response);
+                        myAside.$scope.tasks = response;
                         myAside.$scope.empty = response.length === 0;
                         myAside.$scope._hide = function() {
                             myAside.$scope.$hide();

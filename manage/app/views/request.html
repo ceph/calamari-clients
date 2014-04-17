@@ -26,7 +26,8 @@
                             'text-warning fa fa-exclamation-circle': task.state === 'error'
                            }"></i></td>
                     <td>{{task.headline}}</td>
-                    <td>{{task.state}}</td>
+                    <td ng-if="task.state == 'error'"><a data-placement="bottom" title="Error Message" data-content="{{task.error_message}}" data-trigger="hover" bs-popover>{{task.state}}</a></td>
+                    <td ng-if="task.state != 'error'" >{{task.state}}</td>
                     <td>{{task.time}}</td>
                 </tr>
               <tbody>
