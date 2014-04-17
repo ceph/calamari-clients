@@ -74,23 +74,29 @@
             });
 
             var promises = [KeyService.getList(), ToolService.config(), OSDConfigService.get()];
+            var start = Date.now();
             $q.all(promises).then(function(results) {
                 $rootScope.keyTimer = $timeout(refreshKeys, 20000);
                 $scope.up = true;
-                var minions = _.reduce(results[0], function(accumulator, minion) {
-                    if (minion.status === 'pre') {
-                        accumulator.pre.push(minion);
-                    } else {
-                        accumulator.accept.push(minion);
-                    }
-                    return accumulator;
-                }, {
-                    accept: [],
-                    pre: []
-                });
-                $scope.pcols = response.bucketMinions(minions.pre);
-                $scope.cols = response.bucketMinions(minions.accept);
-                $scope.hidePre = _.flatten(minions.pre).length === 0;
+                var elapsed = Date.now() - start;
+                var timeout = elapsed < 600 ? 600 - elapsed : 0;
+                $scope.hidePre = true;
+                $timeout(function() {
+                    var minions = _.reduce(results[0], function(accumulator, minion) {
+                        if (minion.status === 'pre') {
+                            accumulator.pre.push(minion);
+                        } else {
+                            accumulator.accept.push(minion);
+                        }
+                        return accumulator;
+                    }, {
+                        accept: [],
+                        pre: []
+                    });
+                    $scope.pcols = response.bucketMinions(minions.pre);
+                    $scope.cols = response.bucketMinions(minions.accept);
+                    $scope.hidePre = _.flatten(minions.pre).length === 0;
+                }, timeout);
                 response.processConfigs(results[1]).then(function(configs) {
                     $scope.configs = configs;
                 });
