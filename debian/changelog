@@ -1,3 +1,9 @@
+calamari-clients (1.0.0-616-gf17527d) unstable; urgency=low
+
+  * built on Wed Apr 16 14:53:15 PDT 2014
+
+ -- Dan Mick <dan.mick@inktank.com>  Wed, 16 Apr 2014 14:53:17 -0700
+
 calamari-clients (0.1) UNRELEASED; urgency=low
 
   * Initial release.
