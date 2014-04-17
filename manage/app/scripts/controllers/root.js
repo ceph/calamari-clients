@@ -12,6 +12,8 @@
             'nobackfill',
             'norecover'
     ];
+    var SPINNER_ICON = '<i class="fa fa-fw fa-lg fa-spinner fa-spin"></i>';
+    var CHECK_CIRCLE_ICON = '<i class="fa fa-fw fa-lg fa-check-circle-o"></i>';
 
     define(['lodash', 'helpers/server-helpers', 'helpers/cluster-settings-helpers', 'helpers/cluster-response-helpers'], function(_, serverHelpers, clusterSettingsHelpers, responseHelpers) {
 
@@ -42,7 +44,7 @@
                 var minions = _.flatten($scope.pcols);
                 $scope.approveAllDisabled = true;
                 minions = _.map(minions, function(minion) {
-                    minion.label = '<i class="fa fa-fw fa-lg fa-spinner fa-spin"></i>';
+                    minion.label = SPINNER_ICON;
                     minion.disabled = true;
                     return minion.id;
                 });
@@ -52,7 +54,7 @@
                     var timeout = elapsed < 1000 ? 1000 - elapsed : 0;
                     $timeout(function() {
                         minions = _.each(_.flatten($scope.pcols), function(minion) {
-                            minion.label = '<i class="fa fa-fw fa-lg fa-check-circle-o"></i>';
+                            minion.label = CHECK_CIRCLE_ICON;
                         });
                     }, timeout);
                 }, function(error) {
