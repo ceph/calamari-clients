@@ -15,7 +15,7 @@
 @import 'partials/base.scss';
 @import 'modules/angular-toggle-switch';
 @import 'modules/angular-toggle-switch-bootstrap';
- .disable-user-select {
+.disable-user-select {
     @include user-select(none);
 }
 .truncate {
@@ -71,4 +71,12 @@
 }
 .dropdown-menu .divider {
 	background-color: darkgray;
+}
+
+.width-10-perc {
+	width: 10%;
+}
+
+.width-20-perc {
+	width: 20%;
 }
