@@ -168,6 +168,29 @@
                 transformOSDToUI(osd);
             }
 
+            function requestRepairPermission(repairFn) {
+                return function($event, id, cmd, index) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                    if (cmd === 'repair') {
+                        var modal = $modal({
+                            html: true,
+                            title: '<i class="fa fa-fw fa-lg text-danger fa-exclamation-triangle"></i> Repair OSD ' + id + '?',
+                            backdrop: 'static',
+                            template: 'views/osd-repair-warn-modal.html',
+                            content: 'Please ensure you have checked the cluster logs for scrub output marked <strong class="text-info">Error</strong> to determine if this is the correct OSD to run the repair on. Failure to do so may result in the <span class="text-danger">permanent loss of data</span>.',
+                            show: true
+                        });
+                        modal.$scope.acceptFn = function() {
+                            modal.$scope.$hide();
+                            repairFn($event, id, cmd, index);
+                        };
+                    } else {
+                        repairFn($event, id, cmd, index);
+                    }
+                };
+            }
+
             function makeCommandHandler(buttonLabel) {
                 return function($event, id, cmd, index) {
                     $event.preventDefault();
@@ -188,8 +211,8 @@
                         /* jshint camelcase: false */
                         var promise = RequestTrackingService.add(resp.data.request_id);
                         var spindelay = 1000;
-                        var end = Date.now();
-                        spindelay = ((end - start) > 1000) ? 0 : spindelay - (end - start);
+                        var elapsed = Date.now() - start;
+                        spindelay = (elapsed > 1000) ? 0 : spindelay - elapsed;
                         modal.$scope.disableClose = true;
                         modal.$scope._hide = function() {
                             modal.$scope.$hide();
@@ -220,7 +243,7 @@
             }
 
             var configClickHandler = makeCommandHandler('configText');
-            var repairClickHandler = makeCommandHandler('repairText');
+            var repairClickHandler = requestRepairPermission(makeCommandHandler('repairText'));
 
             ServerService.get($scope.fqdn).then(function(server) {
                 $scope.server = server;
