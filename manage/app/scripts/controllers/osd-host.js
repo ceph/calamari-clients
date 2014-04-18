@@ -17,9 +17,10 @@
             'success': '<i class="fa fa-check-circle-o fa-fw fa-lg"></i>'
         };
 
-        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService) {
+        var maxReweight = 100;
+        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService, config) {
             function transformOSDToUI(osd) {
-                osd.reweight = Math.min(osd.reweight * 100, 100);
+                osd.reweight = Math.min(osd.reweight * maxReweight, maxReweight);
                 osd.reweight = Math.max(osd.reweight, 0);
                 osd.reweight = Math.round(osd.reweight);
                 osd._reweight = angular.copy(osd.reweight);
@@ -58,7 +59,7 @@
                     osd.hasError = true;
                     return;
                 }
-                if (_.isNumber(osd.reweight) && (osd.reweight > 100 || osd.reweight < 0)) {
+                if (_.isNumber(osd.reweight) && (osd.reweight > maxReweight || osd.reweight < 0)) {
                     osd.reweight = angular.copy(osd._reweight);
                     return;
                 }
@@ -81,13 +82,12 @@
                         show: false
                     });
                     OSDService.patch(osd.id, {
-                        reweight: osd.reweight / 100
+                        reweight: osd.reweight / maxReweight
                     }).then(function(resp) {
                         /* jshint camelcase: false */
                         var promise = RequestTrackingService.add(resp.data.request_id);
-                        var end = Date.now();
-                        var timer = end - start;
-                        timer = timer > 1000 ? 0 : 1000 - timer;
+                        var elapsed = Date.now() - start;
+                        var timeout = elapsed < config.getAnimationTimeoutMs() ? config.getAnimationTimeoutMs() - elapsed : 0;
                         $timeout(function() {
                             osd.saved = true;
                             promise.then(function() {
@@ -95,7 +95,7 @@
                                 osd.editing = false;
                                 osd.saved = false;
                             });
-                        }, timer);
+                        }, timeout);
                     }, modalHelpers.makeOnError(modal));
 
                     $timeout(function() {
@@ -103,9 +103,9 @@
                         osd.editing = false;
                         $timeout(function() {
                             osd.saved = false;
-                        }, 1000);
-                    }, 1000);
-                }, 3000);
+                        }, config.getAnimationTimeoutMs());
+                    }, config.getAnimationTimeoutMs());
+                }, config.getEditDebounceMs());
             };
 
             function generateConfigDropdown(result, handler) {
@@ -216,9 +216,8 @@
                     OSDService[cmd].call(OSDService, id).then(function success(resp) {
                         /* jshint camelcase: false */
                         var promise = RequestTrackingService.add(resp.data.request_id);
-                        var spindelay = 1000;
                         var elapsed = Date.now() - start;
-                        spindelay = (elapsed > 1000) ? 0 : spindelay - elapsed;
+                        var timeout = (elapsed < config.getAnimationTimeoutMs()) ? config.getAnimationTimeoutMs() - elapsed : 0;
                         modal.$scope.disableClose = true;
                         modal.$scope._hide = function() {
                             modal.$scope.$hide();
@@ -238,8 +237,8 @@
                                         generateConfigDropdown(osd, configClickHandler);
                                     });
                                 });
-                            }, 1000);
-                        }, spindelay);
+                            }, config.getAnimationTimeoutMs());
+                        }, timeout);
                     }, modalHelpers.makeOnError(modal, function cleanup() {
                         osd[buttonLabel] = text[buttonLabel];
                         osd.disabled = false;
@@ -283,6 +282,6 @@
             });
 
         };
-        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', 'RequestTrackingService', 'PoolService', OSDHostController];
+        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', 'RequestTrackingService', 'PoolService', 'ConfigurationService', OSDHostController];
     });
 })();

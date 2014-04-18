@@ -8,11 +8,14 @@
             getPollTimeoutMs: function() {
                 return 20000;
             },
-            getSpinnerAnimationTimeoutMs: function() {
+            getAnimationTimeoutMs: function() {
                 return 1000;
             },
             getFirstViewPath: function() {
                 return '/first';
+            },
+            getEditDebounceMs: function() {
+                return 3000;
             }
         });
         return [Service];
