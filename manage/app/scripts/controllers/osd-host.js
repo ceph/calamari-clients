@@ -3,6 +3,7 @@
     'use strict';
     define(['lodash', 'helpers/modal-helpers', 'helpers/osd-helpers'], function(_, modalHelpers, osdHelpers) {
 
+        var disableRepair = true;
         var text = {
             'down': '<i class="fa fa-arrow-circle-down fa-fw fa-lg"></i>&nbsp;DOWN',
             'in': '<i class="fa fa-sign-in fa-fw fa-lg"></i>&nbsp;IN',
@@ -151,6 +152,11 @@
                     editDisabled: false
                 });
                 if (osd.valid_commands.length) {
+                    if (disableRepair) {
+                        osd.valid_commands = _.filter(osd.valid_commands, function(command) {
+                            return command !== 'repair';
+                        });
+                    }
                     osd.repairDropdown = _.reduce(osd.valid_commands, function(newdropdown, cmd) {
                         newdropdown.push({
                             'text': text[cmd],
