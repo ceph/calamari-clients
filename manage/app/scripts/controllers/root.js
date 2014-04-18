@@ -28,7 +28,16 @@
 
             var server = serverHelpers.makeFunctions($scope, $rootScope, $log, $timeout, ServerService, KeyService, $modal);
             $scope.acceptMinion = server.acceptMinion;
-            $scope.detailView = server.detailView;
+            $scope.detailView = function(id) {
+                var modal = $modal({
+                    title: id,
+                    template: 'views/detail-grains-modal.html',
+                    show: true
+                });
+                server.detailView(id).then(function(pairs) {
+                    modal.$scope.pairs = pairs;
+                });
+            };
 
             function refreshKeys() {
                 $log.debug('refreshing keys');

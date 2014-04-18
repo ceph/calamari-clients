@@ -145,19 +145,14 @@
             }
 
             function detailView(id) {
-                var modal = $modal({
-                    title: id,
-                    template: 'views/detail-grains-modal.html',
-                    show: true
-                });
                 // TODO need a special path for the calamari server itself using /grains
-                ServerService.getGrains(id).then(function(data) {
+                return ServerService.getGrains(id).then(function(data) {
                     /* jshint camelcase: false */
                     data.cpu_flags = grainHelpers.formatCpuFlags(data.cpu_flags);
                     data.ipv4 = grainHelpers.formatIPAddresses(data.ipv4);
                     data.ipv6 = grainHelpers.formatIPAddresses(data.ipv6);
                     data.ip_interfaces = grainHelpers.formatInterfaces(data.ip_interfaces);
-                    var pairs = _.map([
+                    return _.map([
                             'lsb_distrib_description',
                             'osarch',
                             'kernelrelease',
@@ -175,7 +170,6 @@
                             value: data[key] || 'Unknown'
                         };
                     });
-                    modal.$scope.pairs = pairs;
                 });
             }
             /* servers --- end */
