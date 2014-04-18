@@ -3,9 +3,9 @@
     'use strict';
     define(['lodash', 'helpers/modal-helpers'], function(_, modalHelpers) {
 
-        var PoolController = function($log, $scope, PoolService, ClusterService, $location, $modal, RequestTrackingService, $rootScope, $timeout) {
+        var PoolController = function($log, $scope, PoolService, ClusterService, $location, $modal, RequestTrackingService, $rootScope, $timeout, config) {
             if (ClusterService.clusterId === null) {
-                $location.path('/first');
+                $location.path(config.getFirstViewPath());
                 return;
             }
 
@@ -50,7 +50,7 @@
                 PoolService.getList().then(function(pools) {
                     $scope.pools = updatePools(copyPools(pools), $scope.pools);
                 });
-                $rootScope.keyTimer = $timeout(refreshPools, 20000);
+                $rootScope.keyTimer = $timeout(refreshPools, config.getPollTimeoutMs());
             }
             $scope.ttEdit = {
                 title: 'Edit Pool'
@@ -77,7 +77,7 @@
                 $timeout(function() {
                     $scope.pools = copyPools(pools);
                 }, timeout);
-                $rootScope.keyTimer = $timeout(refreshPools, 20000);
+                $rootScope.keyTimer = $timeout(refreshPools, config.getPollTimeoutMs());
                 $scope.up = true;
             });
             $scope.create = function() {
@@ -144,6 +144,6 @@
                 };
             };
         };
-        return ['$log', '$scope', 'PoolService', 'ClusterService', '$location', '$modal', 'RequestTrackingService', '$rootScope', '$timeout', PoolController];
+        return ['$log', '$scope', 'PoolService', 'ClusterService', '$location', '$modal', 'RequestTrackingService', '$rootScope', '$timeout', 'ConfigurationService', PoolController];
     });
 })();

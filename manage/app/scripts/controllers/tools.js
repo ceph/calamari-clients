@@ -3,9 +3,9 @@
     'use strict';
     define(['lodash', 'moment'], function(_, moment) {
 
-        var ToolController = function($q, $timeout, $location, $scope, ClusterService, ToolService) {
+        var ToolController = function($q, $timeout, $location, $scope, ClusterService, ToolService, config) {
             if (ClusterService.clusterId === null) {
-                $location.path('/first');
+                $location.path(config.getFirstViewPath());
                 return;
             }
             $scope.clusterName = ClusterService.clusterModel.name;
@@ -41,6 +41,6 @@
                 $scope.up = true;
             });
         };
-        return ['$q', '$timeout', '$location', '$scope', 'ClusterService', 'ToolService', ToolController];
+        return ['$q', '$timeout', '$location', '$scope', 'ClusterService', 'ToolService', 'ConfigurationService', ToolController];
     });
 })();

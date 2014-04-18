@@ -18,9 +18,9 @@
     define(['lodash', 'helpers/server-helpers', 'helpers/cluster-settings-helpers', 'helpers/cluster-response-helpers'], function(_, serverHelpers, clusterSettingsHelpers, responseHelpers) {
 
 
-        var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal, OSDConfigService, RequestTrackingService) {
+        var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal, OSDConfigService, RequestTrackingService, config) {
             if (ClusterService.id === null) {
-                $location.path('/first');
+                $location.path(config.getFirstViewPath());
                 return;
             }
 
@@ -37,7 +37,7 @@
                     $scope.pcols = all.pre;
                     $scope.hidePre = all.hidePre;
                 });
-                $rootScope.keyTimer = $timeout(refreshKeys, 20000);
+                $rootScope.keyTimer = $timeout(refreshKeys, config.getPollTimeoutMs());
             }
 
             function approveAll() {
@@ -78,7 +78,7 @@
             var promises = [KeyService.getList(), ToolService.config(), OSDConfigService.get()];
             var start = Date.now();
             $q.all(promises).then(function(results) {
-                $rootScope.keyTimer = $timeout(refreshKeys, 20000);
+                $rootScope.keyTimer = $timeout(refreshKeys, config.getPollTimeoutMs());
                 $scope.up = true;
                 var elapsed = Date.now() - start;
                 var timeout = elapsed < 600 ? 600 - elapsed : 0;
@@ -108,6 +108,6 @@
                 });
             });
         };
-        return ['$q', '$log', '$timeout', '$rootScope', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', 'OSDConfigService', 'RequestTrackingService', RootController];
+        return ['$q', '$log', '$timeout', '$rootScope', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', 'OSDConfigService', 'RequestTrackingService', 'ConfigurationService', RootController];
     });
 })();

@@ -3,9 +3,9 @@
     'use strict';
     define(['lodash', 'helpers/osd-helpers'], function(_, osdHelpers) {
 
-        var OSDController = function($scope, ClusterService, ServerService, $location, OSDService, $modal, PoolService, $timeout) {
+        var OSDController = function($scope, ClusterService, ServerService, $location, OSDService, $modal, PoolService, $timeout, config) {
             if (ClusterService.clusterId === null) {
-                $location.path('/first');
+                $location.path(config.getFirstViewPath());
                 return;
             }
             $scope.clusterName = ClusterService.clusterModel.name;
@@ -79,6 +79,6 @@
                 $location.path('/osd/server/' + fqdn);
             };
         };
-        return ['$scope', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', 'PoolService', '$timeout', OSDController];
+        return ['$scope', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', 'PoolService', '$timeout', 'ConfigurationService', OSDController];
     });
 })();

@@ -3,10 +3,10 @@
     'use strict';
     define(['lodash'], function() {
 
-        var UserDropDownController = function($location, $scope, ClusterResolver, ClusterService, UserService) {
+        var UserDropDownController = function($location, $scope, ClusterResolver, ClusterService, UserService, config) {
             ClusterResolver.then(function() {
                 if (ClusterService.clusterId === null) {
-                    $location.path('/first');
+                    $location.path(config.getFirstViewPath());
                     return;
                 }
                 $scope.userdropdownTemplate = 'views/userdropdown.html';
@@ -32,6 +32,6 @@
                 });
             });
         };
-        return ['$location', '$scope', 'ClusterResolver', 'ClusterService', 'UserService', UserDropDownController];
+        return ['$location', '$scope', 'ClusterResolver', 'ClusterService', 'UserService', 'ConfigurationService', UserDropDownController];
     });
 })();

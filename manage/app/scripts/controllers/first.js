@@ -3,6 +3,7 @@
     'use strict';
     define(['lodash', 'helpers/modal-helpers'], function(_) {
 
+        var clusterPollIntervalMs = 1000;
         var FirstTimeController = function($q, $log, $timeout, $location, $scope, KeyService, ClusterService, $modal) {
             var promises = [KeyService.getList()];
             $scope.addDisabled = true;
@@ -59,13 +60,13 @@
                                     modal.$scope.content = 'Cluster Initialized.';
                                     return;
                                 }
-                                $timeout(checkClusterUp, 1000);
+                                $timeout(checkClusterUp, clusterPollIntervalMs);
                             });
                         }
                         KeyService.accept(ids).then(function(resp) {
                             $log.debug(resp);
                             if (resp.status === 204) {
-                                $timeout(checkClusterUp, 1000);
+                                $timeout(checkClusterUp, clusterPollIntervalMs);
                             }
                             $scope.addDisabled = false;
 

@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash', 'angular', 'RouteConfig', 'ApiModule', 'requests/requestModule', 'controllers/root', 'controllers/pool', 'controllers/osd', 'controllers/osd-host', 'controllers/pool-new', 'controllers/tools', 'controllers/pool-modify', 'navbar/navbarModule', 'services/menu', 'run', 'controllers/first', 'controllers/userdropdown', 'controllers/bell', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate', 'restangular'], function(_, angular, RouteConfig, APIModule, RequestModule, RootController, PoolController, OSDController, OSDHostController, PoolNewController, ToolsController, PoolModifyController, NavbarModule, MenuService, PostInitRunBlock, FirstTimeController, UserDropDownController, BellController) {
+    define(['lodash', 'angular', 'RouteConfig', 'ApiModule', 'requests/requestModule', 'controllers/root', 'controllers/pool', 'controllers/osd', 'controllers/osd-host', 'controllers/pool-new', 'controllers/tools', 'controllers/pool-modify', 'navbar/navbarModule', 'services/menu', 'run', 'controllers/first', 'controllers/userdropdown', 'controllers/bell', 'services/configuration', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate', 'restangular'], function(_, angular, RouteConfig, APIModule, RequestModule, RootController, PoolController, OSDController, OSDHostController, PoolNewController, ToolsController, PoolModifyController, NavbarModule, MenuService, PostInitRunBlock, FirstTimeController, UserDropDownController, BellController, ConfigurationService) {
         var app = angular.module('manageApp', [
                 'ngAnimate',
             APIModule,
@@ -24,6 +24,7 @@
             .controller('UserDropDownController', UserDropDownController)
             .controller('BellController', BellController)
             .service('MenuService', MenuService)
+            .service('ConfigurationService', ConfigurationService)
             .run(PostInitRunBlock)
             .config(RouteConfig);
 
