@@ -19,7 +19,7 @@
 
         var maxReweight = 100;
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService, config) {
-            function transformOSDToUI(osd) {
+            function formatOSDForUI(osd) {
                 osd.reweight = Math.min(osd.reweight * maxReweight, maxReweight);
                 osd.reweight = Math.max(osd.reweight, 0);
                 osd.reweight = Math.round(osd.reweight);
@@ -171,7 +171,7 @@
                     osd.repairDisabled = true;
                 }
                 generateConfigDropdown(osd, configClickHandler);
-                transformOSDToUI(osd);
+                formatOSDForUI(osd);
             }
 
             function requestRepairPermission(repairFn) {
@@ -230,10 +230,10 @@
                                 promise.then(function() {
                                     OSDService.get(id).then(function(_osd) {
                                         // refresh osd state
-                                        transformOSDToUI(_osd);
+                                        formatOSDForUI(_osd);
                                         _.extend(osd, _osd);
                                         osd.repairDisabled = !osd.up;
-                                        osd.editDisabled = !osd.up || !osd. in ;
+                                        osd.editDisabled = !osd.up || !osd['in'];
                                         generateConfigDropdown(osd, configClickHandler);
                                     });
                                 });
