@@ -20,6 +20,9 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                 autoIncrement: false,
                 onStoreReady: function() {
                     $log.info('Inktank User Request Store ready!');
+                },
+                onError: function() {
+                    $log.error('Your browser may be in incognito or private browsing mode. Request Tracking Disabled');
                 }
             });
             _.bindAll(this, 'remove', 'add', 'checkWorkToDo', 'processTasks', 'getTrackedTasks', 'getLength', '_resolvePromise', '_rejectPromise');

@@ -18,7 +18,7 @@
         };
 
         var maxReweight = 100;
-        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService, config) {
+        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService, config, $rootScope) {
             function formatOSDForUI(osd) {
                 osd.reweight = Math.min(osd.reweight * maxReweight, maxReweight);
                 osd.reweight = Math.max(osd.reweight, 0);
@@ -53,6 +53,12 @@
                 if (osd.timeout) {
                     $timeout.cancel(osd.timeout);
                     osd.timeout = undefined;
+                }
+                if ($rootScope.keyTimer) {
+                    // reset polling timeout when editing
+                    // reweight otherwise it'll overwrite your changes
+                    $timeout.cancel($rootScope.keyTimer);
+                    $rootScope.keyTimer = $timeout(refreshOSDModels, config.getPollTimeoutMs());
                 }
                 $log.debug('reweight: ' + osd.reweight);
                 if (osd.reweight === '' || osd.reweight === void 0) {
@@ -140,10 +146,9 @@
                 }
             }
 
-            function addUIMetadataToOSDData(osd, index) {
+            function addUIMetadataToOSDData(osd) {
                 /* jshint camelcase:false */
                 _.extend(osd, {
-                    index: index,
                     repairText: text.repairText,
                     configText: text.configText,
                     hasError: false,
@@ -162,7 +167,6 @@
                             'text': text[cmd],
                             'id': osd.id,
                             'cmd': cmd,
-                            'index': index,
                             'handler': repairClickHandler
                         });
                         return newdropdown;
@@ -198,11 +202,11 @@
             }
 
             function makeCommandHandler(buttonLabel) {
-                return function($event, id, cmd, index) {
+                return function($event, id, cmd) {
                     $event.preventDefault();
                     $event.stopPropagation();
                     $log.debug('CLICKED osd ' + id + ' command ' + cmd);
-                    var osd = $scope.services.osds[index];
+                    var osd = $scope.osds[id];
                     osd.disabled = true;
                     osd[buttonLabel] = text.spinner;
                     var start = Date.now();
@@ -250,6 +254,49 @@
             var configClickHandler = makeCommandHandler('configText');
             var repairClickHandler = requestRepairPermission(makeCommandHandler('repairText'));
 
+            function refreshOSDModels() {
+                $log.debug('polling host ' + $scope.fqdn);
+                ServerService.get($scope.fqdn).then(function(server) {
+                    var r = _.reduce(_.sortBy(server.services, function(service) {
+                        var id = parseInt(service.id, 10);
+                        return _.isNaN(id) ? 0 : id;
+                    }), function(results, service) {
+                        if (service.type === 'osd') {
+                            var osd = {
+                                id: service.id,
+                                running: service.running
+                            };
+                            results.osds[osd.id] = osd;
+                            results.ids.push(osd.id);
+                        }
+                        return results;
+                    }, {
+                        osds: {},
+                        ids: []
+                    });
+                    var osds = $scope.osds;
+                    OSDService.getSet(r.ids).then(function(newOsds) {
+                        osds = _.filter(osds, function(osd) {
+                            // delete osds that have been removed from host
+                            return newOsds[osd.id] !== undefined;
+                        });
+                        _.each(newOsds, function(nOsd) {
+                            if (osds[nOsd.id] === undefined) {
+                                // add new osds
+                                addUIMetadataToOSDData(nOsd);
+                                osds[nOsd.id] = {};
+                            }
+                            nOsd.repairDisabled = !nOsd.up;
+                            nOsd.editDisabled = !nOsd.up || !nOsd['in'];
+                            formatOSDForUI(nOsd);
+                            generateConfigDropdown(nOsd, configClickHandler);
+                            _.extend(osds[nOsd.id], nOsd);
+                        });
+                    });
+                    $rootScope.keyTimer = $timeout(refreshOSDModels, config.getPollTimeoutMs());
+                });
+            }
+
             ServerService.get($scope.fqdn).then(function(server) {
                 $scope.server = server;
                 var r = _.reduce(_.sortBy(server.services, function(service) {
@@ -259,29 +306,30 @@
                     if (service.type === 'osd') {
                         var osd = {
                             id: service.id,
-                            running: true
+                            running: service.running
                         };
-                        results.osds.push(osd);
+                        results.osds[osd.id] = osd;
                         results.ids.push(osd.id);
                     }
                     return results;
                 }, {
-                    osds: [],
+                    osds: {},
                     ids: []
                 });
-                $q.all(OSDService.getSet(r.ids)).then(function(results) {
-                    _.each(results, function(result, index) {
-                        addUIMetadataToOSDData(result, index);
-                        r.osds[index] = _.extend(r.osds[index], result);
+                OSDService.getSet(r.ids).then(function(osds) {
+                    _.each(osds, function(osd) {
+                        addUIMetadataToOSDData(osd);
+                        osd.repairDisabled = !osd.up;
+                        osd.editDisabled = !osd.up || !osd['in'];
+                        _.extend(r.osds[osd.id], osd);
                     });
-                    $scope.services = {
-                        osds: r.osds
-                    };
+                    $scope.osds = r.osds;
                     $scope.up = true;
+                    $rootScope.keyTimer = $timeout(refreshOSDModels, config.getPollTimeoutMs());
                 });
             });
 
         };
-        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', 'RequestTrackingService', 'PoolService', 'ConfigurationService', OSDHostController];
+        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', 'RequestTrackingService', 'PoolService', 'ConfigurationService', '$rootScope', OSDHostController];
     });
 })();

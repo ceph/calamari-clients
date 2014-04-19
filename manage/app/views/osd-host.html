@@ -9,18 +9,18 @@
                     <table class='table table-condensed'>
                         <thead>
                             <tr>
-                                <th class="text-muted">ID</th>
-                                <th class="text-muted">DAEMON</th>
+                                <th class="text-muted width-10-perc">ID</th>
+                                <th class="text-muted width-10-perc">DAEMON</th>
                                 <th class="text-muted osd-state-width">STATE</th>
-                                <th class="text-muted osd-state-width">RE-WEIGHT %<sup class="text-info">*</sup>
+                                <th class="text-muted width-10-perc">RE-WEIGHT %<sup class="text-info">*</sup>
 
                                 </th>
                                 <th class="text-muted">COMMANDS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class='am-fade-and-slide-bottom' ng-repeat='osd in services.osds'>
-                                <td>{{osd.id}}</td>
+                            <tr class='am-fade' ng-repeat='(id, osd) in osds'>
+                                <td ng-bind='id'></td>
                                 <td> <span ng-if="osd.running" class="label label-success">RUNNING</span>
  <span ng-if="!osd.running"
                                     class="label label-warning">DEAD</span>

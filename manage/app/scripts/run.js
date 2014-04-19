@@ -18,6 +18,11 @@
                     $rootScope.keyTimer = undefined;
                     $log.debug('canceling pool key timer');
                 }
+                if (from && from.loadedTemplateUrl ==='views/osd-host.html' && $rootScope.keyTimer) {
+                    $timeout.cancel($rootScope.keyTimer);
+                    $rootScope.keyTimer = undefined;
+                    $log.debug('canceling osd host key timer');
+                }
             });
             // add show requests handler for request queue
             $rootScope.showRequests = function() {

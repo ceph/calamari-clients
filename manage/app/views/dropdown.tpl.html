@@ -1,7 +1,7 @@
 <ul tabindex="-1" class="dropdown-menu" role="menu">
     <li role="presentation" ng-class="{divider: item.divider}" ng-repeat="item in content">
         <a role="menuitem" tabindex="-1" data-id="{{item.id}}" data-cmd="{{item.cmd}}"
-        href="{{item.href}}" ng-if="!item.divider" ng-click="item.handler($event, item.id, item.cmd, item.index); $hide();"
+        href="{{item.href}}" ng-if="!item.divider" ng-click="item.handler($event, item.id, item.cmd); $hide();"
         ng-bind="item.text"></a>
     </li>
 </ul>
