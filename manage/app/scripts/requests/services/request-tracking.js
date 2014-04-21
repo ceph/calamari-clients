@@ -31,17 +31,23 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
         Service.prototype = _.extend(Service.prototype, {
             add: function(id) {
                 var d = $q.defer();
-                this.deferred[id] = d;
-                this.requests.put({
-                    id: id,
-                    timestamp: Date.now()
-                }, function(id) {
-                    $log.debug('tracking new request ' + id);
-                }, function(error) {
-                    $log.error('error inserting request ' + id + ' error ', error);
-                });
-                $timeout.cancel(this.timeout);
-                this.timeout = $timeout(this.checkWorkToDo, 0);
+                if (id === null || id === undefined) {
+                    // resolve empty ids immediately
+                    d.resolve();
+                } else {
+                    // adding promise to queue
+                    this.deferred[id] = d;
+                    this.requests.put({
+                        id: id,
+                        timestamp: Date.now()
+                    }, function(id) {
+                        $log.debug('tracking new request ' + id);
+                    }, function(error) {
+                        $log.error('error inserting request ' + id + ' error ', error);
+                    });
+                    $timeout.cancel(this.timeout);
+                    this.timeout = $timeout(this.checkWorkToDo, 0);
+                }
                 return d.promise;
             },
             list: function() {

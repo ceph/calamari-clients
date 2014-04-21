@@ -201,6 +201,31 @@
                 };
             }
 
+            function intercept304Error(promise) {
+                return promise.then(function(resp) {
+                    // request succeeded, pass through
+                    return resp;
+                }, function(resp) {
+                    if (resp.status === 304) {
+                        // request failed check if it's a 304
+                        $log.debug('intercepting 304 and ignoring');
+                        var d = $q.defer();
+                        /* jshint camelcase: false */
+                        d.resolve({
+                            status: 200,
+                            data: {
+                                request_id: null
+                            }
+                        });
+                        // return a new promise, this command was
+                        // a NOP
+                        return d.promise;
+                    }
+                    // pass through error
+                    return resp;
+                });
+            }
+
             function makeCommandHandler(buttonLabel) {
                 return function($event, id, cmd) {
                     $event.preventDefault();
@@ -217,7 +242,7 @@
                         template: 'views/osd-cmd-modal.html',
                         show: false
                     });
-                    OSDService[cmd].call(OSDService, id).then(function success(resp) {
+                    intercept304Error(OSDService[cmd].call(OSDService, id)).then(function success(resp) {
                         /* jshint camelcase: false */
                         var promise = RequestTrackingService.add(resp.data.request_id);
                         var elapsed = Date.now() - start;
