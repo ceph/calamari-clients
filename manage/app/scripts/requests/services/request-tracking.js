@@ -37,6 +37,7 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                 } else {
                     // adding promise to queue
                     this.deferred[id] = d;
+                    var self = this;
                     this.requests.put({
                         id: id,
                         timestamp: Date.now()
@@ -44,6 +45,7 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                         $log.debug('tracking new request ' + id);
                     }, function(error) {
                         $log.error('error inserting request ' + id + ' error ', error);
+                        self._rejectPromise(id);
                     });
                     $timeout.cancel(this.timeout);
                     this.timeout = $timeout(this.checkWorkToDo, 0);
