@@ -21,7 +21,7 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                 autoIncrement: false,
                 onStoreReady: function() {
                     $log.info('Inktank User Request Store ready!');
-                    this.timeout = $timeout(this.checkWorkToDo, shortTimer);
+                    self.timeout = $timeout(self.checkWorkToDo, shortTimer);
                 },
                 onError: function() {
                     $log.error('Your browser may be in incognito or private browsing mode. Request Tracking Disabled');
