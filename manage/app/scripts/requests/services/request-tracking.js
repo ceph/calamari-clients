@@ -8,11 +8,12 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
     var defaultTimer = 15000; // TODO Make this configurable
     var shortTimer = 5000; // TODO Make this configurable
     var myid = 0;
-    var requestTrackingService = function($q, $log, $timeout, RequestService, growl) {
+    var requestTrackingService = function($q, $log, $timeout, RequestService, growl, $modal) {
         var Service = function() {
             this.myid = myid++;
             $log.debug('Creating Request Tracking Service [' + this.myid + ']');
             this.deferred = {};
+            var self = this;
             this.requests = new IDBStore({
                 dbVersion: 2,
                 storeName: 'InktankUserRequest',
@@ -20,13 +21,29 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                 autoIncrement: false,
                 onStoreReady: function() {
                     $log.info('Inktank User Request Store ready!');
+                    this.timeout = $timeout(this.checkWorkToDo, shortTimer);
                 },
                 onError: function() {
                     $log.error('Your browser may be in incognito or private browsing mode. Request Tracking Disabled');
+                    $modal({
+                        html: true,
+                        title: '<span class="text-warning">Warning</span>',
+                        content: '<p>Request Tracking depends on a feature in your browser which only works when you are not in <a href="https://support.mozilla.org/en-US/kb/private-browsing-browse-web-without-saving-info?redirectlocale=en-US&as=u&redirectslug=Private+Browsing&utm_source=inproduct" target="_blank">private</a> or incognito mode (indexdb).</p><p>The application will still function, and you may view requested tasks via the notification <i class="fa fa-bell"></i>.</p><p>Pop up event notifications however, will be disabled until you stop using private browsing.</p>',
+                        show: true
+                    });
+                    self.add = self.remove = function() {};
+                    self.getTrackedTasks = function() {
+                        return [];
+                    };
+                    self.getSubmitted = function() {
+                        return [];
+                    };
+                    self.getLength = function() {
+                        return 0;
+                    };
                 }
             });
             _.bindAll(this, 'remove', 'add', 'checkWorkToDo', 'processTasks', 'getTrackedTasks', 'getLength', '_resolvePromise', '_rejectPromise');
-            this.timeout = $timeout(this.checkWorkToDo, shortTimer);
         };
         Service.prototype = _.extend(Service.prototype, {
             add: function(id) {
@@ -51,9 +68,6 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                     this.timeout = $timeout(this.checkWorkToDo, 0);
                 }
                 return d.promise;
-            },
-            list: function() {
-                return _.clone(this.requests);
             },
             showError: function(request) {
                 // TODO too tightly coupled use $broadcast
@@ -174,12 +188,12 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
     var service = null;
     return function RequestTrackingProvider() {
         // This is an App Wide singleton
-        this.$get = ['$q', '$log', '$timeout', 'RequestService', 'growl',
-            function($q, $log, $timeout, RequestService, growl) {
+        this.$get = ['$q', '$log', '$timeout', 'RequestService', 'growl', '$modal',
+            function($q, $log, $timeout, RequestService, growl, $modal) {
                 if (service === null) {
                     // This truely needs to be a singleton
                     // This *only* works because JS is single threaded
-                    service = requestTrackingService($q, $log, $timeout, RequestService, growl);
+                    service = requestTrackingService($q, $log, $timeout, RequestService, growl, $modal);
                 }
                 return service;
             }

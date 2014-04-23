@@ -1,6 +1,6 @@
 /* global define */
 
-define(['jquery', 'underscore', 'backbone', 'idbwrapper', 'loglevel', 'collections/user-request-collection', 'models/user-request-model', 'q', 'moment', 'marionette'], function($, _, Backbone, IDBStore, log, UserRequestCollection, UserRequestModel, $q, momentjs) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'idbwrapper', 'loglevel', 'collections/user-request-collection', 'models/user-request-model', 'q', 'moment', 'Backbone.Modal', 'marionette'], function($, _, Backbone, JST, IDBStore, log, UserRequestCollection, UserRequestModel, $q, momentjs) {
     'use strict';
 
     return Backbone.Marionette.ItemView.extend({
@@ -18,6 +18,7 @@ define(['jquery', 'underscore', 'backbone', 'idbwrapper', 'loglevel', 'collectio
                 cluster: this.cluster
             });
             this.listenTo(this.App.vent, 'cluster:update', this.updateFSID);
+            var self = this;
             this.requests = new IDBStore({
                 dbVersion: 2,
                 storeName: 'InktankUserRequest',
@@ -25,10 +26,13 @@ define(['jquery', 'underscore', 'backbone', 'idbwrapper', 'loglevel', 'collectio
                 autoIncrement: false,
                 onStoreReady: function() {
                     log.info('Inktank User Request Store ready!');
+                    self.timeout = setTimeout(this.checkWorkToDo, this.shortTimer);
+                },
+                onError: function() {
+                    log.error('Your browser may be in incognito or private browsing mode. Request Tracking Disabled');
                 }
             });
             _.bindAll(this, 'updateFSID', 'processTasks', 'checkWorkToDo', 'getTrackedTasks', '_resolvePromise', '_rejectPromise', 'remove', 'showNotification', 'showError');
-            this.timeout = setTimeout(this.checkWorkToDo, this.shortTimer);
         },
         add: function(id) {
             var d = $q.defer();

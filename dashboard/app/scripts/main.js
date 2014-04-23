@@ -77,7 +77,8 @@ require.config({
         jsuri: '../bower_components/jsuri/Uri',
         idbwrapper: '../bower_components/idbwrapper/idbstore',
         q: '../bower_components/q/q',
-        moment: '../bower_components/momentjs/moment'
+        moment: '../bower_components/momentjs/moment',
+        'Backbone.Modal': 'vendor/backbone.modal'
     }
 });
 

@@ -96,15 +96,19 @@
                         /* jshint camelcase: false */
                         var promise = RequestTrackingService.add(resp.data.request_id);
                         var elapsed = Date.now() - start;
-                        var timeout = elapsed < config.getAnimationTimeoutMs() ? config.getAnimationTimeoutMs() - elapsed : 0;
+                        var remaining = elapsed < config.getAnimationTimeoutMs() ? config.getAnimationTimeoutMs() - elapsed : 0;
                         $timeout(function() {
                             osd.saved = true;
                             promise.then(function() {
                                 osd._reweight = angular.copy(osd.reweight);
                                 osd.editing = false;
                                 osd.saved = false;
+                            }, function() {
+                                // reset ui on error
+                                osd.editing = false;
+                                osd.saved = false;
                             });
-                        }, timeout);
+                        }, remaining);
                     }, modalHelpers.makeOnError(modal));
 
                     $timeout(function() {
@@ -225,7 +229,7 @@
                         /* jshint camelcase: false */
                         var promise = RequestTrackingService.add(resp.data.request_id);
                         var elapsed = Date.now() - start;
-                        var timeout = (elapsed < config.getAnimationTimeoutMs()) ? config.getAnimationTimeoutMs() - elapsed : 0;
+                        var remaining = (elapsed < config.getAnimationTimeoutMs()) ? config.getAnimationTimeoutMs() - elapsed : 0;
                         modal.$scope.disableClose = true;
                         modal.$scope._hide = function() {
                             modal.$scope.$hide();
@@ -246,7 +250,7 @@
                                     });
                                 });
                             }, config.getAnimationTimeoutMs());
-                        }, timeout);
+                        }, remaining);
                     }, modalHelpers.makeOnError(modal, function cleanup() {
                         osd[buttonLabel] = text[buttonLabel];
                         osd.disabled = false;
