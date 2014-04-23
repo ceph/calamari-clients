@@ -28,7 +28,7 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
                     $modal({
                         html: true,
                         title: '<span class="text-warning">Warning</span>',
-                        content: '<p>Request Tracking depends on a feature in your browser which only works when you are not in <a href="https://support.mozilla.org/en-US/kb/private-browsing-browse-web-without-saving-info?redirectlocale=en-US&as=u&redirectslug=Private+Browsing&utm_source=inproduct" target="_blank">private</a> or incognito mode (indexdb).</p><p>The application will still function, and you may view requested tasks via the notification <i class="fa fa-bell"></i>.</p><p>Pop up event notifications however, will be disabled until you stop using private browsing.</p>',
+                        content: '<p>Request Tracking depends on a feature (<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB</a>) in your browser which only works when you are not in <a href="https://support.mozilla.org/en-US/kb/private-browsing-browse-web-without-saving-info?redirectlocale=en-US&as=u&redirectslug=Private+Browsing&utm_source=inproduct" target="_blank">private</a> or incognito mode.</p><p>The application will still function, and you may view requested tasks via the notification menu (<i class="fa fa-bell"></i>).</p><p>Pop up event notifications however, will be disabled until you stop using private browsing.</p>',
                         show: true
                     });
                     self.add = self.remove = function() {};

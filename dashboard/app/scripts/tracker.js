@@ -30,9 +30,25 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'idbwrapper', 'loglevel
                 },
                 onError: function() {
                     log.error('Your browser may be in incognito or private browsing mode. Request Tracking Disabled');
+                    var Modal = Backbone.Modal.extend({
+                        template: JST['app/scripts/templates/modal.ejs'],
+                        cancelEl: '.bbm-button'
+                    });
+                    var modal = new Modal();
+                    $('body').append(modal.render().el);
+                    self.add = self.remove = function() {};
+                    self.getTrackedTasks = function() {
+                        return [];
+                    };
+                    self.getSubmitted = function() {
+                        return [];
+                    };
+                    self.getLength = function() {
+                        return 0;
+                    };
                 }
             });
-            _.bindAll(this, 'updateFSID', 'processTasks', 'checkWorkToDo', 'getTrackedTasks', '_resolvePromise', '_rejectPromise', 'remove', 'showNotification', 'showError');
+            _.bindAll(this, 'updateFSID', 'processTasks', 'checkWorkToDo', 'getTrackedTasks', 'getSubmitted', '_resolvePromise', '_rejectPromise', 'remove', 'showNotification', 'showError');
         },
         add: function(id) {
             var d = $q.defer();
@@ -48,6 +64,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'idbwrapper', 'loglevel
             clearTimeout(this.timeout);
             this.timeout = setTimeout(this.checkWorkToDo, 0);
             return d.promise;
+        },
+        getSubmitted: function() {
+            return this.collection.getSubmitted();
         },
         getLength: function() {
             var d = $q.defer();
@@ -150,7 +169,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'idbwrapper', 'loglevel
                     return;
                 }
                 log.debug('[' + self.myid + '] tracking ' + requestLen + ' tasks');
-                self.collection.getSubmitted().then(function(runningTasks) {
+                self.getSubmitted().then(function(runningTasks) {
                     self.getTrackedTasks().then(_.partial(self.processTasks, runningTasks.results), function(error) {
                         log.error('Unexpected DB error getting tracked task list ', error);
                     });
