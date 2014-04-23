@@ -129,7 +129,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         getOSDIdsByHost: function(host) {
             return _.pluck(this.collection.filter(function(m) {
-                return m.get('host') === host;
+                return m.get('fqdn') === host;
             }), 'id');
         },
         getOSDCounters: function() {
