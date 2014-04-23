@@ -1,17 +1,18 @@
-# this builds only on precise, and populates the build tree by magic
-# on other distros
+devscripts:
+  pkg.installed
 
-calamari-clients:
+build_calamari_clients:
   cmd.run:
     - user: vagrant
     - name: make dpkg
     - cwd: /home/vagrant/clients
     - require:
       - git: git_clone
+      - pkg: devscripts
 
-copy-package:
+copy_calamari_clients:
   cmd.run:
     - name: cp calamari-clients*.deb /git/
     - cwd: /home/vagrant
     - require:
-      - cmd: calamari-clients
+      - cmd: build_calamari_clients

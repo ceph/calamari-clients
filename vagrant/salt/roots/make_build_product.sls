@@ -1,15 +1,15 @@
-build-product:
+make_build_product:
   cmd.run:
     - user: vagrant
     - name: make build-product
     - cwd: /home/vagrant/clients
     - require:
-      - cmd: calamari-clients
+      - cmd: build_calamari_clients
 
-copy-output:
+copyout_build_product:
   cmd.run:
     - user: vagrant
     - name: cp calamari-clients*tar.gz /git/
     - cwd: /home/vagrant
     - require:
-      - cmd: build-product
+      - cmd: make_build_product

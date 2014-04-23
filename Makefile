@@ -4,7 +4,11 @@ SRC := $(shell pwd)
 # set these only if not set with ?=
 VERSION ?= $(shell $(SRC)/get-versions.sh VERSION)
 REVISION ?= $(shell $(SRC)/get-versions.sh REVISION)
+BUILD_PRODUCT_TGZ=$(SRC)/../calamari-clients-build-output.tar.gz
+
 RPM_REVISION ?= $(shell $(SRC)/get-versions.sh -r REVISION)
+RPMBUILD=$(SRC)/../rpmbuild
+
 DIST ?= unstable
 BPTAG ?= ""
 DEBEMAIL ?= dan.mick@inktank.com
@@ -12,8 +16,9 @@ ARCH ?= x86_64
 
 DISTNAMEVER=calamari-clients_$(VERSION)
 PKGDIR=calamari-clients-$(VERSION)
-RPM_BUILDROOT_DIR=$(PKGDIR)-$(RPM_REVISION).$(ARCH)
 TARNAME = ../$(DISTNAMEVER).tar.gz
+
+UBUNTU = $(shell if [ `lsb_release -is` = "Ubuntu" ] ; then echo 'y' ; else echo 'n'; fi)
 
 INSTALL=/usr/bin/install
 
@@ -38,7 +43,7 @@ set_deb_version:
 		-D $(DIST) --force-bad-version --force-distribution "$(DATESTR)"
 
 build:
-	if [[ $$(lsb_release -is) == "Ubuntu" ]] ; then \
+	if [ $(UBUNTU) = y ] ; then \
 		$(MAKE) build-real; \
 	fi
 
@@ -60,7 +65,7 @@ $(CONFIG_JSON): build-ui
 		> $(CONFIG_JSON)
 
 clean:
-	if [[ $$(lsb_release -is) == "Ubuntu" ]] ; then \
+	if [ $(UBUNTU) = y ] ; then \
 		$(MAKE) clean-real; \
 	fi
 
@@ -72,38 +77,48 @@ clean-real:
 
 # NB we do not build source packages
 dpkg: set_deb_version
-	dpkg-buildpackage -b -us -uc
+	# don't require Build-Depends if not Ubuntu
+	if [ $(UBUNTU) = y ] ; then \
+		dpkg-buildpackage -b -us -uc ; \
+	else \
+		dpkg-buildpackage -d -b -us -uc ; \
+	fi
 
-BUILD_PRODUCT_TGZ=$(SRC)/../calamari-clients-build-output.tar.gz
 build-product:
-	if [[ $$(lsb_release -is) == "Ubuntu" ]] ; then \
+	if [ $(UBUNTU) = y ] ; then \
 		( \
 		cd debian/calamari-clients; \
 		tar cvfz $(BUILD_PRODUCT_TGZ) opt ; \
 		) \
 	fi
 
-RPMBUILD=$(SRC)/rpmbuild
+# magic rpm build target: assumes build/install has already happened on
+# precise, and uses the prebuilt BUILD_PRODUCT_TGZ with rpmbuild
+
 rpm:
-	# assume build/install have already happened on precise
 	mkdir -p $(RPMBUILD)/{SPECS,RPMS,BUILDROOT}
 	cp clients.spec $(RPMBUILD)/SPECS
 	( \
-		mkdir -p $(RPMBUILD)/BUILDROOT/$(RPM_BUILDROOT_DIR) ; \
-		cd $(RPMBUILD)/BUILDROOT/$(RPM_BUILDROOT_DIR); \
-		tar xvfz $(BUILD_PRODUCT_TGZ); \
-		cd $(RPMBUILD); \
-		rpmbuild -bb --define "_topdir $(RPMBUILD)" --define "version $(VERSION)" --define "revision $(RPM_REVISION)" SPECS/clients.spec; \
+	cd $(RPMBUILD); \
+	rpmbuild -bb --define "_topdir $(RPMBUILD)" --define "version $(VERSION)" --define "revision $(RPM_REVISION)" --define "tarname $(BUILD_PRODUCT_TGZ)" SPECS/clients.spec; \
 	)
 
-install: build
-	@echo "install"
-	for d in $(UI_SUBDIRS); do \
-		instdir=$$(basename $$d); \
-		$(INSTALL) -d $(UI_BASEDIR)/$$instdir; \
-		cp -rp $$d/dist/* $(UI_BASEDIR)/$$instdir; \
-	done
+# either put the build files into $DESTDIR on Ubuntu, or
+# untar them from BUILD_PRODUCT_TGZ on other distros
 
+install: build
+	@echo "target: install"
+	@echo "install"
+	if [ $(UBUNTU) = y ] ; then \
+		for d in $(UI_SUBDIRS); do \
+			instdir=$$(basename $$d); \
+			$(INSTALL) -d $(UI_BASEDIR)/$$instdir; \
+			cp -rp $$d/dist/* $(UI_BASEDIR)/$$instdir; \
+		done; \
+	else \
+		cd $(DESTDIR); \
+		tar xvfz $(BUILD_PRODUCT_TGZ); \
+	fi
 
 dist:
 	@echo "making dist tarball in $(TARNAME)"

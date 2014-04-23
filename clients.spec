@@ -19,7 +19,6 @@ License: 	Inktank
 Group:   	System/Filesystems
 URL:     	http://ceph.com/
 Source0: 	%{name}_%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %description
 Contains the JavaScript GUI content for the Calamari frontend components
  (dashboard, login screens, administration screens)
@@ -29,6 +28,8 @@ echo "prep"
 
 %install
 echo "install"
+cd %{buildroot}
+tar xfz %{tarname}
 
 %clean
 echo "clean"
