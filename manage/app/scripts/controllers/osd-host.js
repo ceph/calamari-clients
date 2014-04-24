@@ -20,7 +20,7 @@
         var maxReweight = 100;
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService, config, $rootScope) {
 
-            errorHelpers = errorHelpers.makeFunctions($q, $log);
+            var errHelpers = errorHelpers.makeFunctions($q, $log);
 
             function formatOSDForUI(osd) {
                 osd.reweight = Math.min(osd.reweight * maxReweight, maxReweight);
@@ -90,7 +90,7 @@
                         template: 'views/osd-cmd-modal.html',
                         show: false
                     });
-                    errorHelpers.intercept304Error(OSDService.patch(osd.id, {
+                    errHelpers.intercept304Error(OSDService.patch(osd.id, {
                         reweight: osd.reweight / maxReweight
                     })).then(function(resp) {
                         /* jshint camelcase: false */
@@ -225,7 +225,7 @@
                         template: 'views/osd-cmd-modal.html',
                         show: false
                     });
-                    errorHelpers.intercept304Error(OSDService[cmd].call(OSDService, id)).then(function success(resp) {
+                    errHelpers.intercept304Error(OSDService[cmd].call(OSDService, id)).then(function success(resp) {
                         /* jshint camelcase: false */
                         var promise = RequestTrackingService.add(resp.data.request_id);
                         var elapsed = Date.now() - start;
