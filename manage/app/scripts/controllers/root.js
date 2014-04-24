@@ -15,7 +15,7 @@
     var SPINNER_ICON = '<i class="fa fa-fw fa-lg fa-spinner fa-spin"></i>';
     var CHECK_CIRCLE_ICON = '<i class="fa fa-fw fa-lg fa-check-circle-o"></i>';
 
-    define(['lodash', 'helpers/server-helpers', 'helpers/cluster-settings-helpers', 'helpers/cluster-response-helpers'], function(_, serverHelpers, clusterSettingsHelpers, responseHelpers) {
+    define(['lodash', 'helpers/server-helpers', 'helpers/cluster-settings-helpers', 'helpers/cluster-response-helpers', 'helpers/modal-helpers'], function(_, serverHelpers, clusterSettingsHelpers, responseHelpers, modalHelpers) {
 
 
         var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal, OSDConfigService, RequestTrackingService, config) {
@@ -66,10 +66,12 @@
                             minion.label = CHECK_CIRCLE_ICON;
                         });
                     }, timeout);
-                }, function(error) {
-                    /* TODO pop a modal or use an interceptor */
-                    $log.error(error);
-                });
+                }, modalHelpers.makeOnError($modal({
+                    show: true,
+                    html: true,
+                    template: 'views/custom-modal.html',
+                    backdrop: 'static'
+                })));
             }
 
             $scope.approveAll = approveAll;
