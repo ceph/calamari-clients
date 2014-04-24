@@ -19,8 +19,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class='am-fade' ng-repeat='(id, osd) in osds'>
-                                <td ng-bind='id'></td>
+                            <tr class='am-fade' ng-repeat='osd in osds'>
+                                <td ng-bind='osd.id'></td>
                                 <td> <span ng-if="osd.running" class="label label-success">RUNNING</span>
  <span ng-if="!osd.running"
                                     class="label label-warning">DEAD</span>

@@ -265,10 +265,7 @@
             function refreshOSDModels() {
                 $log.debug('polling host ' + $scope.fqdn);
                 ServerService.get($scope.fqdn).then(function(server) {
-                    var r = _.reduce(_.sortBy(server.services, function(service) {
-                        var id = parseInt(service.id, 10);
-                        return _.isNaN(id) ? 0 : id;
-                    }), function(results, service) {
+                    var r = _.reduce(server.services, function(results, service) {
                         if (service.type === 'osd') {
                             var osd = {
                                 id: service.id,
@@ -307,10 +304,7 @@
 
             ServerService.get($scope.fqdn).then(function(server) {
                 $scope.server = server;
-                var r = _.reduce(_.sortBy(server.services, function(service) {
-                    var id = parseInt(service.id, 10);
-                    return _.isNaN(id) ? 0 : id;
-                }), function(results, service) {
+                var r = _.reduce(server.services, function(results, service) {
                     if (service.type === 'osd') {
                         var osd = {
                             id: service.id,
@@ -331,7 +325,9 @@
                         osd.editDisabled = !osd.up || !osd['in'];
                         _.extend(r.osds[osd.id], osd);
                     });
-                    $scope.osds = r.osds;
+                    $scope.osds = _.sortBy(_.values(r.osds), function(osd) {
+                        return osd.id;
+                    });
                     $scope.up = true;
                     $rootScope.keyTimer = $timeout(refreshOSDModels, config.getPollTimeoutMs());
                 });
