@@ -1,12 +1,12 @@
 /*global define*/
 define(['lodash'], function(_) {
     'use strict';
-    var KeyService = function(Restangular) {
+    var KeyService = function(Restangular, ErrorService) {
         var restangular = Restangular.withConfig(function(RestangularConfigurer) {
-            RestangularConfigurer.setBaseUrl('/api/v2');
+            RestangularConfigurer.setBaseUrl('/api/v2').setErrorInterceptor(ErrorService.errorInterceptor);
         });
         var restangularFull = Restangular.withConfig(function(RestangularConfigurer) {
-            RestangularConfigurer.setBaseUrl('/api/v2').setFullResponse(true);
+            RestangularConfigurer.setBaseUrl('/api/v2').setFullResponse(true).setErrorInterceptor(ErrorService.errorInterceptor);
         });
         var Service = function() {
             this.restangular = restangular;
@@ -35,5 +35,5 @@ define(['lodash'], function(_) {
         });
         return new Service();
     };
-    return ['Restangular', KeyService];
+    return ['Restangular', 'ErrorService', KeyService];
 });

@@ -1,7 +1,7 @@
 /*global define*/
 define(['lodash'], function(_) {
     'use strict';
-    var ClusterService = function(Restangular, $location) {
+    var ClusterService = function(Restangular, $location, ErrorService) {
         var djangoPaginationResponseExtractor = function(response /*, operation, what, url */ ) {
             if (response.count !== undefined && response.results !== undefined) {
                 var newResponse = response.results;
@@ -15,10 +15,10 @@ define(['lodash'], function(_) {
             return response;
         };
         var restangular = Restangular.withConfig(function(RestangularConfigurer) {
-            RestangularConfigurer.setBaseUrl('/api/v2').setResponseExtractor(djangoPaginationResponseExtractor);
+            RestangularConfigurer.setBaseUrl('/api/v2').setResponseExtractor(djangoPaginationResponseExtractor).setErrorInterceptor(ErrorService.errorInterceptor);
         });
         var restangularFull = Restangular.withConfig(function(RestangularConfigurer) {
-            RestangularConfigurer.setBaseUrl('/api/v2').setFullResponse(true).setResponseExtractor(djangoPaginationResponseExtractor);
+            RestangularConfigurer.setBaseUrl('/api/v2').setFullResponse(true).setResponseExtractor(djangoPaginationResponseExtractor).setErrorInterceptor(ErrorService.errorInterceptor);
         });
         var Service = function() {
             this.restangular = restangular;
@@ -68,5 +68,5 @@ define(['lodash'], function(_) {
         var service = new Service();
         return service;
     };
-    return ['Restangular', '$location', ClusterService];
+    return ['Restangular', '$location', 'ErrorService', ClusterService];
 });

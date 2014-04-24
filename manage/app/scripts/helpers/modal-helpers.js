@@ -34,13 +34,8 @@
             },
             makeOnError: function(modal, callback) {
                 return function onError(resp) {
-                    if (resp.status === 403) {
-                        modal.$scope.title = '<i class="text-danger fa fa-exclamation-circle"></i> Unauthorized Access';
-                        modal.$scope.content = 'Try logging out and back in again.';
-                    } else {
-                        modal.$scope.title = 'Unexpected Error ' + resp.status;
-                        modal.$scope.content = '<pre>' + resp.data + '</pre>';
-                    }
+                    modal.$scope.title = 'Unexpected Error ' + resp.status;
+                    modal.$scope.content = '<pre>' + resp.data + '</pre>';
                     modal.$scope._hide = function() {
                         modal.$scope.$hide();
                     };
