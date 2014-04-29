@@ -1,6 +1,6 @@
 /*global define*/
 /* jshint -W106, -W069*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/gauge-helper', 'l20nCtx!locales/{{locale}}/strings', 'marionette'], function($, _, Backbone, JST, humanize, gaugeHelper, l10n) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/gauge-helper', 'l20nCtx!locales/{{locale}}/strings', 'Backbone.Modal', 'marionette'], function($, _, Backbone, JST, humanize, gaugeHelper, l10n) {
     'use strict';
 
     /* HealthView
@@ -11,7 +11,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
         className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/health.ejs'],
         updateTemplate: _.template('<%- time %>'),
+        badgeTemplate: _.template('<span class="badge <%- clazz %>"><%- count %></span> <%- description %>'),
+        rowTemplate: _.template('<tr><td><span class="<%- clazz %>"><%- severity %></span></td><td><%- details %></td></tr>'),
         timer: null,
+        events: {
+            'click .badge': 'badgeHandler'
+        },
         ui: {
             headline: '.headline',
             subline: '.subline',
@@ -33,6 +38,28 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
             this.lastUpdateUnix = Date.now();
             this.timerWrapper(this.updateUI);
         },
+        badgeHandler: function() {
+            var content = _.reduce(this.model.toJSON().report.summary, function(markup, report) {
+                var severity = report.severity === 'HEALTH_WARN' ? 'WARN' : 'ERROR';
+                var details = report.summary;
+                markup.push(this.rowTemplate({
+                    severity: severity,
+                    clazz: severity === 'WARN' ? 'text-warning' : 'text-danger',
+                    details: details
+                }));
+                return markup;
+            }.bind(this), []);
+            var Modal = Backbone.Modal.extend({
+                template: function() {
+                    return JST['app/scripts/templates/health-modal.ejs']({
+                        content: content.join('')
+                    });
+                },
+                cancelEl: '.bbm-button'
+            });
+            var modal = new Modal();
+            $('body').append(modal.render().el);
+        },
         updateUI: function() {
             this.ui.subline.text(this.updateTemplate({
                 time: humanize.relativeTime(this.lastUpdateUnix / 1000)
@@ -41,26 +68,45 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
         set: function(model) {
             this.model.set(model.toJSON());
         },
-        getSummary: function(report) {
-            if (report.summary && report.summary.length) {
-                return _.first(report.summary).summary;
-            }
-            return '';
-        },
         serializeData: function() {
             var model = this.model.toJSON();
             var subtext = '',
                 evt = 'status:ok',
                 healthText = 'OK';
+            if (model.report.overall_status && model.report.summary.length) {
+                var counts = _.reduce(model.report.summary, function(result, summary) {
+                    if (summary.severity === 'HEALTH_WARN') {
+                        result.warn += 1;
+                    } else {
+                        result.error += 1;
+                    }
+                    return result;
+                }, {
+                    warn: 0,
+                    error: 0
+                });
+                if (counts.warn > 0) {
+                    subtext += this.badgeTemplate({
+                        count: counts.warn,
+                        clazz: 'alert-warning',
+                        description: 'warnings'
+                    });
+                }
+                if (counts.error > 0) {
+                    subtext += this.badgeTemplate({
+                        count: counts.error,
+                        clazz: 'alert-danger',
+                        description: 'errors'
+                    });
+                }
+            }
             switch (model.report.overall_status) {
                 case 'HEALTH_WARN':
-                    subtext = this.getSummary(model.report);
                     evt = 'status:warn';
                     break;
                 case 'HEALTH_ERR':
                     healthText = 'ERROR';
                     evt = 'status:fail';
-                    subtext = this.getSummary(model.report);
                     break;
                 default:
                     break;
@@ -83,7 +129,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
         updateView: function( /* model */ ) {
             var data = this.serializeData();
             this.ui.headline.text(data.healthText);
-            this.ui.subtext.text(data.relTimeStr);
+            this.ui.subtext.html(data.relTimeStr);
             this.trigger(data.evt);
         },
         updateTimer: function(model) {

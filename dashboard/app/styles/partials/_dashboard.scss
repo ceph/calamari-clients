@@ -374,3 +374,15 @@ $bc-item-count: 4;
     background:rgba(0, 0, 0, .5);
     opacity:1
 }
+.table.health-table {
+	h3 {
+		font-family:ApexSansLight;
+		text-transform: capitalize;
+	}
+	td, th {
+		text-align: left;
+	}
+	td {
+		font-family: ApexSansMedium;
+	}
+}
