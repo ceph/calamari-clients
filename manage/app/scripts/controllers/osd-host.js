@@ -153,9 +153,10 @@
                 }
             }
 
-            function addUIMetadataToOSDData(osd) {
+            function addUIMetadataToOSDData(osd, index) {
                 /* jshint camelcase:false */
                 _.extend(osd, {
+                    index: index,
                     repairText: text.repairText,
                     configText: text.configText,
                     hasError: false,
@@ -174,6 +175,7 @@
                             'text': text[cmd],
                             'id': osd.id,
                             'cmd': cmd,
+                            'index': index,
                             'handler': repairClickHandler
                         });
                         return newdropdown;
@@ -210,11 +212,11 @@
 
 
             function makeCommandHandler(buttonLabel) {
-                return function($event, id, cmd) {
+                return function($event, id, cmd, index) {
                     $event.preventDefault();
                     $event.stopPropagation();
                     $log.debug('CLICKED osd ' + id + ' command ' + cmd);
-                    var osd = $scope.osds[id];
+                    var osd = $scope.osds[index];
                     osd.disabled = true;
                     osd[buttonLabel] = text.spinner;
                     var start = Date.now();
@@ -280,7 +282,7 @@
                         ids: []
                     });
                     var osds = $scope.osds;
-                    OSDService.getSet(r.ids).then(function(newOsds) {
+                    OSDService.getSet(r.ids).then(function(newOsds, index) {
                         osds = _.filter(osds, function(osd) {
                             // delete osds that have been removed from host
                             return newOsds[osd.id] !== undefined;
@@ -288,7 +290,7 @@
                         _.each(newOsds, function(nOsd) {
                             if (osds[nOsd.id] === undefined) {
                                 // add new osds
-                                addUIMetadataToOSDData(nOsd);
+                                addUIMetadataToOSDData(nOsd, index);
                                 osds[nOsd.id] = {};
                             }
                             nOsd.repairDisabled = !nOsd.up;
@@ -319,8 +321,8 @@
                     ids: []
                 });
                 OSDService.getSet(r.ids).then(function(osds) {
-                    _.each(osds, function(osd) {
-                        addUIMetadataToOSDData(osd);
+                    _.each(osds, function(osd, index) {
+                        addUIMetadataToOSDData(osd, index);
                         osd.repairDisabled = !osd.up;
                         osd.editDisabled = !osd.up || !osd['in'];
                         _.extend(r.osds[osd.id], osd);
