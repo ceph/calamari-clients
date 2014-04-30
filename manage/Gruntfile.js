@@ -477,7 +477,7 @@ module.exports = function (grunt) {
   grunt.registerTask('saveRevision', function() {
     grunt.event.once('git-describe', function(rev) {
       grunt.log.writeln('Git Revision: ' + rev);
-      grunt.file.write('app/scripts/git.js', '/* jshint -W015 */\nangular.module(\'manageApp\').run(function() { \'use strict\';\nwindow.inktank = { commit: \'' + rev + '\'}; });');
+      grunt.file.write('app/scripts/git.js', '/* global define */ (function() { \'use strict\'; define([\'angular\'], function() { var runBlock = function() { window.inktank = { commit: \'' + rev + '\' }; }; return [runBlock]; }); })();');
     });
     grunt.task.run('git-describe');
   });
