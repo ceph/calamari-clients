@@ -1,0 +1,25 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" ng-show="title">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                 <h4 class="modal-title" ng-bind="title"></h4>
+
+            </div>
+            <div class="modal-body">
+                <p>&copy; 2013-2014 Inktank Storage, Inc.</p>
+                <p class="text-muted">Brought to you by Dan, Gary, Gregory, Ian, JohnS, JohnW, Neil, Noah, Sandon, and
+                    Yan</p>
+                 <h4>Versions</h4>
+
+                <ul>
+                    <li>Calamari-Server: {{version.calamariAPI}}</li>
+                    <li>Calamari-Client: {{version.client}}</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-primary" ng-click="$hide()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

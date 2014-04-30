@@ -3,7 +3,7 @@
     'use strict';
     define(['lodash'], function() {
 
-        var UserDropDownController = function($location, $scope, ClusterResolver, ClusterService, UserService, config) {
+        var UserDropDownController = function($location, $scope, ClusterResolver, ClusterService, UserService, config, $modal, $http) {
             ClusterResolver.then(function() {
                 if (ClusterService.clusterId === null) {
                     $location.path(config.getFirstViewPath());
@@ -19,6 +19,26 @@
                         }, {
                             divider: true
                         }, {
+                            'text': '<i class="fa fa-fw fa-info-circle"></i> About Calamari',
+                            'click': function($event) {
+                                $event.preventDefault();
+                                $event.stopPropagation();
+                                var modal = $modal({
+                                    title: '<i class="fa fa-lg fa-info-circle"></i> About Calamari',
+                                    html: true,
+                                    template: 'views/about-modal.html'
+                                });
+                                modal.$scope.version = {
+                                    calamariAPI: '1',
+                                    client: window.inktank.commit
+                                };
+                                $http.get('/api/v2/info').then(function(resp) {
+                                    if (resp.data.version) {
+                                        modal.$scope.version.calamariAPI = resp.data.version;
+                                    }
+                                });
+                            }
+                        }, {
                             'text': '<i class="fa fa-fw fa-power-off"></i> Logout',
                             'click': function($event) {
                                 $event.preventDefault();
@@ -32,6 +52,6 @@
                 });
             });
         };
-        return ['$location', '$scope', 'ClusterResolver', 'ClusterService', 'UserService', 'ConfigurationService', UserDropDownController];
+        return ['$location', '$scope', 'ClusterResolver', 'ClusterService', 'UserService', 'ConfigurationService', '$modal', '$http', UserDropDownController];
     });
 })();
