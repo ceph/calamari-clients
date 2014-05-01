@@ -5,7 +5,7 @@
     define(['lodash', 'helpers/grain-helpers'], function(_, grainHelpers) {
 
 
-        function makeFunctions($scope, $rootScope, $log, $timeout, ServerService, KeyService, $modal) {
+        function makeFunctions($q, $scope, $rootScope, $log, $timeout, ServerService, KeyService, $modal) {
             function normalizeMinions(minions) {
                 var o;
                 return _.reduce(_.sortBy(minions, function(m) {
@@ -146,30 +146,35 @@
 
             function detailView(id) {
                 // TODO need a special path for the calamari server itself using /grains
-                return ServerService.getGrains(id).then(function(data) {
-                    /* jshint camelcase: false */
-                    data.cpu_flags = grainHelpers.formatCpuFlags(data.cpu_flags);
-                    data.ipv4 = grainHelpers.formatIPAddresses(data.ipv4);
-                    data.ipv6 = grainHelpers.formatIPAddresses(data.ipv6);
-                    data.ip_interfaces = grainHelpers.formatInterfaces(data.ip_interfaces);
-                    return _.map([
-                            'lsb_distrib_description',
-                            'osarch',
-                            'kernelrelease',
-                            'saltversion',
-                            'cpu_model',
-                            'num_cpus',
-                            'cpu_flags',
-                            'mem_total',
-                            'ip_interfaces',
-                            'ipv4',
-                            'ipv6'
-                    ], function(key) {
-                        return {
-                            key: key,
-                            value: data[key] || 'Unknown'
-                        };
-                    });
+                var promises = [ServerService.getGrains(id), ServerService.get(id)];
+                return $q.all(promises).then(function(results) {
+                    return (function(data) {
+                        /* jshint camelcase: false */
+                        data.cpu_flags = grainHelpers.formatCpuFlags(data.cpu_flags);
+                        data.ipv4 = grainHelpers.formatIPAddresses(data.ipv4);
+                        data.ipv6 = grainHelpers.formatIPAddresses(data.ipv6);
+                        data.ip_interfaces = grainHelpers.formatInterfaces(data.ip_interfaces);
+                        data.ceph_version = results[1].ceph_version;
+                        return _.map([
+                                'ceph_version',
+                                'lsb_distrib_description',
+                                'osarch',
+                                'kernelrelease',
+                                'saltversion',
+                                'cpu_model',
+                                'num_cpus',
+                                'cpu_flags',
+                                'mem_total',
+                                'ip_interfaces',
+                                'ipv4',
+                                'ipv6'
+                        ], function(key) {
+                            return {
+                                key: key,
+                                value: data[key] || 'Unknown'
+                            };
+                        });
+                    })(results[0]);
                 });
             }
             /* servers --- end */

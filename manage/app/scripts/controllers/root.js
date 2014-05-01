@@ -26,7 +26,7 @@
 
             $scope.clusterName = ClusterService.clusterModel.name;
 
-            var server = serverHelpers.makeFunctions($scope, $rootScope, $log, $timeout, ServerService, KeyService, $modal);
+            var server = serverHelpers.makeFunctions($q, $scope, $rootScope, $log, $timeout, ServerService, KeyService, $modal);
             $scope.acceptMinion = server.acceptMinion;
             $scope.detailView = function(id) {
                 var modal = $modal({
