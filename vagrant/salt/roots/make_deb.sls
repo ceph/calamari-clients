@@ -12,7 +12,7 @@ build_calamari_clients:
 
 copy_calamari_clients:
   cmd.run:
-    - name: cp calamari-clients*.deb /git/
+    - name: cp calamari-clients*.deb /git/builds/wheezy
     - cwd: /home/vagrant
     - require:
       - cmd: build_calamari_clients

@@ -8,7 +8,7 @@ build_calamari_clients:
 
 copy_calamari_clients:
   cmd.run:
-    - name: cp rpmbuild/RPMS/x86_64/calamari-clients*.rpm /git/
+    - name: cp rpmbuild/RPMS/x86_64/calamari-clients*.rpm /git/builds/centos
     - cwd: /home/vagrant
     - require:
       - cmd: build_calamari_clients
