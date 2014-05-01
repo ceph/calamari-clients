@@ -254,6 +254,9 @@ $bc-item-count: 4;
     color: $itlightgray;
     cursor: pointer;
 }
+.health .badge {
+    cursor: pointer;
+}
 .bc-entry:hover {
     @include background(linear-gradient(top left, $itdarkgray, lighten($itgray, 30%)));
 }
