@@ -133,6 +133,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                 closeWith: []
             });
             this.error(msg);
+            this.error = this.warning = _.identity;
         },
         parserError: function(msg, xhr) {
             msg = _.extend(msg, {
