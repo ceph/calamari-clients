@@ -12,11 +12,11 @@ build_calamari_clients:
 
 copy_calamari_clients:
   cmd.run:
-    {%- if grains['os'] == 'Ubuntu' -%}
+    {% if grains['os'] == 'Ubuntu' -%}
     - name: cp calamari-clients*.deb /git/builds/precise
-    {%- else -%}
+    {% else -%}
     - name: cp calamari-clients*.deb /git/builds/wheezy
-    {%- endif -%}
+    {% endif -%}
     - cwd: /home/vagrant
     - require:
       - cmd: build_calamari_clients
