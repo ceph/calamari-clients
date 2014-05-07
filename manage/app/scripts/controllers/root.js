@@ -67,7 +67,7 @@
                         });
                     }, timeout);
                 }, modalHelpers.makeOnError($modal({
-                    show: true,
+                    show: false,
                     html: true,
                     template: 'views/custom-modal.html',
                     backdrop: 'static'
