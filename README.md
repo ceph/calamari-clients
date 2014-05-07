@@ -8,7 +8,6 @@ The concept behind building the calamari UI this way was 2 fold:
   1. Each module can be updated independently of the others; this has advantages in maintainance and allows the possibility of swapping in completely re-written components without disturbing other parts of the UI, including using different versions of component libraries.
   2. This enforces a certain level of discipline on the front and backend components, their contract is the JSON REST API. The backend should not care what the frontend is implemented in, this allows flexibility when adding more clients like Mobile Native.
 
-The modules contained in this repo are:
 
 Assumptions
 -----------
@@ -20,6 +19,10 @@ Assumptions
   * On the backbone side this requires the use of _.template and the <%- %> token replacement method.
   * On the Angular side, we automatically include angular-sanitize which does some escaping by default but mostly just **try to avoid using ng-bind-html**, preferring ng-bind wherever possible.
 
+---------------------------------------------------------
+
+MODULES
+=======
 
 dashboard
 ---------
