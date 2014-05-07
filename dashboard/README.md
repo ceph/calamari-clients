@@ -67,7 +67,7 @@ In cases where large collections needed to be retrieved, the initial event to re
 This approach has the advantage of centralizing the polling for the dashboard in a single place and decouples the widgets from their data source. It also allows us to handle global updates to cluster ids in a few places rather than many which can lead to cascading event updates.
 
 ###Request Tracker
-Tracking long running tasks and notifications. The Calamari clients use indexdb to share outstand request ids for the purposes of posting notifications to the UI when something of interest has occurred, like the completion of a long running task.
+Tracking long running tasks and notifications. The Calamari clients use indexdb to share outstanding request ids for the purposes of posting notifications to the UI when something of interest has occurred, like the completion of a long running task.
 
 ## JS Libraries and their usage with clients
 1. BackboneJS & MarionetteJS - Views, Models, Collections and Memory Management
