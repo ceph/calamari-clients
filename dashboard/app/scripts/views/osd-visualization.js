@@ -609,41 +609,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             return c.animate(aFn);
         },
-        simulateUsedChanges: function() {
-            this.removePulse();
-            var maxRed = 2;
-            this.collection.each(function(m) {
-                var up = true;
-                var _in = Math.random();
-                _in = _in < 0.95;
-                if (!_in && (Math.random() > 0.6) && maxRed > 0) {
-                    maxRed -= 1;
-                    up = false;
-                    //console.log(m.id + ' setting to down');
-                } else {
-                    if (Math.random() > 0.6) {
-                        up = false;
-                    }
-                }
-                m.set({
-                    'up': up ? 1 : 0,
-                    'in': _in ? 1 : 0
-                });
-            });
-            this.App.vent.trigger('updateTotals');
-            this.App.vent.trigger('status:healthwarn');
-        },
-        resetChanges: function() {
-            this.removePulse();
-            this.collection.each(function(m) {
-                m.set({
-                    'up': 1,
-                    'in': 1
-                });
-            });
-            this.App.vent.trigger('updateTotals');
-            this.App.vent.trigger('status:healthok');
-        },
         startSimulation: function() {
             var self = this;
             this.timer = setTimeout(function() {
@@ -698,34 +663,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 vent.trigger('viz:render');
             });
             return p;
-        },
-        keyHandler: function(evt) {
-            evt.preventDefault();
-            if (!evt.keyCode) {
-                return;
-            }
-            var keyCode = evt.keyCode;
-            if (keyCode === 27) /* Escape */ {
-                this.App.vent.trigger('escapekey');
-            }
-            if (keyCode === 82) /* r */ {
-                this.resetChanges();
-                return;
-            }
-            if (keyCode === 85) /* u */ {
-                this.simulateUsedChanges();
-                return;
-            }
-            if (keyCode === 32) /* space */ {
-                var $spinner = $('.fa-spinner');
-                if (this.timer === null) {
-                    this.startSimulation();
-                    $spinner.closest('i').addClass('.fa-spin').show();
-                } else {
-                    this.stopSimulation();
-                    $spinner.closest('i').removeClass('.fa-spin').hide();
-                }
-            }
         },
         removePulse: function() {
             if (this.pulseCircle) {
