@@ -18,7 +18,7 @@ The 3 main events at the global level are
 
 1. app:fullscreen -> transition to workbench
 2. app:dashboard -> transition back to dashboard
-3. app.graph -> transition to graphs
+3. app:graph -> transition to graphs
 
 Application contains the handlers which manage leaving and entering the edges of the graph.
 
@@ -84,3 +84,19 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 3. config.json
 4. cluster config
 5. target= param
+
+## List of Possible Events (not exhaustive)
+
+|Event Name|Bus|Description|
+|------|-----|-----------|
+|**app:fullscreen**|App.vent|Switch to Workspace View|
+|**app:dashboard**|App.vent|Switch to Dashboard View|
+|**app:graph**|App.vent|Switch to Graph View|
+|**cluster:update**|App.vent|Cluster Model has changed|
+|**viz:filter**|App.vent|Filters have changed update Workbench|
+|**viz:pulse**|App.vent|Animated Pulse set of OSDs on workbench|
+|**switcher:one**|App.vent|Workbench switching to PG view|
+|**switcher:two**|App.vent|Workbench switching to OSD view|
+|**filter:update**|App.vent|Workbench filters have changed|
+|**app:neterror**|App.vent|Network Error - display notification|
+|**viz:render**|App.vent|OSD Visualization on Workbench has finished animation|
