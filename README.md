@@ -18,6 +18,7 @@ Assumptions
 * **Escape values from the server responses should be made when possible**. This is prevent inline scripting attacks.Sometimes this isn't possible, but every effort is made to avoid this kind of problem.
   * On the backbone side this requires the use of _.template and the <%- %> token replacement method.
   * On the Angular side, we automatically include angular-sanitize which does some escaping by default but mostly just **try to avoid using ng-bind-html**, preferring ng-bind wherever possible.
+  * No effort is expended to support Browsers which are not standards compliant. The Calamari team is too small to fight with IE. The primary supported platforms are Firefox and Chrome/Chromium.
 
 ---------------------------------------------------------
 
