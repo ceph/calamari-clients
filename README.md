@@ -19,6 +19,14 @@ Assumptions
   * On the backbone side this requires the use of _.template and the <%- %> token replacement method.
   * On the Angular side, we automatically include angular-sanitize which does some escaping by default but mostly just **try to avoid using ng-bind-html**, preferring ng-bind wherever possible.
 * **No effort is expended to support Browsers which are not standards compliant.** The Calamari team is too small to fight with IE. The primary supported platforms are Firefox and Chrome/Chromium.
+* **The majority of Calamari Client is written in JavaScript ECMA5, in strict mode, checked with jshint and formatted using JSBeautify**. While other transpiled languages could be supported, the primary developers would prefer that plain old Javascript were the primary implementation language. To support scaling this, we make extensive use of RequireJS and the JS Module pattern.
+* **The project is built primarily using GruntJS and make.**
+* **The JavaScript running the browser assumes it owns the inktank.* namespace.** Because this is primarily used for debugging, it could be changed in the future if this conflicts with another well known project.
+* **The BackboneJS code makes extensive use of ItemView objects.** This could be componentized in the future one the Web Components standards are finalized.
+* **SASS is the CSS pre-processor of Choice.** We make use of Compass, so this is a requirement.
+* **Font Awesome is used liberally around the project.** While it would be possible to add other icon sets, this would require a fair amount of surgery.
+* **I18N/L10N is partially implemented.** The dashboard module has been mostly converted to use Mozilla's L20N project. The other modules need to be modified to support this.
+
 
 ---------------------------------------------------------
 
