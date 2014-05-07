@@ -2,9 +2,7 @@
 
 ##Architecture
 
-State Machine using Events
-
-Dashboard uses a MarionetteJS's Application to encapsulate the state of the dashboard Application.
+Dashboard uses a MarionetteJS's Application Object to encapsulate the state of the dashboard Application.
 
 It provides basic infrastructure like an event bus and request response API, though our current implementation is slightly incorrect as I mistakenly added a additional instances before I understood the full benefits of Application.
 
@@ -100,3 +98,10 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 |**filter:update**|App.vent|Workbench filters have changed|
 |**app:neterror**|App.vent|Network Error - display notification|
 |**viz:render**|App.vent|OSD Visualization on Workbench has finished animation|
+|**get:ready**|App.ReqReq|Is the application ready to run? Returns a JQuery promise.|
+|**get:fqdns**|App.ReqReq|Get valid Fully Qualified Domain Names of hosts in Cluster|
+|**get:osdcounts**|App.ReqReq|Curated OSD counts (down, inup, outup, indown)|
+|**get:pgcounts**|App.ReqReq|OSD Map PG State Counts|
+|**get:cluster**|App.ReqReq|Current Cluster Metadata|
+|**get:hosts**|App.ReqReq|short hostnames for cluster members|
+|**get:osdpgcounts**|App.ReqReq|PG States by OSD|
