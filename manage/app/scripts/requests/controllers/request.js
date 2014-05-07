@@ -28,7 +28,8 @@
                             return {
                                 headline: headline,
                                 state: state,
-                                time: moment(time).fromNow(),
+                                reltime: moment(time).fromNow(),
+                                time: moment(time).format(),
                                 error_message: request.error_message
                             };
                         });
