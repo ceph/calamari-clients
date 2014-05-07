@@ -15,7 +15,7 @@ Assumptions
 * **Modification Operations sent to the backend *may* be asynchronously completed**. The UI treats requests that return a request handler as pending and tracks them to completion or timeout.
   * We use indexDB to share the pending requests between the dashboard and manage modules
 * **Privileged Operations require the use of Cross Site Request Forgery (CRSF) tokens**. This value is unique for the session id. Right now it is of limited protection because we don't enforce HTTPS on the cookies or the session.
-* **Escape values from the server responses should be made when possible**. This is prevent inline scripting attacks.Sometimes this isn't possible, but every effort is made to avoid this kind of problem.
+* **Values from the server responses should be Escaped whenever possible**. This is prevent inline scripting attacks.Sometimes this isn't possible, but every effort is made to avoid this kind of problem.
   * On the backbone side this requires the use of _.template and the <%- %> token replacement method.
   * On the Angular side, we automatically include angular-sanitize which does some escaping by default but mostly just **try to avoid using ng-bind-html**, preferring ng-bind wherever possible.
 * **No effort is expended to support Browsers which are not standards compliant.** The Calamari team is too small to fight with IE. The primary supported platforms are Firefox and Chrome/Chromium.
@@ -29,6 +29,37 @@ Assumptions
 
 
 ---------------------------------------------------------
+
+How to Build Clients
+============
+
+1. install **nodejs**, a recent version like 0.10.
+2. install npm
+3. install `grunt-cli` globally via `npm` and `compass` via `gem` and make sure your system has a recent gnu compatible `make` binary
+4. checkout the code
+```
+	git clone git@github.com:inktankstorage/clients.git
+```
+5. cd into `clients`
+6. to build:
+```
+    make dist
+```
+
+This will build all the modules.
+
+How to Rebuild a module
+============================
+
+Assuming you have already done the previous step, e.g.
+
+    cd dashboard
+    grunt build
+    
+This will create a directory called `dist/` which contains a deployable module which when copied into the correct location on the server will run that part of the app. Due to the tight coupling of the server to the client it is complicated to run the client code without having a server running.
+
+---------------------------------------------------------
+
 
 MODULES
 =======
