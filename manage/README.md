@@ -15,7 +15,6 @@ The manage client polls the backend looking for pending tasks, if the request_id
 Architecture
 ------------
 
-![Route Graph](documentation/routes.png)
 ###Organization
 
 Manage makes extensive use of RequireJS to handle dependencies and code loading. AngularJS apps can quickly become large and hard to manage code bases without some sort of organizational principle. RequireJS provides that infrastructure.
@@ -33,37 +32,55 @@ The Application is partitioned into 4 AngularJS Modules.
 
 The URL map is very flat by design. There are no nested applications within Manage. The 4 areas of manage are Cluster, OSD, Pools and Logs.
 
-#####Controllers
+![Route Graph](documentation/routes.png)
+
+####Controllers
 Controllers are the core of an AngularJS application. Controllers are stateless and are reloaded everytime you navigate to a route in the application. Each controller is responsible for at least 1 view.
 
-#####Routing
+####Routing
 Manage uses a basic ngRoute configuration. We take advantage of the template loading, store some extra keys in the RouteProvider, and make use of resolve, which prevents the page from loading until a promise a been resolved.
 
-#####Configuration Service
+####Configuration Service
 Manage tries to follow DRY principles and uses a basic configuration service to store and retrieve basic global values.
 
-#####Error Service
+####Error Service
 Manage has a special Error service which is used to handle Unauthorized errors globally and display a modal telling the user to log back in.
 
-#####Menu Service
+####Menu Service
 A simple menu service is used to store the state of the submenu which allows navigation to the different submodules like OSD and Pool.
+
+####Helpers
+Some code was moved to helpers to slim down the individual controllers and encourage re-use and possibly enhance testability. There are two styles of helpers in Manage, functions which have no dependencies and functions which need runtime dependencies. We use a limited form of partial application to bind the runtime dependencies when the controller is initialized. Look for a function called `makeFunctions` as your entry point. This returns a handle with the methods you need to use bound using closure to the runtime dependencies.
+
+
 
 Third Party Modules
 --------------------
 
-* Restangular
-* Angular Strap
+* [Restangular](https://github.com/mgonto/restangular) is our glue to the REST API. It has an expressive API for interfacing with RESTful style services.
+* [Angular Strap](http://mgcrea.github.io/angular-strap/) is the UI toolkit we are using currently to wrap Twitter Bootstrap 3 and give us native AngularJS widgets rather than importing jQuery based code.
 
 Structure
 ---------
 
-* Use of promises
-* Two Level Routing
+####Use of promises
+
+AngularJS has a custom version of [Kris Kowals Q](https://github.com/kriskowal/q) promise implementation embedded within it. Promises are  a very clean way of dealing with Asynchronous behavior in JavaScript. Promises help you with the [callback pyramid of doom](http://tritarget.org/blog/2012/11/28/the-pyramid-of-doom-a-javascript-style-trap/).
+
+The other thing that's useful about promises is their immutability. Once a promise is complete, you can continue to complete against it as the result will never change. This is a very useful pattern for delaying operations until another component has finished a longer running task or initialized.
+
+Promises are also very useful when you want to wait on a group of tasks to complete; for example network requests. They can also help with error handling in callbacks, which is often a messy and very frustrating affair which can be dealt with using a single handler if you use promises. Promises are so useful that they have been added to the ES6 spec and have already begun shipping in browsers like Chrome/Chromium.
+
+####Two Level Routing
+
+The manage app tries to maintain a policy of no deeper than two levels of routing URL. This is partially to not overload the ngRouter implementation and partially because it makes it easier to understand the structure. If more deeply nested or sophisticated application functionality is required, one would have to look at incoporating something like [AngularUIRouter](https://github.com/angular-ui/ui-router), which uses a state machine approach for building large Single Page Apps.
 
 Start Up Issues
 ---------------
-* Use of promises to avoid premature routing
+####Use of promises to avoid premature routing
+The ClusterService is a special case within the Manage Module. It has a special call to an initialize() function that gets invoked as the first thing when bringing up the module. This initializes the cluster metadata using the first cluster returned by Calamari API. Other services within the APIModule use composition to depend on the ClusterService, therefore it is important that it runs to completion first before anything else.
 
+We achieve this by returning a promise from initialize, which is only completed once the API call has successfully completed. ngRouter is designed to not allow navigation to pages within the app unless the promise returns as resolved.
 
 Animation
 ---------
