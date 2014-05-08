@@ -87,6 +87,7 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 1. RequireJS loads dependencies for code via main.js
 2. App.js requests dependencies for application
 3. App.js parses config.json
+4. Initialize Views and Subsystems
 4. App.js requests cluster metadata defaulting to first cluster returned in list
 5. target= param specifies a default view to open
 
