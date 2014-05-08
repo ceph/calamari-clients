@@ -22,7 +22,7 @@ Application contains the handlers which manage leaving and entering the edges of
 
 
 ## Overall Project Structure
-All the modules within client are bootstrapped using Yeoman. This leads to very uniform project directory structures, which reduces congnitive load on developers who are familiar with the basic project layout:
+All the modules within client are bootstrapped using [Yeoman](http://yeoman.io/). This leads to very uniform project directory structures, which reduces congnitive load on developers who are familiar with the basic project layout:
 
 ###Top Level
  * **app/** - root of code and assets directory
@@ -41,6 +41,7 @@ All the modules within client are bootstrapped using Yeoman. This leads to very 
  * **scripts/views** - Backbone and Marionette View code
  * **scripts/helpers** - utility code
  * **scripts/locales** - Mozilla [L20N](http://l20n.org) config files
+ * **scripts/templates** - JavaScript Templates ([JST](http://ricostacruz.com/backbone-patterns/#jst_templates)), using _.template - safer text replacement than concatenating strings
  
  * **bower_components/** - third party code, pristine via `bower`
  * **images/** - images for project, e.g. logos
@@ -50,11 +51,11 @@ All the modules within client are bootstrapped using Yeoman. This leads to very 
  * **styles/partials** - scss files broken down roughly by sub-module, included via _base.scss
 
 ##Structural Components
-###App.js
+###app.js
 #####Responsibilities:
 Startup and initialization of all views in the system. App.js is responsible for configuring the application via config.json, starting all the views, setting up the promises which request and wait for the initial JSON data and exporting those objects into the inktank namespace so they may be inspected.
    
-###Application.js
+###application.js
 #####Responsibilities:
 State machine, transitions and view state management. See above. TODO: a large portion of the graph UI code is in this file. This probably belongs in GraphWall.js.
 
@@ -66,14 +67,18 @@ In cases where large collections needed to be retrieved, the initial event to re
 
 This approach has the advantage of centralizing the polling for the dashboard in a single place and decouples the widgets from their data source. It also allows us to handle global updates to cluster ids in a few places rather than many which can lead to cascading event updates.
 
-###Request Tracker
+###tracker.js
+#####Responsibilities:
 Tracking long running tasks and notifications. The Calamari clients use indexdb to share outstanding request ids for the purposes of posting notifications to the UI when something of interest has occurred, like the completion of a long running task.
 
-## JS Libraries and their usage with clients
-1. BackboneJS & MarionetteJS - Views, Models, Collections and Memory Management
-2. RequreJS - code loading and dependency management
-3. Noty - notifications and errors
-4. Dynagraph - Graph plotting support
+## Important JS Libraries and their usage
+
+1. [JQuery](http://jquery.com/), [Underscore.JS](http://underscorejs.org/), [BackboneJS](http://backbonejs.org) & [MarionetteJS](http://marionettejs.com/) v1.2.3 - Views, Models, Collections and Memory Management. Provides the underpinning for the dashboard module.
+2. RequireJS - code loading and dependency management across entire module
+3. Noty - notifications and errors - alerts-view.js
+4. RaphaelJS - OSD visualization
+4. Dynagraph - Graph plotting support - graph-wall.js
+5. Grunt and NPM - for building and optimization
 
 ##Start Up Ordering
 
