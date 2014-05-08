@@ -36,7 +36,7 @@ All the modules within client are bootstrapped using [Yeoman](http://yeoman.io/)
 ###app/
  * **scripts/** - all JavaScript code directly related to project
  * **scripts/vendor** - third party code, sometimes with customizations
- * **scripts/main.js** - RequireJS configuration file
+ * **scripts/main.js** - [RequireJS](http://requirejs.org) configuration file
  * **scripts/collections** - Backbone Collections
  * **scripts/models** - Backbone Models
  * **scripts/routes** - unused
@@ -76,19 +76,19 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 ## Important JS Libraries and their usage
 
 1. [JQuery](http://jquery.com/), [Underscore.JS](http://underscorejs.org/), [BackboneJS](http://backbonejs.org) & [MarionetteJS](http://marionettejs.com/) v1.2.3 - Views, Models, Collections and Memory Management. Provides the underpinning for the dashboard module.
-2. RequireJS - code loading and dependency management across entire module
-3. Noty - notifications and errors - alerts-view.js
-4. RaphaelJS - OSD visualization
-4. Dynagraph - Graph plotting support - graph-wall.js
-5. Grunt and NPM - for building and optimization
+2. [RequireJS](http://requirejs.org) - code loading and dependency management across entire module
+3. [Noty](http://ned.im/noty/) - notifications and errors - alerts-view.js
+4. [RaphaelJS](http://raphaeljs.com/) - OSD visualization
+4. [Dygraphs](http://dygraphs.com/) - Graph plotting support - graph-wall.js
+5. [Grunt](http://gruntjs.com/) and [NPM](http://www.npmjs.org) - for building and optimization
 
 ##Start Up Ordering
 
-1. RequireJS loads dependencies for code
-2. App.js loads dependencies for application
-3. config.json
-4. cluster config
-5. target= param
+1. RequireJS loads dependencies for code via main.js
+2. App.js requests dependencies for application
+3. App.js parses config.json
+4. App.js requests cluster metadata defaulting to first cluster returned in list
+5. target= param specifies a default view to open
 
 ## List of Possible Events (not exhaustive)
 
