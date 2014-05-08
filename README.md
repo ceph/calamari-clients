@@ -26,8 +26,8 @@ Assumptions
 * **SASS is the CSS pre-processor of Choice.** We make use of Compass, so this is a requirement.
 * **Font Awesome is used liberally around the project.** While it would be possible to add other icon sets, this would require a fair amount of work.
 * **I18N/L10N is partially implemented.** The dashboard module has been mostly converted to use Mozilla's L20N project. The other modules need to be modified to support this.
-* We've only built the clients on Unix like systems. We have no support for building on Windows, though patches would be welcomed so long as they're not too intrusive.
-
+* **We've only built the clients on Unix like systems**. We have no support for building on Windows, though patches would be welcomed so long as they're not too intrusive.
+* **We depend on nodejs to build.**
 
 ---------------------------------------------------------
 
