@@ -1,0 +1,30 @@
+digraph G {
+	manage -> root;
+	manage -> osd;
+	manage -> pool;
+	manage -> logs;
+	manage -> first;
+	first -> root;
+	root -> clusterHosts;
+	root -> clusterSettings;
+	root -> clusterBrowser;
+
+	osd -> osdHosts;
+	pool -> poolNew;
+	pool -> poolModify;
+
+    manage [shape=polygon,color="red",sides=4,label="Manage Module"];
+    root [shape=polygon,color="blue",sides=4,label="CONTROLLER root.js\nVIEW root.html\nURL /"];
+    osd [shape=polygon,color="blue", sides=4,label="CONTROLLER osd.js\nVIEW osd.html\nURL /osd"];
+    osdHosts [shape=polygon, sides=4,label="CONTROLLER osd-host.js\nVIEW osd-host.html\nURL /osd/server/<fqdn>"];
+    first [shape=polygon,color="blue",sides=4,label="CONTROLLER first.js\nVIEW first.html\nURL /first"];
+
+	pool [shape=polygon,color="blue", sides=4,label="CONTROLLER pool.js\nVIEW pool.html\nURL /pool"];
+    logs [shape=polygon,color="blue", sides=4,label="CONTROLLER tools.js\nVIEW tools.html\nURL /tools"];
+	
+	poolNew [shape=polygon,color="green", sides=4,label="CONTROLLER pool-new.js\nVIEW pool-new.html\nURL /pool/new"];
+	poolModify [shape=polygon,color="green", sides=4,label="CONTROLLER pool-modify.js\nVIEW pool-modify.html\nURL /pool/modify/<id>"];
+	clusterHosts [shape=polygon,color="green", sides=4,label="Hosts"];
+	clusterSettings [shape=polygon,color="green", sides=4,label="Settings"];
+	clusterBrowser [shape=polygon,color="green", sides=4,label="Browser"];
+}
