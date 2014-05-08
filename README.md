@@ -37,15 +37,9 @@ How to Build Clients
 1. install **nodejs**, a recent version like 0.10.
 2. install **npm**
 3. install `grunt-cli` globally via `npm` and `compass` via `gem` and make sure your system has a recent gnu compatible `make` binary
-4. checkout the code
-```
-	git clone git@github.com:inktankstorage/clients.git
-```
+4. checkout the code `git clone git@github.com:inktankstorage/clients.git`
 5. cd into `clients`
-6. to build:
-```
-    make dist
-```
+6. to build: `make dist`
 
 This will build all the modules.
 
