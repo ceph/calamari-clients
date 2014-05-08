@@ -14,6 +14,8 @@ The manage client polls the backend looking for pending tasks, if the request_id
 
 Architecture
 ------------
+
+![Route Graph](documentation/routes.png)
 ###Organization
 
 Manage makes extensive use of RequireJS to handle dependencies and code loading. AngularJS apps can quickly become large and hard to manage code bases without some sort of organizational principle. RequireJS provides that infrastructure.
