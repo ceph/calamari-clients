@@ -1,0 +1,18 @@
+digraph G {
+	start -> dashboard [ label="default" ];
+	start -> workbench [ label="target=workbench" ];
+	start -> graphwall [ label="target=graph" ];
+
+	dashboard -> graphwall [ label="event=app:graph"];
+	dashboard -> workbench [ label="event=app:fullscreen"];
+
+	workbench -> graphwall [ label="event=app:graph"];
+	workbench -> dashboard [ label="event=app:dashboard"];
+
+	graphwall -> workbench [ label="event=app:fullscreen"];
+	graphwall -> dashboard [ label="event=app:dashboard"];
+	start [shape="circle",color="red"];
+	dashboard [shape="circle",color="darkgreen"];
+	graphwall [shape="circle",color="blue"];
+	workbench [shape="circle",color="darkorange"];
+}

@@ -20,6 +20,8 @@ The 3 main events at the global level are
 
 Application contains the handlers which manage leaving and entering the edges of the graph.
 
+![State Graph](documentation/states.png)
+
 
 ## Overall Project Structure
 All the modules within client are bootstrapped using [Yeoman](http://yeoman.io/). This leads to very uniform project directory structures, which reduces congnitive load on developers who are familiar with the basic project layout:
