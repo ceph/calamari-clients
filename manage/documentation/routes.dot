@@ -16,7 +16,7 @@ digraph G {
     manage [shape=polygon,color="red",sides=4,label="Manage Module"];
     root [shape=polygon,color="blue",sides=4,label="CONTROLLER root.js\nVIEW root.html\nURL /"];
     osd [shape=polygon,color="blue", sides=4,label="CONTROLLER osd.js\nVIEW osd.html\nURL /osd"];
-    osdHosts [shape=polygon, sides=4,label="CONTROLLER osd-host.js\nVIEW osd-host.html\nURL /osd/server/<fqdn>"];
+    osdHosts [shape=polygon,color="green"sides=4,label="CONTROLLER osd-host.js\nVIEW osd-host.html\nURL /osd/server/<fqdn>"];
     first [shape=polygon,color="blue",sides=4,label="CONTROLLER first.js\nVIEW first.html\nURL /first"];
 
 	pool [shape=polygon,color="blue", sides=4,label="CONTROLLER pool.js\nVIEW pool.html\nURL /pool"];
