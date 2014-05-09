@@ -9,6 +9,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
             'keyup input[name="username"],input[name="password"]': 'loginToggle'
         },
         ui: {},
+        iconTemplate: _.template('<i class="<%- iconClazz %>" icon-large"></i>'),
         initialize: function() {
             _.bindAll(this, 'loginHandler', 'loginToggle', 'toJSON', 'disableSubmit', 'enableSubmit', 'showErrors', 'hideErrors');
         },
@@ -52,7 +53,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
                     statusCode: {
                         200: function(resp) {
                             // Normal Path
-                            window.location = resp.next ?  resp.next : self.nextUrl;
+                            window.location = resp.next ? resp.next : self.nextUrl;
                         },
                         401: function(jqxhr) {
                             // Normal Error
@@ -77,10 +78,14 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
             errors.text(msg).css('visibility', 'visible').hide().fadeIn();
         },
         disableSubmit: function(iconClazz) {
-            this.ui.submit.attr('disabled', 'disabled').addClass('disabled').html('<i class="' + iconClazz + ' icon-large"></i>');
+            this.ui.submit.attr('disabled', 'disabled').addClass('disabled').html(this.iconTemplate({
+                iconClazz: iconClazz
+            }));
         },
         enableSubmit: function(iconClazz) {
-            this.ui.submit.removeAttr('disabled').removeClass('disabled').html('<i class="' + iconClazz + ' icon-large"></i>');
+            this.ui.submit.removeAttr('disabled').removeClass('disabled').html(this.iconTemplate({
+                iconClazz: iconClazz
+            }));
         },
         loginToggle: function() {
             var username = this.ui.username,
