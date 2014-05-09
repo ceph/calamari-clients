@@ -17,7 +17,7 @@ Architecture
 
 ###Organization
 
-Manage makes extensive use of RequireJS to handle dependencies and code loading. AngularJS apps can quickly become large and hard to manage code bases without some sort of organizational principle. RequireJS provides that infrastructure.
+Manage makes extensive use of RequireJS to handle dependencies and code loading. AngularJS apps can quickly become large and hard to manage code bases without some sort of organizational principle. RequireJS provides that infrastructure. The approach is broadly based on a talk Thomas Burleson gave at [ngconf 2014](https://www.youtube.com/watch?v=4yulGISBF8w). It inverts the normal relationship of modules to angular, where the module you create actually has no direct knowledge of AngularJS, just it's dependencies.
 
 AngularJS uses a dependency injection model for configuring components. RequireJS makes defining those services a uniform and allows the safe side loading of additional JS libraries which Angular does not need to know about on a file by file basis.
 
