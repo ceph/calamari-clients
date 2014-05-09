@@ -19,7 +19,7 @@ Architecture
 
 Manage makes extensive use of RequireJS to handle dependencies and code loading. AngularJS apps can quickly become large and hard to manage code bases without some sort of organizational principle. RequireJS provides that infrastructure. The approach is broadly based on a talk Thomas Burleson gave at [ngconf 2014](https://www.youtube.com/watch?v=4yulGISBF8w). It inverts the normal relationship of modules to angular, where the module you create actually has no direct knowledge of AngularJS, just it's dependencies.
 
-AngularJS uses a dependency injection model for configuring components. RequireJS makes defining those services a uniform and allows the safe side loading of additional JS libraries which Angular does not need to know about on a file by file basis.
+AngularJS uses a dependency injection model for configuring components. RequireJS makes defining those services uniform and allows the safe side loading of additional JS libraries which Angular does not need to know about on a file by file basis.
 
 The Application is partitioned into 4 AngularJS Modules. 
 
@@ -63,7 +63,7 @@ Third Party Modules
 Structure
 ---------
 
-####Use of promises
+###Use of promises
 
 AngularJS has a custom version of [Kris Kowals Q](https://github.com/kriskowal/q) promise implementation embedded within it. Promises are  a very clean way of dealing with Asynchronous behavior in JavaScript. Promises help you with the [callback pyramid of doom](http://tritarget.org/blog/2012/11/28/the-pyramid-of-doom-a-javascript-style-trap/).
 
@@ -71,27 +71,37 @@ The other thing that's useful about promises is their immutability. Once a promi
 
 Promises are also very useful when you want to wait on a group of tasks to complete; for example network requests. They can also help with error handling in callbacks, which is often a messy and very frustrating affair which can be dealt with using a single handler if you use promises. Promises are so useful that they have been added to the ES6 spec and have already begun shipping in browsers like Chrome/Chromium.
 
-####Two Level Routing
+###Two Level Routing
 
 The manage app tries to maintain a policy of no deeper than two levels of routing URL. This is partially to not overload the ngRouter implementation and partially because it makes it easier to understand the structure. If more deeply nested or sophisticated application functionality is required, one would have to look at incoporating something like [AngularUIRouter](https://github.com/angular-ui/ui-router), which uses a state machine approach for building large Single Page Apps.
 
 Start Up Issues
 ---------------
-####Use of promises to avoid premature routing
+###Use of promises to avoid premature routing
 The ClusterService is a special case within the Manage Module. It has a special call to an initialize() function that gets invoked as the first thing when bringing up the module. This initializes the cluster metadata using the first cluster returned by Calamari API. Other services within the APIModule use composition to depend on the ClusterService, therefore it is important that it runs to completion first before anything else.
 
 We achieve this by returning a promise from initialize, which is only completed once the API call has successfully completed. ngRouter is designed to not allow navigation to pages within the app unless the promise returns as resolved.
 
 Animation
 ---------
-* Basic operation of ng-animate and limitations
+Manage takes light advantage of ngAnimate. We've used the CSS animations from angular-motion and we apply simple and quick transitions when moving in and out of views. Since ngAnimate is primarily using CSS based animations, there are limits to how quickly you can replay or schedule animations.
 
+If you add animations to an element more quickly than 10ms they may be skipped. It's important to give ngAnimate time to do it's work. This may require delaying the display of views for short periods while the framework catches up. There are places in the UI, where we deliberately delay the next UI update in order to give the animation time to run.
 
 Future Work
 -----------
-* Add Postal.JS to get an event bus
+###Adding a more robust event bus
+While Angular ships with a simple event broadcasting facility, it is somewhat of a hammer and may adversely affect the performance of the framework. A recent post on Hacker News has a very interesting an usable approach using [Postal.js](http://jonathancreamer.com/an-angular-event-bus-with-postal-js/)
 
 Open Issues
 -----------
-* Keeping Menus in sync with Dashboard
-* Keeping Request Tracker in sync with Dashboard
+###Duplicate Components
+Because there are 2 different tech stacks involved, there is sadly a small but crucial amount of UI and code duplication. There may be an opportunity to just extract this out into it's own component and have it truly be shared between Manage and Dashboard, but at this time they are implemented as native components in Backbone and AngularJS 
+
+* Top Menu Navigation
+* Drop Down Menu
+* Request Tracking - UI & Tracker
+
+
+
+
