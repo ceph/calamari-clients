@@ -99,7 +99,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
         // Attach our config object to app so all components have access to it.
         App.Config = config;
 
-        
+
         userMenu = new UserDropDown({
             el: $('.usermenu'),
             App: App
@@ -142,7 +142,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
         });
         gaugesLayout.d.show(poolsView);
 
- 
+
         // Middle Row of Dashboard
         var mapsLayout = new views.GaugesLayout({
             el: '.maps'
