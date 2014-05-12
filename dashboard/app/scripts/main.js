@@ -1,7 +1,18 @@
 /*global require */
+// This file is used to configure RequireJS. By convention it's the first
+// file loaded by require after it has started. It contains a list of key 
+// value pairs to javascript files and their relative paths in the project.
+// It is also responsible for invoking app.js, also by convention.
+//
+// This file is consumed by a grunt task which invokes r.js which uses dependency
+// resolution to only include the files required and also concatenate all
+// the JS files into a single main.js which
+// avoids round trips and speeds up loading.
+//
 'use strict';
 
 require.config({
+    // This contains specific dependency graphs for various components.
     shim: {
         bootstrap: {
             deps: ['jquery'],
@@ -43,6 +54,7 @@ require.config({
             exports: 'L20n'
         }
     },
+    // General paths to components.
     paths: {
         kinetic: 'vendor/kinetic-v4.7.3',
         application: 'application',
@@ -81,5 +93,5 @@ require.config({
         'Backbone.Modal': 'vendor/backbone.modal'
     }
 });
-
+// App.js invocation is done here.
 require(['./app'], function() {});

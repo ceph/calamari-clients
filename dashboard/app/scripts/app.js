@@ -1,10 +1,12 @@
 /*global require, Uri */
 'use strict';
 require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'tracker', 'jsuri', 'marionette', 'bootstrap', 'notytheme', 'notyGrowltheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, UserRequestTracker) {
+    // Process Page URL - we look for parameters like target to set initial SPA state.
     var uri = new Uri(document.URL);
     var target = uri.getQueryParamValue('target');
     var initial = 'dashmode';
     var anchor = 'dashboard';
+    // TODO This needs to be moved to config.json
     log.setLevel(log.levels.DEBUG);
     if (target) {
         console.log(target);
@@ -19,7 +21,19 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
         uri.setAnchor(anchor);
         history.pushState('', 'Dashboard', uri.toString());
     }
-    /* Default Configuration */
+
+    // Default Dashboard Configuration. This can be overriden by `config.json`
+    //
+    // |Key|Description|
+    // |---|-----|
+    // |**graphite-host**|Graphite Host URL|
+    // |**api-request-timeout-ms**|How to long to wait before considering an API request Timed-out in Milliseconds|
+    // |**long-polling-interval**|How frequently to request updates in Milliseconds|
+    // |**disable-network-checks**|Used for development. Ignores stale timestamps on the server errors.|
+    // |**graphite-request-delay-ms**|Duration between graphite requests to prevent overloading graphite per graph in Milliseconds|
+    // |**enable-demo-mode**|Demo mode flag. *Reserved for future use*|
+    // |**offline**|Used for offline demos. *Reserved for future use*|
+    // |**delta-osd-api**|Used enabling delta OSD API. *Reserved for future use*|
     var config = {
         'offline': false,
         'delta-osd-api': false,
