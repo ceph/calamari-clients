@@ -67,7 +67,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                     text: request.headline
                 }),
                 type: 'success',
-                timeout: 10000,
+                timeout: 10000
             };
             noty(_.extend({}, this.commonNotyNotification, msg));
         },
@@ -76,7 +76,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                 text: this.growlTemplate({
                     text: request.headline
                 }),
-                type: 'error',
+                type: 'error'
             };
             noty(_.extend({}, this.commonNotyNotification, msg));
         },

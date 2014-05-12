@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'marionette'], function($, _, Backbo
     var NotificationBellView = Backbone.Marionette.ItemView.extend({
         className: '',
         events: {
-            'click': 'sendEvent',
+            'click': 'sendEvent'
         },
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
