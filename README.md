@@ -15,7 +15,7 @@ Assumptions
 * **Modification Operations sent to the backend *may* be asynchronously completed**. The UI treats requests that return a request handler as pending and tracks them to completion or timeout.
   * We use indexDB to share the pending requests between the dashboard and manage modules
 * **Privileged Operations require the use of Cross Site Request Forgery (CRSF) tokens**. This value is unique for the session id. Right now it is of limited protection because we don't enforce HTTPS on the cookies or the session.
-* **Values from the server responses should be Escaped whenever possible**. This is prevent inline scripting attacks.Sometimes this isn't possible, but every effort is made to avoid this kind of problem.
+* **Values from the server responses should be Escaped whenever possible**. This is to prevent inline scripting attacks. Sometimes this isn't possible, but every effort is made to avoid this kind of problem.
   * On the backbone side this requires the use of _.template and the <%- %> token replacement method.
   * On the Angular side, we automatically include angular-sanitize which does some escaping by default but mostly just **try to avoid using ng-bind-html**, preferring ng-bind wherever possible.
 * **No effort is expended to support Browsers which are not standards compliant.** The Calamari team is too small to fight with IE. The primary supported platforms are Firefox and Chrome/Chromium.
