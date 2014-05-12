@@ -113,3 +113,7 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 |**get:cluster**|App.ReqReq|Current Cluster Metadata|
 |**get:hosts**|App.ReqReq|short hostnames for cluster members|
 |**get:osdpgcounts**|App.ReqReq|PG States by OSD|
+
+##Annotated Source Code
+
+Run `grunt docs` to generate annotated source code using Docco in the docs directory.
