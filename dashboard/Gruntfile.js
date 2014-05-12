@@ -284,13 +284,12 @@ module.exports = function (grunt) {
             }
         },
         symlink: {
+            options: {
+                overwrite: true,
+            },
             fonts: {
-                target: 'bower_components/font-awesome/fonts',
-                link: '<%= yeoman.app %>/fonts',
-                options: {
-                    overwrite: true,
-                    force: true
-                }
+                src: '<%= yeoman.app %>/bower_components/font-awesome/fonts',
+                dest: '<%= yeoman.app %>/fonts',
             }
         },
         'git-describe': {
@@ -299,7 +298,21 @@ module.exports = function (grunt) {
             },
             'git.js': {
             }
-        }
+        },
+        uglify: {
+            options: {
+                mangle: true,
+                beautify: false
+            }
+        },
+        license: {
+             options: {
+                 // Task-specific options go here.
+             },
+             dist: {
+                 // Target-specific file lists and/or options go here.
+             },
+        },
     });
 
     grunt.renameTask('regarde', 'watch');

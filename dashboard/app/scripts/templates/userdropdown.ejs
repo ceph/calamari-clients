@@ -1,7 +1,12 @@
 <li class='dropdown'>
-    <a class="admin-menu dropdown-toggle" role="button" data-toggle="dropdown" href="#"><i class='fa fa-user fa-lg fa-fw'></i> <%- username %> <i class='fa fa-caret-down fa-lg fa-fw'></i></a>
+    <a class="admin-menu dropdown-toggle" role="button" data-toggle="dropdown" href="#"><i class='fa fa-bars fa-lg fa-fw'></i></a>
     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-        <li role='presentation'><a role='menuitem' class='settings' tabindex="-1" href="#"><span class='ddicon'><i class='<%- settingsIcon %>'></i></span><%- settingsLabel %></a></li>
+        <li role="presentation">
+            <i style="margin: 7px;" class="fa fa-user fa-lg fa-2x fa-fw"></i> <%- username %></i>
+        </li>
+        <li role="presentation" style="background-color: darkgray;" class="divider"></li>
+        <li style="display:none;" role='presentation'><a role='menuitem' class='settings' tabindex="-1" href="#"><span class='ddicon'><i class='<%- settingsIcon %>'></i></span><%- settingsLabel %></a></li>
+        <li role='presentation'><a role='menuitem' class='about' tabindex="-1" href="#"><span class='ddicon'><i class='<%- aboutIcon %>'></i></span><%- aboutLabel %></a></li>
         <li role='presentation'><a role='menuitem' class='logout' tabindex="-1" href="#"><span class='ddicon'><i class='<%- logoutIcon %>'></i></span><%- logoutLabel %></a></li>
     </ul>
 </li>

@@ -31,7 +31,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
         goToGraph: function(evt) {
             evt.stopPropagation();
             evt.preventDefault();
-            this.App.vent.trigger('app:graph', this.model.get('host'));
+            this.App.vent.trigger('app:graph', this.model.get('fqdn'));
         },
         set: function(attr) {
             this.model.clear({

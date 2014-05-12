@@ -34,3 +34,9 @@ grunt-cli:
         - name: npm install -g grunt-cli
     require:
         - pkg: install_node
+
+compass:
+    cmd.run:
+        - name: gem install compass
+    require:
+        - pkg: build_deps

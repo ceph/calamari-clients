@@ -1,0 +1,41 @@
+<div class="aside" tabindex="-1" role="dialog">
+  <div class="aside-dialog">
+    <div class="aside-content">
+      <div class="aside-header" ng-show="title">
+        <button type="button" class="close" ng-click="_hide()">&times;</button>
+        <i class='fa fa-bell fa-lg'></i> <h4 style='margin-left:10px; display: inline-block' class="aside-title" ng-bind="title"></h4>
+      </div>
+      <div class="aside-body">
+          <table class="table table-condensed">
+              <thead>
+                  <tr>
+                      <th>&nbsp;</th>
+                      <th style="min-width: 23em;">Task</th>
+                      <th>Status</th>
+                      <th style="min-width: 8em;">Updated</th>
+                  </tr>
+              <thead>
+              <tbody>
+                <tr ng-if="empty">
+                    <td style="text-align: center;" colspan=4>No Requests Submitted</td>
+                </tr>
+                <tr ng-repeat="task in tasks">
+                    <td><i ng-class="{
+                            'text-info fa fa-spinner fa-spin': task.state === 'submitted',
+                            'text-success fa fa-check-circle': task.state === 'complete',
+                            'text-warning fa fa-exclamation-circle': task.state === 'error'
+                           }"></i></td>
+                    <td>{{task.headline}}</td>
+                    <td ng-if="task.state === 'error'"><a data-placement="bottom" title="Error Message" data-content="{{task.error_message}}" data-trigger="hover" bs-popover ng-bind="task.state"></a></td>
+                    <td ng-if="task.state !== 'error'" ng-bind="task.state"></td>
+                    <td title="{{task.time}}" ng-bind="task.reltime"></td>
+                </tr>
+              <tbody>
+          </table>
+      </div>
+      <div class="aside-footer">
+        <button type="button" class="btn btn-primary" ng-click="_hide()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

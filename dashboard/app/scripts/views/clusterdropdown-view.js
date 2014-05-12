@@ -19,12 +19,16 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
             this.listenTo(this.collection, 'sync', this.render);
             this.listenTo(this, 'render', this.postRender);
             _.bindAll(this, 'clusterHandler');
+            this.App.ReqRes.setHandler('get:cluster', function() {
+                return _.clone(this.cluster);
+            }.bind(this));
         },
         clusterHandler: function(evt) {
             var $target = $(evt.target);
             var id = $target.attr('data-id');
             this.ui.label.text('Cluster ' + $target.text());
-            this.App.vent.trigger('cluster:update', this.collection.get(id));
+            this.cluster = this.collection.get(id);
+            this.App.vent.trigger('cluster:update', this.cluster);
         },
         postRender: function() {
             var t = this.rowTemplate;
@@ -34,9 +38,9 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
                 markup.push(t(m.toJSON()));
             });
             this.ui.menu.html(markup.join(''));
-            var cluster = this.collection.at(0);
-            this.ui.label.text('Cluster ' + cluster.get('name'));
-            this.App.vent.trigger('cluster:update', cluster);
+            this.cluster = this.collection.first();
+            this.ui.label.text('Cluster ' + this.cluster.get('name'));
+            this.App.vent.trigger('cluster:update', this.cluster);
         },
         fetch: function(options) {
             return this.collection.fetch(options);

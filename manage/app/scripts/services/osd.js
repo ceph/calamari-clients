@@ -1,0 +1,67 @@
+/*global define*/
+define(['lodash'], function(_) {
+    'use strict';
+    var OSDService = function(ClusterService) {
+        var Service = function() {
+            this.restangular = ClusterService;
+        };
+        Service.prototype = _.extend(Service.prototype, {
+            getList: function() {
+                return this.restangular.cluster().getList('osd').then(function(pools) {
+                    return pools;
+                });
+            },
+            getSet: function(ids) {
+                var idargs = _.reduce(ids, function(result, id) {
+                    result.push(id);
+                    return result;
+                }, []);
+                return this.restangular.cluster().getList('osd', {
+                    'id__in[]': idargs
+                }).then(function(pools) {
+                    return pools;
+                });
+            },
+            get: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.cluster().one('osd', id).get().then(function(pool) {
+                    return pool;
+                });
+            },
+            patch: function(id, update) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('osd', id).patch(update);
+            },
+            down: function(id) {
+                return this.patch(id, {
+                    up: false
+                });
+            },
+            out: function(id) {
+                return this.patch(id, {
+                    'in': false
+                });
+            },
+            in : function(id) {
+                return this.patch(id, {
+                    'in': true
+                });
+            },
+            scrub: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('osd', id).all('command').all('scrub').post({});
+            },
+            /* jshint camelcase: false */
+            deep_scrub: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('osd', id).all('command').all('deep_scrub').post({});
+            },
+            repair: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('osd', id).all('command').all('repair').post({});
+            }
+        });
+        return new Service();
+    };
+    return ['ClusterService', OSDService];
+});

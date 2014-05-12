@@ -177,12 +177,12 @@ module.exports = function (grunt) {
       }
     },
     symlink: {
+        options: {
+            overwrite: true
+        },
         font: {
-            target: 'bower_components/font-awesome/font',
-            link: '<%= yeoman.app %>/font',
-            options: {
-                overwrite: true
-            }
+            src: '<%= yeoman.app %>/bower_components/font-awesome/font',
+            dest: '<%= yeoman.app %>/font',
         }
     },
     useminPrepare: {

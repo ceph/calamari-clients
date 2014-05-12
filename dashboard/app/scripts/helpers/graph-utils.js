@@ -3,6 +3,11 @@
 define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbone, JST) {
     'use strict';
 
+    /* Escape FQDN for Graphite */
+    function escapeHostname(hostname) {
+        return hostname.replace(/\./g,'_');
+    }
+
     /*
      * Creates a partial applied function which is pre-bound to the underscore.template
      * to create the target.
@@ -31,14 +36,15 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
         var template = JST[path];
         return function(metrics) {
             // pre-bind the metrics list using partial application
-            return function(hostname, id) {
+            return function(hostname, id, clusterName) {
                 // returns a list of metrics target values as an array
                 // e.g. [ 'servers.mira064.memory.Active' ]
                 return _.map(metrics, function(metric) {
                     return $.trim(template({
                         metric: metric,
-                        hostname: hostname,
-                        id: id
+                        hostname: escapeHostname(hostname),
+                        id: id,
+                        clusterName: clusterName
                     }));
                 });
             };

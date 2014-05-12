@@ -2,9 +2,11 @@
 <workbench "WORKBENCH">
 <graph "GRAPH">
 <dashboard "DASHBOARD">
+<manage "MANAGE">
 <workbenchTitle "OSD Workbench">
 <graphTitle "Charting">
 <dashboardTitle "Dashboard">
+<manageTitle "Management">
 <healthOSDTitle "Health">
 <pleaseContactAdmin "Please contact Administrator">
 <serverErrorMessage """
@@ -56,4 +58,9 @@ you back out. Shift-drag will pan.
 """>
 <Cluster "Cluster">
 <PoolIOPS "Pool IOPS">
-
+<UserRequestViewTitle "Requested Tasks">
+<UserRequestViewColTask "Task">
+<UserRequestViewColStatus "Status">
+<UserRequestViewColUpdated "Updated">
+<UserRequestViewCloseBtn "Close">
+<UserRequestViewError "error">

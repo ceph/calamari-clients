@@ -6,7 +6,7 @@
     "jquery": "~1.9.0",
     "requirejs": "~2.1.5",
     "requirejs-text": "~2.0.5",
-    "backbone-amd": "~1.0.0",
+    "backbone-amd": "~1.1.0",
     "underscore-amd": "~1.4.4",
     "modernizr": "~2.6.2",
     "bean": "~1.0.4",
@@ -23,7 +23,12 @@
     "kineticjs": "~4.7.3",
     "dygraphs": "~1.0.1",
     "react": "~0.8.0",
-    "loglevel": "~0.5.0"
+    "loglevel": "~0.5.0",
+    "jsuri": "~1.2.2",
+    "idbwrapper": "~1.4.1",
+    "q": "1.0.0",
+    "momentjs": "~2.5.1",
+    "Backbone.Modal": "~1.0.0"
   },
   "devDependencies": {}
 }

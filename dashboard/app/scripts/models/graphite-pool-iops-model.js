@@ -5,7 +5,8 @@ define(['underscore', 'models/graphite-model'], function(_, GraphiteModel) {
 
     var GraphitePoolIopsModel = GraphiteModel.extend({
         url: function() {
-            return this.graphiteHost + '/metrics/find?query=ceph.cluster.ceph.pool.*';
+            var name = this.clusterName || 'ceph';
+            return this.graphiteHost + '/metrics/find?query=ceph.cluster.' + name + '.pool.*';
         },
         keys: function() {
             var keys =  _.map(this.attributes, function(v, k) {

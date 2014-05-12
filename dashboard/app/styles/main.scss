@@ -4,6 +4,8 @@
 @import 'vendor/bootstrap-switch';
 //
 @import 'vendor/dan_eden_animate';
+@import 'vendor/backbone.modal';
+@import 'vendor/backbone.modal.theme';
 // font-awesome
 @import 'font-awesome/scss/font-awesome';
 
@@ -12,6 +14,10 @@
 
 // Standard color vars
 @import 'modules/inktank_colors';
+
+
+// fade-animation
+@import 'modules/fade-and-slide';
 
 // Application Specific Styles
 @import 'partials/base';

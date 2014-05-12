@@ -7,8 +7,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         serializeData: function() {
             return {};
         },
-        originX: 0,
-        originY: 0,
         step: 40,
         timer: null,
         pulseTimer: null,
@@ -18,6 +16,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         customSort: false,
         delay: 20000,
         timeout: 3000,
+        readyPromise: null,
         ui: {
             'cardTitle': '.card-title',
             viz: '.viz',
@@ -49,6 +48,32 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'viz:dashboard': 'dashboard',
             'viz:filter': 'filter',
             'viz:pulse': 'pulse'
+        },
+        /* 
+         * #ready is an idempotent function that allows objects that need services
+         * from this object to wait until the object is ready.
+         * It uses a promise which is set up when this object is created that is
+         * resolved once the first successful load of the collection is completed.
+         * Future calls against this promise will always return true.
+         *
+         * In the case of network failure, other UI elements should compensate
+         * by reporting errors.
+         *
+         * You use this call by doing a RequestResponse call against Wreqr for
+         * 'get:ready' and receiving a promise object which you then wrap the code
+         * that needs to be invoked after this promise has been resolved.
+         *
+         * e.g.
+         *
+         * var promise = this.App.ReqRes('get:ready')
+         * promise.then(function() {
+         *  // code I want to be called
+         * });
+         *
+         * @see Issue 7473 wait until first OSD Map is loaded
+         */
+        ready: function() {
+            return this.readyPromise;
         },
         toggleSortOrder: function(deferred) {
             this.customSort = !this.customSort;
@@ -99,9 +124,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         getHosts: function() {
             return _.uniq(this.collection.pluck('host'));
         },
+        getFQDNs: function() {
+            return _.uniq(this.collection.pluck('fqdn'));
+        },
         getOSDIdsByHost: function(host) {
             return _.pluck(this.collection.filter(function(m) {
-                return m.get('host') === host;
+                return m.get('fqdn') === host;
             }), 'id');
         },
         getOSDCounters: function() {
@@ -146,14 +174,38 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             if (this.App.Config) {
                 this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.timeout;
             }
+            var deferred = $.Deferred();
+            this.listenToOnce(this.App.vent, 'filter:update', function() {
+                // resolve readyPromise once collection has been loaded
+                deferred.resolve();
+            });
+            this.readyPromise = deferred.promise();
+            this.legendHeight = 75;
+            this.legendOffset = 25;
+            this.originX = 0;
+            this.originY = this.legendHeight;
             this.columns = 16;
-            this.rows = 10;
+            this.rows = 16;
             this.width = (this.columns + 1) * this.step;
             this.height = (this.rows + 1) * this.step;
-            this.w = 720;
-            this.h = 520;
+            this.w = ((this.columns + 2) * this.step);
+            this.h = ((this.rows + 2) * this.step) + this.legendHeight;
             this.threshx = this.w / 2;
             this.threshy = this.h / 2;
+            this.startPosition = [{
+                    x: 40,
+                    y: 40
+                }, {
+                    x: 40 + ((this.columns) * this.step),
+                    y: 40
+                }, {
+                    x: 40 + ((this.columns) * this.step),
+                    y: 40 + ((this.rows - 1) * this.step)
+                }, {
+                    x: 40,
+                    y: 40 + ((this.columns - 1) * this.step)
+                }
+            ];
             _.bindAll(this);
 
             this.setupAnimations(this);
@@ -165,7 +217,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             Backbone.Marionette.bindEntityEvents(this, this.App.vent, Backbone.Marionette.getOption(this, 'appEvents'));
 
             // App Level Request Responses
+            this.App.ReqRes.setHandler('get:ready', this.ready);
             this.App.ReqRes.setHandler('get:hosts', this.getHosts);
+            this.App.ReqRes.setHandler('get:fqdns', this.getFQDNs);
             this.App.ReqRes.setHandler('get:osdcounts', this.getOSDCounters);
             this.App.ReqRes.setHandler('get:pgcounts', this.getPGCounters);
             this.App.ReqRes.setHandler('get:osdids', this.getOSDIdsByHost);
@@ -187,7 +241,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             ui.viz.addClass('viz-fullscreen');
             ui.filterpanel.css('display', 'block');
             this.App.vent.trigger('filter:update');
-            return this.fadeInAnimation(ui.filterpanel);
+            var resetFn = this.reset;
+            return this.fadeInAnimation(ui.filterpanel, function() {
+                resetFn();
+            });
         },
         fullscreen: function(callback) {
             this.state = 'fullscreen';
@@ -198,7 +255,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         toDashboardTransitionOne: function() {
             var ui = this.ui;
             ui.filterpanel.hide();
-            this.reset();
         },
         dashboard: function(callback) {
             this.state = 'dashboard';
@@ -242,40 +298,26 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             m.set(m.attributes);
         },
         drawGrid: function(d) {
+            this.drawLegend();
             var path = Rs.calcGrid(this.originX, this.originY, this.width, this.height, this.step);
             var path1 = this.paper.path('M0,0').attr({
                 'stroke-width': 1,
                 'stroke': '#5e6a71',
                 'opacity': 0.40
             });
-            this.drawLegend(285, 475);
             var anim = Raphael.animation({
                 path: path,
                 callback: d.resolve
             }, 250);
             path1.animate(anim);
         },
-        startPosition: [{
-                x: 40,
-                y: 40
-            }, {
-                x: 600,
-                y: 40
-            }, {
-                x: 600,
-                y: 400
-            }, {
-                x: 40,
-                y: 400
-            }
-        ],
         moveCircle: function(model, index) {
             if (model === null) {
                 return;
             }
             var start = this.startPosition[Math.floor(Math.random() * 4)];
             var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
-            this.animateCircleTraversal(start.x, start.y, 8, pos.nx, pos.ny, model);
+            this.animateCircleTraversal(start.x + this.originX, start.y + this.originY, 8, pos.nx, pos.ny, model);
         },
         hex: function(value) {
             var hex = '00' + value.toString(16);
@@ -310,7 +352,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             return false;
         },
         renderOSDViews: function(filterFn) {
-            var coll = this.collection.models;
+            var coll = _.first(this.collection.models, this.columns * this.rows);
             if (filterFn) {
                 coll = _.filter(coll, filterFn);
             }
@@ -478,12 +520,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             return c.animate(aFn);
         },
-        drawLegend: function(originX, originY) {
+        drawLegend: function() {
             // Calls legend circle to place in viz.
-            var xp = originX;
-            _.each(_.range(4), function(index) {
-                this.legendCircle(xp, originY, index);
-                xp += 50;
+            var y = this.originY - (this.legendHeight - this.legendOffset);
+            var legendGap = 50;
+            var legendCount = 4;
+            var xp = (this.width / 2) - ((legendGap * (legendCount - 1)) / 2);
+            console.log(xp);
+            _.each(_.range(legendCount), function(index) {
+                this.legendCircle(xp, y, index);
+                xp += legendGap;
             }, this);
         },
         getColor: function(model) {
@@ -563,41 +609,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             return c.animate(aFn);
         },
-        simulateUsedChanges: function() {
-            this.removePulse();
-            var maxRed = 2;
-            this.collection.each(function(m) {
-                var up = true;
-                var _in = Math.random();
-                _in = _in < 0.95;
-                if (!_in && (Math.random() > 0.6) && maxRed > 0) {
-                    maxRed -= 1;
-                    up = false;
-                    //console.log(m.id + ' setting to down');
-                } else {
-                    if (Math.random() > 0.6) {
-                        up = false;
-                    }
-                }
-                m.set({
-                    'up': up ? 1 : 0,
-                    'in': _in ? 1 : 0
-                });
-            });
-            this.App.vent.trigger('updateTotals');
-            this.App.vent.trigger('status:healthwarn');
-        },
-        resetChanges: function() {
-            this.removePulse();
-            this.collection.each(function(m) {
-                m.set({
-                    'up': 1,
-                    'in': 1
-                });
-            });
-            this.App.vent.trigger('updateTotals');
-            this.App.vent.trigger('status:healthok');
-        },
         startSimulation: function() {
             var self = this;
             this.timer = setTimeout(function() {
@@ -652,34 +663,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 vent.trigger('viz:render');
             });
             return p;
-        },
-        keyHandler: function(evt) {
-            evt.preventDefault();
-            if (!evt.keyCode) {
-                return;
-            }
-            var keyCode = evt.keyCode;
-            if (keyCode === 27) /* Escape */ {
-                this.App.vent.trigger('escapekey');
-            }
-            if (keyCode === 82) /* r */ {
-                this.resetChanges();
-                return;
-            }
-            if (keyCode === 85) /* u */ {
-                this.simulateUsedChanges();
-                return;
-            }
-            if (keyCode === 32) /* space */ {
-                var $spinner = $('.fa-spinner');
-                if (this.timer === null) {
-                    this.startSimulation();
-                    $spinner.closest('i').addClass('.fa-spin').show();
-                } else {
-                    this.stopSimulation();
-                    $spinner.closest('i').removeClass('.fa-spin').hide();
-                }
-            }
         },
         removePulse: function() {
             if (this.pulseCircle) {
@@ -756,6 +739,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     $('.viz').tooltip('destroy').tooltip({
                         title: hostGroup
                     }).tooltip('show');
+                    var y = el.attr('y');
+                    $('.viz').data('tooltip').$tip[0].style.top = (y - 64) + 'px';
                     this.curHostGroup = hostGroup;
                 }
             }

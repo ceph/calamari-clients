@@ -13,6 +13,10 @@ body {
     font-style: normal;
 }
 
+.initial-hide {
+	visibility: hidden;
+}
+
 $itapp-card-height: 200;
 $second-row-height: 600px;
 $third-row-height: 120px;
@@ -28,13 +32,21 @@ $third-row-height: 120px;
 }
 
 .navbar .navbar-nav > li > a {
+	padding: 15px 0 10px 15px;
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
-        @include background(linear-gradient(to bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+    min-height: 48px;
+    background-color: transparent;
 	&:hover {
 		color: darken($itlightgray, 15%);
 	}
 	&:active {
+	}
+}
+.nav .open >a.admin-menu {
+  	background-color: transparent;
+	&:hover, &:focus {
+    	background-color: inherit;
 	}
 }
 .dropdown-menu {
@@ -46,7 +58,13 @@ $third-row-height: 120px;
         margin-right: 5px;
     }
 }
-
+.bell-button {
+	margin-top: 22px;
+	color: $itlightgray;
+	&:hover {
+		color: darken($itlightgray, 15%);
+	}
+}
 .card {
     position: relative;
     color: $itapp-standard-font-color;
@@ -115,6 +133,10 @@ table.metric td:last-child {
 }
 .table tbody td, .table thead th {
 	text-align: right;
+}
+.table.user-request tbody td, .table.user-request thead th {
+	text-align: left;
+	font-family: $itapp-font-family;
 }
 .table tbody td {
 	font-family: ApexSansLight;
@@ -201,13 +223,15 @@ $bc-height: 33;
 $bc-line-width: 40;
 $bc-width: $bc-height;
 $bc-margin: 4;
+$bc-margin: 4;
+$bc-item-count: 4;
 .nav.navbar {
     border-bottom: 1px solid $itgray;
 }
 .inknav {
     @include user-select(none);	
     display: inline-block;
-    max-width: #{(($bc-item-width *3) + ($bc-line-width)* 2) + 12}px;
+    max-width: #{(($bc-item-width * $bc-item-count) + ($bc-line-width)* ($bc-item-count - 1)) + 12}px;
     position: absolute;
     left: 0;
     right: 0;
@@ -228,6 +252,9 @@ $bc-margin: 4;
     @include background(linear-gradient(top left, lighten($itgray, 30%), $itdarkgray));
     line-height: 1.9;
     color: $itlightgray;
+    cursor: pointer;
+}
+.health .badge {
     cursor: pointer;
 }
 .bc-entry:hover {
@@ -277,6 +304,8 @@ $bc-margin: 4;
 }
 .bc-title-three {
 }
+.bc-title-four {
+}
 .bc-item {
     text-align: center;
     display: inline-block;
@@ -284,4 +313,79 @@ $bc-margin: 4;
     min-width: #{$bc-item-width}px;
     margin: 0 auto;
     padding: 0;
+}
+.aside {
+	font-family: ApexSansMedium;
+    z-index: 1049;
+    background: #fff;
+    position: fixed;
+    overflow: auto;
+    min-width: 320px;
+    top: 0;
+    bottom: 0;
+    &.right {
+	    left: auto;
+	    right: 0;
+    }
+}
+.aside-header {
+    background-color: #529138;
+    border-bottom: 1px solid #e5e5e5;
+    min-height: 16.42857143px;
+    padding: 6px 15px;
+    background: #529138;
+    color: #fff;
+	.close {
+        color: #fff;
+        font-size: 25px;
+        opacity: .8;
+        padding: 4px 8px;
+        margin-right: -8px;
+    }
+	h4 {
+		font-family: ApexSansMedium;
+	}
+}
+.aside-body {
+    position: relative;
+    padding: 20px;
+}
+.aside-footer {
+    margin-top: 15px;
+    padding: 19px 20px 20px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+}
+.aside-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    background-color: #000;
+}
+.aside-backdrop.fade {
+    opacity:0;
+    filter:alpha(opacity=0)
+}
+.aside-backdrop.in {
+    opacity:.5;
+    filter:alpha(opacity=50)
+}
+.aside-backdrop.animation-fade {
+    background:rgba(0, 0, 0, .5);
+    opacity:1
+}
+.table.health-table {
+	h3 {
+		font-family:ApexSansLight;
+		text-transform: capitalize;
+	}
+	td, th {
+		text-align: left;
+	}
+	td {
+		font-family: ApexSansMedium;
+	}
 }

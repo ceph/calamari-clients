@@ -1,0 +1,28 @@
+<div ng-include="'views/appbar.html'"></div>
+<div class="card am-fade-and-slide-top card-height" ng-show='up'>
+    <div ng-include="'views/breadcrumb-nav.html'"></div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="standard-spacing">
+                 <h4>LOG TAIL</h4>
+
+                <div>
+                    <div style='background: #eee; padding: 10px;' ng-switch on="logui">
+                        <div ng-switch-when="logs">
+                            <p class='small' ng-repeat='line in logs'> <span style='display: inline-block; min-width: 80px; text-align: left;' class='text-primary'>{{line.timestamp}}</span>
+
+                                <span
+                                style='display: inline-block; min-width: 50px; text-align: left;' class='text-success'>{{line.unit}}</span> <span style='display: inline-block; min-width: 180px;' class='text-info'>{{line.address}}</span>
+
+                                    <span
+                                    style='' class='text-success'>{{line.rest}}</span>
+                            </p>
+                        </div>
+                        <div ng-switch-when="empty" class="text-muted">No Log Data Available.</div>
+                        <div class="text-muted" ng-switch-default> <i class="fa fa-spinner fa-spin fa-lg"></i> Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div !-- card -->

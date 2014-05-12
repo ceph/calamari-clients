@@ -1,0 +1,87 @@
+@import 'font-awesome/scss/font-awesome';
+@import 'modules/bootstrap-additions.min';
+@import 'modules/angular-motion';
+@import 'modules/angular-growl.min';
+@import 'modules/bootstrap3_vars';
+@import 'modules/inktank_colors';
+@import 'compass/css3/user-interface';
+@import 'compass/css3/border-radius';
+@import 'compass/css3/box-shadow';
+@import 'compass/css3/box-sizing';
+@import 'compass/css3/images';
+@import 'compass/css3/transform';
+@import 'compass/typography/text/force-wrap';
+@import 'compass/typography/text/nowrap';
+@import 'partials/base.scss';
+@import 'modules/angular-toggle-switch';
+@import 'modules/angular-toggle-switch-bootstrap';
+.disable-user-select {
+    @include user-select(none);
+}
+.truncate {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.btn-osd-id {
+    margin: 2px;
+    width: 3.5em;
+}
+.servers.table {
+    margin-bottom: 0;
+}
+.osd-hosts.table>tbody>tr>td {
+    vertical-align: top;
+}
+.osd-state-width {
+    min-width: 7.5em;
+}
+.breadcrumb>li+li:before {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content:"\0f054";
+}
+.icon-adjust-down {
+	margin-top: 5px;
+}
+.bell-button {
+	margin-top: 22px;
+	color: $itlightgray;
+	&:hover {
+		color: darken($itlightgray, 15%);
+	}
+}
+.navbar .navbar-nav > li > a {
+	padding: 15px 0 10px 15px;
+	text-shadow: 0 1px 0 $itgray;
+	color: $itlightgray;
+    min-height: 48px;
+    background-color: transparent;
+	&:hover {
+		color: darken($itlightgray, 15%);
+	}
+	&:active {
+	}
+}
+.dropdown-menu .divider {
+	background-color: darkgray;
+}
+
+.width-10-perc {
+	width: 10%;
+}
+
+.width-20-perc {
+	width: 20%;
+}
+
+.card-height {
+	min-height: 800px;
+	margin-bottom: 10px;
+}

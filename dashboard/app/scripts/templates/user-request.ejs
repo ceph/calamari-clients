@@ -1,0 +1,28 @@
+<div class="aside right am-fade-and-slide-right" tabindex="-1" role="dialog">
+  <div class="aside-dialog">
+    <div class="aside-content">
+      <div class="aside-header">
+        <button type="button" class="close closer">&times;</button>
+        <i class='fa fa-bell fa-lg'></i><h4 style='margin-left:10px; display: inline-block' class="aside-title"><%- title %></h4>
+      </div>
+      <div class="aside-body">
+          <table class="table table-condensed user-request">
+              <thead>
+                  <tr>
+                      <th>&nbsp;</th>
+                      <th><%- colTask %></th>
+                      <th><%- colStatus %></th>
+                      <th><%- colUpdated %></th>
+                  </tr>
+              <thead>
+              <tbody>
+              </tbody>
+          </table>
+      </div>
+      <div class="aside-footer">
+        <button type="button" class="btn btn-primary closer"><%- closeBtn %></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="aside-backdrop animation-fade closer"></div>

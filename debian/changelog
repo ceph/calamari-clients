@@ -1,8 +1,8 @@
-calamari-clients (1.1.0) stable; urgency=low
+calamari-clients (1.0.0-616-gf17527d) unstable; urgency=low
 
-  * Calamari 1.1.0 (this package is new for 1.1)
+  * built on Wed Apr 16 14:53:15 PDT 2014
 
- -- Dan Mick <dan.mick@inktank.com>  Mon, 03 Feb 2014 13:39:53 -0800
+ -- Dan Mick <dan.mick@inktank.com>  Wed, 16 Apr 2014 14:53:17 -0700
 
 calamari-clients (0.1) UNRELEASED; urgency=low
 

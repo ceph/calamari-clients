@@ -1,0 +1,33 @@
+<div ng-include="'views/appbar.html'"></div>
+<div class="card am-fade-and-slide-top card-height" ng-show='up'>
+    <div ng-include="'views/breadcrumb-nav.html'"></div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="standard-spacing" style="min-height: 500px;">
+                <div class='btn-group pull-right' ng-model='button.radio' bs-radio-group>
+                    <label class='btn btn-primary'>
+                        <input class="btn btn-default" type='radio' value="servers">HOSTS</input>
+                    </label>
+                    <label class='btn btn-primary'>
+                        <input class="btn btn-primary" type='radio' value="osdmap">CLUSTER SETTINGS</input>
+                    </label>
+                    <label class='btn btn-primary'>
+                        <input class="btn btn-primary" type='radio' value="viewer">CONFIG BROWSER</input>
+                    </label>
+                </div>
+                <div ng-show="button.radio == 'servers'">
+                    <div ng-hide="hidePre" ng-include="'views/partial-authorize.html'"></div>
+                    <div ng-include="'views/partial-server.html'"></div>
+                </div>
+                <div ng-show="button.radio == 'viewer'">
+                    <div ng-include="'views/partial-viewer.html'"></div>
+                </div>
+                <form name="osdmapForm" novalidate>
+                    <div ng-show="button.radio == 'osdmap'">
+                        <div ng-include="'views/partial-osd-config.html'"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div !-- card -->

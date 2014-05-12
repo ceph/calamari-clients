@@ -1,0 +1,77 @@
+// Fade & Slide Right
+//
+// Ported from https://github.com/mgcrea/angular-motion
+// keyframes mixin https://gist.github.com/ericam/1607696
+
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content; 
+  }
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+  @-ms-keyframes #{$name} {
+    @content;
+  }
+  @keyframes #{$name} {
+    @content;
+  } 
+}
+
+$fade-and-slide-duration: .3s;
+$fade-and-slide-timing-function: ease-in-out;
+
+@include keyframes(fadeAndSlideFromRight) {
+  from {
+    opacity: 0;
+    transform: translateX(20%);
+    -webkit-transform: translateX(20%);
+  }
+  to {
+    opacity: 1;
+  }
+}
+@include keyframes(fadeAndSlideToRight) {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20%);
+    -webkit-transform: translateX(20%);
+  }
+}
+
+.am-fade-and-slide-right {
+
+  animation-duration: $fade-and-slide-duration;
+  animation-timing-function: $fade-and-slide-timing-function;
+  animation-fill-mode: backwards;
+  -webkit-animation-duration: $fade-and-slide-duration;
+  -webkit-animation-timing-function: $fade-and-slide-timing-function;
+  -webkit-animation-fill-mode: backwards;
+
+  &.am-fade-and-slide-right-add, &.ng-hide-remove, &.ng-move {
+    animation-name: fadeAndSlideFromRight;
+    -webkit-animation-name: fadeAndSlideFromRight;
+  }
+  &.am-fade-and-slide-right-remove, &.ng-hide {
+    animation-name: fadeAndSlideToRight;
+    -webkit-animation-name: fadeAndSlideToRight;
+  }
+
+  &.ng-enter {
+    visibility: hidden;
+    animation-name: fadeAndSlideFromRight;
+    -webkit-animation-name: fadeAndSlideFromRight;
+    &.ng-enter-active {
+      visibility: visible;
+    }
+  }
+  &.ng-leave {
+    animation-name: fadeAndSlideToRight;
+    -webkit-animation-name: fadeAndSlideToRight;
+  }
+
+}
+

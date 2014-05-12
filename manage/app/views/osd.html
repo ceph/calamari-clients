@@ -1,0 +1,31 @@
+<div ng-include="'views/appbar.html'"></div>
+<div class="card ng-hide am-fade-and-slide-top card-height" ng-show='up'">
+    <div ng-include="'views/breadcrumb-nav.html'"></div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class='standard-spacing'>
+                <table class="osd-hosts table condensed">
+                    <thead>
+                        <th class="text-muted width-20-perc">HOST</th>
+                        <th class="text-muted">OSDS</th>
+                        <th class="text-muted width-10-perc">TOTAL</th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat='server in servers' class="am-fade">
+                            <td>
+                                <button type="button" class="btn btn-md btn-primary btn-osd" ng-click="hostClickHandler(server.fqdn)"
+                                data-placement="center" ng-bind="server.hostname"></button>
+                            </td>
+                            <td> <span ng-repeat="id in server.services.osdID">
+                                        <button ng-bind='id' ng-click='displayOSD(id)' class="btn btn-sm btn-osd-id" ng-class="{2: 'btn-success', 1: 'btn-warning', 0: 'btn-danger'}[server.services.state[$index]]">
+                                        </button>
+                                    </span>
+
+                            </td>
+                            <td ng-bind="server.services.osdCount"></td>
+                        </tr>
+                    </tbody>
+            </div>
+        </div>
+    </div !-- card -->
+</div>

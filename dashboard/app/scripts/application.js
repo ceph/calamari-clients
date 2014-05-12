@@ -1,26 +1,21 @@
 /*global define*/
-define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine', 'marionette'], function($, _, Backbone, animation, StateMachine) {
+define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine', 'loglevel', 'marionette'], function($, _, Backbone, animation, StateMachine, log) {
     'use strict';
     var Application = Backbone.Marionette.Application.extend({
-        onentergraphmode: function( /*event, from, to, host, osd */ ) {
-            $('.row').css('display', 'none');
-            this.graphWall.render();
-            $('.container').append(this.graphWall.$el);
-        },
         onInitializeBefore: function(options) {
             if (options.appRouter) {
                 this.appRouter = options.appRouter;
             }
-            _.bindAll(this);
+            _.bindAll(this); // bind Application functions to this instance
             this.fsm = StateMachine.create({
-                initial: 'dashmode',
+                initial: options.initial || 'dashmode',
                 events: [{
                         name: 'dashboard',
                         from: ['vizmode', 'graphmode'],
                         to: 'dashmode'
                     }, {
                         name: 'viz',
-                        from: ['dashmode', 'graphmode'],
+                        from: ['dashmode', 'graphmode', 'vizmode'],
                         to: 'vizmode'
                     }, {
                         name: 'graph',
@@ -39,7 +34,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     ondashboard: this.ondashboard
                 }
             });
-            _.bindAll(this.fsm);
+            _.bindAll(this.fsm); // bind Finite State Machine functions to FSM instance
             this.listenTo(this.vent, 'app:fullscreen', function() {
                 this.appRouter.navigate('workbench', {
                     trigger: true
@@ -58,6 +53,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     trigger: true
                 });
             });
+        },
+        onInitializeAfter: function( /*options*/ ) {
+            if (Backbone.history) {
+                Backbone.history.start();
+            }
         },
         graphEvents: {
             'cpudetail': {
@@ -93,49 +93,66 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 title: _.template('Host <%- host %> Network Interface Bytes TX/RX')
             }
         },
-        ongraph: function(event, from, to, host, id) {
-            this.graphWall.hideGraphs();
-            var hosts;
+        onentergraphmode: function(event, from, to /*, host, osd*/ ) {
+            log.debug('ENTER ' + event + ', FROM ' + from + ', TO ' + to);
+            $('.row').css('display', 'none');
+            var ready = this.ReqRes.request('get:ready');
             var self = this;
-            if (host === 'all') {
-                this.graphWall.hideButtons();
-                this.graphWall.makeClusterWideMetrics.call(this.graphWall).then(function(result) {
-                    self.graphWall.renderGraphs('Cluster', function() {
-                        return _.flatten(result);
-                    });
-                });
-            } else if (host === 'iops') {
-                this.graphWall.hideButtons();
-                this.graphWall.makePoolIOPS.call(this.graphWall).then(function(result) {
-                    self.graphWall.renderGraphs('Per Pool IOPS', function() {
-                        return _.flatten(result);
-                    });
-                });
-            } else if (id !== undefined && id !== null) {
-                this.graphWall.showButtons();
-                var graphEvent = this.graphEvents[id];
-                if (graphEvent !== undefined) {
-                    this.graphWall[graphEvent.fn].call(this.graphWall, host, id).then(function(result) {
-                        self.graphWall.renderGraphs(graphEvent.title({
-                            host: host
-                        }), function() {
+            ready.then(function() {
+                self.graphWall.render();
+                $('.container').append(self.graphWall.$el);
+                if (event === 'startup' && from === 'none') {
+                    self.ongraph(event, from, to, 'all');
+                }
+            });
+        },
+        ongraph: function(event, from, to, fqdn, id) {
+            log.debug('AFTER ' + event + ', FROM ' + from + ', TO ' + to);
+            var graphWall = this.graphWall;
+            var self = this;
+            graphWall.isReady().then(function() {
+                graphWall.hideGraphs();
+                var fqdns;
+                if (fqdn === 'all') {
+                    graphWall.hideButtons();
+                    graphWall.makeClusterWideMetrics.call(graphWall).then(function(result) {
+                        graphWall.renderGraphs('Cluster', function() {
                             return _.flatten(result);
                         });
-                    }).fail(function(/*result*/) {
-                        // TODO Handle errors gracefully
                     });
-                    return;
+                } else if (fqdn === 'iops') {
+                    graphWall.hideButtons();
+                    graphWall.makePoolIOPS.call(graphWall).then(function(result) {
+                        graphWall.renderGraphs('Per Pool IOPS', function() {
+                            return _.flatten(result);
+                        });
+                    });
+                } else if (id !== undefined && id !== null) {
+                    graphWall.showButtons();
+                    var graphEvent = self.graphEvents[id];
+                    if (graphEvent !== undefined) {
+                        graphWall[graphEvent.fn].call(graphWall, fqdn, id).then(function(result) {
+                            graphWall.renderGraphs(graphEvent.title({
+                                host: fqdn
+                            }), function() {
+                                return _.flatten(result);
+                            });
+                        }).fail(function( /*result*/ ) {
+                            // TODO Handle errors gracefully
+                        });
+                        return;
+                    }
+                } else {
+                    fqdns = self.ReqRes.request('get:fqdns');
+                    if (_.contains(fqdns, fqdn)) {
+                        graphWall.showButtons();
+                        graphWall.updateSelect(fqdn);
+                        graphWall.updateBtns('overview');
+                        graphWall.hostname = fqdn;
+                        graphWall.renderGraphs('Host Graphs for ' + fqdn, graphWall.makeHostOverviewGraphUrl(fqdn));
+                    }
                 }
-            } else {
-                hosts = this.ReqRes.request('get:hosts');
-                if (_.contains(hosts, host)) {
-                    this.graphWall.showButtons();
-                    this.graphWall.updateSelect(host);
-                    this.graphWall.updateBtns('overview');
-                    this.graphWall.hostname = host;
-                    this.graphWall.renderGraphs('Host Graphs for ' + host, this.graphWall.makeHostOverviewGraphUrl(host));
-                }
-            }
+            });
         },
         onleavegraphmode: function() {
             this.graphWall.close();
@@ -154,9 +171,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             }
             d.promise().then(function() {
                 $body.addClass('workbench-mode');
-                vent.trigger('viz:fullscreen', _.once(function() {
+                var fn = function() {
                     vent.trigger('gauges:collapse');
-                }));
+                };
+                vent.trigger('viz:fullscreen', _.once(fn));
             });
         },
         onleavevizmode: function(event, from, to) {
@@ -179,7 +197,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 }));
             });
         },
-        onenterdashmode: function() {},
+        onenterdashmode: function() {
+            $('.initial-hide').removeClass('initial-hide');
+        },
         onleavedashmode: function() {},
         ondashboard: function( /*event, from, to, host, id*/ ) {
             this.vent.trigger('dashboard:refresh');

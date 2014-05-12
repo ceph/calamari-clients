@@ -1,6 +1,24 @@
-/*global require */
+/*global require, Uri */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'marionette', 'bootstrap', 'notytheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application) {
+require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'tracker', 'jsuri', 'marionette', 'bootstrap', 'notytheme', 'notyGrowltheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, UserRequestTracker) {
+    var uri = new Uri(document.URL);
+    var target = uri.getQueryParamValue('target');
+    var initial = 'dashmode';
+    var anchor = 'dashboard';
+    log.setLevel(log.levels.DEBUG);
+    if (target) {
+        console.log(target);
+        if (target === 'workbench') {
+            initial = 'vizmode';
+            anchor = 'workbench';
+        } else if (target === 'graph') {
+            initial = 'graphmode';
+            anchor = 'graph/all';
+        }
+        uri.deleteQueryParam('target');
+        uri.setAnchor(anchor);
+        history.pushState('', 'Dashboard', uri.toString());
+    }
     /* Default Configuration */
     var config = {
         'offline': false,
@@ -106,11 +124,6 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
         });
         iopsLayout.render();
 
-        var iopsView = new views.IopsView({
-            'graphiteHost': config['iops-host'],
-            App: App
-        });
-        iopsLayout.a.show(iopsView);
         var hostsView = new views.HostsView({
             App: App
         });
@@ -149,9 +162,14 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
             App: App
         });
         clusterMenu.fetch().done(function() {
-            clusterDeferred.resolve(clusterMenu.collection.at(0));
+            clusterDeferred.resolve(clusterMenu.collection.first());
         });
         clusterDeferred.promise().done(function(cluster) {
+            var iopsView = new views.IopsView({
+                'graphiteHost': config['iops-host'],
+                App: App
+            });
+            iopsLayout.a.show(iopsView);
             var alertsView = new views.AlertsView({
                 App: App
             });
@@ -174,13 +192,6 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 }
             });
 
-            var breadcrumbView = new views.BreadCrumbView({
-                App: App,
-                AppRouter: appRouter,
-                el: '.inknav'
-            });
-            breadcrumbView.render();
-
             appRouter.on('route:workbench', function() {
                 App.fsm.viz();
             });
@@ -197,6 +208,44 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                     // run this callback after the app has been set up
                     waitFn.call(window);
                 }
+            });
+
+
+            var breadcrumbView = new views.BreadCrumbView({
+                App: App,
+                AppRouter: appRouter,
+                initial: initial,
+                el: '.inknav'
+            });
+            breadcrumbView.render();
+
+            App.start({
+                appRouter: appRouter,
+                initial: initial
+            });
+
+            var userRequestTracker = new UserRequestTracker({
+                App: App,
+                cluster: cluster.get('id')
+            });
+
+            var userRequestView = new views.UserRequestView({
+                App: App,
+                cluster: cluster.get('id'),
+                el: '.userrequests'
+            });
+
+            App.listenToOnce(App.vent, 'UserRequestView:toggle', function() {
+                userRequestView.render();
+                App.listenTo(App.vent, 'UserRequestView:toggle', function() {
+                    userRequestView.show();
+                });
+            });
+
+
+            var notificationBellView = new views.NotificationBellView({
+                App: App,
+                el: '.bell-button'
             });
 
             // Global Exports
@@ -221,16 +270,14 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 PoolsView: poolsView,
                 IopsView: iopsView,
                 HostsView: hostsView,
-                HealthView: healthView
+                HealthView: healthView,
+                UserRequestTracker: userRequestTracker,
+                UserRequestView: userRequestView,
+                NotificationBellView: notificationBellView
             };
 
-            App.start({
-                appRouter: appRouter
-            });
         });
-        /* Defer Visualization startup to after loading the cluster metadata */
-        Backbone.history.start();
-        appRouter.navigate('dashboard');
+
     });
 
 

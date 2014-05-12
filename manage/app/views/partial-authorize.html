@@ -1,0 +1,28 @@
+<div class="row" style="padding-top: 35px;">
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <h3 style="display: inline-block; margin-bottom: 20px;" class="text-muted">PENDING HOSTS</h3> <button style="margin-left: 30px; margin-top: -10px;" class="btn btn-success btn-md" ng-disabled="approveAllDisabled" ng-click="approveAll()">APPROVE ALL</button>
+    </div>
+</div>
+<div class="row">
+    <div ng-repeat="index in [0,1,2,3]" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <table class='servers table'>
+            <thead></thead>
+            <tbody>
+                <tr ng-repeat="minion in pcols[index]" ng-if="minion.status !== 'accepted'" class="am-fade">
+                    <td> <i class='fa fa-lg fa-2x' ng-class="{ 'fa-check-square-o text-success': minion.status == 'accepted', 'fa-square-o text-warning icon-adjust-down': minion.status != 'accepted' }"></i>
+
+                    </td>
+                    <td class="" style="min-width: 100px;" data-id='{{minion.id}}'>{{minion.shortName}}</td>
+                    <td>
+                        <button ng-bind-html='minion.label' ng-disabled='minion.disabled' class='btn btn-success btn-md' ng-click="acceptMinion(index, minion)"
+                        ng-if="minion.status != 'accepted'"></button>
+                        <button class='btn btn-info btn-md' ng-click='detailView(minion.id)'
+                        ng-if="minion.status == 'accepted'"><i class="fa fa-lg fa-fw fa-info-circle"></i>
+
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

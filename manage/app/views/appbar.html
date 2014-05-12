@@ -1,0 +1,12 @@
+<div class="row" style='margin-top: 10px;'>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="navbar navbar-default" role="navigation">
+            <div class="navbar-header">
+                <div class="navbar-brand" style='margin-top: 5px;'><i class='fa fa-wrench fa-lg'></i></div>
+            </div>
+            <ul class="nav navbar-nav" style='margin-top: 5px;'>
+                <li ng-class="{'active' : menu.active}" ng-repeat="menu in menus"><a ng-click='switchView(menu.href)'>{{menu.label}}</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

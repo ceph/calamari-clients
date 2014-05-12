@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+
+<head>
+  <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+  <title>Tab based modal</title>
+
+  <script type="text/javascript" src="vendor/jquery-1.9.1.js"></script>
+  <script type="text/javascript" src="vendor/underscore.js"></script>
+  <script type="text/javascript" src="vendor/backbone.js"></script>
+
+  <!-- Adding Backbone.Modal extension here -->
+  <link type="text/css" rel="stylesheet" href="vendor/backbone.modal.css">
+  <link type="text/css" rel="stylesheet" href="vendor/backbone.modal.theme.css">
+  <script type="text/javascript" src="vendor/backbone.modal.js"></script>
+
+  <!-- Custom style -->
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+
+
+</head>
+
+<body>
+  <a href="#" class="open">Open modal</a>
+
+  <div class="app"></div>
+
+  <!-- The modal structure, with an container element that will contain all tabs -->
+  <script type="text/template" id="modal-template">
+    <div class="bbm-modal__topbar">
+      <ul>
+        <li class="bbm-modal__tab"><a href="#" id="tab1" class="active">General</a></li>
+        <li class="bbm-modal__tab"><a href="#" id="tab2">Account</a></li>
+      </ul>
+    </div>
+
+    <div class="my-container"></div>
+    <div class="bbm-modal__bottombar">
+      <a href="#" class="bbm-button">Done</a>
+    </div>
+  </script>
+
+  <!-- Tab 1 -->
+  <script type="text/template" id="modal-view1-template">
+    <div class="bbm-modal__section">
+      <h3>Tab based example</h3>
+      <p>It's also really easy to create a modal, with seperate views that you can control using tabs.</p>
+      <p>We're also using a default style, but you can overwrite anything you want.</p>
+    </div>
+  </script>
+
+  <!-- Tab 2 -->
+  <script type="text/template" id="modal-view2-template">
+    <div class="bbm-modal__section">
+      Your account details
+    </div>
+  </script>
+
+  <script>
+    jQuery(function($) {
+
+      // Create a modal view class
+      var Modal = Backbone.Modal.extend({
+        template: _.template($('#modal-template').html()),
+
+        viewContainer: '.my-container',
+        submitEl: '.bbm-button',
+
+        views: {
+          'click #tab1': {
+            name: 'tab1',
+            view: _.template($('#modal-view1-template').html()),
+            onActive: 'setActive'
+          },
+          'click #tab2': {
+            name: 'tab2',
+            view: _.template($('#modal-view2-template').html()),
+            onActive: 'setActive'
+          }
+        },
+
+        setActive: function(options) {
+          this.$('.bbm-modal__tab a').removeClass('active');
+          this.$('#'+options.name).addClass('active');
+        }
+      });
+
+      $('.open').on('click', function(){
+
+        // Render an instance of your modal
+        var modalView = new Modal();
+        $('.app').html(modalView.render().el);
+
+      });
+
+      $('.open').click()
+
+    });
+  </script>
+</body>
+</html>

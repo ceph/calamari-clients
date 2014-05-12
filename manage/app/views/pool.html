@@ -1,0 +1,39 @@
+<div ng-include="'views/appbar.html'"></div>
+<div class="card ng-hide am-fade-and-slide-top card-height" ng-show='up'>
+    <div ng-include="'views/breadcrumb-nav.html'"></div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="standard-spacing">
+                <button type="button" ng-click="create()" class="btn btn-md btn-primary pull-right"
+                data-placement="center"><i class="fa fa-lg fa-fw fa-plus-square" bs-tooltip="ttCreate"></i>
+
+                </button>
+                <table class="table condensed">
+                    <thead>
+                        <th class="text-muted width-20-perc">NAME</th>
+                        <th class="text-muted width-10-perc">ID</th>
+                        <th class="text-muted width-20-perc">REPLICAS (SIZE)</th>
+                        <th class="text-muted width-20-perc">PLACEMENT GROUPS</th>
+                        <th class="text-muted">COMMANDS</th>
+                    </thead>
+                    <tbody>
+                        <tr class="am-fade" ng-repeat="pool in pools">
+                            <td class="text-info" ng-bind="pool.name"></td>
+                            <td ng-bind="pool.id"></td>
+                            <td ng-bind="pool.size"></td>
+                            <td ng-bind="pool.pg_num"></td>
+                            <td>
+                                <button type="button" ng-click="modify(pool.id)" class="btn btn-md btn-primary"><i class="fa fa-lg fa-fw fa-edit" bs-tooltip="ttEdit"></i>
+
+                                </button>
+                                <button type="button" ng-click="remove(pool)" class="btn btn-md btn-danger"><i class="fa fa-lg fa-fw fa-trash-o" bs-tooltip="ttDelete"></i>
+
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div !-- card -->

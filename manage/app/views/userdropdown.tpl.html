@@ -1,0 +1,6 @@
+<ul tabindex="-1" class="dropdown-menu" role="menu">
+  <li role="presentation" ng-class="{divider: item.divider}" ng-repeat="item in content" >
+    <a role="menuitem" tabindex="-1" href="{{item.href}}" ng-if="!item.divider && !item.userinfo" ng-click="item.click($event); $hide()" ng-bind="item.text"></a>
+    <span style="width:100%; text-align: left;" ng-if="item.userinfo"><i style="margin: 7px;" ng-class="item.clazz"></i> {{username}}</span>
+  </li>
+</ul>
