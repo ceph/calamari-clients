@@ -1,12 +1,18 @@
 /*global define*/
 define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine', 'loglevel', 'marionette'], function($, _, Backbone, animation, StateMachine, log) {
     'use strict';
+    // 
     var Application = Backbone.Marionette.Application.extend({
+        // The state machine lives in Application.
+        // The state machine's main purpose is managing state transitions.
+        // @see Jake Gorden's [State Machine](https://github.com/jakesgordon/javascript-state-machine)
+        // for more information on how it works.
         onInitializeBefore: function(options) {
             if (options.appRouter) {
                 this.appRouter = options.appRouter;
             }
-            _.bindAll(this); // bind Application functions to this instance
+            // bind Application functions to this instance.
+            _.bindAll(this);
             this.fsm = StateMachine.create({
                 initial: options.initial || 'dashmode',
                 events: [{
@@ -34,7 +40,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     ondashboard: this.ondashboard
                 }
             });
-            _.bindAll(this.fsm); // bind Finite State Machine functions to FSM instance
+            // bind Finite State Machine functions to FSM instance.
+            _.bindAll(this.fsm);
+
+            // Start Listening to Global Application Events.
             this.listenTo(this.vent, 'app:fullscreen', function() {
                 this.appRouter.navigate('workbench', {
                     trigger: true
@@ -55,10 +64,18 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             });
         },
         onInitializeAfter: function( /*options*/ ) {
+            // Start History.
             if (Backbone.history) {
                 Backbone.history.start();
             }
         },
+        // Graph Events Lookup Object.
+        //
+        // `dashboard/#graph/<fqdn>/<id>`
+        //
+        // |**fn**|the function to call in the graph object|
+        // |---|----|
+        // |**title**|the UI title JST template for this specific graph|
         graphEvents: {
             'cpudetail': {
                 fn: 'makeCPUDetail',
@@ -93,11 +110,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 title: _.template('Host <%- host %> Network Interface Bytes TX/RX')
             }
         },
+        // On Entering Graph Event Callback.
         onentergraphmode: function(event, from, to /*, host, osd*/ ) {
             log.debug('ENTER ' + event + ', FROM ' + from + ', TO ' + to);
             $('.row').css('display', 'none');
             var ready = this.ReqRes.request('get:ready');
             var self = this;
+            // This promise guarantees the app has finished initializing.
             ready.then(function() {
                 self.graphWall.render();
                 $('.container').append(self.graphWall.$el);
@@ -106,14 +125,17 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 }
             });
         },
+        // In Graph Event Callback.
         ongraph: function(event, from, to, fqdn, id) {
             log.debug('AFTER ' + event + ', FROM ' + from + ', TO ' + to);
             var graphWall = this.graphWall;
             var self = this;
+            // We use a promise to ensure GraphWall has finished initializing.
             graphWall.isReady().then(function() {
                 graphWall.hideGraphs();
                 var fqdns;
                 if (fqdn === 'all') {
+                    // Default Graphs - Cluster Wide Graphs.
                     graphWall.hideButtons();
                     graphWall.makeClusterWideMetrics.call(graphWall).then(function(result) {
                         graphWall.renderGraphs('Cluster', function() {
@@ -121,6 +143,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         });
                     });
                 } else if (fqdn === 'iops') {
+                    // IOPS graphs page.
                     graphWall.hideButtons();
                     graphWall.makePoolIOPS.call(graphWall).then(function(result) {
                         graphWall.renderGraphs('Per Pool IOPS', function() {
@@ -128,6 +151,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         });
                     });
                 } else if (id !== undefined && id !== null) {
+                    // Host Graphs with a Specific Graph Event.
                     graphWall.showButtons();
                     var graphEvent = self.graphEvents[id];
                     if (graphEvent !== undefined) {
@@ -143,6 +167,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         return;
                     }
                 } else {
+                    // Default Host Specific Graphs.
                     fqdns = self.ReqRes.request('get:fqdns');
                     if (_.contains(fqdns, fqdn)) {
                         graphWall.showButtons();
@@ -154,10 +179,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 }
             });
         },
+        // On Leaving Graph State.
         onleavegraphmode: function() {
             this.graphWall.close();
             $('.row').css('display', 'block');
         },
+        // On entering Visualization.
         onentervizmode: function(event, from) {
             var d = $.Deferred();
             var $body = $('body');
@@ -169,6 +196,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             } else {
                 d.resolve();
             }
+            // Wait until gauge disappear animation has finished before starting
+            // next animation.
             d.promise().then(function() {
                 $body.addClass('workbench-mode');
                 var fn = function() {
@@ -177,6 +206,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 vent.trigger('viz:fullscreen', _.once(fn));
             });
         },
+        // On leaving Visualization.
         onleavevizmode: function(event, from, to) {
             var $body = $('body');
             var vent = this.vent;
@@ -197,10 +227,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 }));
             });
         },
+        // On entering dashboard.
         onenterdashmode: function() {
             $('.initial-hide').removeClass('initial-hide');
         },
+        // On leaving dashboard.
         onleavedashmode: function() {},
+        // In dashboard.
         ondashboard: function( /*event, from, to, host, id*/ ) {
             this.vent.trigger('dashboard:refresh');
         }
