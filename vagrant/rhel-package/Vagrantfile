@@ -5,16 +5,18 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box_url = "https://dl.dropboxusercontent.com/u/197673519/debian-7.2.0.box"
-  config.vm.box = "wheezy64"
-
-  config.vm.provider "virtualbox" do |v|
-    v.memory = 512
+  if ENV['RHEL64_BOX_PATH'] == nil
+    box_url = "file:/home/jenkins-build/rhel64.box"
+  else
+    box_url = ENV['RHEL64_BOX_PATH']
   end
+  config.vm.box_url = box_url
+  config.vm.box = "rhel64"
+  config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v0.1.0/centos64-x86_64-20131030.box"
 
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--memory", "512"]
-    vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//git", "1"]
+    vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
   end
 
   config.vm.synced_folder "../../../", "/git"
@@ -22,5 +24,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :salt do |salt|
     salt.minion_config = "../salt/minion"
     salt.run_highstate = true
+    salt.bootstrap_script = "../salt/rhel-bootstrap-salt.sh"
   end
 end

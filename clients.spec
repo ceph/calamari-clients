@@ -28,6 +28,7 @@ echo "prep"
 
 %install
 echo "install"
+mkdir -p %{buildroot}
 cd %{buildroot}
 tar xfz %{tarname}
 
