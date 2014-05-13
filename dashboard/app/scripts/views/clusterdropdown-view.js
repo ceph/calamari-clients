@@ -1,6 +1,13 @@
 /* global define */
 define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collections/cluster-collection', 'marionette'], function($, _, JST, Backbone, log, Clusters) {
     'use strict';
+    // This component is currently *not* rendered. We use it to manage the
+    // current list of Clusters collection being advertised by the Calamari backend
+    // and broadcast updates when the currently selected cluster changes
+    // in the UI.
+    //
+    // At some future point, this will be restored to the UI so we can manage
+    // multiple ceph clusters.
     var ClusterDropDown = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/clusterdropdown.ejs'],
         tagName: 'ul',
