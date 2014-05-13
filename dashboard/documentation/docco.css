@@ -139,7 +139,7 @@ ul.sections > li > div {
   -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomleft: 5px;
   font: 16px Arial;
   cursor: pointer;
-  text-align: right;
+  text-align: left;
   list-style: none;
 }
 
@@ -170,6 +170,7 @@ ul.sections > li > div {
 
 #jump_to:hover #jump_wrapper {
   display: block;
+  min-width: 300px;
 }
 
 #jump_page {

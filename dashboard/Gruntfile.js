@@ -279,15 +279,16 @@ module.exports = function (grunt) {
             dist: {
                 src: [
                 '<%= yeoman.app %>/scripts/*.js',
+                '<%= yeoman.app %>/scripts/views/*.js',
                 '<%= yeoman.app %>/scripts/models/*.js',
                 '<%= yeoman.app %>/scripts/collections/*.js',
-                '<%= yeoman.app %>/scripts/helpers/*.js',
-                '<%= yeoman.app %>/scripts/views/*.js'
+                '<%= yeoman.app %>/scripts/helpers/*.js'
                 ],
                 options: {
                     layout: 'parallel',
                     output: '<%= yeoman.docs %>',
-                    css: 'documentation/docco.css'
+                    css: 'documentation/docco.css',
+                    template: 'documentation/docco.jst'
                 }
             }
         },
