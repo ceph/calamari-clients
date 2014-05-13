@@ -1,4 +1,4 @@
-build_deps:
+full_build_deps:
   pkg.installed:
     - pkgs:
       - ruby
