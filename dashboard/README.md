@@ -10,7 +10,7 @@ Dashboard does not currently take advantage of Marionette.Regions.
 
 What Marionette does not provide is a state machine for managing state transitions between the various sub modules. Jake Gordon's [StateMachine](https://github.com/jakesgordon/javascript-state-machine) implementation wrapped around Backbone's default [Router](http://backbonejs.org/#Router) implementation does. Router takes care of the history API and navigation so that back and forward events are handled correctly by the browser.
 
-Marionette uses Backbone.Wreqr to handle messaging. We make wide spread use of Event Aggregator across this app. We also use Request Response for handling synchronous queries. We do not use commands. This gives us a nice boundary between components to signal global events without being too knowledgeable about the sinks.
+Marionette uses Backbone.Wreqr to handle messaging. We make wide spread use of Event Aggregator across this app. We also use Request Response for handling synchronous queries. We do not use commands. This gives us a nice boundary between components to signal global events without being too knowledgeable about of the sinks.
 
 The 3 main events at the global level are
 
@@ -19,8 +19,6 @@ The 3 main events at the global level are
 3. app:graph -> transition to graphs
 
 Application contains the handlers which manage leaving and entering the edges of the graph.
-
-![State Graph](documentation/states.png)
 
 
 ## Overall Project Structure
@@ -36,7 +34,7 @@ All the modules within client are bootstrapped using [Yeoman](http://yeoman.io/)
 ###app/
  * **scripts/** - all JavaScript code directly related to project
  * **scripts/vendor** - third party code, sometimes with customizations
- * **scripts/main.js** - [RequireJS](http://requirejs.org) configuration file
+ * **scripts/main.js** - RequireJS configuration file
  * **scripts/collections** - Backbone Collections
  * **scripts/models** - Backbone Models
  * **scripts/routes** - unused
@@ -76,20 +74,19 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 ## Important JS Libraries and their usage
 
 1. [JQuery](http://jquery.com/), [Underscore.JS](http://underscorejs.org/), [BackboneJS](http://backbonejs.org) & [MarionetteJS](http://marionettejs.com/) v1.2.3 - Views, Models, Collections and Memory Management. Provides the underpinning for the dashboard module.
-2. [RequireJS](http://requirejs.org) - code loading and dependency management across entire module
-3. [Noty](http://ned.im/noty/) - notifications and errors - alerts-view.js
-4. [RaphaelJS](http://raphaeljs.com/) - OSD visualization
-4. [Dygraphs](http://dygraphs.com/) - Graph plotting support - graph-wall.js
-5. [Grunt](http://gruntjs.com/) and [NPM](http://www.npmjs.org) - for building and optimization
+2. RequireJS - code loading and dependency management across entire module
+3. Noty - notifications and errors - alerts-view.js
+4. RaphaelJS - OSD visualization
+4. Dynagraph - Graph plotting support - graph-wall.js
+5. Grunt and NPM - for building and optimization
 
 ##Start Up Ordering
 
-1. RequireJS loads dependencies for code via main.js
-2. App.js requests dependencies for application
-3. App.js parses config.json
-4. Initialize Views and Subsystems
-4. App.js requests cluster metadata defaulting to first cluster returned in list
-5. target= param specifies a default view to open
+1. RequireJS loads dependencies for code
+2. App.js loads dependencies for application
+3. config.json
+4. cluster config
+5. target= param
 
 ## List of Possible Events (not exhaustive)
 
@@ -113,7 +110,3 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 |**get:cluster**|App.ReqReq|Current Cluster Metadata|
 |**get:hosts**|App.ReqReq|short hostnames for cluster members|
 |**get:osdpgcounts**|App.ReqReq|PG States by OSD|
-
-##Annotated Source Code
-
-Run `grunt docs` to generate annotated source code using Docco in the docs directory.

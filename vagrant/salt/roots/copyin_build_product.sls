@@ -1,5 +1,4 @@
 copyin_build_product:
   cmd.run:
-    - name: cp /git/builds/precise/calamari-clients*tar.gz /home/vagrant
+    - name: cp /git/clients/calamari-clients*tar.gz /home/vagrant/clients
     - user: vagrant
-    - onlyif: test -e /git/builds/precise/calamari-clients*tar.gz
