@@ -395,7 +395,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 return;
             }
             var start = this.startPosition[Math.floor(Math.random() * 4)];
-            var end = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
+            var end = this.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
             this.animateCircleTraversal(start.x + this.originX, start.y + this.originY, 8, end.nx, end.ny, model);
         },
         // **hex** Hexadecimalize value with correct prefix and length.

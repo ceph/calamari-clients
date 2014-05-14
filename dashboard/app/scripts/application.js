@@ -17,7 +17,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 initial: options.initial || 'dashmode',
                 events: [{
                         name: 'dashboard',
-                        from: ['vizmode', 'graphmode'],
+                        from: ['dashmode', 'vizmode', 'graphmode'],
                         to: 'dashmode'
                     }, {
                         name: 'viz',
