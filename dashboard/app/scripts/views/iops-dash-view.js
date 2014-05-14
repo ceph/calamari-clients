@@ -73,10 +73,12 @@ define([
                 // @see Issue #8350
                 iop = _.find(iops.reverse(), function(tuple) {
                     return tuple[1] !== null;
-                })[1];
-                if (iop === undefined || iop === null) {
-                    // deal with nulls
+                });
+                if (iop === undefined) {
+                    // deal with no valid value
                     iop = 0;
+                } else {
+                    iop = iops[1];
                 }
             }
             this.ui.headline.text(iop);
