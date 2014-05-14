@@ -1,21 +1,49 @@
 /*global define, Raphael*/
 
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/filterBy-view', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, OSDDetailView, FilterView, Models, animation, FilterByView) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/filterBy-view', 'loglevel', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, OSDDetailView, FilterView, Models, animation, FilterByView, log) {
+
+
+    // ###OSDVisualization 
+    // This is a container for a Raphael managed SVG DOM Element.
+    // It is a OSD centric with nods towards hosts. It started out as a card element
+    // on the dashboard, and morphed into it's own view within the Dashboard SPA.
+    //
+    // This object also contains an install of the OSD collection, and handles
+    // requests at the global event level for different slices of the data.
+    //
+    // It has 2 main modes and 2 sorts.
+    // Mode 1 is a simple in/out,up/down style of filtering.
+    // Mode 2 is filtered by PG states.
+    //
+    // Sort order 1 is simply by OSD ID numeric order.
+    // Sort order 2 is to group by Hosts containing those OSDs.
+    //
+    // If you hover over states this will highlight the OSDs which are currently members of those sets.
+    //
+    // If you select and deselect OSDs based on their states, this triggers a
+    // filtering function which removes OSDs from the collection which is used to render
+    // the OSDs on screen.
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
             return {};
         },
+        // Max size of OSD element in pixels.
         step: 40,
-        timer: null,
+        // Timeout handle for remove pulse animation callback.
         pulseTimer: null,
+        // Internal state management - should probably be deprecated.
         state: 'dashboard',
+        // Track host we are currently showing a tooltip for.
         curHostGroup: null,
+        // Timeout handle for removing hostname tooltip.
         hostGroupTimer: null,
+        // controls OSD sort order - normally by ID, or by Host Group
         customSort: false,
-        delay: 20000,
+        // Default Collection fetch request timeout - overridden by `api-request-timeout-ms` in `config.json`
         timeout: 3000,
+        // Promise used to gate when OSD Viz is fully initialized.
         readyPromise: null,
         ui: {
             'cardTitle': '.card-title',
@@ -28,7 +56,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         events: {
             'click .viz': 'osdClickHandler',
-            'click': 'screenSwitchHandler',
             'mouseenter circle, tspan, rect': 'osdHoverHandler',
             'mouseleave circle, tspan, rect': 'osdUnhoverHandler'
         },
@@ -40,8 +67,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'sync error': 'spinnerOff',
             'reset': 'resetViews'
         },
+        // Custom Event Handlers
+        // Listens to this.App.vent Event Aggregator. @See [Marionette.JS docs](https://backbonemarionette.readthedocs.org/en/latest/marionette.eventaggregator.html).
         appEvents: {
-            'keyup': 'keyHandler',
             'osd:update': 'updateCollection',
             'cluster:update': 'switchCluster',
             'viz:fullscreen': 'fullscreen',
@@ -49,32 +77,32 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             'viz:filter': 'filter',
             'viz:pulse': 'pulse'
         },
-        /* 
-         * #ready is an idempotent function that allows objects that need services
-         * from this object to wait until the object is ready.
-         * It uses a promise which is set up when this object is created that is
-         * resolved once the first successful load of the collection is completed.
-         * Future calls against this promise will always return true.
-         *
-         * In the case of network failure, other UI elements should compensate
-         * by reporting errors.
-         *
-         * You use this call by doing a RequestResponse call against Wreqr for
-         * 'get:ready' and receiving a promise object which you then wrap the code
-         * that needs to be invoked after this promise has been resolved.
-         *
-         * e.g.
-         *
-         * var promise = this.App.ReqRes('get:ready')
-         * promise.then(function() {
-         *  // code I want to be called
-         * });
-         *
-         * @see Issue 7473 wait until first OSD Map is loaded
-         */
+        // **ready** is an idempotent function that allows objects that need services from this object to wait until the object is ready.
+        // It uses a promise which is set up when this object is created that is
+        // resolved once the first successful load of the collection is completed.
+        // Future calls against this promise will always return true.
+        //
+        // In the case of network failure, other UI elements should compensate
+        // by reporting errors.
+        //
+        // You use this call by doing a RequestResponse call against Wreqr for
+        // 'get:ready' and receiving a promise object which you then wrap the code
+        // that needs to be invoked after this promise has been resolved.
+        //
+        // e.g.
+        // ```
+        // var promise = this.App.ReqRes('get:ready')
+        // promise.then(function() {
+        //  // code I want to be called
+        // });
+        // ```
+        // @see Issue 7473 wait until first OSD Map is loaded
+        //
         ready: function() {
             return this.readyPromise;
         },
+        // **toggleSortOrder** Apply filter again with a new sort order after the reset
+        // animation has run.
         toggleSortOrder: function(deferred) {
             this.customSort = !this.customSort;
             if (this.filterCol) {
@@ -87,16 +115,23 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             });
         },
+        // **spinnerOn** animated spinner when OSD collection is fetching from Calamari API
         spinnerOn: function() {
             this.ui.spinner.css('visibility', 'visible');
         },
+        // **spinnerOff** turn off spinner.
         spinnerOff: function() {
             this.ui.spinner.css('visibility', 'hidden');
         },
+        // **fetchError** trigger a global error when osd collection fails to load.
         fetchError: function(collection, response) {
-            console.log('osd' + '/error: ' + response.statusText);
+            log.debug('osd' + '/error: ' + response.statusText);
             this.App.vent.trigger('app:neterror', 'osd', response);
         },
+        // **updateCollection** This relys on the standard Backbone collection fetch behavior.
+        // We do have an experimental update path but it is not well tested and the server
+        // did not end up supporting it. At some future date it should be replaced with something
+        // more event driven like websockets.
         updateCollection: function() {
             if (this.App.Config['delta-osd-api'] && this.collection.length > 0) {
                 this.collection.update.apply(this.collection);
@@ -111,27 +146,42 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 });
             }
         },
+        // **switchCluster** If we receive a global cluster:update event
+        // update the current cluster we are pointing at. Wait until the
+        // next update occurs, at worst 20 seconds, to avoid animation and
+        // collection issues.
         switchCluster: function(cluster) {
             if (cluster) {
                 this.collection.cluster = cluster.get('id');
             }
         },
+        // **setupAnimations**
+        // Custom transition animation helper setup. @see helpers/animation.js
         setupAnimations: function(obj) {
             obj.opacityOutAnimation = animation.single('animated toDashboard-enter toDashboard');
             obj.toWorkBenchAnimation = animation.single('animated toWorkBench-enter toWorkBench');
             obj.fadeInAnimation = animation.single('animated fadeIn-enter fadeIn');
         },
+        // **getHosts**
+        // Request Response helper to get all unique host names in the OSD data.
         getHosts: function() {
             return _.uniq(this.collection.pluck('host'));
         },
+        // **getFQDNs**
+        // Request Response helper to get all unique Full Qualified Domain Names in the OSD data.
         getFQDNs: function() {
             return _.uniq(this.collection.pluck('fqdn'));
         },
+        // **getOSDIdsByHost**
+        // Request Response helper. Return all the OSD IDs which are hosted by FQDN.
         getOSDIdsByHost: function(host) {
             return _.pluck(this.collection.filter(function(m) {
                 return m.get('fqdn') === host;
             }), 'id');
         },
+        // **getOSDPGCounts**
+        // Return the 4 categories of OSD up/in, down/out, up/out, down,in.
+        // Request Response helper.
         getOSDCounters: function() {
             /* TODO write a single pass version of this */
             return {
@@ -154,10 +204,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
 
             };
         },
+        // **getPGCounters**
+        // Request Response. Return aggregate pg_state_counts.
         getPGCounters: function() {
             /*jshint camelcase: false */
             return this.collection.pg_state_counts || {};
         },
+        // **getOSDPGCounts**
+        // Request Response. Return per OSD pg_state counts.
         getOSDPGCounts: function() {
             /* jshint camelcase: false */
             return this.collection.map(function(m) {
@@ -169,6 +223,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 };
             });
         },
+        lookupPositionById: [],
+        // **initialize** First function called on creating a new instance.
+        // Responsible for basic configuration and setup.
+        // All prototype defaults are also in this function.
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App.Config) {
@@ -210,9 +268,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
 
             this.setupAnimations(this);
 
-            this.keyHandler = _.debounce(this.keyHandler, 250, true);
-            this.screenSwitchHandler = _.debounce(this.screenSwitchHandler, 250, true);
-
             // App Level Events
             Backbone.Marionette.bindEntityEvents(this, this.App.vent, Backbone.Marionette.getOption(this, 'appEvents'));
 
@@ -229,12 +284,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.osdClickHandler = this.makeSVGEventHandlerFunc(this.isOsdElement, this.osdClickHandlerCore);
             this.setBelowCornerBits = this.makeNeighborMapAdjuster(4, 16);
             this.setAboveCornerBits = this.makeNeighborMapAdjuster(1, 32);
+
+            // precalculate the col and row positions for quicker background rendering
+            this.lookupPositionById = _.map(_.range(this.columns * this.rows), function(id) {
+                return this.calcColAndRow(id);
+            }.bind(this));
+            // WARNING - this function is being memoized in the full knowledge only the first
+            // parameter to calc position is being used for look ups. This is ok in this
+            // particular application, if the grid were to change shape or size dynamically
+            // then this would no longer be true. You would need to write a hash function for memoize
+            // that took this into account.
+            this.calcPosition = _.memoize(Rs.calcPosition);
         },
-        screenSwitchHandler: function() {
-            if (this.state === 'dashboard') {
-                this.App.vent.trigger('app:fullscreen');
-            }
-        },
+        // **toFullscreenTransitionTwo** part 2 or 2 of animation transition to workbench.
         toFullscreenTransitionTwo: function() {
             var ui = this.ui;
             this.$el.removeClass('viz-hidden');
@@ -246,16 +308,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 resetFn();
             });
         },
+        // **fullscreen** Run part 1 of 2 animation transition to workbench.
         fullscreen: function(callback) {
             this.state = 'fullscreen';
             this.ui.cardTitle.text('OSD Workbench');
             this.$el.addClass('workbench');
             return this.toWorkBenchAnimation(this.$el, callback).then(this.toFullscreenTransitionTwo);
         },
+        // **toDashboardTransitionOne** to dashboard transition callback. part 2 of 2.
         toDashboardTransitionOne: function() {
             var ui = this.ui;
             ui.filterpanel.hide();
         },
+        // **dashboard** to dashboard transition callback. part 1 of 2.
         dashboard: function(callback) {
             this.state = 'dashboard';
             var $el = this.$el;
@@ -263,12 +328,16 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 $el.addClass('viz-hidden').removeClass('workbench');
             }).then(this.toDashboardTransitionOne);
         },
+        // **resetViews** perform clean up on SVG models when resetting collection.
         resetViews: function(collection, options) {
             _.each(options.previousModels, this.cleanupModelView);
         },
+        // **addOSD** Add a new OSD to grid. Perform animation.
         addOSD: function(model) {
             this.moveCircle(model, this.collection.indexOf(model));
         },
+        // **cleanupModelView**
+        // Perform clean up of SVG elements and animate removal.
         cleanupModelView: function(model) {
             var views = model.views;
             if (views) {
@@ -290,13 +359,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 model.views = null;
             }
         },
+        // **removeOSD**
+        // Remove OSD DOM elements from UI.
         removeOSD: function(m) {
             this.collection.remove(m);
             this.cleanupModelView(m);
         },
+        // **updateOSD**
+        // Update attributes for OSD. The model takes care of updating the UI
+        // elements if they exist.
         updateOSD: function(m) {
             m.set(m.attributes);
         },
+        // **drawGrid** draw background grid using SVG as a single path.
         drawGrid: function(d) {
             this.drawLegend();
             var path = Rs.calcGrid(this.originX, this.originY, this.width, this.height, this.step);
@@ -311,70 +386,116 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }, 250);
             path1.animate(anim);
         },
+        // **moveCircle** schedules the animation with Raphael.
+        // Each circle starts from a random corner. The final position is calculated
+        // and these two values are passed to `this.animateCircleTraversal` which
+        // sends the animation request to Raphael.
         moveCircle: function(model, index) {
             if (model === null) {
                 return;
             }
             var start = this.startPosition[Math.floor(Math.random() * 4)];
-            var pos = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
-            this.animateCircleTraversal(start.x + this.originX, start.y + this.originY, 8, pos.nx, pos.ny, model);
+            var end = Rs.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
+            this.animateCircleTraversal(start.x + this.originX, start.y + this.originY, 8, end.nx, end.ny, model);
         },
+        // **hex** Hexadecimalize value with correct prefix and length.
         hex: function(value) {
             var hex = '00' + value.toString(16);
             return hex.substr(hex.length - 2, hex.length);
         },
+        // **criteria** Used to create comparable strings to order OSDs by host in id order.
         criteria: function(model) {
             return model.get('host') + this.hex(model.get('osd'));
         },
+        // **calcColAndRow** Used to figure out the Column and Row an OSD occupies.
+        calcColAndRow: function(id) {
+            return [(id % this.columns), Math.floor(id / this.columns)];
+        },
+        // **isAdjacent** Used to detect if a square is adjacent to another square on the grid.
+        // Used to color background tiles so that OSDs which belong to the same host are grouped
+        // together by color. We assume we're rendering from top to bottom, so we don't have to
+        // check if A is above B.
         isAdjacent: function(posA, posB) {
-            var colA = posA.id % this.columns;
-            var rowA = Math.floor(posA.id / this.columns);
-            var colB = posB.id % this.columns;
-            var rowB = Math.floor(posB.id / this.columns);
+            var colA = this.lookupPositionById[posA.id][0];
+            var rowA = this.lookupPositionById[posA.id][1];
+            var colB = this.lookupPositionById[posB.id][0];
+            var rowB = this.lookupPositionById[posB.id][1];
             if (rowA + 1 === rowB && colA === colB) {
-                // below
+                // A is below B
                 posA.neighborMap = 4;
                 posB.neighborMap = 1;
                 return true;
             }
             if (rowA === rowB && colB === colA + 1) {
-                // to right
+                // A is to right of B
                 posA.neighborMap = 2;
                 posB.neighborMap = 8;
                 return true;
             }
             if (rowA === rowB && colB === colA - 1) {
-                //to left
+                // A is to left of B
                 posA.neighborMap = 8;
                 posB.neighborMap = 2;
                 return true;
             }
+            // A is not adjacent to B.
             return false;
         },
+        // **renderOSDViews**
+        // Using the filter functions derived from the sliders for filtering by
+        // OSD states or PG states, we render each OSD or ignore it.
         renderOSDViews: function(filterFn) {
             var coll = _.first(this.collection.models, this.columns * this.rows);
             if (filterFn) {
                 coll = _.filter(coll, filterFn);
             }
-            //console.log(coll.length);
+            log.debug(coll.length);
             var d = $.Deferred();
             var last = _.last(coll);
             if (last) {
-                // add deferred to last model so we can
+                // Add promise to last model so we can
                 // signal rendering is done.
                 last.deferred = d;
             } else {
+                // Nothing to render, filtered collection is empty.
                 d.resolve();
             }
             if (this.customSort) {
+                // Shade the background squares for each OSD using a single
+                // color for each host.
                 coll = this.viewByHostGroup(coll);
             }
             _.each(coll, this.moveCircle, this);
             return d.promise();
         },
+        // **viewByHostGroup**
+        // To render backgrounds for each of the OSDs we create a map of their adjacencies
+        // to each other when layed out on a grid.
+        // 6 bits are used to represent the position's state.
+        //
+        // |LSB*|Meaning|
+        // |---|:----|
+        // |1|has a neighbor above|
+        // |2|has a neighbor to left|
+        // |3|has a neighbor to right|
+        // |4|has a neighbor below|
+        // |5|Is a corner piece above a neighbor|
+        // |6|Is a corner piece below a neighbor|
+        //
+        // bits 5 & 6 have special rendering rules where the squares are rendered as rectangles
+        // so they appear joined together in the UI and therefore part of the same group.
+        // This was the most pleasing layout.
+        //
+        // The layout algorithm tries to place each OSD so that is adjacent to at least 1 sibling.
+        //
+        // The color of the block is based on the angle of Hue
+        //
+        // ***Least Significant Bit**
+        //
         viewByHostGroup: function(coll) {
+            // Group all OSDs by Host
             coll = _.sortBy(coll, this.criteria);
-            // create grid representation
+            // Initialize empty grid.
             var arr = _.map(_.range(this.columns * this.rows), function(value) {
                 return {
                     id: value,
@@ -386,9 +507,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var self = this;
             var group = 1; // used as input to Hue value
             var neighborMap;
-            // Group all OSDs by Host and calculate the neighbor map
-            // for each position
+            // Calculate the neighbor map for each position
             _.each(coll, function(osd) {
+                // Find the next adjacent position in the empty grid
+                // to place this OSD element.
                 var nextPos = _.find(arr, function(curPos) {
                     if (prevPos === null && curPos.osd === null) {
                         return true;
@@ -398,9 +520,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 nextPos.osd = osd;
                 if (prevPos) {
                     if (prevPos.osd.get('host') !== osd.get('host')) {
+                        // If the hosts for this OSD are not in the same group
+                        // change the background grouping color formula.
                         group += 2.5;
                     } else {
-                        // update neighbor maps
+                        // The OSDs are in the same group. Update neighbor maps.
+                        // 
                         if (prevPos.neighborMap) {
                             neighborMap = prevPos.osd.get('neighborMap') || 0;
                             prevPos.osd.set('neighborMap', prevPos.neighborMap + neighborMap);
@@ -419,7 +544,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }), 'osd'), function(model, index) {
                 var neighbors = model.get('neighborMap');
                 if (this.isACornerBasedOn(neighbors)) {
-                    //console.log(model.get('osd') + ' check ' + neighborMap);
+                    log.debug(model.get('osd') + ' check ' + neighborMap);
                     if (this.hasBelow(neighbors)) {
                         // this is a corner piece with adjancency below
                         this.setBelowCornerBits(model, arr[index + this.columns].osd);
@@ -444,7 +569,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 var lneighbors = modelB.get('neighborMap');
                 lneighbors |= setBit;
                 modelB.set('neighborMap', lneighbors);
-                //console.log('above ' + losd.get('osd') + ' ' + losd.get('neighborMap'));
             };
         },
         // Is this square a corner piece?
@@ -526,7 +650,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             var legendGap = 50;
             var legendCount = 4;
             var xp = (this.width / 2) - ((legendGap * (legendCount - 1)) / 2);
-            console.log(xp);
+            log.debug(xp);
             _.each(_.range(legendCount), function(index) {
                 this.legendCircle(xp, y, index);
                 xp += legendGap;
@@ -563,7 +687,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 sqh += 2;
                 sqoy += 2;
             }
-            //console.log(model.get('osd') + ' neighborMap ' + neighborMap);
+            log.debug(model.get('osd') + ' neighborMap ' + neighbors);
             if (this.isCornerBelow(neighbors)) {
                 sqh += 2;
             }
@@ -575,6 +699,17 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             sq.data('modelid', model.id);
             return sq;
         },
+        // **animateCircleTraversal** implements a simple set of animations.
+        // 1. draw a circle
+        // 1. travel horizontally
+        // 1. travel vertically
+        // 1. draw text
+        //
+        // Raphael takes care of the tweening and animation scheduling.
+        //
+        // It tracks any Raphael wrapped SVG objects created in the collection model
+        // in an object called views.
+        //
         animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
             var sq = null;
             if (this.customSort) {
@@ -609,18 +744,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             });
             return c.animate(aFn);
         },
-        startSimulation: function() {
-            var self = this;
-            this.timer = setTimeout(function() {
-                self.simulateUsedChanges();
-                self.timer = self.startSimulation();
-            }, 3000);
-            return this.timer;
-        },
-        stopSimulation: function() {
-            clearTimeout(this.timer);
-            this.timer = null;
-        },
         renderWrapper: function(func) {
             func();
             this.paper = window.Raphael(this.ui.viz[0], this.w, this.h);
@@ -632,12 +755,6 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 App: this.App,
                 el: this.ui.filter
             }).render();
-            /*
-            this.$switcher = new SwitcherView({
-                App: this.App,
-                el: this.ui.switcher
-            }).render();
-            */
             this.$switcher = new FilterByView({
                 App: this.App,
                 el: this.ui.switcher
@@ -707,7 +824,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 // pulsing circle.
                 return;
             }
-            //console.log(id);
+            log.debug(id);
             if (_.isNumber(id)) {
                 var views = this.collection.get(id).views;
                 if (views) {
@@ -788,13 +905,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
                 var x = evt.clientX;
                 var y = evt.clientY;
-                //console.log(x + ' / ' + y);
+                log.debug(x + ' / ' + y);
                 var el = this.paper.getElementByPoint(x, y);
-                //console.log(el);
-                //console.log(el.attrs.x + ' / ' + el.attrs.y);
+                log.debug(el);
+                log.debug(el.attrs.x + ' / ' + el.attrs.y);
                 if (el) {
                     var id = el.data('modelid');
-                    //console.log(id);
+                    log.debug(id);
                     if (_.isFunction(handlerFn)) {
                         handlerFn = [handlerFn];
                     }
@@ -804,12 +921,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 }
             };
         },
+        // **filter** There are are two collections used to manage OSDs. `this.collection` is the source
+        // fetched directly from the Calamari API. `this.filterCol` is the copy post filtering
+        // rendered to the UI.
+        //
+        // There may be some opportunities for Mori.JS to help us with memory management and
+        // garbage collection, which is pretty naive in this version.
         filter: function(filterCol, deferred) {
             this.filterCol = filterCol;
             var enabled = filterCol.where({
                 enabled: true,
                 visible: true
             });
+            // remove all existing OSDs from SVG
             this.resetViews(null, {
                 previousModels: this.collection.models
             });
@@ -821,7 +945,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                     }
                     if (_.isFunction(obj.get('match'))) {
                         var t = obj.get('match')(m);
-                        //console.log('matched ' + m.id + ' ' + t);
+                        log.debug('matched ' + m.id + ' ' + t);
                         return t;
                     }
                     return false;
