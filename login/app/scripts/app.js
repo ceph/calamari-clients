@@ -6,7 +6,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
         events: {
             'click input[type="submit"]': 'loginHandler',
             'submit form': 'loginHandler',
-            'keyup input[name="username"],input[name="password"]': 'loginToggle'
+            'input input[name="username"],input[name="password"]': 'loginToggle'
         },
         ui: {},
         iconTemplate: _.template('<i class="<%- iconClazz %>" icon-large"></i>'),
