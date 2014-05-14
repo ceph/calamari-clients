@@ -12,6 +12,10 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
         iconTemplate: _.template('<i class="<%- iconClazz %>" icon-large"></i>'),
         initialize: function() {
             _.bindAll(this, 'loginHandler', 'loginToggle', 'toJSON', 'disableSubmit', 'enableSubmit', 'showErrors', 'hideErrors');
+            // Issue #8352 Workaround Browser Autofill not sending input event
+            setTimeout(function() {
+                this.loginToggle();
+            }.bind(this), 500);
         },
         render: function() {
             this.ui.username = this.$('input[name="username"]');
