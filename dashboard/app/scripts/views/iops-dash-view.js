@@ -78,7 +78,7 @@ define([
                     // deal with no valid value
                     iop = 0;
                 } else {
-                    iop = iops[1];
+                    iop = iop[1];
                 }
             }
             this.ui.headline.text(iop);
