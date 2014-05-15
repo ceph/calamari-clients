@@ -60,34 +60,44 @@ define([
                 dygraph.updateOptions({
                     file: d.data
                 });
-            });
+                this.updateIOPS(d);
+            }.bind(this));
+        },
+        updateIOPS: function(d) {
+            var iops = 0;
+            var iop = 0;
+            if (d.data && d.data.length) {
+                // Look at the last 3 values
+                iops = _.last(d.data, 3);
+                // Use the first one that isn't null
+                // @see Issue #8350
+                iop = _.find(iops.reverse(), function(tuple) {
+                    return tuple[1] !== null;
+                });
+                if (iop === undefined) {
+                    // deal with no valid value
+                    iop = 0;
+                } else {
+                    iop = iop[1];
+                }
+            }
+            this.ui.headline.text(iop);
         },
         postRender: function() {
             var request = this.getData();
             var canvas = this.ui.canvas[0];
-            var headline = this.ui.headline;
             var legend = this.ui.legend[0];
-            var self = this;
             request.done(function(resp) {
                 var d = gutils.graphiteJsonArrayToDygraph(resp);
-                self.dygraph = new Dygraph(canvas, d.data, {
+                this.dygraph = new Dygraph(canvas, d.data, {
                     axisLabelFontSize: 10,
                     labels: ['Date', 'IOPS'],
                     labelsKMB: true,
                     labelsDiv: legend,
                     interactionModel: {}
                 });
-                var iops = 0;
-                if (d.data && d.data.length) {
-                    // Ignore empty datasets
-                    iops = _.last(d.data)[1];
-                    if (iops === null) {
-                        // deal with nulls
-                        iops = 0;
-                    }
-                }
-                headline.text(iops);
-            });
+                this.updateIOPS(d);
+            }.bind(this));
         }
     });
 

@@ -28,6 +28,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
     }
 
     function disappear(callback) {
+        this.gaugeState = 'hidden';
         return this._disappearAnimation(this.$el, function() {
             this.$el.css('visibility', 'hidden');
             if (callback) {
@@ -37,6 +38,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
     }
 
     function reappear(callback) {
+        this.gaugeState = 'visible';
         this.$el.css('visibility', 'visible');
         return this._reappearAnimation(this.$el, callback);
     }
@@ -76,6 +78,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/an
             target._reappear = reappear;
             target._disappearAnimation = animation.single('animated fadeOutUp-enter fadeOutUp');
             target._reappearAnimation = animation.single('animated fadeInDown-enter fadeInDown');
+            target.gaugeState = 'visible';
 
             /* bind new functions to target */
             _.bindAll(target, '_expand', '_collapse', '_disappear', '_reappear', '_disappearAnimation', '_reappearAnimation');

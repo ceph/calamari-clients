@@ -71,7 +71,7 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
             },
             showError: function(request) {
                 // TODO too tightly coupled use $broadcast
-                growl.addErrorMessage('ERRROR: ' + request.headline + ' - ' + request.error_message, {
+                growl.addErrorMessage('ERROR: ' + request.headline + ' - ' + request.error_message, {
                     ttl: -1
                 });
             },
