@@ -282,12 +282,12 @@
                         ids: []
                     });
                     var osds = $scope.osds;
-                    OSDService.getSet(r.ids).then(function(newOsds, index) {
+                    OSDService.getSet(r.ids).then(function(newOsds) {
                         osds = _.filter(osds, function(osd) {
                             // delete osds that have been removed from host
                             return newOsds[osd.id] !== undefined;
                         });
-                        _.each(newOsds, function(nOsd) {
+                        _.each(newOsds, function(nOsd, index) {
                             if (osds[nOsd.id] === undefined) {
                                 // add new osds
                                 addUIMetadataToOSDData(nOsd, index);
@@ -295,6 +295,7 @@
                             }
                             nOsd.repairDisabled = !nOsd.up;
                             nOsd.editDisabled = !nOsd.up || !nOsd['in'];
+                            nOsd.index = index;
                             formatOSDForUI(nOsd);
                             generateConfigDropdown(nOsd, configClickHandler);
                             _.extend(osds[nOsd.id], nOsd);
