@@ -21,7 +21,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             if (this.App) {
                 this.ReqRes = Backbone.Marionette.getOption(this.App, 'ReqRes');
                 this.listenTo(this.App.vent, 'filter:update', this.fetchOSDPGCount);
-                this.listenTo(this.App.vent, 'dashboard:refresh', this.forceUIUpdate);
+                this.listenTo(this.App.vent, 'dashboard:refresh', this.fetchOSDPGCount);
                 this.listenTo(this.App.vent, 'status:update', this.statusUpdate);
             }
             gaugeHelper(this);
@@ -133,6 +133,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 height: height,
                 width: width
             });
+            log.debug('height: ' + height + ' width: ' + width + ' count: ' + this.count + ' layout: ', layout);
 
             this.layer = new Kinetic.Layer();
             this.tlayer = new Kinetic.Layer();
@@ -191,27 +192,32 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             }, 0);
         },
         fetchOSDPGCount: function() {
-            if (this.gaugeState === 'hidden') {
+            // Always update the collection on an update
+            this.collection.set(this.ReqRes.request('get:osdpgcounts'));
+            if (!this.$el.is(':visible')) {
+                // do nothing if the widget isn't visible
                 return;
             }
+            var count = this.countPGs();
+            if (count === this.count) {
+                // if the count hasn't changed do nothing
+                return;
+            }
+            //PG Replica Count changed, re-render the canvas
+            this.count = count;
             this.forceUIUpdate();
+
         },
         forceUIUpdate: function() {
             log.debug('Rendering PG Map');
             setTimeout(function() {
-                this.collection.set(this.ReqRes.request('get:osdpgcounts'));
-                var count = this.countPGs();
-                if (count !== this.count) {
-                    // PG Replica Count changed, re-render the canvas
-                    this.count = count;
-                    if (this.stage) {
-                        this.stage.destroy();
-                        this.backstage.destroy();
-                    }
-                    this.initCanvas();
+                if (this.stage) {
+                    this.stage.destroy();
+                    this.backstage.destroy();
                 }
+                this.initCanvas();
                 this.trigger('renderMap');
-            }.bind(this), 250);
+            }.bind(this), 0);
         },
         countAttributes: function(attr, list) {
             return _.reduce(list, function(memo, key) {

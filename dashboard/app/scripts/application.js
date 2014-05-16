@@ -234,11 +234,15 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
         // On leaving dashboard.
         onleavedashmode: function() {},
         // In dashboard.
-        ondashboard: function( /*event, from, to, host, id*/ ) {
-            this.vent.trigger('dashboard:refresh');
+        ondashboard: function(event, from, to /*, host, id*/ ) {
+            log.debug('ondashboard: ' + event + ' from ' + from + ' to ' + to);
+            setTimeout(function() {
+                // TODO dirty hack - need to replace this with a promise
+                // Wait to send event, otherwise the receiver isn't
+                // ready to receive it.
+                this.vent.trigger('dashboard:refresh');
+            }.bind(this), 500);
         }
     });
     return Application;
 });
-/*
- */
