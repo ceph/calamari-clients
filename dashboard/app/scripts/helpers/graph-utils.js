@@ -3,34 +3,35 @@
 define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbone, JST) {
     'use strict';
 
-    /* Escape FQDN for Graphite */
+    // **escapeHostname**
+    // Escape FQDN for Graphite.
     function escapeHostname(hostname) {
-        return hostname.replace(/\./g,'_');
+        return hostname.replace(/\./g, '_');
     }
 
-    /*
-     * Creates a partial applied function which is pre-bound to the underscore.template
-     * to create the target.
-     *
-     * This returns a function with the following signature:
-     *
-     * function(metrics)
-     *
-     * @param metrics is an array of strings for specific leaf keys of Graphite Targets we're looking
-     *        to request. e.g. [ 'tx_errors', 'rx_errors' ]
-     *
-     * This creates another partially applied function with the following signature:
-     *
-     * function(hostname, id)
-     *
-     * @param hostname - hostname of target we want
-     * @param id - subkey of target we're looking for e.g. [ 'eth0', 'eth1' ]
-     *
-     * Which is used to create more specific target keys which target specific parts of the graphite hierarchy.
-     * We do it this way because we know which metrics want ahead of time, but need
-     * to dynamically fill in the hostname and subkey we need to request usually after making a 2nd request to graphite
-     * to find out what subkeys are available.
-     */
+    // **makeTargetTemplate**
+    // Creates a partial applied function which is pre-bound to the underscore.template
+    // to create the target.
+    //
+    // This returns a function with the following signature:
+    //
+    // function(metrics)
+    //
+    // @param metrics is an array of strings for specific leaf keys of Graphite Targets we're looking
+    //        to request. e.g. [ 'tx_errors', 'rx_errors' ]
+    //
+    // This creates another partially applied function with the following signature:
+    //
+    // function(hostname, id)
+    //
+    // @param hostname - hostname of target we want
+    // @param id - subkey of target we're looking for e.g. [ 'eth0', 'eth1' ]
+    //
+    // Which is used to create more specific target keys which target specific parts
+    // of the graphite hierarchy.
+    // We do it this way because we know which metrics want ahead of time, but need
+    // to dynamically fill in the hostname and subkey we need to request usually after
+    // making a 2nd request to graphite to find out what subkeys are available.
 
     function makeTargetTemplate(path) {
         var template = JST[path];
@@ -62,6 +63,8 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
         makeNetworkTargets: makeTargetTemplate('app/scripts/templates/graphite/NetworkTargets.ejs'),
         makePoolIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/PoolIOPSTarget.ejs'),
         makePoolDiskFreeTargets: makeTargetTemplate('app/scripts/templates/graphite/PoolDiskFreeTarget.ejs'),
+        // **makeHeightWidthParams**
+        // Construct height and width parameters for graphite.
         makeHeightWidthParams: function(width, height) {
             var template = _.template('width=<%- args.width %>&height=<%- args.height %>', undefined, {
                 variable: 'args'
@@ -73,6 +76,9 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 });
             };
         },
+
+        // **makeColorListParams**
+        // Construct list of color parameters for graphite.
         makeColorListParams: function(list) {
             var template = _.template('colorList=<%- args.list %>', undefined, {
                 variable: 'args'
@@ -85,6 +91,9 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 return _.identity(result);
             };
         },
+
+        // **makeBaseUrl**
+        // Construct the host prefix url to the graphite render API.
         makeBaseUrl: function(host) {
             var template = _.template('<%= args.host %>/render/?', undefined, {
                 variable: 'args'
@@ -95,12 +104,11 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 });
             };
         },
-        /*
-         * takes a function which returns an array of strings, graphite target list values.
-         * Returns a function which applies any arguments to the partially applied function parameter.
-         * The returned function returns a url param string containing target params suitable for graphite.
-         *
-         */
+
+        // **makeTargets**
+        // Takes a function which returns an array of strings, graphite target list values.
+        // Returns a function which applies any arguments to the partially applied function parameter.
+        // The returned function returns a url param string containing target params suitable for graphite.
         makeTargets: function(fn) {
             var template = _.template('target=<%- args.target %>', undefined, {
                 variable: 'args'
@@ -113,6 +121,9 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 });
             };
         },
+
+        // **makeParam**
+        // Construct an arbitrary key value pair parameter.
         makeParam: function(key, value) {
             var param = _.template('<%- key %>=<%- value %>', {
                 key: key,
@@ -122,6 +133,9 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 return param;
             };
         },
+
+        // **makeGraphURL**
+        // Construct a complete Graphite URL using the supplied functions.
         makeGraphURL: function(baseUrlFn, fns) {
             var initValue = baseUrlFn() + _.first(fns)();
             var restFns = _.rest(fns);
@@ -132,6 +146,9 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 }, initValue);
             };
         },
+
+        // **graphiteJsonArrayToDygraph**
+        // Convert JSON output from Graphite into data Dygraph can use.
         graphiteJsonArrayToDygraph: function(resp) {
             // convert time which is usually the first part of a series tuple
             var data = _.map(resp.datapoints, function(series) {
@@ -147,12 +164,15 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 data: data
             };
         },
+
+        // **sumSeries**
+        // construct a sumSeries parameter request for graphite.
         sumSeries: function(fn) {
             return function() {
                 var args = arguments;
-                return [ 'sumSeries(' + _.reduce(fn.apply(this, args), function(memo, value) {
+                return ['sumSeries(' + _.reduce(fn.apply(this, args), function(memo, value) {
                     return memo + ',' + value;
-                }) + ')' ];
+                }) + ')'];
             };
         }
     };
