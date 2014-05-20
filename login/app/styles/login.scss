@@ -9,7 +9,8 @@ $login-foreground: $itlightgray;
 $app-text-color: lighten($itdarkgray,10%);
 $app-logo-background: $itdarkred;
 body {
-    font-family:'ApexSansMedium';
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 400;
     background: $login-background;
 }
 .loginBox {
@@ -37,7 +38,8 @@ body {
 }
 .input-common-style {
     color: $app-text-color;
-    font-family: ApexSansMedium;
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 400;
 }
 input[type='text'] {
     @extend .input-common-style;
