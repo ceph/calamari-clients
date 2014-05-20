@@ -1,11 +1,10 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Contact: info@inktank.com
-Disclaimer: Commercial software from Inktank Storage, Inc.
-License: Not redistributable
+Upstream-Contact: calamari@ceph.com
+License: MIT
 
 Files: *
-Copyright 2013, Inktank Storage, Inc.
-License: Not redistributable
+Copyright: 2013-2014 Red Hat, Inc.
+License: MIT
 
 Files: underscore/*
 Copyright: Copyright (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
