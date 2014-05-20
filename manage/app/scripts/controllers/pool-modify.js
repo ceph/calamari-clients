@@ -58,10 +58,10 @@
                             var okmodal = modalHelpers.SuccessfulRequest($modal, {
                                 title: 'Delete Request Successful'
                             });
-                            okmodal.$scope._hide = function() {
-                                okmodal.$scope.$hide();
+                            okmodal.$scope.$hide = _.wrap(okmodal.$scope.$hide, function($hide) {
+                                $hide();
                                 $location.path('/pool');
-                            };
+                            });
                             return;
                         }
                         var umodal = modalHelpers.SuccessfulRequest($modal, {
@@ -69,10 +69,10 @@
                             content: result.data,
                             container: '.manageApp'
                         });
-                        umodal.$scope._hide = function() {
-                            umodal.$scope.$hide();
+                        umodal.$scope.$hide = _.wrap(umodal.$scope.$hide, function($hide) {
+                            $hide();
                             $location.path('/pool');
-                        };
+                        });
                     }, function(error) {
                         $log.error(error);
                         var errModal;
@@ -80,10 +80,10 @@
                             errModal = modalHelpers.UnAuthorized($modal, {
                                 container: '.manageApp'
                             });
-                            errModal.$scope._hide = function() {
-                                errModal.$scope.$hide();
+                            errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
+                                $hide();
                                 $location.path('/pool');
-                            };
+                            });
                             return;
                         }
                         errModal = modalHelpers.UnexpectedError($modal, {
@@ -91,10 +91,10 @@
                             content: error.data,
                             container: '.manageApp',
                         });
-                        errModal.$scope._hide = function() {
-                            modal.$scope.$hide();
+                        errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
+                            $hide();
                             $location.path('/pool');
-                        };
+                        });
                     });
                 };
             };
@@ -120,10 +120,10 @@
                             var okmodal = modalHelpers.SuccessfulRequest($modal, {
                                 title: 'Modify Request Successful'
                             });
-                            okmodal.$scope._hide = function() {
-                                okmodal.$scope.$hide();
+                            okmodal.$scope.$hide = _.wrap(okmodal.$scope.$hide, function($hide) {
+                                $hide();
                                 $location.path('/pool');
-                            };
+                            });
                             return;
                         }
                         var umodal = modalHelpers.SuccessfulRequest($modal, {
@@ -131,10 +131,10 @@
                             content: result.data,
                             container: '.manageApp'
                         });
-                        umodal.$scope._hide = function() {
-                            umodal.$scope.$hide();
+                        umodal.$scope.$hide = _.wrap(umodal.$scope.$hide, function($hide) {
+                            $hide();
                             $location.path('/pool');
-                        };
+                        });
                     }, function(error) {
                         $log.error(error);
                         var errModal;
@@ -142,10 +142,10 @@
                             errModal = modalHelpers.UnAuthorized($modal, {
                                 container: '.manageApp'
                             });
-                            errModal.$scope._hide = function() {
-                                errModal.$scope.$hide();
+                            errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
+                                $hide();
                                 $location.path('/pool');
-                            };
+                            });
                             return;
                         }
                         errModal = modalHelpers.UnexpectedError($modal, {
@@ -153,10 +153,10 @@
                             content: error.data,
                             container: '.manageApp',
                         });
-                        errModal.$scope._hide = function() {
-                            errModal.$scope.$hide();
+                        errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
+                            $hide();
                             $location.path('/pool');
-                        };
+                        });
                     });
                 }
             };

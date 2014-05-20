@@ -107,39 +107,39 @@
                             var okmodal = modalHelpers.SuccessfulRequest($modal, {
                                 title: 'Delete Request Successful'
                             });
-                            okmodal.$scope._hide = function() {
-                                okmodal.$scope.$hide();
+                            okmodal.$scope.$hide = _.wrap(okmodal.$scope.$hide, function($hide) {
+                                $hide();
                                 $location.path('/pool');
-                            };
+                            });
                             return;
                         }
                         var umodal = modalHelpers.SuccessfulRequest($modal, {
                             title: 'Delete Pool Request Completed',
                             content: result.data
                         });
-                        umodal.$scope._hide = function() {
-                            umodal.$scope.$hide();
+                        umodal.$scope.$hide = _.wrap(umodal.$scope.$hide, function($hide) {
+                            $hide();
                             $location.path('/pool');
-                        };
+                        });
                     }, function(error) {
                         $log.error(error);
                         var errModal;
                         if (error.status === 403) {
                             errModal = modalHelpers.UnAuthorized($modal, {});
-                            errModal.$scope._hide = function() {
-                                errModal.$scope.$hide();
+                            errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
+                                $hide();
                                 $location.path('/pool');
-                            };
+                            });
                             return;
                         }
                         errModal = modalHelpers.UnexpectedError($modal, {
                             status: error.status,
                             content: error.data
                         });
-                        errModal.$scope._hide = function() {
-                            modal.$scope.$hide();
+                        errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
+                            $hide();
                             $location.path('/pool');
-                        };
+                        });
                     });
                 };
             };

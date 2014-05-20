@@ -46,12 +46,12 @@
                             'html': true
                         });
                         modal.$scope.closeDisabled = true;
-                        modal.$scope._hide = function() {
-                            modal.$scope.$hide();
+                        modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+                            $hide();
                             ClusterService.initialize().then(function() {
                                 $location.path('/');
                             });
-                        };
+                        });
 
                         function checkClusterUp() {
                             ClusterService.getList().then(function(clusters) {

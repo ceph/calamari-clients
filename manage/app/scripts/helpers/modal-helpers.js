@@ -36,9 +36,9 @@
                 return function onError(resp) {
                     modal.$scope.title = 'Unexpected Error ' + resp.status;
                     modal.$scope.content = '<pre>' + resp.data + '</pre>';
-                    modal.$scope._hide = function() {
-                        modal.$scope.$hide();
-                    };
+                    modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+                        $hide();
+                    });
                     modal.$scope.disableClose = false;
                     modal.$scope.$show();
                     if (_.isFunction(callback)) {

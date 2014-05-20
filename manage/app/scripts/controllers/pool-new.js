@@ -42,10 +42,10 @@
                             title: 'Create Pool Request Successful',
                             container: '.manageApp'
                         });
-                        modal.$scope._hide = function() {
-                            modal.$scope.$hide();
+                        modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+                            $hide();
                             $location.path('/pool');
-                        };
+                        });
                         return;
                     }
                     modal = modalHelpers.SuccessfulRequest($modal, {
@@ -53,10 +53,10 @@
                         content: resp.data,
                         container: '.manageApp'
                     });
-                    modal.$scope._hide = function() {
-                        modal.$scope.$hide();
+                    modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+                        $hide();
                         $location.path('/pool');
-                    };
+                    });
                 }, function(error) {
                     $scope.error = true;
                     var modal;
@@ -64,9 +64,9 @@
                         modal = modalHelpers.UnAuthorized($modal, {
                             container: '.manageApp'
                         });
-                        modal.$scope._hide = function() {
-                            modal.$scope.$hide();
-                        };
+                        modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+                            $hide();
+                        });
                         return;
                     }
                     modal = modalHelpers.UnexpectedError($modal, {
@@ -74,9 +74,9 @@
                         content: error.data,
                         container: '.manageApp',
                     });
-                    modal.$scope._hide = function() {
-                        modal.$scope.$hide();
-                    };
+                    modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+                        $hide();
+                    });
                 });
             };
 

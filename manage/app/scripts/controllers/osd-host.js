@@ -233,9 +233,9 @@
                         var elapsed = Date.now() - start;
                         var remaining = (elapsed < config.getAnimationTimeoutMs()) ? config.getAnimationTimeoutMs() - elapsed : 0;
                         modal.$scope.disableClose = true;
-                        modal.$scope._hide = function() {
-                            modal.$scope.$hide();
-                        };
+                        modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+                            $hide();
+                        });
                         $timeout(function() {
                             osd[buttonLabel] = text.success;
                             $timeout(function() {

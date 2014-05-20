@@ -77,9 +77,9 @@
                         template: 'views/custom-modal.html',
                         html: true
                     });
-                    modal.$scope._hide = function() {
-                        modal.$scope.$hide();
-                    };
+                    modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+                        $hide();
+                    });
                     if (resp.status === 403) {
                         modal.$scope.title = '<i class="text-danger fa fa-exclamation-circle fa-lg"></i> Unauthorized Access';
                         modal.$scope.content = 'Error ' + resp.status + '. Please try reloading the page and logging in again.</p>';
