@@ -2,8 +2,9 @@ $shortTimer: 0.25s;
 $medTimer: 0.25s;
 $itapp-viz-text-color: $itdarkgray;
 $itapp-viz-vertical-slide-distance:  220;
+$itapp-font-family: 'Titillium Web', sans-serif;
 text {
-    font: 9px ApexSansMedium;
+    font: 9px $itapp-font-family;
     stroke: none;
     fill: $itapp-viz-text-color;
 }

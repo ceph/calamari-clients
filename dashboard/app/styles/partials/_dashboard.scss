@@ -1,6 +1,8 @@
 $itapp-background-color: $itdarkgray;
 $itapp-card-color: $itlightgray;
-$itapp-font-family: 'ApexSansMedium';
+$itapp-font-family: 'Titillium Web', sans-serif;
+$itapp-font-weight-normal: 400;
+$itapp-font-weight-light: 300;
 $itapp-standard-font-color: $itdarkgray;
 $itapp-card-border-radius: 1px;
 $itapp-card-box-shadow-color: #5e6a71;
@@ -11,6 +13,7 @@ body {
     background-color: $itapp-background-color;
     font-family: $itapp-font-family;
     font-style: normal;
+	font-weight: $itapp-font-weight-normal;
 }
 
 .initial-hide {
@@ -79,7 +82,8 @@ $third-row-height: 120px;
 	min-width: 200px;
     }
     h1, h2, h3, h4, h5, h6 {
-        font-family: ApexSansMedium;
+        font-family: $itapp-font-family;
+		font-weight: $itapp-font-weight-normal;
     }
 }
 
@@ -113,8 +117,9 @@ hr.style-two {
 .card-title {
     color: $itdarkgray;
     text-transform: uppercase;
-    font-family: ApexSansLight;
+    font-family: $itapp-font-family;
     font-size: 1.5em;
+	font-weight: $itapp-font-weight-light;
 }
 table.metrics tr td:first-child {
     text-align: right;
@@ -137,9 +142,11 @@ table.metric td:last-child {
 .table.user-request tbody td, .table.user-request thead th {
 	text-align: left;
 	font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-light;
 }
 .table tbody td {
-	font-family: ApexSansLight;
+	font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-light;
 }
 span.infotext {
     font-size: 25px;
@@ -315,7 +322,8 @@ $bc-item-count: 4;
     padding: 0;
 }
 .aside {
-	font-family: ApexSansMedium;
+	font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-normal;
     z-index: 1049;
     background: #fff;
     position: fixed;
@@ -343,7 +351,8 @@ $bc-item-count: 4;
         margin-right: -8px;
     }
 	h4 {
-		font-family: ApexSansMedium;
+		font-family: $itapp-font-family;
+		font-weight: $itapp-font-weight-normal;
 	}
 }
 .aside-body {
@@ -379,13 +388,15 @@ $bc-item-count: 4;
 }
 .table.health-table {
 	h3 {
-		font-family:ApexSansLight;
+		font-family: $itapp-font-family;
+		font-weight: $itapp-font-weight-light;
 		text-transform: capitalize;
 	}
 	td, th {
 		text-align: left;
 	}
 	td {
-		font-family: ApexSansMedium;
+		font-family: $itapp-font-family;
+		font-weight: $itapp-font-weight-normal;
 	}
 }

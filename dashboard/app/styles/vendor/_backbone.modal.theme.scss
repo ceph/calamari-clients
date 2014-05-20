@@ -1,3 +1,5 @@
+$itapp-font-family: 'Titillium Web', sans-serif;
+$itapp-font-weight-normal: 400;
 .bbm-wrapper {
   background: rgba(0, 0, 0, 0.75);
   -webkit-transition: background-color 0.3s; }
@@ -36,11 +38,13 @@
   font-weight: normal;
   font-size: 22px;
   line-height: 1em;
-  font-family: 'ApexSansMedium';
+  font-family: $itapp-font-family;
+  font-weight: $itapp-font-weight-normal;
 }
 
 .bbm-modal__section {
-  font-family: 'ApexSansMedium';
+  font-family: $itapp-font-family;
+  font-weight: $itapp-font-weight-normal;
   padding: 0 30px;
   margin-top: 0px;
   font-size: 14px;

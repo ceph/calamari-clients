@@ -77,8 +77,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         ],
         makeText: function(index, x, y) {
             var t = new Kinetic.Text({
-                fontFamily: 'ApexSansMedium',
+                fontFamily: 'Titillium Web, sans-serif',
                 fontSize: '12',
+                fontWeight: '400',
                 text: this.legendText[index],
                 fill: '#37424a',
                 x: x,

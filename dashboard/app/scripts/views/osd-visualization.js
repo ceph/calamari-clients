@@ -640,7 +640,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.paper.text(originX, originY + 23, text).attr({
                 'cursor': 'default',
                 'font-size': '12px',
-                'font-family': 'ApexSansLight'
+                'font-family': 'Titillium Web, sans-serif',
+                'font-weight': 300
             });
             return c.animate(aFn);
         },

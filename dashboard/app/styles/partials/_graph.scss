@@ -1,8 +1,13 @@
+$itapp-font-family: 'Titillium Web', sans-serif;
+$itapp-font-weight-normal: 400;
+$itapp-font-weight-light: 300;
 .graph-mode {
     color: $itlightgray;
-    font-family: 'ApexSansMedium';
+    font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-normal;
     h1 {
-    	font-family: 'ApexSansLight';
+    	font-family: $itapp-font-family;
+		font-weight: $itapp-font-weight-light;
     }
     top: 5px;
     left: 0;
@@ -43,7 +48,8 @@
 }
 h2.graph-subtitle {
 	color: $itgray;
-	font-family: 'ApexSansLight';
+    font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-light;
 	margin-left: 30px;
 }
 .graph-title-system {
@@ -100,7 +106,8 @@ h2.graph-subtitle {
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    font-family:'ApexSansLight';
+    font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-light;
     vertical-align: top;
 }
 .graph-label {
@@ -110,7 +117,8 @@ h2.graph-subtitle {
 	margin-left: auto;
 	margin-right: auto;
 	font-size: 1em;
-	font-family: 'ApexSansLight';
+    font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-light;
 	.a {
 		display: inline-block;
 		min-width: 21.5%;
@@ -182,11 +190,13 @@ h2.graph-subtitle {
 }
 h3.dygraph-legend-title {
 	margin-top: 5px;
-	font-family: 'ApexSansLight';
+    font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-light;
 }
 h3.graph-control-title {
 	margin: 0 0 15px 9px;
-	font-family: 'ApexSansLight';
+    font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-light;
 }
 .graph-spinner {
 	position: absolute;
