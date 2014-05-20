@@ -20,6 +20,7 @@ body {
     h3 {
         color: $app-text-color;
         text-align: center;
+		font-weight: 300;
         margin-bottom: 40px;
     }
     margin-top: 40px;
@@ -30,8 +31,7 @@ body {
     text-align: center;
 }
 .logo {
-    background: $app-logo-background;
-    padding: 5px 7px 10px 10px;
+    padding: 5px 10px 10px 10px;
     width: 120px;
     text-align: center;
     margin: 0 auto 10px auto;
