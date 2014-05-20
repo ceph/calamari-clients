@@ -27,7 +27,8 @@ $itapp-card-color: $itlightgray;
 
 body {
     background: $it-background-color;
-    font-family: "ApexSansMedium", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "Titillium Web, sans-serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 400;
     color: #333;
 }
 .navbar .btn {

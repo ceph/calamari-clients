@@ -20,7 +20,8 @@ $it-tab-background: lighten($itlightgray, 9%);
     }
 }
 .modal-header {
-    font-family: 'ApexSansLight';
+    font-family: 'Titillium Web', sans-serif;
+	font-weight: 300;
 }
 ul.nav {
     a {
@@ -53,10 +54,12 @@ ul.nav li.active {
     background: $it-tab-background;
 }
 input {
-    font-family:'ApexSansMedium';
+    font-family: 'Titillium Web', sans-serif;
+	font-weight: 400;
 }
 table.users td {
-    font-family:'ApexSansMedium';
+    font-family: 'Titillium Web', sans-serif;
+	font-weight: 400;
     vertical-align: bottom;
 }
 table.users input {
@@ -79,7 +82,8 @@ table.users th {
     width: 5em;
 }
 h4 {
-	font-family: 'ApexSansLight';
+    font-family: 'Titillium Web', sans-serif;
+	font-weight: 300;
 	font-size: 2em;
 	min-height: 29px;
 	vertical-align: middle;
