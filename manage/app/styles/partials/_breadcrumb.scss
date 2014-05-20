@@ -1,6 +1,8 @@
 $itapp-background-color: $itdarkgray;
 $itapp-card-color: $itlightgray;
-$itapp-font-family: 'ApexSansMedium';
+$itapp-font-family: 'Titillium Web', sans-serif;
+$itapp-font-weight-normal: 400;
+$itapp-font-weight-light: 300;
 $itapp-standard-font-color: $itdarkgray;
 $itapp-card-border-radius: 1px;
 $itapp-card-box-shadow-color: #5e6a71;
@@ -41,7 +43,8 @@ $third-row-height: 120px;
 	vertical-align: middle;
 }
 .table .label {
-	font-family: ApexSansMedium;
+	font-family: $itapp-font-family;
+	font-weight: $itapp-font-weight-normal;
 }
 .dropdown-menu {
 	background-color: $itlightgray;
@@ -68,7 +71,8 @@ $third-row-height: 120px;
     padding: 9px;
     margin-top: 8px;
     h1, h2, h3, h4, h5, h6 {
-        font-family: ApexSansMedium;
+	    font-family: $itapp-font-family;
+	    font-weight: $itapp-font-weight-normal;
     }
 }
 
@@ -77,7 +81,8 @@ $third-row-height: 120px;
     padding-right: 4px;
 }
 .btn {
-    font-family: ApexSansLight;
+    font-family: $itapp-font-family;
+    font-weight: $itapp-font-weight-light;
 }
 .btn-pool {
 	min-width: 150px;
@@ -97,11 +102,7 @@ $color-width: 5px;
 .card-title {
     color: $itdarkgray;
     text-transform: uppercase;
-//    font-family: ApexSansLight;
     font-size: 1.5em;
-}
-.table tbody td {
-//	font-family: ApexSansLight;
 }
 .icon-target {
 	padding: 2px;
