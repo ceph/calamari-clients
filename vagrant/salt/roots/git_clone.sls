@@ -3,5 +3,5 @@ git_clone:
     - latest
     - user: vagrant
     - target: /home/vagrant/clients
-    - name: /git/
+    - name: /git/clients
 
