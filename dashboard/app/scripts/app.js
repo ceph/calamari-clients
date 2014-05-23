@@ -1,6 +1,6 @@
 /*global require, Uri */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'helpers/generate-osds', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'tracker', 'jsuri', 'marionette', 'bootstrap', 'notytheme', 'notyGrowltheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Generate, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, UserRequestTracker) {
+require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'tracker', 'jsuri', 'marionette', 'bootstrap', 'notytheme', 'notyGrowltheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, UserRequestTracker) {
     // Process Page URL - we look for parameters like target to set initial SPA state.
     var uri = new Uri(document.URL);
     var target = uri.getQueryParamValue('target');
@@ -168,7 +168,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
 
         // OSD Collection instance is initialized here. This is the vestiges of our former offline and demo modes.
         var collection;
-        collection = config.offline ? Generate.osds(160) : new Collection([], {});
+        collection = new Collection([], {});
 
         // Start the OSD Visualization. It isn't rendered yet, but it's needed for other components to query against.
         var viz = new views.OSDVisualization({

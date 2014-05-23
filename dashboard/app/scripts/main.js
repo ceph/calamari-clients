@@ -22,9 +22,6 @@ require.config({
             deps: ['jquery'],
             exports: 'Gauge'
         },
-        flotr2: {
-            deps: ['bean', 'underscore']
-        },
         raphael: {
             exports: 'Raphael'
         },
@@ -58,7 +55,6 @@ require.config({
     paths: {
         kinetic: 'vendor/kinetic-v4.7.3',
         application: 'application',
-        faker: '../bower_components/Faker/Faker',
         jquery: '../bower_components/jquery/jquery',
         noty: '../bower_components/noty/js/noty/jquery.noty',
         notylayoutTop: '../bower_components/noty/js/noty/layouts/top',
@@ -74,7 +70,6 @@ require.config({
         bean: '../bower_components/bean/bean',
         'backbone.babysitter': '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
         'backbone.wreqr': '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
-        flotr2: 'vendor/flotr2.amd',
         raphael: 'vendor/raphael',
         humanize: 'vendor/humanize',
         'bootstrap-switch': '../bower_components/bootstrap-switch/static/js/bootstrap-switch',
