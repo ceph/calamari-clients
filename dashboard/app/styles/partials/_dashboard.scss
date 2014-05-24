@@ -257,7 +257,7 @@ $bc-item-count: 4;
     overflow: hidden;
     @include border-radius(100%);
     @include background(linear-gradient(top left, lighten($itgray, 30%), $itdarkgray));
-    line-height: 1.9;
+    line-height: 2.1;
     color: $itlightgray;
     cursor: pointer;
 }
