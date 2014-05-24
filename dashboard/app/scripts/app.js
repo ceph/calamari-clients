@@ -7,7 +7,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
     var initial = 'dashmode';
     var anchor = 'dashboard';
     // TODO This needs to be moved to config.json
-    log.setLevel(log.levels.DEBUG);
+    log.setLevel(log.levels.WARN);
     if (target) {
         console.log(target);
         if (target === 'workbench') {

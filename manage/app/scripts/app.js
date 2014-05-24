@@ -28,7 +28,11 @@
             .service('ErrorService', ErrorService)
             .run(PostInitRunBlock)
             .run(GitRunBlock)
-            .config(RouteConfig);
+            .config(['$logProvider',
+            function($logProvider) {
+                $logProvider.debugEnabled(false);
+            }
+        ]).config(RouteConfig);
 
         console.log(app);
         angular.element(document).ready(function() {
