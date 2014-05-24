@@ -1,35 +1,47 @@
 /* global define */
 
-define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health-model', 'models/status-model', 'models/cluster-model', 'marionette'], function($, _, Backbone, UsageModel, HealthModel, StatusModel, ClusterModel) {
+define(['jquery', 'underscore', 'backbone', 'loglevel', 'models/usage-model', 'models/health-model', 'models/status-model', 'models/cluster-model', 'marionette'], function($, _, Backbone, log, UsageModel, HealthModel, StatusModel, ClusterModel) {
     'use strict';
 
+    // **newPoller**
+    // Creates a long polling function which invokes a BackboneModel fetch request
+    // which sends out an update event at regular intervals.
+
     function newPoller(eventPrefix, context, options) {
+        // Event prefixes **must** be unique, postfixes are uniform
         var fnName = eventPrefix + 'Poller',
             timerName = eventPrefix + 'Timer',
             modelName = eventPrefix + 'Model';
         var self = context;
         var App = context.App;
+
+        // listen to model events and re-transmit them to the
+        // correct namespace.
         _.each(['request', 'sync', 'error'], function(event) {
             this.listenTo(this[modelName], event, function() {
                 App.vent.trigger(eventPrefix + ':' + event);
             });
         }, context);
+
+        // Use defaults but allow overrides.
         var config = _.extend({
             timeout: self.defaultTimeout,
             delay: self.defaultDelay
         }, options);
+
+        // Return the templatized polling function.
         return function() {
             var delay = this[timerName] === null ? 0 : config.delay;
             this[timerName] = setTimeout(function() {
                 //var rtt = performance.now();
                 self[modelName].fetch({
                     success: function(model /*, response, options*/ ) {
-                        //console.log(eventPrefix + ' request took ' + (performance.now() - rtt) + ' ms');
+                        //log.debug(eventPrefix + ' request took ' + (performance.now() - rtt) + ' ms');
                         App.vent.trigger(eventPrefix + ':update', model);
                         self[timerName] = self[fnName].apply(self);
                     },
                     error: function(model, response) {
-                        console.log(eventPrefix + '/error: ' + response.statusText);
+                        log.error(eventPrefix + '/error: ' + response.statusText);
                         App.vent.trigger('app:neterror', eventPrefix, response);
                         self[timerName] = self[fnName].apply(self);
                     },
@@ -39,6 +51,12 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             return this[timerName];
         };
     }
+
+    // **newEventEmitter**
+    // Creates an event emitter function which is used to notify listeners that
+    // they are supposed to do something at regular intervals.
+    // Used primarily to tell the Visualization to poll for changes
+    // in the OSD map.
 
     function newEventEmitter(fnName, timerName, eventName, defaultDelay) {
         return function() {
@@ -51,6 +69,9 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             return this[timerName];
         };
     }
+
+    // **PollerView**
+    // Responsible for setting up Long Polling Models and Event Emitters.
     return Backbone.Marionette.ItemView.extend({
         usageTimer: null,
         usageModel: null,
@@ -65,14 +86,19 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
         defaultTimeout: 3000,
         heartBeatDelay: 60000,
         krakenHeartBeatTimer: null,
+        // ** initialize **
+        // Run by Backbone on construction of new instance.
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
+            // Override prototype defaults from App configuration object.
             if (this.App.Config) {
                 this.delay = Backbone.Marionette.getOption(this.App.Config, 'long-polling-interval-ms') || this.delay;
                 this.timeout = Backbone.Marionette.getOption(this.App.Config, 'api-request-timeout-ms') || this.defaultTimeout;
                 this.disableNetworkChecks = Backbone.Marionette.getOption(this.App.Config, 'disable-network-checks') || false;
             }
             this.cluster = Backbone.Marionette.getOption(this, 'cluster');
+
+            // Create Backbone.Model Instances used to fetch updates.
             this.healthModel = new HealthModel({
                 cluster: this.cluster
             });
@@ -86,24 +112,58 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                 cluster: this.cluster
             });
 
-            this.healthPoller = newPoller('health', this, { timeout: this.timeout });
-            this.usagePoller = newPoller('usage', this, { timeout: this.timeout });
-            this.statusPoller = newPoller('status', this, { timeout: this.timeout });
+            // Create Poller Instances
+            this.healthPoller = newPoller('health', this, {
+                timeout: this.timeout
+            });
+            this.usagePoller = newPoller('usage', this, {
+                timeout: this.timeout
+            });
+            this.statusPoller = newPoller('status', this, {
+                timeout: this.timeout
+            });
             if (!this.disableNetworkChecks) {
                 this.krakenHeartBeatPoller = newPoller('krakenHeartBeat', this, {
                     delay: this.heartBeatDelay
                 });
             }
+
+            // Create Event Emitters.
             this.osdUpdateEvent = newEventEmitter('osdUpdateEvent', 'osdUpdateTimer', 'osd:update', this.delay);
             this.poolUpdateEvent = newEventEmitter('poolUpdateEvent', 'poolUpdateTimer', 'pool:update', this.delay);
             this.hostUpdateEvent = newEventEmitter('hostUpdateEvent', 'hostUpdateTimer', 'host:update', this.delay);
             this.iopsUpdateEvent = newEventEmitter('iopsUpdateEvent', 'iopsUpdateTimer', 'iops:update', 60000);
+
+            // Listen for cluster ID changes.
             this.listenTo(this.App.vent, 'cluster:update', this.updateModels);
             _.bindAll(this, 'stop', 'updateModels', 'start');
-            this.models = ['health', 'usage', 'status', 'krakenHeartBeat'];
-            this.timers = ['health', 'usage', 'status', 'update', 'krakenHeartBeat'];
-            this.pollers = ['healthPoller', 'usagePoller', 'statusPoller', 'krakenHeartBeatPoller', 'osdUpdateEvent', 'poolUpdateEvent', 'hostUpdateEvent', 'iopsUpdateEvent'];
+
+            // Data used by start stop methods.
+            this.models = [
+                    'health',
+                    'krakenHeartBeat',
+                    'status',
+                    'usage'
+            ];
+            this.timers = [
+                    'health',
+                    'krakenHeartBeat',
+                    'status',
+                    'update',
+                    'usage'
+            ];
+            this.pollers = [
+                    'healthPoller',
+                    'hostUpdateEvent',
+                    'iopsUpdateEvent',
+                    'krakenHeartBeatPoller',
+                    'osdUpdateEvent',
+                    'poolUpdateEvent',
+                    'statusPoller',
+                    'usagePoller'
+            ];
         },
+        // **updateModels**
         // Cluster ID has changed. Update pollers.
         updateModels: function(cluster) {
             _.each(this.models, function(model) {
@@ -112,7 +172,9 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
             this.stop();
             this.start();
         },
-        // Restart Poller functions
+        // **start**
+        // Restart Poller functions if they've been stopped.
+        // TODO Extend to restart event emitters.
         start: function() {
             _.each(this.pollers, function(poller) {
                 if (_.isFunction(this[poller])) {
@@ -120,7 +182,9 @@ define(['jquery', 'underscore', 'backbone', 'models/usage-model', 'models/health
                 }
             }, this);
         },
-        // Stop and Remove All Currently running Pollers
+        // **stop**
+        // Stop and Remove All Currently running Pollers.
+        // TODO Extend to clean up event emitters.
         stop: function() {
             _.each(this.timers, function(timer) {
                 var id = this[timer + 'Timer'];
