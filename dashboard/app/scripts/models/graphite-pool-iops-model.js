@@ -3,6 +3,7 @@
 define(['underscore', 'models/graphite-model'], function(_, GraphiteModel) {
     'use strict';
 
+    // Request the Pool ids for a given cluster FSID.
     var GraphitePoolIopsModel = GraphiteModel.extend({
         url: function() {
             var name = this.clusterName || 'ceph';

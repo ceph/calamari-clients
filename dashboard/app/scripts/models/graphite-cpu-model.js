@@ -3,6 +3,7 @@
 define(['underscore', 'models/graphite-model'], function(_, GraphiteModel) {
     'use strict';
 
+    // Request the CPU target id keys from Graphite for a specific fqdn.
     var GraphiteCpuModel = GraphiteModel.extend({
         url: function() {
             return this.graphiteHost + '/metrics/find?query=servers.' + this.host + '.cpu.*';

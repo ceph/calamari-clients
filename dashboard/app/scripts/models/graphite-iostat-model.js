@@ -3,6 +3,7 @@
 define(['underscore', 'models/graphite-model'], function(_, GraphiteModel) {
     'use strict';
 
+    // Request the iostats for a given server fqdn.
     var GraphiteIoModel = GraphiteModel.extend({
         url: function() {
             return this.graphiteHost + '/metrics/find?query=servers.' + this.host + '.iostat.*';

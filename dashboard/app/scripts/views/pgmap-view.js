@@ -3,6 +3,34 @@
 define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'humanize', 'kinetic', 'loglevel', 'marionette'], function($, _, Backbone, JST, gaugeHelper, humanize, Kinetic, log) {
     'use strict';
 
+    // ##PgmapView
+    //
+    // This is an attempt to visualize the current state of the PG Map for a given cluster.
+    // It attempts to map each PG on each OSD to a single pixel and colors that pixel based
+    // on what bucket of states that PG is currently in.
+    //
+    // It is meant to be an at a glance overview of the PG state for a given cluster. It
+    // includes PG replicas in the count because this is the granularity we have access to.
+    // It embeds a 2D canvas which is manipulated by Kinetic.js
+    //
+    // There are always 2 canvas in use, one that is being rendered to and the one that
+    // is being displayed. We swap them once the rendering has completed.
+    //
+    // In order to fill the space with useful data, the canvas area rendered into is
+    // scaled to fill the available space using a fixed set of breakpoints based on how
+    // many data points are available.
+    //
+    //  * < 15K PGs
+    //  * < 30K PGs
+    //  * < 60K PGs
+    //  * 60K to 100K PGs
+    //
+    //If there are more than 100K PGs in the cluster then this vis will need to be
+    //modified to handle this case.
+    //
+    //TODO handle more than 100K PGs and respond correctly to breakpoint changes by
+    //updating the visualization.
+    //
     var PgmapView = Backbone.Marionette.ItemView.extend({
         className: 'col-lg-12 col-md-12 col-sm-12 col-xs-12 custom-gutter',
         template: JST['app/scripts/templates/pgmap.ejs'],
@@ -13,6 +41,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             headline: '.headline',
             subtext: '.subtext'
         },
+        count: 15000,
+        total: 0,
+        activeclean: 0,
+        // **initialize**
+        // Configure instance of object.
         initialize: function() {
             _.bindAll(this);
             this.App = Backbone.Marionette.getOption(this, 'App');
@@ -26,7 +59,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             }
             gaugeHelper(this);
         },
-        count: 15000,
+        // **statusUpdate**
+        // Update text element on widget.
         statusUpdate: function(model) {
             this.total = _.reduce(model.get('pg'), function(memo, obj) {
                 return memo + obj.count;
@@ -36,6 +70,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 total: this.format(this.total)
             }));
         },
+        // **getLayout**
+        // This method is responsible for laying out the widget by provide sizing info to
+        // kinectic so that it renders correctly.
         getLayout: function(count) {
             var width = 610,
                 height = 165,
@@ -65,16 +102,23 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 scale: scale
             };
         },
+        // **legendColors**
+        // Provide the colors we use for the legends with opacity value.
         legendColors: [
             ['#0f0', 0.305],
             ['#ff0', 1],
             ['#f00', 1]
         ],
+        // **legendText**
+        // The labels we use for the legend.
+        // TODO extract to l10n.
         legendText: [
                 'Clean',
                 'Working',
                 'Dirty'
         ],
+        // **makeText**
+        // Creates a text object and returns it and the new x offset.
         makeText: function(index, x, y) {
             var t = new Kinetic.Text({
                 fontFamily: 'Titillium Web, sans-serif',
@@ -88,6 +132,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             x += t.getWidth() + 10;
             return [t, x];
         },
+        // **makeSwatch**
+        // creates a color swatch and the new x offset.
         makeSwatch: function(index, x, y) {
             var o = [];
             var boxWidth = 16;
@@ -110,6 +156,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             x += border.getWidth() + 4;
             return [o, x];
         },
+        // **makeLegend**
+        // Makes a group of legend objects using makeSwatch and makeText
+        // which we can turn into its own layer.
         makeLegend: function() {
             var x = 230,
                 y = 160;
@@ -125,7 +174,13 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             }, []);
             return _.flatten(legend);
         },
+        // **initCanvas**
+        // Initializes the canvas.
         initCanvas: function() {
+            // Set's up 2 different canvas objects.
+            // The 1st one is used to render the on screen UI.
+            // The 2nd one is used to render the 1:1 dot representation off screen.
+            // This is then copied into the on screen canvas.
             var layout = this.getLayout(this.count);
             var width = this.ui.container.width();
             var height = this.ui.container.height();
@@ -161,6 +216,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             this.layer.getContext().scale(layout.scale, layout.scale);
             this.layer.drawScene();
 
+            // 2nd canvas is rendered into a document fragment.
+
             this.frag = document.createDocumentFragment();
             this.backstage = new Kinetic.Stage({
                 container: this.frag,
@@ -181,6 +238,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             this._layer.drawScene();
 
         },
+        // **countPGs**
+        // Count the PG states.
         countPGs: function() {
             return this.collection.reduce(function(memo, m) {
                 var pgs = m.get('pg_states');
@@ -192,6 +251,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 }, 0);
             }, 0);
         },
+        // **fetchOSDPGCount**
+        // Use RequestResponse get an updated OSD PG Count.
+        // If it has changed re-render the UI.
         fetchOSDPGCount: function() {
             // Always update the collection on an update
             this.collection.set(this.ReqRes.request('get:osdpgcounts'));
@@ -209,6 +271,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             this.forceUIUpdate();
 
         },
+        // **forceUIUpdate**
+        // Clean up the stage and backstage canvas objects and
+        // re-render everything.
         forceUIUpdate: function() {
             log.debug('Rendering PG Map');
             setTimeout(function() {
@@ -220,22 +285,18 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 this.trigger('renderMap');
             }.bind(this), 0);
         },
-        countAttributes: function(attr, list) {
-            return _.reduce(list, function(memo, key) {
-                var value = attr[key];
-                return memo + (_.isNumber(value) ? value : 0);
-            }, 0);
-        },
-        setPixel: function(imageData, x, y, r, g, b, a) {
+        // **setPixel**
+        // We're drawing directly into an image buffer. Set each RGBA value.
+        setPixel: function(imageData, x, y, color) {
             var index = (x + y * imageData.width) * 4;
-            imageData.data[index + 0] = r;
-            imageData.data[index + 1] = g;
-            imageData.data[index + 2] = b;
-            imageData.data[index + 3] = a;
+            imageData.data[index + 0] = color.r;
+            imageData.data[index + 1] = color.g;
+            imageData.data[index + 2] = color.b;
+            imageData.data[index + 3] = color.a;
         },
-        total: 0,
-        activeclean: 0,
         formatNumberTemplate: _.template('<%- num %><%- unit %>'),
+        // **format**
+        // Format numbers into Millions & Thousands.
         format: function(v) {
             var num = v,
                 unit = '',
@@ -254,6 +315,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 unit: unit
             });
         },
+        // **priorityOrder**
+        // Sort order of importance.
         priorityOrder: [
                 'stale',
                 'incomplete',
@@ -271,6 +334,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 'replaying',
                 'creating'
         ],
+        // **redStates**
+        // Which states are critical.
         redStates: {
             'stale': true,
             'incomplete': true,
@@ -278,6 +343,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             'down': true,
             'inconsistent': true
         },
+        // **displayWarnings**
+        // Only display a warning icon if we're in a critical state.
         displayWarnings: function(found) {
             if (found in this.redStates) {
                 this.trigger('status:warn');
@@ -285,11 +352,33 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 this.trigger('status:ok');
             }
         },
+        // Create less garbage, use references for colors.
+        green: {
+            r: 0,
+            g: 255,
+            b: 0,
+            a: 78
+        },
+        red: {
+            r: 255,
+            g: 0,
+            b: 0,
+            a: 255
+        },
+        yellow: {
+            r: 255,
+            g: 255,
+            b: 0,
+            a: 255
+        },
+        // **renderMap**
+        // Take the PG State data from each OSD and render it into the canvas
         renderMap: function() {
             var self = this;
             this.pgReplicaTotal = 0;
             this.activeclean = 0;
-            var r, g, b, a, y = 0;
+            var y = 0,
+                color;
             var l = this.getLayout(this.count);
             var ctx = this._background.getContext();
             ctx.clear();
@@ -308,33 +397,27 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                     }
                     if (key === 'clean') {
                         self.activeclean += value;
-                        r = 0;
-                        g = 255;
-                        b = 0;
-                        a = 78;
+                        color = self.green;
                     } else if (key in self.redStates) {
-                        r = 255;
-                        g = 0;
-                        b = 0;
-                        a = 255;
+                        color = self.red;
                     } else {
-                        r = 255;
-                        g = 255;
-                        b = 0;
-                        a = 255;
+                        color = self.yellow;
                     }
                     var x = memo,
                         xo = memo;
                     for (; x < xo + value; x++) {
-                        self.setPixel(imageData, x + self.pgReplicaTotal, y, r, g, b, a); // 255 opaque
+                        self.setPixel(imageData, x + self.pgReplicaTotal, y, color); // 255 opaque
                     }
                     return xo + value;
                 }, 0);
             });
             var fctx = this.background.getContext();
             fctx.clear();
+            // Render the image into the background canvas.
             ctx.putImageData(imageData, 0, 0);
+            // Re-render the image into the onto screen canvas
             fctx.drawImage(this._background.getCanvas()._canvas, l.x, l.y);
+            // Search for the most important state and display warnings.
             var found = _.find(this.priorityOrder, function(key) {
                 return self.stats[key] > 0;
             });
