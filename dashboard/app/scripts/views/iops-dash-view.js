@@ -36,9 +36,17 @@ define([
                 targetParam
             ];
             this.getUrl = gutils.makeGraphURL(this.baseUrl, fns);
-            _.bindAll(this, 'postRender', 'updateGraph');
+            _.bindAll(this, 'postRender', 'updateGraph', 'forceUpdate');
             this.listenToOnce(this, 'render', this.postRender);
             this.listenTo(this.App.vent, 'iops:update', this.updateGraph);
+            this.listenTo(this.App.vent, 'dashboard:refresh', this.forceUpdate);
+        },
+        forceUpdate: function() {
+            if (this.dygraph) {
+                this.dygraph.destroy();
+                this.dygraph = null;
+            }
+            this.postRender();
         },
         data: [
             [1, 10, 120],
