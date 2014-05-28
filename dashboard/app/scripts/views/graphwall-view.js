@@ -289,7 +289,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteRequestDelayMs = Backbone.Marionette.getOption(this, 'graphiteRequestDelayMs');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph', 'poolIopsGraphTitleTemplate', 'clusterUpdate');
+            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph', 'poolIopsGraphTitleTemplate', 'clusterUpdate', 'renderGraphs');
 
             // Generate graph builder functions
             _.each(this.graphs, this.makeGraphFunctions);
@@ -853,16 +853,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         renderGraphs: function(title, fn) {
             var graphs = fn.call(this);
             this.ui.title.text(title);
+            var self = this;
             _.each(graphs, function(graph, index) {
-                var $graphEl = this.$(this.selectors[index]);
+                var $graphEl = self.$(self.selectors[index]);
                 $graphEl.css('visibility', 'visible');
                 if (graph.title) {
                     $graphEl.find('.graph-subtitle').text(graph.title);
                 }
                 _.delay(function() {
-                    this.dygraphLoader($graphEl, graph.url, graph.options);
-                }, this.graphiteRequestDelayMs * index);
-            }).bind(this);
+                    self.dygraphLoader($graphEl, graph.url, graph.options);
+                }, self.graphiteRequestDelayMs * index);
+            });
         },
         // **updateSelect**
         // Update the select box after a route change.
