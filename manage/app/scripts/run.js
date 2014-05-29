@@ -1,6 +1,12 @@
 /* global define */
 (function() {
     'use strict';
+    // This run block is used to attach some handlers to the RootScope.
+    // Specifically we remove polling handlers from specific views
+    // when we navigate away from a view.
+    //
+    // We also a click handler for the User Request UI to show it.
+    // 
     define(['angular'], function() {
         var runBlock = function($rootScope, MenuService, $location, $timeout, $log) {
             // set up route change handler
@@ -27,9 +33,6 @@
             // add show requests handler for request queue
             $rootScope.showRequests = function() {
                 angular.element(document.getElementsByClassName('RequestManagement')[0]).scope().show();
-            };
-            $rootScope.switchView = function(view) {
-                $location.path(view);
             };
         };
         return ['$rootScope', 'MenuService', '$location', '$timeout', '$log', runBlock];

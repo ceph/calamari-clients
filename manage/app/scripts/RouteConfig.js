@@ -2,6 +2,14 @@
 (function() {
     'use strict';
     define([], function() {
+        // We use basic angular routing, there are no
+        // nested views in this application so there is
+        // no current need for anything more sophisticated
+        // like angular-ui-router.
+        //
+        // We use resolve to defer loading of pages until
+        // ClusterResolver has finished initializing the
+        // ClusterService.
         var RouteConfig = function($routeProvider) {
             $routeProvider.when('/', {
                 templateUrl: 'views/root.html',

@@ -3,6 +3,16 @@
     'use strict';
     define(['angular', 'services/cluster', 'services/pool', 'services/server', 'services/key', 'services/crush', 'services/tool', 'services/request', 'services/osd', 'services/osd-config', 'services/user'], function(angular, ClusterService, PoolService, ServerService, KeyService, CrushService, ToolService, RequestService, OSDService, OSDConfigService, UserService) {
         var moduleName = 'myAPIModule';
+        // This module loads all the Calamari network API services.
+        // ClusterResolver bootstraps ClusterService by
+        // running it's initialize which forces it to load
+        // the Cluster FSID of the first cluster in the
+        // list returned by Calamari.
+        //
+        // *In the future this will have to be the FSID most
+        // strongly associated with this user credential or
+        // last loaded by this user.*
+        //
         angular.module(moduleName, ['restangular'])
             .factory('ClusterService', ClusterService)
             .factory('PoolService', PoolService)
