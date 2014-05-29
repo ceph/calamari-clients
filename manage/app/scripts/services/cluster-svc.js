@@ -13,6 +13,16 @@ define(['lodash'], function(_) {
     // In the future this will have to be a guided, by either the User's
     // profile and/or saved defaults.
     //
+    // ###A typical usage pattern
+    // ```
+    // ClusterService.getList().then(function(clusters) {
+    //     ...do something with clusters result array...
+    // });
+    // ```
+    //
+    // All service methods should return $q style promises.
+    // @see https://docs.angularjs.org/api/ng/service/$q
+    //
     var ClusterService = function(Restangular, $location, ErrorService) {
         // This custom response extractor handles the paginated response
         // from our Calamari Django JSON API.
@@ -53,6 +63,7 @@ define(['lodash'], function(_) {
             // **initialize**
             // This must be run before any other service to
             // initialize the cluster model and fsid values.
+            // **@returns** a promise so you can wait for it to be complete.
             initialize: function() {
                 var self = this;
                 return this.getList().then(function(clusters) {
@@ -68,22 +79,31 @@ define(['lodash'], function(_) {
                 });
             },
             // **getList**
-            // Return list of all the clusters Calamari knows about.
+            // **@returns** a promise with a list of all the clusters Calamari knows about.
             getList: function() {
                 return this.restangular.all('cluster').getList().then(function(clusters) {
                     return clusters;
                 });
             },
             // **get**
-            // Return a specific cluster based on it's FSID.
+            // **@returns** a promise with the cluster metadata for the specific
+            // cluster based on it's FSID.
             get: function(id) {
                 return this.cluster(id).get().then(function(cluster) {
                     return cluster;
                 });
             },
             // **cluster**
-            // A base function that defines the root of the request.
-            // It's designed to be called by other methods.
+            // A base function that defines the root of all cluster specific
+            // API requests.  It's designed to be called by other services.
+            // ####e.g.
+            // ```
+            //     return restangular.cluster().all('servers');
+            // ```
+            //
+            // This is how we can re-use this service without other
+            // services having to be aware of the cluster FSID.
+            //
             cluster: function(id) {
                 if (id === undefined) {
                     id = this.clusterId;
@@ -91,7 +111,8 @@ define(['lodash'], function(_) {
                 return this.restangular.one('cluster', id);
             },
             // **clusterFull**
-            // A base function that defines the root of the request.
+            // A base function that defines the root of all cluster
+            // specific API request.
             // It's designed to be called by other methods.
             // Responses are raw and contain extra fields such as
             // status code.
