@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['angular', 'services/cluster', 'services/pool', 'services/server', 'services/key', 'services/crush', 'services/tool', 'services/request', 'services/osd', 'services/osd-config', 'services/user'], function(angular, ClusterService, PoolService, ServerService, KeyService, CrushService, ToolService, RequestService, OSDService, OSDConfigService, UserService) {
+    define(['angular', 'services/cluster-svc', 'services/pool-svc', 'services/server-svc', 'services/key-svc', 'services/crush-svc', 'services/tool-svc', 'services/request-svc', 'services/osd-svc', 'services/osd-config-svc', 'services/user-svc'], function(angular, ClusterService, PoolService, ServerService, KeyService, CrushService, ToolService, RequestService, OSDService, OSDConfigService, UserService) {
         var moduleName = 'myAPIModule';
         // This module loads all the Calamari network API services.
         // ClusterResolver bootstraps ClusterService by
