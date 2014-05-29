@@ -354,6 +354,17 @@ module.exports = function (grunt) {
           src: ['generated/*']
         }]
       },
+      docco: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: 'node_modules/grunt-docco/node_modules/docco/resources/classic/public',
+          dest: '<%= yeoman.docs %>/public/',
+          src: [
+            'fonts/*.{eot,ttf,woff}'
+          ]
+        }]
+      },
       styles: {
         expand: true,
         cwd: '<%= yeoman.app %>/styles',
@@ -496,6 +507,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('docs', [
+    'copy:docco',
     'docco:dist'
   ]);
   grunt.registerTask('saveRevision', function() {

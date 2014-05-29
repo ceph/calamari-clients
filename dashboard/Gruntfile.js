@@ -258,6 +258,17 @@ module.exports = function (grunt) {
                         'styles/*.{woff,otf,eot,svg,ttf}'
                     ]
                 }]
+            },
+            docco: {
+                files: [{
+                expand: true,
+                dot: true,
+                cwd: 'node_modules/grunt-docco/node_modules/docco/resources/classic/public',
+                dest: '<%= yeoman.docs %>/public/',
+                src: [
+                    'fonts/*.{eot,ttf,woff}'
+                    ]
+                }]
             }
         },
         bower: {
@@ -379,7 +390,8 @@ module.exports = function (grunt) {
         'usemin'
     ]);
     grunt.registerTask('docs', [
-        'docco:dist'
+        'docco:dist',
+        'copy:docco'
     ]);
     grunt.registerTask('default', [
         'saveRevision',
