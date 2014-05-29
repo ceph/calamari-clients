@@ -22,7 +22,8 @@ module.exports = function (grunt) {
     yeoman: {
       // configurable paths
       app: require('./bower.json').appPath || 'app',
-      dist: 'dist'
+      dist: 'dist',
+      docs: 'docs'
     },
 
     // Watches files for changes and runs tasks based on the changed files
@@ -418,6 +419,25 @@ module.exports = function (grunt) {
         },
         'git.js': {
         }
+    },
+    docco: {
+        dist: {
+            src: [
+                '<%= yeoman.app %>/scripts/*.js',
+                '<%= yeoman.app %>/scripts/directives/*.js',
+                '<%= yeoman.app %>/scripts/helpers/*.js',
+                '<%= yeoman.app %>/scripts/navbar/*.js',
+                '<%= yeoman.app %>/scripts/requests/*.js',
+                '<%= yeoman.app %>/scripts/services/*.js',
+                '<%= yeoman.app %>/scripts/controllers/*.js'
+            ],
+            options: {
+                layout: 'parallel',
+                output: '<%= yeoman.docs %>',
+                css: 'documentation/docco.css',
+                template: 'documentation/docco.jst'
+            }
+        }
     }
   });
 
@@ -473,6 +493,10 @@ module.exports = function (grunt) {
     'newer:jshint',
     'test',
     'build'
+  ]);
+
+  grunt.registerTask('docs', [
+    'docco:dist'
   ]);
   grunt.registerTask('saveRevision', function() {
     grunt.event.once('git-describe', function(rev) {
