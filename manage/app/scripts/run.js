@@ -34,6 +34,11 @@
             $rootScope.showRequests = function() {
                 angular.element(document.getElementsByClassName('RequestManagement')[0]).scope().show();
             };
+            // Used by in app menu bar to switch routes
+            // e.g. Cluster|OSD|Pools|Logs
+            $rootScope.switchView = function(view) {
+                $location.path(view);
+            };
         };
         return ['$rootScope', 'MenuService', '$location', '$timeout', '$log', runBlock];
     });
