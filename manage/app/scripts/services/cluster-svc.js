@@ -19,9 +19,9 @@ define(['lodash'], function(_) {
         var djangoPaginationResponseExtractor = function(response /*, operation, what, url */ ) {
             if (response.count !== undefined && response.results !== undefined) {
                 var newResponse = response.results;
-                // Add a new object **pagnation** which contains the next, previous urls and count.
+                // Add a new object **pagination** which contains the next, previous urls and count.
                 // These are currently unused.
-                newResponse.pagnation = {
+                newResponse.pagination = {
                     next: response.next,
                     previous: response.previous,
                     count: response.count
