@@ -2,7 +2,7 @@
 
 **Your mileage will vary, based on what platform  you are on. These instructions are broadly applicable to most modern Linux systems. **
 
-* `git clone github.com/inktankstorage/clients`
+* `git clone github.com/ceph/calamari-clients`
 
 * Download a current node.js (only for building).  One option: get source
 and build from http://nodejs.org/dist/v0.10.18/node-v0.10.18.tar.gz
