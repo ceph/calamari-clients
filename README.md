@@ -4,7 +4,7 @@ Ceph Manager Clients
 
 Screenshots
 ----------
- * [here](screenshots/screenshots.md)
+[![summary](screenshots/summary.jpeg)](screenshots/screenshots.md)
 
 About
 -----
