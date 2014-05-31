@@ -1,6 +1,14 @@
 Ceph Manager Clients
 ===================
 
+
+Screenshots
+----------
+ * [here](screenshots/screenshots.md)
+
+About
+-----
+
 This repo is for the client code that uses the Ceph Manager RESTFul API. Rather than a single large Single Page App (SPA), the code is structured as a collection of SPAs which talk to the same RESTful backend.
 
 The concept behind building the calamari UI this way was 2 fold:
