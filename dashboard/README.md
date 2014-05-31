@@ -81,6 +81,7 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 4. [RaphaelJS](http://raphaeljs.com/) - OSD visualization
 4. [Dygraphs](http://dygraphs.com/) - Graph plotting support - graph-wall.js
 5. [Grunt](http://gruntjs.com/) and [NPM](http://www.npmjs.org) - for building and optimization
+6. [KineticJS](http://kineticjs.com) - PG Status on Dashboard
 
 ##Start Up Ordering
 
@@ -106,13 +107,13 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 |**filter:update**|App.vent|Workbench filters have changed|
 |**app:neterror**|App.vent|Network Error - display notification|
 |**viz:render**|App.vent|OSD Visualization on Workbench has finished animation|
-|**get:ready**|App.ReqReq|Is the application ready to run? Returns a JQuery promise.|
-|**get:fqdns**|App.ReqReq|Get valid Fully Qualified Domain Names of hosts in Cluster|
-|**get:osdcounts**|App.ReqReq|Curated OSD counts (down, inup, outup, indown)|
-|**get:pgcounts**|App.ReqReq|OSD Map PG State Counts|
-|**get:cluster**|App.ReqReq|Current Cluster Metadata|
-|**get:hosts**|App.ReqReq|short hostnames for cluster members|
-|**get:osdpgcounts**|App.ReqReq|PG States by OSD|
+|**get:ready**|App.ReqRes|Is the application ready to run? Returns a JQuery promise.|
+|**get:fqdns**|App.ReqRes|Get valid Fully Qualified Domain Names of hosts in Cluster|
+|**get:osdcounts**|App.ReqRes|Curated OSD counts (down, inup, outup, indown)|
+|**get:pgcounts**|App.ReqRes|OSD Map PG State Counts|
+|**get:cluster**|App.ReqRes|Current Cluster Metadata|
+|**get:hosts**|App.ReqRes|short hostnames for cluster members|
+|**get:osdpgcounts**|App.ReqRes|PG States by OSD|
 
 ##Annotated Source Code
 
