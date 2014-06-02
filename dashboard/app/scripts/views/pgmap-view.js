@@ -176,6 +176,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         },
         // **initCanvas**
         // Initializes the canvas.
+        canvasDebugTemplate: _.template('height: <%- height %>, width: <%- width %>, count: <%- this.count %>, layout: <%- layout %>'),
         initCanvas: function() {
             // Set's up 2 different canvas objects.
             // The 1st one is used to render the on screen UI.
@@ -189,7 +190,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 height: height,
                 width: width
             });
-            log.debug('height: ' + height + ' width: ' + width + ' count: ' + this.count + ' layout: ', layout);
+            log.debug(this.canvasDebugTemplate({
+                height: height,
+                width: width,
+                count: this.count,
+                layout: layout
+            }));
 
             this.layer = new Kinetic.Layer();
             this.tlayer = new Kinetic.Layer();
