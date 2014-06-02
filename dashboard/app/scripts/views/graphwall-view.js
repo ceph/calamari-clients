@@ -257,6 +257,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         optionTemplate: _.template('<option value="<%- args.host %>">Host - <%- args.host %></option>"', null, {
             variable: 'args'
         }),
+        selectResetTemplate: _.template('select option[value="<%- id %>"]'),
+        findSelectorTemplate: _.template('[data-id="<%- id %>"]'),
         // Cached Graph Selectors
         selectors: [],
         // Default set of dygraph options. This is used to set and reset
@@ -368,6 +370,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // **hostChangeHandler**
         // Handle dropdown select change event. Change the route of the App
         // to reflect changes to the host being viewed.
+        navigateTemplate: _.template('graph/<%- host %>'),
+        currentGraphTemplate: _.template('/<%- currentGraph %>'),
         hostChangeHandler: function(evt) {
             var target = evt.target;
             var $el = $(target.options[target.selectedIndex]);
@@ -375,22 +379,33 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             if (target.selectedIndex < 2 || this.currentGraph === '') {
                 this.currentGraph = '';
             } else {
-                host += '/' + this.currentGraph;
+                host += this.currentGraphTemplate({
+                    currentGraph: this.currentGraph
+                });
             }
-            this.AppRouter.navigate('graph/' + host, {
+            this.AppRouter.navigate(this.navigateTemplate({
+                host: host
+            }), {
                 trigger: true
             });
         },
         // **clickHandler**
         // Handle buttons above graphs to change to different host graphs.
         // Updates the route for the correct subview.
+        graphRouteTemplateId: _.template('graph/<%- hostname %>/<%- id %>'),
+        graphRouteTemplate: _.template('graph/<%- hostname %>'),
         clickHandler: function(evt) {
             var $target = $(evt.target);
             var id = $target.attr('data-id');
-            var route = 'graph/' + this.hostname + '/' + id;
+            var route = this.graphRouteTemplateId({
+                hostname: this.hostname,
+                id: id
+            });
             this.currentGraph = id;
             if (id === 'overview') {
-                route = 'graph/' + this.hostname;
+                route = this.graphRouteTemplate({
+                    hostname: this.hostname,
+                });
                 this.currentGraph = '';
             }
             this.AppRouter.navigate(route, {
@@ -531,7 +546,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // Reset the buttons for Hosts to reflect the new state.
         updateBtns: function(id) {
             this.ui.buttons.find('.btn').removeClass('active');
-            this.ui.buttons.find('[data-id="' + id + '"]').addClass('active');
+            this.ui.buttons.find(this.findSelectorTemplate({
+                id: id
+            })).addClass('active');
         },
         // **getOSDIDs**
         // Create a fake Backbone Model that returns the OSD IDs
@@ -792,6 +809,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // Puts up a veil and spinner while waiting.
         // Invokes renderGraph once data has loaded.
         // Displays any errors returned by request.
+        graphErrorTemplate: _.template('Graph Error: <%- status %><%- response %>'),
         dygraphLoader: function($el, url, optOverrides) {
             var self = this;
             var $graphveil = $el.find('.graph-spinner').removeClass('hidden');
@@ -800,7 +818,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             $el.find('input').attr('disabled', 'disabled');
             $ajax.done(_.partial(this.renderGraph, $el, url, optOverrides)).fail(function dygraphFail(jqXHR) {
                 // handle errors on load here
-                var msg = _.template('Graph Error: <%- status %><%- response %>', {
+                var msg = self.graphErrorTemplate({
                     status: jqXHR.statusText,
                     response: jqXHR.responseText
                 });
@@ -870,7 +888,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // Used from application.js.
         updateSelect: function(id) {
             this.$('select option[selected]').prop('selected', false);
-            this.$('select option[value="' + id + '"]').prop('selected', true);
+            this.$(this.selectResetTemplate({
+                id: id
+            })).prop('selected', true);
         }
     });
 
