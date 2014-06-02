@@ -2,6 +2,7 @@
 define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine', 'loglevel', 'marionette'], function($, _, Backbone, animation, StateMachine, log) {
     'use strict';
     // 
+    var debugTemplate = _.template('<%- prefix %> <%- event %> FROM <%- from %> TO <%- to %>');
     var Application = Backbone.Marionette.Application.extend({
         // The state machine lives in Application.
         // The state machine's main purpose is managing state transitions.
@@ -54,11 +55,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     trigger: true
                 });
             });
+            var hostGraphTemplate = _.template('graph/<%- host %>');
             this.listenTo(this.vent, 'app:graph', function(host) {
                 if (host === undefined) {
                     host = 'all';
                 }
-                this.appRouter.navigate('graph/' + host, {
+                this.appRouter.navigate(hostGraphTemplate({
+                    host: host
+                }), {
                     trigger: true
                 });
             });
@@ -112,7 +116,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
         },
         // On Entering Graph Event Callback.
         onentergraphmode: function(event, from, to /*, host, osd*/ ) {
-            log.debug('ENTER ' + event + ', FROM ' + from + ', TO ' + to);
+            log.debug(debugTemplate({
+                'prefix': 'ENTER',
+                'event': event,
+                'from': from,
+                'to': to
+            }));
             $('.row').css('display', 'none');
             var ready = this.ReqRes.request('get:ready');
             var self = this;
@@ -127,7 +136,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
         },
         // In Graph Event Callback.
         ongraph: function(event, from, to, fqdn, id) {
-            log.debug('AFTER ' + event + ', FROM ' + from + ', TO ' + to);
+            log.debug(debugTemplate({
+                'prefix': 'AFTER',
+                'event': event,
+                'from': from,
+                'to': to
+            }));
             var graphWall = this.graphWall;
             var self = this;
             // We use a promise to ensure GraphWall has finished initializing.
@@ -174,11 +188,14 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                         graphWall.updateSelect(fqdn);
                         graphWall.updateBtns('overview');
                         graphWall.hostname = fqdn;
-                        graphWall.renderGraphs('Host Graphs for ' + fqdn, graphWall.makeHostOverviewGraphUrl(fqdn));
+                        graphWall.renderGraphs(self.hostGraphTitleTemplate({
+                            fqdn: fqdn
+                        }), graphWall.makeHostOverviewGraphUrl(fqdn));
                     }
                 }
             });
         },
+        hostGraphTitleTemplate: _.template('Host Graphs for <%- fqdn %>'),
         // On Leaving Graph State.
         onleavegraphmode: function() {
             this.graphWall.close();
@@ -235,7 +252,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
         onleavedashmode: function() {},
         // In dashboard.
         ondashboard: function(event, from, to /*, host, id*/ ) {
-            log.debug('ondashboard: ' + event + ' from ' + from + ' to ' + to);
+            log.debug(debugTemplate({
+                'prefix': 'ondashboard',
+                'event': event,
+                'from': from,
+                'to': to
+            }));
             setTimeout(function() {
                 // TODO dirty hack - need to replace this with a promise
                 // Wait to send event, otherwise the receiver isn't
