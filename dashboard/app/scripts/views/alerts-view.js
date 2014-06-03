@@ -1,6 +1,6 @@
 /*global define, noty */
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{locale}}/strings', 'marionette'], function($, _, Backbone, JST, l10n) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{locale}}/strings', 'loglevel', 'marionette'], function($, _, Backbone, JST, l10n, log) {
     'use strict';
 
     // Respond to Event Aggregator Bus events.
@@ -127,7 +127,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             msg.text = l10n.getSync('dashboardUpdateTimeout');
             this.timeoutCount++;
             this.error(msg);
-            console.log('timeout count ' + this.timeoutCount);
+            log.debug('timeout count ' + this.timeoutCount);
         },
         // **clusterAPITimeout**
         // Cluster API backend may not be responding message.

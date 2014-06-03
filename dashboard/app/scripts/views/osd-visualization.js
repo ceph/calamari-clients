@@ -125,7 +125,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         // **fetchError** trigger a global error when osd collection fails to load.
         fetchError: function(collection, response) {
-            log.debug('osd' + '/error: ' + response.statusText);
+            log.debug(_.template('osd/error: <%- statusText %>', {
+                statusText: response.statusText
+            }));
             this.App.vent.trigger('app:neterror', 'osd', response);
         },
         // **updateCollection** This relys on the standard Backbone collection fetch behavior.
