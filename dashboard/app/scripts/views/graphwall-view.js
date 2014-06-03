@@ -392,12 +392,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // **clickHandler**
         // Handle buttons above graphs to change to different host graphs.
         // Updates the route for the correct subview.
-        graphRouteTemplateId: _.template('graph/<%- hostname %>/<%- id %>'),
+        graphRouteIdTemplate: _.template('graph/<%- hostname %>/<%- id %>'),
         graphRouteTemplate: _.template('graph/<%- hostname %>'),
         clickHandler: function(evt) {
             var $target = $(evt.target);
             var id = $target.attr('data-id');
-            var route = this.graphRouteTemplateId({
+            var route = this.graphRouteIdTemplate({
                 hostname: this.hostname,
                 id: id
             });
