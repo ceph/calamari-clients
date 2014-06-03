@@ -404,7 +404,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.currentGraph = id;
             if (id === 'overview') {
                 route = this.graphRouteTemplate({
-                    hostname: this.hostname,
+                    hostname: this.hostname
                 });
                 this.currentGraph = '';
             }
