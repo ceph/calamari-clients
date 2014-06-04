@@ -15,7 +15,7 @@
     var SPINNER_ICON = '<i class="fa fa-fw fa-lg fa-spinner fa-spin"></i>';
     var CHECK_CIRCLE_ICON = '<i class="fa fa-fw fa-lg fa-check-circle-o"></i>';
 
-    define(['lodash', 'helpers/server-helpers', 'helpers/cluster-settings-helpers', 'helpers/cluster-response-helpers', 'helpers/modal-helpers'], function(_, serverHelpers, clusterSettingsHelpers, responseHelpers, modalHelpers) {
+    define(['lodash', 'helpers/server-helpers', 'helpers/cluster-settings-helpers', 'helpers/cluster-response-helpers', 'helpers/modal-helpers'], function(_, ServerHelpers, ClusterSettingsHelpers, ResponseHelpers, ModalHelpers) {
 
 
         var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal, OSDConfigService, RequestTrackingService, config) {
@@ -26,22 +26,26 @@
 
             $scope.clusterName = ClusterService.clusterModel.name;
 
-            var server = serverHelpers.makeFunctions($q, $scope, $rootScope, $log, $timeout, ServerService, KeyService, $modal);
-            $scope.acceptMinion = server.acceptMinion;
+            // Inject dependencies into server helper.
+            var serverHelpers = ServerHelpers.makeFunctions($q, $scope, $rootScope, $log, $timeout, ServerService, KeyService, $modal);
+
+            // Add handlers to $scope from server heper
+            $scope.acceptMinion = serverHelpers.acceptMinion;
             $scope.detailView = function(id) {
                 var modal = $modal({
                     title: id,
                     template: 'views/detail-grains-modal.html',
                     show: true
                 });
-                server.detailView(id).then(function(pairs) {
+                serverHelpers.detailView(id).then(function(pairs) {
                     modal.$scope.pairs = pairs;
                 });
             };
 
             function refreshKeys() {
                 $log.debug('refreshing keys');
-                KeyService.getList().then(server.processMinionChanges).then(function(all) {
+                KeyService.getList().then(serverHelpers.processMinionChanges).then(function(all) {
+                    // List of accepted minions.
                     $scope.cols = all.accepted;
                     $scope.pcols = all.pre;
                     $scope.hidePre = all.hidePre;
@@ -66,7 +70,10 @@
                             minion.label = CHECK_CIRCLE_ICON;
                         });
                     }, timeout);
-                }, modalHelpers.makeOnError($modal({
+                    // We don't remove them because serverHelpers.processMinionChanges will
+                    // automatically update the UI and remove them the next
+                    // time it runs.
+                }, ModalHelpers.makeOnError($modal({
                     show: false,
                     html: true,
                     template: 'views/custom-modal.html',
@@ -76,11 +83,14 @@
 
             $scope.approveAll = approveAll;
 
-            var response = responseHelpers.makeFunctions($q, $timeout, osdConfigKeys);
-            var breadcrumbs = response.makeBreadcrumbs($scope.clusterName);
+            // Initialize the bootstrap breadcrumb UI.
+            var responseHelpers = ResponseHelpers.makeFunctions($q, $timeout, osdConfigKeys);
+            var breadcrumbs = responseHelpers.makeBreadcrumbs($scope.clusterName);
             $scope.breadcrumbs = breadcrumbs.servers;
 
-            clusterSettingsHelpers.makeFunctions($log, $scope, $timeout, $q, breadcrumbs, OSDConfigService, $modal, osdConfigKeys, RequestTrackingService).initialize().then(function(cluster) {
+            // Set up Cluster Settings Sub-View
+            // Inject dependencies into ClusterSettingsHelper.
+            ClusterSettingsHelpers.makeFunctions($log, $scope, $timeout, $q, breadcrumbs, OSDConfigService, $modal, osdConfigKeys, RequestTrackingService).initialize().then(function(cluster) {
                 $scope.helpInfo = cluster.helpInfo;
                 $scope.reset = cluster.reset;
                 $scope.updateSettings = cluster.updateSettings;
@@ -106,14 +116,17 @@
                         accept: [],
                         pre: []
                     });
-                    $scope.pcols = response.bucketMinions(minions.pre);
-                    $scope.cols = response.bucketMinions(minions.accept);
+                    // Add them to their respective UI lists.
+                    $scope.pcols = responseHelpers.bucketMinions(minions.pre);
+                    $scope.cols = responseHelpers.bucketMinions(minions.accept);
                     $scope.hidePre = _.flatten(minions.pre).length === 0;
                 }, timeout);
-                response.processConfigs(results[1]).then(function(configs) {
+                // Initialize the browser config UI data.
+                responseHelpers.processConfigs(results[1]).then(function(configs) {
                     $scope.configs = configs;
                 });
-                response.osdConfigsInit(results[2]).then(function(osdConfigs) {
+                // Initialize the Cluster Wide Settings Config Data.
+                responseHelpers.osdConfigsInit(results[2]).then(function(osdConfigs) {
                     $scope.osdconfigs = osdConfigs;
                     $scope.osdconfigsdefaults = angular.copy(osdConfigs);
                 });

@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash', 'helpers/modal-helpers', 'helpers/osd-helpers', 'helpers/error-helpers'], function(_, modalHelpers, osdHelpers, errorHelpers) {
+    define(['lodash', 'helpers/modal-helpers', 'helpers/osd-helpers', 'helpers/error-helpers'], function(_, ModalHelpers, OsdHelpers, ErrorHelpers) {
 
         var disableRepairCommand = true;
         // Store re-usable markup snippets in an object.
@@ -31,7 +31,7 @@
         var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService, config, $rootScope) {
 
             // Inject dependencies into Error Helpers.
-            var errHelpers = errorHelpers.makeFunctions($q, $log);
+            var errorHelpers = ErrorHelpers.makeFunctions($q, $log);
 
             // **formatOSDForUI**
             // UI Helper to reformat the raw osd reweight float into a 
@@ -67,7 +67,7 @@
                         template: 'views/osd-info-modal.html'
                     });
                     PoolService.getList().then(function(pools) {
-                        modal.$scope.pairs = osdHelpers.formatOSDData(_osd, pools);
+                        modal.$scope.pairs = OsdHelpers.formatOSDData(_osd, pools);
                     });
                 });
             };
@@ -132,7 +132,7 @@
                         show: false
                     });
                     // Save value to Calamari API.
-                    errHelpers.intercept304Error(OSDService.patch(osd.id, {
+                    errorHelpers.intercept304Error(OSDService.patch(osd.id, {
                         reweight: osd.reweight / maxReweight
                     })).then(function(resp) {
                         /* jshint camelcase: false */
@@ -153,7 +153,7 @@
                                 osd._reweight = angular.copy(osd.reweight);
                             });
                         }, remaining);
-                    }, modalHelpers.makeOnError(modal));
+                    }, ModalHelpers.makeOnError(modal));
 
                 }, config.getEditDebounceMs());
             };
@@ -289,7 +289,7 @@
                     // the server is already in this state. We ignore this response and treat it as
                     // a successfully completed task as it is not a true error. We are simply out
                     // of sync with the current state of the server.
-                    errHelpers.intercept304Error(OSDService[cmd].call(OSDService, id)).then(function success(resp) {
+                    errorHelpers.intercept304Error(OSDService[cmd].call(OSDService, id)).then(function success(resp) {
                         /* jshint camelcase: false */
                         var promise = RequestTrackingService.add(resp.data.request_id);
                         var elapsed = Date.now() - start;
@@ -321,7 +321,7 @@
                                 });
                             }, config.getAnimationTimeoutMs());
                         }, remaining);
-                    }, modalHelpers.makeOnError(modal, function cleanup() {
+                    }, ModalHelpers.makeOnError(modal, function cleanup() {
                         osd[buttonLabel] = text[buttonLabel];
                         osd.disabled = false;
                     }));
