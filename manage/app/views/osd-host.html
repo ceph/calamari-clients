@@ -35,7 +35,7 @@
                                     ng-if="!osd.in" class="label label-danger">OUT</span>
                                 </td>
                                 <td>
-                                    <input style="width: 4em;" type='number' min="0" max="100" ng-disabled='osd.editing || osd.editDisabled'
+                                    <input tabindex={{$index+1}} style="width: 4em;" type='number' min="0" max="100" ng-disabled='osd.editing || osd.editDisabled'
                                     required=true name="reweight" ng-model='osd.reweight' ng-change='changedFn(osd)'
                                     />&nbsp; <i ng-show="osd.editing" class='fa fa-spinner fa-spin fa-lg fa-fw'></i>
 
