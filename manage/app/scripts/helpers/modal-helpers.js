@@ -38,12 +38,12 @@
                     modal.$scope.content = '<pre>' + resp.data + '</pre>';
                     modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
                         $hide();
+                        if (_.isFunction(callback)) {
+                            callback.call(undefined);
+                        }
                     });
                     modal.$scope.disableClose = false;
                     modal.$scope.$show();
-                    if (_.isFunction(callback)) {
-                        callback.call(undefined);
-                    }
                 };
             }
         };
