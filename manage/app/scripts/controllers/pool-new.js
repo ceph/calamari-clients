@@ -3,8 +3,19 @@
     'use strict';
     define(['lodash', 'helpers/pool-helpers', 'helpers/modal-helpers'], function(_, PoolHelpers, ModalHelpers) {
         var poolDefaults = PoolHelpers.defaults();
+        // **PoolNewController**
+        // Responsible for the new pools view. A lot of the validation logic for this form is in
+        // the pool-new.html markup as attributes. We angular form validation to do a lot of the heavy
+        // lifting.
+        //
+        // A fair amount of the custom validation is done in the pool-helper file. It was extracted
+        // this way to improve readability and make it easier to test.
+        //
+        // @see [Angular form validation tutorial](http://scotch.io/tutorials/javascript/angularjs-form-validation)
         var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, RequestTrackingService, $modal) {
             var self = this;
+
+            // Set up breadcrumbs.
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.breadcrumbs = [{
                     text: 'Manage (' + $scope.clusterName + ')'
@@ -16,10 +27,18 @@
                     active: true
                 }
             ];
+
+            // **cancel**
+            // click event handler to return up a level.
             $scope.cancel = function() {
                 $location.path('/pool');
             };
+
+            // **reset**
+            // click event handler to reset the form back to defaults.
             $scope.reset = PoolHelpers.makeReset($scope);
+
+            // Angular-strap Tool Tip configuration.
             $scope.ttReset = {
                 title: 'Reset to Defaults'
             };
@@ -29,10 +48,16 @@
             $scope.ttCreate = {
                 title: 'Create Pool'
             };
+
+            // **create**
+            // click event handler for submitting the request
+            // to Calamari API.
             $scope.create = function() {
                 if ($scope.poolForm.$invalid) {
+                    // Do nothing if the form has invalid fields.
                     return;
                 }
+                // Send the pool attributes to the Server.
                 PoolService.create($scope.pool).then(function(resp) {
                     var modal;
                     if (resp.status === 202) {
@@ -59,6 +84,7 @@
 
             $q.all(promises).then(function(results) {
                 /* jshint camelcase:false */
+                // Combine all the default values.
                 var result = _.chain(results);
                 var cephDefaults = result.shift().value();
                 self.crushrulesets = result.shift().value();
@@ -79,7 +105,7 @@
                     crush_ruleset: mergedDefaults.crush_ruleset,
                     pg_num: mergedDefaults.pg_num
                 };
-                PoolHelpers.addWatches($scope);
+                PoolHelpers.addWatches($scope); // Add custom validation rules to form.
                 $scope.up = true;
             });
         };

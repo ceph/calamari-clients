@@ -3,8 +3,20 @@
     'use strict';
     define(['lodash'], function(_) {
 
+        // Helper functions for the pool forms views to calculate and recommend
+        // things like how many pg groups do I need for the given number of OSDs
+        // and the ruleset being applied to this pool.
+
+        // **roundUpToNextPowerOfTwo**
+        // Rounds the given value up to the next power of 2.
+        // Warning - JavaScript bitwise operations are capped at
+        // 32bits.
+        //
+        // @param **num** - number value to start from.
+        //
+        // @see [mdn about bitwise ops](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators)
         function roundUpToNextPowerOfTwo(num) {
-            // reference http://bits.stephan-brumme.com/roundUpToNextPowerOfTwo.html
+            // @see [reference implementation](http://bits.stephan-brumme.com/roundUpToNextPowerOfTwo.html)
             /* jshint bitwise: false */
             num--;
             num |= num >> 1;
@@ -16,6 +28,18 @@
             return num;
         }
 
+        // **calculatePGNum**
+        // Calculate the recommended number of PGs for a given pool
+        // based on it's osd count and replication factor.
+        //
+        // @param **osdcount** - number of osds in this cluster.
+        //
+        // @param **size** - number of replicas for this crush rule set.
+        //
+        // @param **pgmax** - the max number of pgs for this cluster.
+        //
+        // @see [placement groups](http://ceph.com/docs/master/rados/operations/placement-groups/)
+
         function calculatePGNum(osdcount, size, pgmax) {
             var pgnum = roundUpToNextPowerOfTwo(osdcount * 100 / size);
             if (pgnum > pgmax) {
@@ -23,6 +47,9 @@
             }
             return pgnum;
         }
+
+        // **validateMaxMin**
+        // Validate a value is within the min, max.
 
         function validateMaxMin(fieldName, newValue, min, max) {
             /* jshint validthis:true, camelcase: false*/
@@ -37,11 +64,23 @@
             return true;
         }
 
+        // **getActiveRule**
+        // Match the requested replication size against the
+        // crush ruleset and return the most appropriate
+        // match.
+        //
+        // @param **ruleset** - resultset to use
+        //
+        // @param **maxPoolPgNum** - max numbers of pg for a pool
+        //
+        // @param **size** - requested replica size
+
         function getActiveRule(ruleset, maxPoolPgNum, size) {
             /* jshint camelcase: false */
             return _.reduce(ruleset.rules, function(result, rule) {
                 var active_rule = result.active_rule;
                 var osd_count = result.osd_count;
+                // We match rules based on the size min/max.
                 if (size >= rule.min_size && size <= rule.max_size) {
                     active_rule = rule.id;
                     osd_count = rule.osd_count;
@@ -60,17 +99,20 @@
             });
         }
 
-        /*
-         * options:
-         *   pgnumReset: used to control whether to use recommend pg value or reset back to default.
-         *   Use case is modify wants the old value back and create wants the recommend value.
-         */
-
+        // **makeReset**
+        // Returns a reset function for the pool-new/pool-modify forms.
+        //
+        // @param **$scope** - current angular $scope we are operating on.
+        //
+        // @param **options**
+        //   pgnumReset: used to control whether to use recommend pg value or reset back to default.
+        //   Use case is *modify* pool wants the old value back and *create* pool wants the recommend value.
         function makeReset($scope, options) {
             /* jshint camelcase: false */
             options = options || {
                 pgnumReset: true
             };
+            // Creates a reset function with the correct behavior.
             return function() {
                 var defaults = $scope.defaults;
                 $scope.pool.name = defaults.name;
@@ -82,7 +124,7 @@
                     var pgnum = calculatePGNum(limits.osd_count, $scope.pool.size, defaults.mon_max_pool_pg_num);
                     if ($scope.pool.pg_num !== pgnum) {
                         // Only reset pg num if it's different from calculated default
-                        // This catches where size isn't change but pg has been
+                        // This catches where size hasn't changed but the pg_num has
                         $scope.pool.pg_num = pgnum;
                     }
                 } else {
@@ -91,9 +133,20 @@
             };
         }
 
-        /* Business Logic for crush rule sets pool replicas and placement groups */
-
+        // **addWatches**
+        //
+        // Custom Business Logic for crush rule sets pool replicas and placement groups.
+        // $watch installs an observer, that looks for changes in the scope variables
+        // you specify. This allows you to return custom validation routines or
+        // change the behavior of the UI in reaction to those changes.
+        //
+        // @param **$scope** - scope we are instrumenting.
+        //
         function addWatches($scope) {
+            // Ensure pool names are unique for the pool names we know about.
+            // It's still possible for a duplicate named pool to be created
+            // by another user which will cause this pool creation to fail,
+            // just highly unlikely.
             $scope.$watch('pool.name', function(newValue) {
                 if (_.find($scope.poolNames, function(name) {
                     return name === newValue;
@@ -104,6 +157,8 @@
                 $scope.poolForm.name.$setValidity('duplicate', true);
             });
             /* jshint camelcase: false */
+            // Validate the pool size is a number and re-calculate the pgnum
+            // if the replication size changes.
             $scope.$watch('pool.size', function(newValue /*, oldValue*/ ) {
                 if (!_.isNumber(newValue)) {
                     $scope.poolForm.size.$error.number = true;
@@ -117,6 +172,8 @@
                     $scope.crushrulesets[$scope.pool.crush_ruleset].active_sub_rule = limits.active_rule;
                 }
             });
+            // Validate the pg_num is a number and that it is within the
+            // min/max for this cluster.
             $scope.$watch('pool.pg_num', function(newValue /*, oldValue*/ ) {
                 if (!_.isNumber(newValue)) {
                     $scope.poolForm.pg_num.$error.number = true;
@@ -126,6 +183,8 @@
                 $scope.poolForm.pg_num.$pristine = true;
                 validateMaxMin.call($scope.pool, 'pg_num', newValue, 1, $scope.defaults.mon_max_pool_pg_num);
             });
+            // If the crushset changes reset the pool size and the active crush rule sub rule
+            // value to default.
             $scope.$watch('pool.crush_ruleset', function(newValue, oldValue) {
                 $scope.pool.size = $scope.defaults.size;
                 $scope.crushrulesets[newValue].active_sub_rule = 0;
@@ -133,6 +192,10 @@
             });
         }
 
+        // **normalizeCrushRulesets**
+        // Take the crush ruleset metadata and normalize it for the UI
+        // so it can be used to calculate the pg_num for a given
+        // replica size.
         function normalizeCrushRulesets(crushrulesets) {
             /* jshint camelcase: false */
             return _.map(crushrulesets, function(set) {
@@ -153,6 +216,8 @@
             });
         }
 
+        // **poolDefaults**
+        // Default pool values.
         function poolDefaults() {
             return {
                 /* jshint camelcase:false */
@@ -162,6 +227,7 @@
                 pg_num: 100
             };
         }
+        // Exported functions.
         return {
             calculatePGNum: calculatePGNum,
             validateMaxMin: validateMaxMin,
