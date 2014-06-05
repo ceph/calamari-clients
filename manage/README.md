@@ -88,6 +88,18 @@ Manage takes light advantage of ngAnimate. We've used the CSS animations from an
 
 If you add animations to an element more quickly than 10ms they may be skipped. It's important to give ngAnimate time to do it's work. This may require delaying the display of views for short periods while the framework catches up. There are places in the UI, where we deliberately delay the next UI update in order to give the animation time to run.
 
+Annotated Source Code
+---------------------
+
+Manage source code has been annotated using [docco](https://github.com/jashkenas/docco).
+
+```
+    grunt docco
+    grunt copy:docco
+```
+
+Will generate a `docs/` directory which contains annotated source code as HTML.
+
 Future Work
 -----------
 ###Adding a more robust event bus
@@ -101,7 +113,4 @@ Because there are 2 different tech stacks involved, there is sadly a small but c
 * Top Menu Navigation
 * Drop Down Menu
 * Request Tracking - UI & Tracker
-
-
-
 

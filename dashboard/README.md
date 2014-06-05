@@ -115,6 +115,15 @@ Tracking long running tasks and notifications. The Calamari clients use indexdb 
 |**get:hosts**|App.ReqRes|short hostnames for cluster members|
 |**get:osdpgcounts**|App.ReqRes|PG States by OSD|
 
-##Annotated Source Code
 
-Run `grunt docs` to generate annotated source code using Docco in the docs directory.
+##Annotated Source Code
+---------------------
+
+Dashboard source code has been annotated using [docco](https://github.com/jashkenas/docco).
+
+```
+    grunt docco
+    grunt copy:docco
+```
+
+Will generate a `docs/` directory which contains annotated source code as HTML.
