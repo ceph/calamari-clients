@@ -43,8 +43,14 @@ How to Build Clients
 ============
 
 1. install **nodejs**, a recent version like 0.10.
-2. install **npm**
-3. install `grunt-cli` globally via `npm` and `compass` via `gem` and make sure your system has a recent gnu compatible `make` binary
+   on RH systems: `yum install nodejs`
+
+2. install **npm**.
+   on RH systems: `yum install npm`
+
+3. install `grunt-cli` globally via `npm` and `compass` via `gem` and make sure your system has a recent gnu compatible `make` binary.  
+   To install grunt-cli: `npm install -g grunt-cli`.
+
 4. checkout the code `git clone git@github.com:ceph/calamari-clients.git`
 5. cd into `clients`
 6. to build: `make dist`
