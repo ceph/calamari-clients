@@ -14,7 +14,7 @@
                     </td>
                     <td class="" style="min-width: 100px;" data-id='{{minion.id}}'>{{minion.shortName}}</td>
                     <td>
-                        <button ng-bind-html='minion.label' ng-disabled='minion.disabled' class='btn btn-success btn-md' ng-click="acceptMinion(index, minion)"
+                        <button ng-bind-html='minion.label' ng-disabled='minion.disabled' class='btn btn-success btn-md' ng-click="acceptMinion(minion)"
                         ng-if="minion.status != 'accepted'"></button>
                         <button class='btn btn-info btn-md' ng-click='detailView(minion.id)'
                         ng-if="minion.status == 'accepted'"><i class="fa fa-lg fa-fw fa-info-circle"></i>
