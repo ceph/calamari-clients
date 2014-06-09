@@ -31,7 +31,7 @@ Assumptions
 * **The project is built primarily using GruntJS and make.**
 * **The JavaScript running the browser assumes it owns the inktank.* namespace.** Because this is primarily used for debugging, it could be changed in the future if this conflicts with another well known project.
 * **The BackboneJS code makes extensive use of ItemView objects.** This could be componentized in the future once the Web Components standards are finalized.
-* **SASS is the CSS pre-processor of Choice.** We make use of Compass, so this is a requirement.
+* **SASS is the CSS pre-processor of Choice.** We make use of Compass, so this is a requirement. Compass requires Ruby and is installed via gems.
 * **Font Awesome is used liberally around the project.** While it would be possible to add other icon sets, this would require a fair amount of work.
 * **I18N/L10N is partially implemented.** The dashboard module has been mostly converted to use Mozilla's L20N project. The other modules need to be modified to support this.
 * **We've only built the clients on Unix like systems**. We have no support for building on Windows, though patches would be welcomed so long as they're not too intrusive.
@@ -42,9 +42,13 @@ Assumptions
 How to Build Clients
 ============
 
+**Note**: *These instructions are deliberately non-system specific. Please visit the [wiki](https://github.com/ceph/calamari-clients/wiki) and help us write better more distro and release specific instructions.*
+
 1. install **nodejs**, a recent version like 0.10.
 2. install **npm**
-3. install `grunt-cli` globally via `npm` and `compass` via `gem` and make sure your system has a recent gnu compatible `make` binary
+3. install `grunt-cli` globally via `npm`
+4. Ruby gem and `compass` via `gem`
+5. make sure your system has a recent gnu compatible `make` binary
 4. checkout the code `git clone git@github.com:ceph/calamari-clients.git`
 5. cd into `clients`
 6. to build: `make dist`
