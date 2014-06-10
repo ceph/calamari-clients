@@ -5,6 +5,8 @@ build_calamari_clients:
   cmd.run:
     - user: vagrant
     - name: make dpkg
+    - env:
+      - REAL_BUILD: 'y'
     - cwd: /home/vagrant/clients
     - require:
       - git: git_clone
