@@ -19,7 +19,6 @@ base:
   'G@os_family:RedHat':
       - match: compound
       - rh_repackage_deps
-      - install_lsb
       - git_clone
       - copyin_build_product
       - make_rpm
