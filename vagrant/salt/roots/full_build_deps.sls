@@ -39,7 +39,7 @@ compass:
     cmd.run:
         - name: gem install compass
     require:
-        - pkg: build_deps
+        - pkg: full_build_deps
 
 fix_mode:
     cmd.run:
