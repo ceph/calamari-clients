@@ -6,7 +6,7 @@ base:
       - match: compound
       - full_build_deps
       - git_clone
-      - make_deb
+      - real_make_deb
       - make_build_product
 
   'G@os_family:debian and not G@oscodename:precise':
