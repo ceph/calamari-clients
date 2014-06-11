@@ -7,7 +7,11 @@
         var FirstTimeController = function($q, $log, $timeout, $location, $scope, KeyService, ClusterService, $modal) {
             var promises = [KeyService.getList()];
             $scope.addDisabled = true;
+            // Used to show more detail debug info in view
             $scope.debug = false;
+            // Display an alternate message is we can't discover a cluster in a reasonable amount
+            // of time. e.g. 3 minutes.
+            $scope.clusterDiscoveryTimedOut = false;
             $q.all(promises).then(function(results) {
 
                 $scope.up = true;
@@ -46,13 +50,25 @@
                             'html': true
                         });
                         modal.$scope.closeDisabled = true;
-                        modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+
+                        // Cache original $hide before it gets wrapped
+                        var _$hide = modal.$scope.$hide;
+                        modal.$scope.skipClusterCheck = function() {
+                            _$hide();
+                            $scope.clusterDiscoveryTimedOut = true;
+                        };
+
+                        // Decorate the $hide method from angular-strap so we can
+                        // add some behavior to it.
+                        modal.$scope.$hide = _.wrap(_$hide, function($hide) {
                             $hide();
                             ClusterService.initialize().then(function() {
                                 $location.path('/');
                             });
                         });
 
+                        // Helper to poll Calamari until the cluster API responds
+                        // with an actual cluster data structure.
                         function checkClusterUp() {
                             ClusterService.getList().then(function(clusters) {
                                 if (clusters.length) {
@@ -60,13 +76,33 @@
                                     modal.$scope.content = 'Cluster Initialized.';
                                     return;
                                 }
-                                $timeout(checkClusterUp, clusterPollIntervalMs);
+                                // Schedule poll again - Calamari is still working.
+                                $scope.checkTimeout = $timeout(checkClusterUp, clusterPollIntervalMs);
                             });
                         }
+
+                        // Create an elapsed counter for joining the cluster.
+                        modal.$scope.elapsed = 180;
+                        function increment() {
+                            modal.$scope.elapsed--;
+                            $scope.elapsedTimeout = $timeout(increment, 1000);
+                        }
+                        // Send the Accept command to Calamari and start polling.
                         KeyService.accept(ids).then(function(resp) {
                             $log.debug(resp);
                             if (resp.status === 204) {
-                                $timeout(checkClusterUp, clusterPollIntervalMs);
+                                // Start polling loop
+                                $scope.checkTimeout = $timeout(checkClusterUp, clusterPollIntervalMs);
+                                $timeout(function() {
+                                    // Wait 3 minutes and then pop up a warning about no cluster being
+                                    // available from Calamari.
+                                    $timeout.cancel($scope.checkTimeout);
+                                    $timeout.cancel($scope.elapsedTimeout);
+                                    $scope.clusterDiscoveryTimedOut = true;
+                                    _$hide();
+                                }, 3 * 60 * 1000);
+                                // 3 mins as Miillis
+                                $scope.elapsedTimeout = $timeout(increment, 0);
                             }
                             $scope.addDisabled = false;
 
