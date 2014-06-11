@@ -6,8 +6,8 @@
             </div>
             <div class="modal-body" ng-bind="content"></div>
             <div class="modal-footer">
-                <span style="display: inline-block; position: absolute; bottom: 30px; left: 35px;">Giving up in {{elapsed}} Seconds</span>
-                <button type="button" class="btn btn-default btn-primary" ng-click="skipClusterCheck()">Skip</button>
+                <span ng-hide="!closeDisabled" style="display: inline-block; position: absolute; bottom: 30px; left: 35px;">Giving up in {{elapsed}} Seconds</span>
+                <button type="button" class="btn btn-default btn-primary" ng-disabled="!closeDisabled" ng-click="skipClusterCheck()">Skip</button>
                 <button type="button" class="btn btn-default btn-success" ng-disabled='closeDisabled' ng-click="$hide()">Close</button>
             </div>
         </div>
