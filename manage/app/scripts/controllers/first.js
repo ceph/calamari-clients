@@ -102,8 +102,8 @@
                                     // A Cluster is now available. Release the modal
                                     // lockdown and tell the user.
                                     $timeout.cancel($scope.checkTimeout);
-                                    $timeout.cancel($scope.elapsedTimeout);
-                                    modal.$scope.elapsed = '0';
+                                    $timeout.cancel($scope.remainingTimeout);
+                                    modal.$scope.remaining = '0';
                                     modal.$scope.closeDisabled = false;
                                     modal.$scope.content = 'Cluster Initialized.';
                                     return;
@@ -114,10 +114,10 @@
                         }
 
                         // Create an elapsed counter for joining the cluster.
-                        modal.$scope.elapsed = 180;
-                        function increment() {
-                            modal.$scope.elapsed--;
-                            $scope.elapsedTimeout = $timeout(increment, 1000);
+                        modal.$scope.remaining = 180;
+                        function decrement() {
+                            modal.$scope.remaining--;
+                            $scope.remainingTimeout = $timeout(decrement, 1000);
                         }
                         // Send the Accept command to Calamari and start polling.
                         KeyService.accept(ids).then(function(resp) {
@@ -129,12 +129,12 @@
                                     // Wait 3 minutes and then pop up a warning about no cluster being
                                     // available from Calamari.
                                     $timeout.cancel($scope.checkTimeout);
-                                    $timeout.cancel($scope.elapsedTimeout);
+                                    $timeout.cancel($scope.remainingTimeout);
                                     $scope.clusterDiscoveryTimedOut = true;
                                     _$hide();
                                 }, 3 * 60 * 1000);
-                                // 3 mins as Miillis
-                                $scope.elapsedTimeout = $timeout(increment, 0);
+                                // 3 mins as Millis
+                                $scope.remainingTimeout = $timeout(decrement, 0);
                             }
                             $scope.addDisabled = false;
 
