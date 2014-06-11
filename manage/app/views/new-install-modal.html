@@ -4,8 +4,10 @@
             <div class="modal-header" ng-show="title">
                  <h4 class="modal-title" ng-bind="title"></h4>
             </div>
-            <div class="modal-body" ng-bind="content"> <i class='fa fa-spinner fa-spin'></i> Waiting for Hosts to Join...</div>
+            <div class="modal-body" ng-bind="content"></div>
             <div class="modal-footer">
+                <span ng-hide="!closeDisabled" style="display: inline-block; position: absolute; bottom: 30px; left: 35px;">Giving up in {{elapsed}} Seconds</span>
+                <button type="button" class="btn btn-default btn-primary" ng-disabled="!closeDisabled" ng-click="skipClusterCheck()">Skip</button>
                 <button type="button" class="btn btn-default btn-success" ng-disabled='closeDisabled' ng-click="$hide()">Close</button>
             </div>
         </div>

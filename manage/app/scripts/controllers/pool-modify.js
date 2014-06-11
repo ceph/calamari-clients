@@ -1,9 +1,10 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash', 'helpers/pool-helpers', 'helpers/modal-helpers'], function(_, poolHelpers, modalHelpers) {
+    define(['lodash', 'helpers/pool-helpers', 'helpers/modal-helpers', 'helpers/error-helpers'], function(_, PoolHelpers, ModalHelpers, ErrorHelpers) {
 
         var PoolModifyController = function($log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, $location, $routeParams, $modal, RequestTrackingService) {
+            var errorHelpers = ErrorHelpers.makeFunctions($q, $log);
             var self = this;
             $scope.modify = false;
             $scope.clusterName = ClusterService.clusterModel.name;
@@ -21,7 +22,7 @@
             $scope.cancel = function() {
                 $location.path('/pool');
             };
-            $scope.reset = poolHelpers.makeReset($scope, {
+            $scope.reset = PoolHelpers.makeReset($scope, {
                 pgnumReset: false
             });
             var promises = [PoolService.get($scope.id), CrushService.getList(), ToolService.config('mon_max_pool_pg_num')];
@@ -51,11 +52,11 @@
                 };
                 modal.$scope.confirm = function() {
                     modal.$scope.$hide();
-                    PoolService.remove(modal.$scope.id).then(function(result) {
+                    errorHelpers.intercept304Error(PoolService.remove(modal.$scope.id)).then(function(result) {
                         if (result.status === 202) {
                             /* jshint camelcase: false */
                             RequestTrackingService.add(result.data.request_id);
-                            var okmodal = modalHelpers.SuccessfulRequest($modal, {
+                            var okmodal = ModalHelpers.SuccessfulRequest($modal, {
                                 title: 'Delete Request Successful'
                             });
                             okmodal.$scope.$hide = _.wrap(okmodal.$scope.$hide, function($hide) {
@@ -64,38 +65,12 @@
                             });
                             return;
                         }
-                        var umodal = modalHelpers.SuccessfulRequest($modal, {
-                            title: 'Delete Pool Request Completed',
-                            content: result.data,
-                            container: '.manageApp'
-                        });
-                        umodal.$scope.$hide = _.wrap(umodal.$scope.$hide, function($hide) {
-                            $hide();
-                            $location.path('/pool');
-                        });
-                    }, function(error) {
-                        $log.error(error);
-                        var errModal;
-                        if (error.status === 403) {
-                            errModal = modalHelpers.UnAuthorized($modal, {
-                                container: '.manageApp'
-                            });
-                            errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
-                                $hide();
-                                $location.path('/pool');
-                            });
-                            return;
-                        }
-                        errModal = modalHelpers.UnexpectedError($modal, {
-                            status: error.status,
-                            content: error.data,
-                            container: '.manageApp',
-                        });
-                        errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
-                            $hide();
-                            $location.path('/pool');
-                        });
-                    });
+                        $log.error('Unexpected response from PoolService.remove', result);
+                    }, ModalHelpers.makeOnError($modal({
+                        show: false
+                    }), function() {
+                        $location.path('/pool');
+                    }));
                 };
             };
 
@@ -113,11 +88,11 @@
                 }, {});
                 $log.debug(changes);
                 if (!_.isEmpty(changes)) {
-                    PoolService.patch(id, changes).then(function(result) {
+                    errorHelpers.intercept304Error(PoolService.patch(id, changes)).then(function(result) {
                         if (result.status === 202) {
                             /* jshint camelcase: false */
                             RequestTrackingService.add(result.data.request_id);
-                            var okmodal = modalHelpers.SuccessfulRequest($modal, {
+                            var okmodal = ModalHelpers.SuccessfulRequest($modal, {
                                 title: 'Modify Request Successful'
                             });
                             okmodal.$scope.$hide = _.wrap(okmodal.$scope.$hide, function($hide) {
@@ -126,38 +101,12 @@
                             });
                             return;
                         }
-                        var umodal = modalHelpers.SuccessfulRequest($modal, {
-                            title: 'Modify Pool Request Completed',
-                            content: result.data,
-                            container: '.manageApp'
-                        });
-                        umodal.$scope.$hide = _.wrap(umodal.$scope.$hide, function($hide) {
-                            $hide();
-                            $location.path('/pool');
-                        });
-                    }, function(error) {
-                        $log.error(error);
-                        var errModal;
-                        if (error.status === 403) {
-                            errModal = modalHelpers.UnAuthorized($modal, {
-                                container: '.manageApp'
-                            });
-                            errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
-                                $hide();
-                                $location.path('/pool');
-                            });
-                            return;
-                        }
-                        errModal = modalHelpers.UnexpectedError($modal, {
-                            status: error.status,
-                            content: error.data,
-                            container: '.manageApp',
-                        });
-                        errModal.$scope.$hide = _.wrap(errModal.$scope.$hide, function($hide) {
-                            $hide();
-                            $location.path('/pool');
-                        });
-                    });
+                        $log.error('Unexpected response from PoolService.patch', result);
+                    }, ModalHelpers.makeOnError($modal({
+                        show: false
+                    }), function() {
+                        $location.path('/pool');
+                    }));
                 }
             };
 
@@ -168,7 +117,7 @@
                 $scope.defaults = _.clone($scope.pool);
                 self.crushrulesets = result.shift().value();
 
-                $scope.crushrulesets = poolHelpers.normalizeCrushRulesets(self.crushrulesets);
+                $scope.crushrulesets = PoolHelpers.normalizeCrushRulesets(self.crushrulesets);
                 $scope.up = true;
                 //helpers.addWatches($scope);
             });

@@ -1,8 +1,8 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash', 'helpers/pool-helpers', 'helpers/modal-helpers'], function(_, poolHelpers, modalHelpers) {
-        var poolDefaults = poolHelpers.defaults();
+    define(['lodash', 'helpers/pool-helpers', 'helpers/modal-helpers'], function(_, PoolHelpers, ModalHelpers) {
+        var poolDefaults = PoolHelpers.defaults();
         var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, RequestTrackingService, $modal) {
             var self = this;
             $scope.clusterName = ClusterService.clusterModel.name;
@@ -19,7 +19,7 @@
             $scope.cancel = function() {
                 $location.path('/pool');
             };
-            $scope.reset = poolHelpers.makeReset($scope);
+            $scope.reset = PoolHelpers.makeReset($scope);
             $scope.ttReset = {
                 title: 'Reset to Defaults'
             };
@@ -38,7 +38,7 @@
                     if (resp.status === 202) {
                         /*jshint camelcase: false */
                         RequestTrackingService.add(resp.data.request_id);
-                        modal = modalHelpers.SuccessfulRequest($modal, {
+                        modal = ModalHelpers.SuccessfulRequest($modal, {
                             title: 'Create Pool Request Successful',
                             container: '.manageApp'
                         });
@@ -48,36 +48,10 @@
                         });
                         return;
                     }
-                    modal = modalHelpers.SuccessfulRequest($modal, {
-                        title: 'Create Pool Request Completed',
-                        content: resp.data,
-                        container: '.manageApp'
-                    });
-                    modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
-                        $hide();
-                        $location.path('/pool');
-                    });
-                }, function(error) {
-                    $scope.error = true;
-                    var modal;
-                    if (error.status === 403) {
-                        modal = modalHelpers.UnAuthorized($modal, {
-                            container: '.manageApp'
-                        });
-                        modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
-                            $hide();
-                        });
-                        return;
-                    }
-                    modal = modalHelpers.UnexpectedError($modal, {
-                        status: error.status,
-                        content: error.data,
-                        container: '.manageApp',
-                    });
-                    modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
-                        $hide();
-                    });
-                });
+                    $log.error('Unexpected response from PoolService.create', resp);
+                }, ModalHelpers.makeOnError($modal({
+                    show: false
+                })));
             };
 
             // Initialize Controller
@@ -97,7 +71,7 @@
 
                 $scope.poolNames = poolNames;
                 $scope.defaults = mergedDefaults;
-                $scope.crushrulesets = poolHelpers.normalizeCrushRulesets(self.crushrulesets);
+                $scope.crushrulesets = PoolHelpers.normalizeCrushRulesets(self.crushrulesets);
 
                 $scope.pool = {
                     name: mergedDefaults.name,
@@ -105,7 +79,7 @@
                     crush_ruleset: mergedDefaults.crush_ruleset,
                     pg_num: mergedDefaults.pg_num
                 };
-                poolHelpers.addWatches($scope);
+                PoolHelpers.addWatches($scope);
                 $scope.up = true;
             });
         };

@@ -25,7 +25,7 @@
             SuccessfulRequest: function($modal, options) {
                 options = options || {};
                 return $modal(_.extend({
-                    content: 'This may take a few seconds. We\'ll let you know when it\'s done.',
+                    content: 'This may take a while. We\'ll let you know when it\'s done. You can also look at the notification queue to check your request\'s progress.',
                     container: 'body',
                     template: 'views/custom-modal.html',
                     backdrop: 'static', // disable mouse clicks for now since I can't wrap them or supply a callback
@@ -38,12 +38,12 @@
                     modal.$scope.content = '<pre>' + resp.data + '</pre>';
                     modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
                         $hide();
+                        if (_.isFunction(callback)) {
+                            callback.call(undefined);
+                        }
                     });
                     modal.$scope.disableClose = false;
                     modal.$scope.$show();
-                    if (_.isFunction(callback)) {
-                        callback.call(undefined);
-                    }
                 };
             }
         };
