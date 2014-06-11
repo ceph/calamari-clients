@@ -101,6 +101,9 @@
                                 if (clusters.length) {
                                     // A Cluster is now available. Release the modal
                                     // lockdown and tell the user.
+                                    $timeout.cancel($scope.checkTimeout);
+                                    $timeout.cancel($scope.elapsedTimeout);
+                                    modal.$scope.elapsed = '0';
                                     modal.$scope.closeDisabled = false;
                                     modal.$scope.content = 'Cluster Initialized.';
                                     return;
