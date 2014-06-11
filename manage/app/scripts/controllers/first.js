@@ -17,7 +17,11 @@
             var promises = [KeyService.getList()];
             // Start the view out with adds disabled via ng-disabled
             $scope.addDisabled = true;
+            // Used to show more detail debug info in view
             $scope.debug = false;
+            // Display an alternate message is we can't discover a cluster in a reasonable amount
+            // of time. e.g. 3 minutes.
+            $scope.clusterDiscoveryTimedOut = false;
             $q.all(promises).then(function(results) {
 
                 // **up** is used to control whether the view is rendered yet via ng-show.
@@ -73,9 +77,16 @@
                         // Disable closing of the modal while we are in this state.
                         modal.$scope.closeDisabled = true;
 
+                        // Cache original $hide before it gets wrapped
+                        var _$hide = modal.$scope.$hide;
+                        modal.$scope.skipClusterCheck = function() {
+                            _$hide();
+                            $scope.clusterDiscoveryTimedOut = true;
+                        };
+
                         // Decorate the $hide method from angular-strap so we can
                         // add some behavior to it.
-                        modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {
+                        modal.$scope.$hide = _.wrap(_$hide, function($hide) {
                             $hide();
                             ClusterService.initialize().then(function() {
                                 $location.path('/');
@@ -84,6 +95,7 @@
 
                         // Helper to poll Calamari until the cluster API responds
                         // with an actual cluster data structure.
+
                         function checkClusterUp() {
                             ClusterService.getList().then(function(clusters) {
                                 if (clusters.length) {
@@ -94,16 +106,32 @@
                                     return;
                                 }
                                 // Schedule poll again - Calamari is still working.
-                                $timeout(checkClusterUp, clusterPollIntervalMs);
+                                $scope.checkTimeout = $timeout(checkClusterUp, clusterPollIntervalMs);
                             });
                         }
 
+                        // Create an elapsed counter for joining the cluster.
+                        modal.$scope.elapsed = 180;
+                        function increment() {
+                            modal.$scope.elapsed--;
+                            $scope.elapsedTimeout = $timeout(increment, 1000);
+                        }
                         // Send the Accept command to Calamari and start polling.
                         KeyService.accept(ids).then(function(resp) {
                             $log.debug(resp);
                             if (resp.status === 204) {
                                 // Start polling loop
-                                $timeout(checkClusterUp, clusterPollIntervalMs);
+                                $scope.checkTimeout = $timeout(checkClusterUp, clusterPollIntervalMs);
+                                $timeout(function() {
+                                    // Wait 3 minutes and then pop up a warning about no cluster being
+                                    // available from Calamari.
+                                    $timeout.cancel($scope.checkTimeout);
+                                    $timeout.cancel($scope.elapsedTimeout);
+                                    $scope.clusterDiscoveryTimedOut = true;
+                                    _$hide();
+                                }, 3 * 60 * 1000);
+                                // 3 mins as Miillis
+                                $scope.elapsedTimeout = $timeout(increment, 0);
                             }
                             $scope.addDisabled = false;
 
