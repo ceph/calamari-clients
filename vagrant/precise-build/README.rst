@@ -12,7 +12,7 @@ Usage
     vagrant up
     ...
     vagrant ssh
-    vagrant@precise64:~$ cd /git/clients
+    vagrant@precise64:~$ cd /git/calamari-clients
     vagrant@precise64:~$ make dpkg
 
 The .deb file will come out in the parent of your git repo on the host
