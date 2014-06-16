@@ -77,7 +77,7 @@ define(['lodash', 'idbwrapper', 'moment'], function(_, IDBStore, momentjs) {
             },
             showNotification: function(request) {
                 // TODO too tightly coupled use $broadcast
-                growl.addSuccessMessage(request.headline + ' completed');
+                growl.addSuccessMessage(request.headline);
             },
             getLength: function() {
                 var d = $q.defer();
