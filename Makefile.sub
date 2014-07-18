@@ -21,7 +21,7 @@ clean:
 
 build-stamp: $(QUOTED_SRCS)
 	npm install --loglevel warn
-	bower --allow-root install
+	bower --allow-root --config.interactive=false install
 	grunt --no-color saveRevision
 	grunt --no-color build
 	touch build-stamp
