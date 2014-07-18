@@ -1,8 +1,7 @@
 full_build_deps:
   pkg.installed:
     - pkgs:
-      - ruby
-      - rubygems
+      - ruby1.9.1
       - python-software-properties
       - g++
       - make

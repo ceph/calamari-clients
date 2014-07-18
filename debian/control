@@ -4,7 +4,7 @@ Priority: extra
 Homepage: http://www.inktank.com/
 Maintainer: Inktank <info@intank.com>
 Standards-Version: 3.9.2
-Build-Depends: ruby, rubygems, make, git
+Build-Depends: ruby1.9.1, make, git
 
 Package: calamari-clients
 Architecture: all
