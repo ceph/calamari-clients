@@ -1,3 +1,6 @@
+*~
+*.orig
+*.rej
 .git
 *.swp
 *.swo
