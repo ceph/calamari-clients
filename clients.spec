@@ -15,7 +15,7 @@ Version: 	%{version}
 Release: 	%{?revision}%{?dist}
 Summary:	Calamari GUI front-end components
 Requires: 	calamari-server
-License: 	Inktank
+License: 	MIT
 Group:   	System/Filesystems
 URL:     	http://ceph.com/
 Source0: 	%{name}_%{version}.tar.gz
