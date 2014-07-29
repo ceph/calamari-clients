@@ -44,14 +44,14 @@ How to Build Clients
 
 **Note**: *These instructions are deliberately non-system specific. Please visit the [wiki](https://github.com/ceph/calamari-clients/wiki) and help us write better more distro and release specific instructions.*
 
-1. install **nodejs**, a recent version like 0.10.
+1. install **nodejs**, a recent version like 0.10. For instructions, see https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager
 2. install **npm**
-3. install `grunt-cli` globally via `npm`
-4. Ruby gem and `compass` via `gem`
+3. Install many npm packages as follows: `sudo npm install -g socket.io socket.io-client grunt-cli bower js-yaml di jshint semver depd log4js lodash useragent coffee-script q chokidar connect json compass grunt-karma bytes raw-body iconv-lite media-typer type-is`
+4. Install Ruby gem and `compass` via `gem`, `gem install compass`
 5. make sure your system has a recent gnu compatible `make` binary
-4. checkout the code `git clone git@github.com:ceph/calamari-clients.git`
-5. cd into `clients`
-6. to build: `make dist`
+6. checkout the code `git clone git@github.com:ceph/calamari-clients.git`
+7. cd into `calamari-clients`
+8. to build: `make dist`
 
 This will build all the modules.
 
