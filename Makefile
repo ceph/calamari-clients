@@ -14,6 +14,11 @@ BPTAG ?= ""
 DEBEMAIL ?= dan.mick@inktank.com
 ARCH ?= x86_64
 
+TSCOMMIT=$(shell git log -n1 --pretty=format:"%ct.%h")
+SUSE_PKG=calamari-clients-$(VERSION)+git.$(TSCOMMIT)
+SUSE_DEST=/srv/www/calamari
+SUSE_TAR=$(SUSE_PKG).tar.gz
+
 DISTNAMEVER=calamari-clients_$(VERSION)
 PKGDIR=calamari-clients-$(VERSION)
 TARNAME = ../$(DISTNAMEVER).tar.gz
@@ -119,6 +124,24 @@ install: build
 		cd $(DESTDIR); \
 		tar xvfz $(BUILD_PRODUCT_TGZ); \
 	fi
+
+# Does build-real (thus requiring grunt, bower and compass be installed),
+# then packs everything into a tarball like the install target above,
+# except it's created in the .tmp subdirectory of the source tree, and
+# packed with a name in the form:
+#   calamari-clients-1.2+git.1406029226.d2b9ccc.tar.bz",
+# i.e. the commit timestamp and hash are included in the tarball name.
+# Note: the directory structure here is /srv/www/calamari, to follow
+# SUSE packaging conventions for web apps.
+suse-tarball: build-real
+	rm -rf .tmp
+	mkdir -p .tmp/$(SUSE_PKG)$(SUSE_DEST)/content
+	for d in $(UI_SUBDIRS); do \
+		instdir=$$(basename $$d); \
+		$(INSTALL) -d .tmp/$(SUSE_PKG)$(SUSE_DEST)/content/$$instdir; \
+		cp -rp $$d/dist/* .tmp/$(SUSE_PKG)$(SUSE_DEST)/content/$$instdir; \
+	done;
+	( cd .tmp ; tar cvfz ../$(SUSE_TAR) $(SUSE_PKG) )
 
 dist:
 	@echo "making dist tarball in $(TARNAME)"
