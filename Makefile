@@ -1,4 +1,7 @@
 SHELL=bash
+# set REAL_BUILD in the env to actually do the build; otherwise,
+# presumes existence of BUILD_PRODUCT_TGZ and merely packages
+
 SRC := $(shell pwd)
 
 # set these only if not set with ?=
@@ -23,8 +26,6 @@ DISTNAMEVER=calamari-clients_$(VERSION)
 PKGDIR=calamari-clients-$(VERSION)
 TARNAME = ../$(DISTNAMEVER).tar.gz
 
-UBUNTU = $(shell if [ `lsb_release -is` = "Ubuntu" ] ; then echo 'y' ; else echo 'n'; fi)
-
 INSTALL=/usr/bin/install
 
 UI_BASEDIR = $(DESTDIR)/opt/calamari/webapp/content
@@ -48,7 +49,7 @@ set_deb_version:
 		-D $(DIST) --force-bad-version --force-distribution "$(DATESTR)"
 
 build:
-	if [ $(UBUNTU) = y ] ; then \
+	if [ "$(REAL_BUILD)" = y ] ; then \
 		$(MAKE) build-real; \
 	fi
 
@@ -70,7 +71,7 @@ $(CONFIG_JSON): build-ui
 		> $(CONFIG_JSON)
 
 clean:
-	if [ $(UBUNTU) = y ] ; then \
+	if [ "$(REAL_BUILD)" = y ] ; then \
 		$(MAKE) clean-real; \
 	fi
 
@@ -83,14 +84,14 @@ clean-real:
 # NB we do not build source packages
 dpkg: set_deb_version
 	# don't require Build-Depends if not Ubuntu
-	if [ $(UBUNTU) = y ] ; then \
+	if [ "$(REAL_BUILD)" = y ] ; then \
 		dpkg-buildpackage -b -us -uc ; \
 	else \
 		dpkg-buildpackage -d -b -us -uc ; \
 	fi
 
 build-product:
-	if [ $(UBUNTU) = y ] ; then \
+	if [ "$(REAL_BUILD)" = y ] ; then \
 		( \
 		cd debian/calamari-clients; \
 		tar cvfz $(BUILD_PRODUCT_TGZ) opt ; \
@@ -114,7 +115,7 @@ rpm:
 install: build
 	@echo "target: install"
 	@echo "install"
-	if [ $(UBUNTU) = y ] ; then \
+	if [ "$(REAL_BUILD)" = y ] ; then \
 		for d in $(UI_SUBDIRS); do \
 			instdir=$$(basename $$d); \
 			$(INSTALL) -d $(UI_BASEDIR)/$$instdir; \

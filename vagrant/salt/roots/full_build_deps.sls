@@ -1,8 +1,7 @@
 full_build_deps:
   pkg.installed:
     - pkgs:
-      - ruby
-      - rubygems
+      - ruby1.9.1
       - python-software-properties
       - g++
       - make
@@ -25,7 +24,7 @@ install_node:
 
 bower:
     cmd.run:
-        - name: npm install -g bower@1.2.8
+        - name: npm install -g bower@1.3.8
     require:
         - pkg: install_node
 
@@ -39,4 +38,9 @@ compass:
     cmd.run:
         - name: gem install compass
     require:
-        - pkg: build_deps
+        - pkg: full_build_deps
+
+fix_mode:
+    cmd.run:
+        - name: chown -R vagrant:vagrant /home/vagrant
+        - user: root
