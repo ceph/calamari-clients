@@ -267,15 +267,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 // do nothing if the widget isn't visible
                 return;
             }
-            var count = this.countPGs();
-            if (count === this.count) {
-                // if the count hasn't changed do nothing
-                return;
-            }
-            //PG Replica Count changed, re-render the canvas
-            this.count = count;
+            this.count = this.countPGs();
             this.forceUIUpdate();
-
         },
         // **forceUIUpdate**
         // Clean up the stage and backstage canvas objects and
