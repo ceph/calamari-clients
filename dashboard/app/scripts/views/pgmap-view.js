@@ -258,8 +258,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             }, 0);
         },
         // **fetchOSDPGCount**
-        // Use RequestResponse get an updated OSD PG Count.
-        // If it has changed re-render the UI.
+        // Use RequestResponse to get an updated OSD PG Count.
+        // Force a re-render of the UI widget in any case.
         fetchOSDPGCount: function() {
             // Always update the collection on an update
             this.collection.set(this.ReqRes.request('get:osdpgcounts'));
