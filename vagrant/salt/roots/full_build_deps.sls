@@ -25,7 +25,7 @@ install_node:
 
 bower:
     cmd.run:
-        - name: npm install -g bower@1.2.8
+        - name: npm install -g bower@1.3.8
     require:
         - pkg: install_node
 
