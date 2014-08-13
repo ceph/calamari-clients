@@ -258,8 +258,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             }, 0);
         },
         // **fetchOSDPGCount**
-        // Use RequestResponse get an updated OSD PG Count.
-        // If it has changed re-render the UI.
+        // Use RequestResponse to get an updated OSD PG Count.
+        // Force a re-render of the UI widget in any case.
         fetchOSDPGCount: function() {
             // Always update the collection on an update
             this.collection.set(this.ReqRes.request('get:osdpgcounts'));
@@ -267,15 +267,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
                 // do nothing if the widget isn't visible
                 return;
             }
-            var count = this.countPGs();
-            if (count === this.count) {
-                // if the count hasn't changed do nothing
-                return;
-            }
-            //PG Replica Count changed, re-render the canvas
-            this.count = count;
+            this.count = this.countPGs();
             this.forceUIUpdate();
-
         },
         // **forceUIUpdate**
         // Clean up the stage and backstage canvas objects and
