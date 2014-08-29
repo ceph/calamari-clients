@@ -15,7 +15,7 @@
             }
             ClusterResolver.then(function() {
                 var myAside = $aside({
-                    'title': 'Requested Tasks',
+                    'title': '请求的任务',
                     'template': 'views/request.html',
                     'animation': 'am-fade-and-slide-right',
                     'backdropAnimation': 'animation-fade',

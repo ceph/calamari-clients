@@ -48,12 +48,12 @@
             $scope.fqdn = $routeParams.fqdn;
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.breadcrumbs = [{
-                    text: 'Manage (' + $scope.clusterName + ')',
+                    text: '管理 (' + $scope.clusterName + ')',
                 }, {
                     text: 'OSD',
                     href: '#/osd'
                 }, {
-                    text: 'Host (' + $scope.fqdn + ')',
+                    text: '主机 (' + $scope.fqdn + ')',
                     active: true
                 }
             ];

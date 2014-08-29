@@ -1,37 +1,37 @@
-<unconfigured "Unconfigured">
-<workbench "WORKBENCH">
-<graph "GRAPH">
-<dashboard "DASHBOARD">
-<manage "MANAGE">
-<workbenchTitle "OSD Workbench">
-<graphTitle "Charting">
-<dashboardTitle "Dashboard">
-<manageTitle "Management">
-<healthOSDTitle "Health">
-<pleaseContactAdmin "Please contact Administrator">
+<unconfigured "未配置">
+<workbench "工作台">
+<graph "图表">
+<dashboard "仪表板">
+<manage "管理">
+<workbenchTitle "OSD 工作台">
+<graphTitle "图表">
+<dashboardTitle "仪表板">
+<manageTitle "管理">
+<healthOSDTitle "健康状态">
+<pleaseContactAdmin "请联系管理员">
 <serverErrorMessage """
-Server Error {{ $status }} {{ $responseText }}. {{ pleaseContactAdmin }}
+服务端错误 {{ $status }} {{ $responseText }}. {{ pleaseContactAdmin }}
 """>
 <clusterUpdatesAreStale """
-Cluster Updates Are Stale. The Calamari update process may have failed.
+集群的更新都是陈旧的. Calamari更新失败。
 """>
 <clusterNotResponding """
-Cluster Updates Are Stale. The Cluster isn't updating Calamari. {{ pleaseContactAdmin }}
+集群的更新都是陈旧的，集群没有更新Calamari. {{ pleaseContactAdmin }}
 """>
-<sessionTimeout "Session Has Timed Out. Please Login again.">
-<loginButton "Login">
-<dashboardUpdateTimeout "Dashboard Update Timed Out. Please check your connection.">
-<unexpectedError "Unexpected Error ({{ $status }}){{ $responseText }}. {{ pleaseContactAdmin }}">
-<serverUnreachable "Server Unreachable. Try re-loading page or contact an Administrator.">
-<JSONParserError "Error decoding {{ $source }} response from server. {{ pleaseContactAdmin }}">
-<TitleGraphDiskSpaceBytes "OSD {{ $id }} Disk Space">
-<TitleGraphDiskSpaceInodes "OSD {{ $id }} Inodes">
-<TitleGraphHostCPUSummary "{{ $hostname }} CPU Summary">
-<TitleGraphCPUDetail "{{ $id }} CPU Detail">
-<TitleGraphOpsLatency "{{ $id }} Ops Latency">
+<sessionTimeout "会话超时. 请重新登陆.">
+<loginButton "登陆">
+<dashboardUpdateTimeout "仪表板更新超时，请检查网络连接。">
+<unexpectedError "未知错误 ({{ $status }}){{ $responseText }}. {{ pleaseContactAdmin }}">
+<serverUnreachable "服务不可达，请重新加载或者联系管理员。">
+<JSONParserError "错误的解码 {{ $source }} 响应. {{ pleaseContactAdmin }}">
+<TitleGraphDiskSpaceBytes "OSD {{ $id }} 磁盘空间">
+<TitleGraphDiskSpaceInodes "OSD {{ $id }} 节点">
+<TitleGraphHostCPUSummary "{{ $hostname }} CPU 一览">
+<TitleGraphCPUDetail "{{ $id }} CPU 详细信息">
+<TitleGraphOpsLatency "{{ $id }} Ops 延时">
 <TitleGraphJournalOps "{{ $id }} Journal Ops">
-<TitleGraphLoadAverage "{{ $hostname }} Load Average">
-<TitleGraphMemory "{{ $hostname }} Memory">
+<TitleGraphLoadAverage "{{ $hostname }} 平均负载">
+<TitleGraphMemory "{{ $hostname }} 内存">
 <TitleGraphRWBytes "{{ $id }} RW Bytes">
 <TitleGraphRWAwait "{{ $id }} RW Await">
 <TitleGraphIOPS "{{ $id }} IOPS">
@@ -40,27 +40,24 @@ Cluster Updates Are Stale. The Cluster isn't updating Calamari. {{ pleaseContact
 <TitleGraphNetworkTXRXErrors "{{ $id }} Network TX/RX Errors">
 <TitleGraphNetworkTXRXDrops "{{ $id }} Network TX/RX Drops">
 <TitleGraphPoolIOPS "Pool {{ $id }} IOPS">
-<TitleGraphPoolTotalDiskFree "Pools Total Disk Free">
-<Graph1Week "1 Week">
-<Graph3Days "3 Days">
-<Graph24Hours "24 Hours">
-<Graph12Hours "12 Hours">
-<GraphHour "Hour">
-<GraphLabelWeek "Time ({{ Graph1Week }})">
-<GraphLabel3Days "Time ({{ Graph3Days }})">
-<GraphLabel24Hours "Time (Last {{ Graph24Hours}})">
-<GraphLabel12Hours "Time (Last {{ Graph12Hours}})">
-<GraphLabelHour "Time (Last {{ GraphHour}})">
+<TitleGraphPoolTotalDiskFree "Pools 剩余磁盘空间">
+<Graph1Week "1 周">
+<Graph3Days "3 天">
+<Graph24Hours "24 小时">
+<Graph12Hours "12 小时">
+<GraphHour "小时">
+<GraphLabelWeek "时间 ({{ Graph1Week }})">
+<GraphLabel3Days "时间 ({{ Graph3Days }})">
+<GraphLabel24Hours "时间 (最近 {{ Graph24Hours}})">
+<GraphLabel12Hours "时间 (最近 {{ Graph12Hours}})">
+<GraphLabelHour "时间 (最近 {{ GraphHour}})">
 <GraphHelp """
-The chart is interactive: you can mouse over to highlight individual
-values. You can click and drag to zoom. Double-clicking will zoom
-you back out. Shift-drag will pan.
-""">
-<Cluster "Cluster">
+图表是交互式的：你可以用鼠标划过高亮显示某个值，也可以点击并拖拽来缩放。双击放大的区域将还原。""">
+<Cluster "集群">
 <PoolIOPS "Pool IOPS">
-<UserRequestViewTitle "Requested Tasks">
-<UserRequestViewColTask "Task">
-<UserRequestViewColStatus "Status">
-<UserRequestViewColUpdated "Updated">
-<UserRequestViewCloseBtn "Close">
-<UserRequestViewError "error">
+<UserRequestViewTitle "请求的任务">
+<UserRequestViewColTask "任务">
+<UserRequestViewColStatus "状态">
+<UserRequestViewColUpdated "更新的">
+<UserRequestViewCloseBtn "关闭">
+<UserRequestViewError "错误">

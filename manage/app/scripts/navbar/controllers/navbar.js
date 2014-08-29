@@ -5,10 +5,10 @@
         var NavbarController = function($log, $scope) {
             $scope.navbarTemplate = 'views/breadcrumb.html';
             $scope.title = {
-                dashboard: 'DASHBOARD',
-                bench: 'WORKBENCH',
-                chart: 'GRAPHS',
-                manage: 'MANAGE'
+                dashboard: '仪表板',
+                bench: '工作台',
+                chart: '图表',
+                manage: '管理'
             };
             $scope.dashboard = function() {
                 document.location = '/dashboard/';

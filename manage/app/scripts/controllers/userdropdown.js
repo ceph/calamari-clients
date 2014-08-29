@@ -19,12 +19,12 @@
                         }, {
                             divider: true
                         }, {
-                            'text': '<i class="fa fa-fw fa-info-circle"></i> About Calamari',
+                            'text': '<i class="fa fa-fw fa-info-circle"></i> 关于 Calamari',
                             'click': function($event) {
                                 $event.preventDefault();
                                 $event.stopPropagation();
                                 var modal = $modal({
-                                    title: '<i class="fa fa-lg fa-info-circle"></i> About Calamari',
+                                    title: '<i class="fa fa-lg fa-info-circle"></i> 关于 Calamari',
                                     html: true,
                                     template: 'views/about-modal.html'
                                 });
@@ -39,7 +39,7 @@
                                 });
                             }
                         }, {
-                            'text': '<i class="fa fa-fw fa-power-off"></i> Logout',
+                            'text': '<i class="fa fa-fw fa-power-off"></i> 退出',
                             'click': function($event) {
                                 $event.preventDefault();
                                 $event.stopPropagation();

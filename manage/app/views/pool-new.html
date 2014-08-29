@@ -6,30 +6,30 @@
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
                 <form name='poolForm' role="form" novalidate>
                     <div class="form-group" ng-class="{ 'has-error': poolForm.name.$invalid && !poolForm.name.$pristine}">
-                        <label class="text-muted" for="name">NAME</label>
+                        <label class="text-muted" for="name">名称</label>
                         <input id="name" type="text" required ng-maxlength=64 ng-minlength=3
                         name="name" class="form-control" ng-model='pool.name' placeholder="New Pool Name"></input>
-                        <p ng-show='poolForm.name.$error.minlength' class='help-block'>Name is too short (at least 3 characters)</p>
+                        <p ng-show='poolForm.name.$error.minlength' class='help-block'>名称太短 (至少 3 字符)</p>
                         <p ng-show='poolForm.name.$error.maxlength'
-                        class='help-block'>Name is too long (64 characters max)</p>
+                        class='help-block'>名称太长 (最大64 字符)</p>
                         <p ng-show='poolForm.name.$error.pattern'
-                        class='help-block'>Invalid Characters</p>
-                        <p ng-show='poolForm.name.$error.duplicate' class='help-block'>Pool name is already in use</p>
+                        class='help-block'>非法的字符</p>
+                        <p ng-show='poolForm.name.$error.duplicate' class='help-block'>Pool 名称已经存在</p>
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': poolForm.size.$invalid && !poolForm.size.$pristine}">
-                        <label class="text-muted" for="size">REPLICAS (SIZE)</label>
+                        <label class="text-muted" for="size">副本数 (SIZE)</label>
                         <input id="size" type="number" name="size" required class="form-control"
                         placeholder="Size" ng-model='pool.size'></input>
-                        <p ng-show='poolForm.size.$error.number' class='help-block'>Invalid Number</p>
+                        <p ng-show='poolForm.size.$error.number' class='help-block'>非法的数字</p>
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': poolForm.pg_num.$invalid && !poolForm.pg_num.$pristine}">
-                        <label class="text-muted" for="pg_num">PLACEMENT GROUPS (PG_NUM)</label>
+                        <label class="text-muted" for="pg_num">PG数 (PG_NUM)</label>
                         <input id="pg_num" type="number" name="pg_num"
                         required class="form-control" ng-model='pool.pg_num' placeholder="Placement Groups"></input>
-                        <p ng-show='poolForm.pg_num.$error.number' class='help-block'>Invalid Number</p>
+                        <p ng-show='poolForm.pg_num.$error.number' class='help-block'>非法的数字</p>
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': poolForm.crush_ruleset.$invalid && !poolForm.crush_ruleset.$pristine}">
-                        <label class="text-muted" for="crush_ruleset">CRUSH RULESET</label>
+                        <label class="text-muted" for="crush_ruleset">CRUSH 规则</label>
                         <select id="crush_ruleset" class="form-control" name="crush_ruleset"
                         required ng-model='pool.crush_ruleset'>
                             <option ng-repeat='crush in crushrulesets' value='{{crush.id}}'>{{crush.id}}: {{crush.rules[crush.active_sub_rule].name}}</option>

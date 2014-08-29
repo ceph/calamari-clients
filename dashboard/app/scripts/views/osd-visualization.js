@@ -313,7 +313,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         // **fullscreen** Run part 1 of 2 animation transition to workbench.
         fullscreen: function(callback) {
             this.state = 'fullscreen';
-            this.ui.cardTitle.text('OSD Workbench');
+            this.ui.cardTitle.text('OSD 工作台');
             this.$el.addClass('workbench');
             return this.toWorkBenchAnimation(this.$el, callback).then(this.toFullscreenTransitionTwo);
         },

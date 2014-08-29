@@ -77,19 +77,19 @@
 
             // Tool Tip Metadata. Used by Angular-strap directives.
             $scope.ttEdit = {
-                title: 'Edit Pool'
+                title: '编辑 Pool'
             };
             $scope.ttDelete = {
-                title: 'Delete Pool'
+                title: '删除 Pool'
             };
             $scope.ttCreate = {
-                title: 'Create Pool'
+                title: '新建 Pool'
             };
 
             // Breadcrumb metadata. Used by Angular-strap directives.
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.breadcrumbs = [{
-                    text: 'Manage (' + $scope.clusterName + ')'
+                    text: '管理 (' + $scope.clusterName + ')'
                 }, {
                     text: 'Pools',
                     active: true

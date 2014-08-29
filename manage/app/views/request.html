@@ -10,14 +10,14 @@
               <thead>
                   <tr>
                       <th>&nbsp;</th>
-                      <th style="min-width: 23em;">Task</th>
-                      <th>Status</th>
-                      <th style="min-width: 8em;">Updated</th>
+                      <th style="min-width: 23em;">任务</th>
+                      <th>状态</th>
+                      <th style="min-width: 8em;">更新的</th>
                   </tr>
               <thead>
               <tbody>
                 <tr ng-if="empty">
-                    <td style="text-align: center;" colspan=4>No Requests Submitted</td>
+                    <td style="text-align: center;" colspan=4>没有提交请求</td>
                 </tr>
                 <tr ng-repeat="task in tasks">
                     <td><i ng-class="{
@@ -34,7 +34,7 @@
           </table>
       </div>
       <div class="aside-footer">
-        <button type="button" class="btn btn-primary" ng-click="$hide()">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="$hide()">关闭</button>
       </div>
     </div>
   </div>
