@@ -15,9 +15,9 @@
             // Set up breadcrumb navigation.
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.breadcrumbs = [{
-                    text: 'Manage (' + $scope.clusterName + ')'
+                    text: '管理 (' + $scope.clusterName + ')'
                 }, {
-                    text: 'Logs',
+                    text: '日志',
                     active: true
                 }
             ];

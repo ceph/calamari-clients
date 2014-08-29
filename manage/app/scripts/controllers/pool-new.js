@@ -18,12 +18,12 @@
             // Set up breadcrumbs.
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.breadcrumbs = [{
-                    text: 'Manage (' + $scope.clusterName + ')'
+                    text: '管理 (' + $scope.clusterName + ')'
                 }, {
                     text: 'Pools',
                     href: '#/pool'
                 }, {
-                    text: 'Create',
+                    text: '新建',
                     active: true
                 }
             ];
@@ -45,13 +45,13 @@
 
             // Angular-strap Tool Tip configuration.
             $scope.ttReset = {
-                title: 'Reset to Defaults'
+                title: '设为默认'
             };
             $scope.ttCancel = {
-                title: 'Cancel'
+                title: '取消'
             };
             $scope.ttCreate = {
-                title: 'Create Pool'
+                title: '新建 Pool'
             };
 
             // **create**
@@ -69,7 +69,7 @@
                         /*jshint camelcase: false */
                         RequestTrackingService.add(resp.data.request_id);
                         modal = ModalHelpers.SuccessfulRequest($modal, {
-                            title: 'Create Pool Request Successful',
+                            title: '新建 Pool 的请求成功',
                             container: '.manageApp'
                         });
                         modal.$scope.$hide = _.wrap(modal.$scope.$hide, function($hide) {

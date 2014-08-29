@@ -11,19 +11,19 @@
                             <tr>
                                 <th class="text-muted width-10-perc">ID</th>
                                 <th class="text-muted width-10-perc">DAEMON</th>
-                                <th class="text-muted width-20-perc">STATE</th>
-                                <th class="text-muted width-20-perc">RE-WEIGHT %<sup class="text-info">*</sup>
+                                <th class="text-muted width-20-perc">状态</th>
+                                <th class="text-muted width-20-perc">权重 %<sup class="text-info">*</sup>
 
                                 </th>
-                                <th class="text-muted">COMMANDS</th>
+                                <th class="text-muted">操作</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class='am-fade' ng-repeat='osd in osds'>
                                 <td ng-bind='osd.id'></td>
-                                <td> <span ng-if="osd.running" class="label label-success">RUNNING</span>
+                                <td> <span ng-if="osd.running" class="label label-success">运行中</span>
  <span ng-if="!osd.running"
-                                    class="label label-warning">DEAD</span>
+                                    class="label label-warning">死亡</span>
 
                                 </td>
                                 <td> <span ng-if="osd.up" class="label label-success">UP</span>

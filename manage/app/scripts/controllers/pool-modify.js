@@ -12,12 +12,12 @@
             $scope.modify = false;
             $scope.clusterName = ClusterService.clusterModel.name;
             $scope.breadcrumbs = [{
-                    text: 'Manage (' + $scope.clusterName + ')'
+                    text: '管理 (' + $scope.clusterName + ')'
                 }, {
                     text: 'Pools',
                     href: '#/pool'
                 }, {
-                    text: 'Edit',
+                    text: '编辑',
                     active: true
                 }
             ];
@@ -42,16 +42,16 @@
 
             // Set up angular-strap Tooltips.
             $scope.ttBack = {
-                'title': 'Back'
+                'title': '返回'
             };
             $scope.ttReset = {
-                'title': 'Reset to Default'
+                'title': '设为默认'
             };
             $scope.ttSave = {
-                'title': 'Save Changes'
+                'title': '保存'
             };
             $scope.ttDelete = {
-                'title': 'Delete Pool'
+                'title': '删除 Pool'
             };
 
             // **remove**
@@ -63,8 +63,8 @@
             $scope.remove = function(id) {
                 $log.debug('deleting ' + id);
                 var modal = $modal({
-                    title: 'This will DELETE the \'' + $scope.pool.name + '\' Pool. Are you sure?',
-                    content: 'There is no way to undo this operation. Please be sure this is what you are trying to do.',
+                    title: '确定要删除 \'' + $scope.pool.name + '\' Pool?',
+                    content: '这个操作是不可撤销的，请确认要删除.',
                     template: 'views/delete-modal.html'
                 });
                 modal.$scope.id = id;
@@ -75,7 +75,7 @@
                             /* jshint camelcase: false */
                             RequestTrackingService.add(result.data.request_id);
                             var okmodal = ModalHelpers.SuccessfulRequest($modal, {
-                                title: 'Delete Request Successful'
+                                title: '删除请求成功'
                             });
                             okmodal.$scope.$hide = _.wrap(okmodal.$scope.$hide, function($hide) {
                                 $hide();
@@ -117,7 +117,7 @@
                             /* jshint camelcase: false */
                             RequestTrackingService.add(result.data.request_id);
                             var okmodal = ModalHelpers.SuccessfulRequest($modal, {
-                                title: 'Modify Request Successful'
+                                title: '修改请求成功'
                             });
                             okmodal.$scope.$hide = _.wrap(okmodal.$scope.$hide, function($hide) {
                                 $hide();

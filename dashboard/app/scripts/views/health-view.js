@@ -72,7 +72,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
             var model = this.model.toJSON();
             var subtext = '',
                 evt = 'status:ok',
-                healthText = 'OK';
+                healthText = '正常';
             if (model.report.overall_status && model.report.summary.length) {
                 var counts = _.reduce(model.report.summary, function(result, summary) {
                     if (summary.severity === 'HEALTH_WARN') {
@@ -105,7 +105,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
                     evt = 'status:warn';
                     break;
                 case 'HEALTH_ERR':
-                    healthText = 'ERROR';
+                    healthText = '异常';
                     evt = 'status:fail';
                     break;
                 default:

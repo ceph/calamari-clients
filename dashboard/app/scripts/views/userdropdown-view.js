@@ -19,11 +19,11 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'Backbone.Modal', 'mari
             this.model.set({
                 username: '',
                 settingsIcon: 'fa fa-cogs',
-                settingsLabel: 'Settings',
+                settingsLabel: '设置',
                 logoutIcon: 'fa fa-power-off',
-                logoutLabel: 'Logout',
+                logoutLabel: '退出',
                 aboutIcon: 'fa fa-info-circle',
-                aboutLabel: 'About Calamari'
+                aboutLabel: '关于 Calamari'
             });
             this.listenTo(this.model, 'change', this.render);
             _.bindAll(this, 'settings', 'logout');

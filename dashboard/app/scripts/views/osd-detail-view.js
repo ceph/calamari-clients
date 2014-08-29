@@ -118,7 +118,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                     }
                     var $sign = self.$('.fa-info-circle');
                     $sign.popover({
-                        title: 'Pool Membership',
+                        title: 'Pool 成员',
                         content: pools.join(', '),
                         trigger: 'hover',
                         container: 'body',
@@ -127,7 +127,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                     var pgs = self.model.get('pg_states') || {};
                     var $cloud = self.$('.fa-cloud');
                     $cloud.popover({
-                        title: 'PG States',
+                        title: 'PG 状态',
                         content: self.pgTemplate(pgs),
                         html: true,
                         trigger: 'hover',

@@ -2,13 +2,13 @@
     <div ng-include="'views/appbar.html'"></div>
     <div class="card am-fade-and-slide-top" ng-show='up' style='min-height: 500px; line-height: 2;'>
         <div ng-hide="clusterDiscoveryTimedOut">
-             <h3 class="text-info">New Calamari Installation</h3>
+             <h3 class="text-info"> 新安装好的 Calamari</h3>
 
-            <p style='width: 40em;'>This appears to be the <span class='text-info'>first</span> time you have started
-                Calamari and there are no clusters currently configured.</p>
+            <p style='width: 40em;'>出现这个页面是因为 <span class='text-info'>第一次</span> 安装
+                Calamari 并且当前没有配置好的集群.</p>
             <div ng-if='hosts.pre.length > 0'>
-                <p ng-if='hosts.accepted'>There are <span class='badge'>{{hosts.accepted.length}}</span> host(s) currently
-                    registered with Calamari.</p>
+                <p ng-if='hosts.accepted'>当前这里 <span class='badge'>{{hosts.accepted.length}}</span> host(s) 
+                    在 Calamari中注册了.</p>
                 <p ng-if='hosts.pre'>I have detected <span class='badge'>{{hosts.pre.length}}</span> host(s) requesting
                     registration.</p>
                 <div class="row">
@@ -29,16 +29,14 @@
                         </div>
                     </div>
                     <div style='margin-top: 30px;' class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                        <p class='text-warning'>You will not be able to perform any other actions until some hosts have been added
-                            to Calamari, either via this page or from the Command Line.</p>
+                        <p class='text-warning'>现在您还不行执行其它任何操作，需要先将主机加入到Calamari，可以通过这个界面添加，也可以通过命令行添加。</p>
                     </div>
                 </div>
             </div>
             <div ng-if='hosts.pre.length === 0'>
                 <div style='width: 40em;' ng-if='hosts.accepted.length === 0'>
-                    <p>Calamari server is ready to start monitoring your Ceph servers. Please use the <code>ceph-deploy calamari connect [nodes]</code> command
-                        to connect your Ceph servers to Calamari.</p>
-                     <h4>Example</h4>
+                    <p> Calamari服务器已经准备好开始监视Ceph集群，请使用命令 <code>ceph-deploy calamari connect [nodes]</code> 来连接Ceph集群与Calamari服务器。</p>
+                     <h4>例子</h4>
 
 <pre>
 # ceph-deploy calamari connect node1 node2 node3
@@ -46,10 +44,7 @@
 
                 </div>
                 <div style='width: 40em;' ng-if='hosts.accepted.length > 0'>
-                    <p><span class='badge text-info'>{{hosts.accepted.length}}</span> Ceph servers are
-                        connected to Calamari, but no Ceph cluster has been created yet. Please use <code>ceph-deploy</code> to
-                        create a cluster; please see the Inktank Ceph Enterprise documentation for more
-                        details.</p>
+                    <p><span class='badge text-info'>{{hosts.accepted.length}}</span> Ceph服务器已经连接上了Calamari，但还没有创建Ceph集群。请使用<code>ceph-deploy</code>来创建一个集群。详细信息请通过Inktank Ceph官方文档查看。</p>
                 </div>
                 <div ng-show='debug'>{{ hosts | json }}</div>
             </div>
@@ -57,11 +52,7 @@
         <div style="margin-left: 10px;" ng-show="clusterDiscoveryTimedOut">
              <h3 class="text-info"><i style="color: orange;" class="fa fa-lg fa-warning"></i> No Cluster Available</h3>
 
-            <p style="width: 40em;">We apologize, but we can't seem to find a Ceph Cluster deployed on your servers
-                at this time. This may be due to an incomplete installation of Ceph or Calamari.
-                Please consult the documentation at <a href="http://ceph.com/docs/master/rados/deployment/">ceph.com</a> and
-                work through all the recommended steps to see if any were missed.</p>
-            <p style="width: 40em;">Once you have identified the problem, simply reload this page and the UI should
-                initialize itself correctly.</p>
+            <p style="width: 40em;">非常抱歉，当前我们没有找到已部署好的Ceph集群。这可能是Ceph或者Calamari安装没有完成。请参阅文档<a href="http://ceph.com/docs/master/rados/deployment/">ceph.com</a>，然后检查所有的推荐的部署步骤是否安装成功。</p>
+            <p style="width: 40em;"> 解决问题后，重新加载此页，然后用户界面就可以自动初始化，然后正确显示。</p>
         </div>
     </div>

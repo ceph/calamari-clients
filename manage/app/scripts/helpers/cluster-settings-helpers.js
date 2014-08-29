@@ -93,32 +93,32 @@
             obj.makeBreadcrumbs = function(name) {
                 return {
                     'servers': [{
-                            text: 'Manage (' + name + ')'
+                            text: '管理 (' + name + ')'
                         }, {
-                            text: 'Cluster',
+                            text: '集群',
                             active: true
                         }, {
-                            text: 'Hosts',
+                            text: '主机',
                             active: true
                         }
                     ],
                     'osdmap': [{
-                            text: 'Manage (' + name + ')'
+                            text: '管理 (' + name + ')'
                         }, {
-                            text: 'Cluster',
+                            text: '集群',
                             active: true
                         }, {
-                            text: 'Cluster Settings',
+                            text: '集群设置',
                             active: true
                         }
                     ],
                     'viewer': [{
-                            text: 'Manage (' + name + ')'
+                            text: '管理 (' + name + ')'
                         }, {
-                            text: 'Cluster',
+                            text: '集群',
                             active: true
                         }, {
-                            text: 'Config Viewer',
+                            text: '配置浏览',
                             active: true
                         }
                     ]
