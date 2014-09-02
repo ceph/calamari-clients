@@ -371,21 +371,24 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // Handle dropdown select change event. Change the route of the App
         // to reflect changes to the host being viewed.
         navigateTemplate: _.template('graph/<%- host %>'),
-        currentGraphTemplate: _.template('/<%- currentGraph %>'),
+        currentHostGraphTemplate: _.template('graph/<%- host %>/<%- currentGraph %>'),
         hostChangeHandler: function(evt) {
             var target = evt.target;
             var $el = $(target.options[target.selectedIndex]);
             var host = $el.attr('value');
+            var route = '';
             if (target.selectedIndex < 2 || this.currentGraph === '') {
                 this.currentGraph = '';
+                route = this.navigateTemplate({
+                    host: host
+                });
             } else {
-                host += this.currentGraphTemplate({
+                route = this.currentHostGraphTemplate({
+                    host: host,
                     currentGraph: this.currentGraph
                 });
             }
-            this.AppRouter.navigate(this.navigateTemplate({
-                host: host
-            }), {
+            this.AppRouter.navigate(route, {
                 trigger: true
             });
         },
