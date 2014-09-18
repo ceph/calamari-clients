@@ -13,10 +13,10 @@
                     // request succeeded, pass through
                     return resp;
                 }, function(resp) {
+                    var d = $q.defer();
                     if (resp.status === 304) {
                         // request failed check if it's a 304
                         $log.debug('intercepting 304 and ignoring');
-                        var d = $q.defer();
                         /* jshint camelcase: false */
                         d.resolve({
                             status: 200,
@@ -29,7 +29,8 @@
                         return d.promise;
                     }
                     // pass through error
-                    return resp;
+                    d.reject(resp)
+                    return d.promise;
                 });
             }
             return {
