@@ -15,18 +15,21 @@
                         <p ng-show='poolForm.name.$error.pattern'
                         class='help-block'>Invalid Characters</p>
                         <p ng-show='poolForm.name.$error.duplicate' class='help-block'>Pool name is already in use</p>
+                        <p ng-show='poolForm.name.$error.server' class='help-block'>{{poolForm.name.$error.server}}</p>
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': poolForm.size.$invalid && !poolForm.size.$pristine}">
                         <label class="text-muted" for="size">REPLICAS (SIZE)</label>
                         <input id="size" type="number" name="size" required class="form-control"
                         placeholder="Size" ng-model='pool.size'></input>
                         <p ng-show='poolForm.size.$error.number' class='help-block'>Invalid Number</p>
+                        <p ng-show='poolForm.size.$error.server' class='help-block'>{{poolForm.size.$error.server}}</p>
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': poolForm.pg_num.$invalid && !poolForm.pg_num.$pristine}">
                         <label class="text-muted" for="pg_num">PLACEMENT GROUPS (PG_NUM)</label>
                         <input id="pg_num" type="number" name="pg_num"
                         required class="form-control" ng-model='pool.pg_num' placeholder="Placement Groups"></input>
                         <p ng-show='poolForm.pg_num.$error.number' class='help-block'>Invalid Number</p>
+                        <p ng-show='poolForm.pg_num.$error.server' class='help-block'>{{poolForm.pg_num.$error.server}}</p>
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': poolForm.crush_ruleset.$invalid && !poolForm.crush_ruleset.$pristine}">
                         <label class="text-muted" for="crush_ruleset">CRUSH RULESET</label>
@@ -34,6 +37,7 @@
                         required ng-model='pool.crush_ruleset'>
                             <option ng-repeat='crush in crushrulesets' value='{{crush.id}}'>{{crush.id}}: {{crush.rules[crush.active_sub_rule].name}}</option>
                         </select>
+                        <p ng-show='poolForm.crush_ruleset.$error.server' class='help-block'>{{poolForm.crush_ruleset.$error.server}}</p>
                     </div>
                     <!-- {{ crushrulesets | json }} -->
                 </form>

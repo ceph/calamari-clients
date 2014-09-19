@@ -155,6 +155,9 @@
                     return;
                 }
                 $scope.poolForm.name.$setValidity('duplicate', true);
+
+                //Clear the server error if user changes the name
+                $scope.poolForm.name.$setValidity('server', true);
             });
             /* jshint camelcase: false */
             // Validate the pool size is a number and re-calculate the pgnum
@@ -164,13 +167,19 @@
                     $scope.poolForm.size.$error.number = true;
                     return;
                 }
-                var ruleset = $scope.crushrulesets[$scope.pool.crush_ruleset];
-                var limits = getActiveRule(ruleset, $scope.defaults.mon_max_pool_pg_num, newValue);
-                $scope.limits = limits;
-                if (validateMaxMin.call($scope.pool, 'size', newValue, limits.min_size, limits.max_size)) {
-                    $scope.pool.pg_num = calculatePGNum(limits.osd_count, newValue, $scope.defaults.mon_max_pool_pg_num);
-                    $scope.crushrulesets[$scope.pool.crush_ruleset].active_sub_rule = limits.active_rule;
+
+                if (!$scope.isEdit) {
+                    var ruleset = $scope.crushrulesets[$scope.pool.crush_ruleset];
+                    var limits = getActiveRule(ruleset, $scope.defaults.mon_max_pool_pg_num, newValue);
+                    $scope.limits = limits;
+                    if (validateMaxMin.call($scope.pool, 'size', newValue, limits.min_size, limits.max_size)) {
+                        $scope.pool.pg_num = calculatePGNum(limits.osd_count, newValue, $scope.defaults.mon_max_pool_pg_num);
+                        $scope.crushrulesets[$scope.pool.crush_ruleset].active_sub_rule = limits.active_rule;
+                    }
                 }
+
+                //Clear the server error if user changes the name
+                $scope.poolForm.size.$setValidity('server', true);
             });
             // Validate the pg_num is a number and that it is within the
             // min/max for this cluster.
@@ -182,6 +191,9 @@
                 $scope.poolForm.pg_num.$error.number = false;
                 $scope.poolForm.pg_num.$pristine = true;
                 validateMaxMin.call($scope.pool, 'pg_num', newValue, 1, $scope.defaults.mon_max_pool_pg_num);
+
+                //Clear the server error if user changes the name
+                $scope.poolForm.pg_num.$setValidity('server', true);
             });
             // If the crushset changes reset the pool size and the active crush rule sub rule
             // value to default.
@@ -189,6 +201,9 @@
                 $scope.pool.size = $scope.defaults.size;
                 $scope.crushrulesets[newValue].active_sub_rule = 0;
                 $scope.crushrulesets[oldValue].active_sub_rule = 0;
+
+                //Clear the server error if user changes the name
+                $scope.poolForm.crush_ruleset.$setValidity('server', true);
             });
         }
 
@@ -216,6 +231,32 @@
             });
         }
 
+        // ** errorOnPoolSave **
+        // While creating/updating a pool, validation errors can be thrown from the server
+        // This will map the error to repective fields in the form
+        // If there is no field errors then an error popup will be shown
+        function errorOnPoolSave($scope, $model) {
+            return function(resp) {
+                var errorInField = false;
+                var fields  = ['name', 'size', 'pg_num', 'crush_ruleset'];
+                _.each(fields, function(field) {
+                    if (_.has(resp.data, field)) {
+                        $scope.poolForm[field].$setValidity("server", false);
+                        $scope.poolForm[field].$error.server = resp.data[field].join(', ');
+                        errorInField = true;
+                    }
+                });
+
+                // If the reponse doesn't have field specified error
+                // then show the response in a popup
+                if (!errorInField) {
+                    ModalHelpers.makeOnError($modal({
+                        show: false
+                    }))();
+                }
+            }
+        }
+
         // **poolDefaults**
         // Default pool values.
         function poolDefaults() {
@@ -236,7 +277,8 @@
             makeReset: makeReset,
             addWatches: addWatches,
             defaults: poolDefaults,
-            normalizeCrushRulesets: normalizeCrushRulesets
+            normalizeCrushRulesets: normalizeCrushRulesets,
+            errorOnPoolSave: errorOnPoolSave
         };
     });
 })();

@@ -28,6 +28,11 @@
                 }
             ];
 
+            // re-calculate the pgnum if the replication size changes
+            // only in new pool
+            // Refer PoolHelpers.addWatches()
+            $scope.isEdit = false;
+
             // **cancel**
             // click event handler to return up a level.
             $scope.cancel = function() {
@@ -74,9 +79,7 @@
                         return;
                     }
                     $log.error('Unexpected response from PoolService.create', resp);
-                }, ModalHelpers.makeOnError($modal({
-                    show: false
-                })));
+                }, PoolHelpers.errorOnPoolSave($scope, $modal));
             };
 
             // Initialize Controller
