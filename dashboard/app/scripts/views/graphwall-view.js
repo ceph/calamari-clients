@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'models/application-model', 'dygraphs', 'l20nCtx!locales/{{locale}}/strings', 'marionette', 'modal'], function($, _, Backbone, JST, gutils, models, Dygraph, l10n) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'models/application-model', 'collections/server-collection','dygraphs', 'l20nCtx!locales/{{locale}}/strings', 'marionette', 'modal'], function($, _, Backbone, JST, gutils, models, ServerCollection, Dygraph, l10n) {
     'use strict';
 
     // GraphwallView
@@ -36,6 +36,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             'click .btn-graph .btn': 'clickHandler',
             'change .hosts-select select': 'hostChangeHandler',
             'input .graph-range input': 'changeGraphRange'
+        },
+        collectionEvents: {
+            'sync': 'resetGraphsOnClusterUpdate'
         },
         rangeText: [
             l10n.getSync('Graph1Week'),
@@ -296,6 +299,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             // Generate graph builder functions
             _.each(this.graphs, this.makeGraphFunctions);
 
+            this.collection = new ServerCollection();
+
+            // Graphwall is intialized after the first cluster selection is made. 
+            // So the server collection needs to be fetched manually just for the first time 
+            this.collection.cluster = Backbone.Marionette.getOption(this, 'cluster_id');
+            this.collection.cluster_name = Backbone.Marionette.getOption(this, 'cluster_name');
+            this.collection.fetch();
+
             this.wrapTitleTemplate('makePoolIOPSGraphURL', this.poolIopsGraphTitleTemplate);
 
             // Set up specific BackboneModels we use for two stage graph queries.
@@ -326,9 +337,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             // Listen to view close so we can clean up the view correctly.
             this.listenTo(this, 'item:before:close', this.onItemBeforeClose);
 
-            // Listen to cluster id changes.
-            this.listenTo(this.App.vent, 'cluster:update', this.clusterUpdate);
-
             // Debounce graph slider changes to improve usability.
             this.debouncedChangedGraph = _.debounce(this.debouncedChangedGraph, 500);
 
@@ -342,6 +350,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // has finished initializing.
         isReady: function() {
             return this.readyPromise;
+        },
+
+        // This will be called from application.js while entering the graph page
+        // This listener will be automatically removed when leaving graph
+        listenToClusterChanges: function(vent) {
+            this.listenTo(vent, 'cluster:update', this.clusterUpdate);
         },
         // **debouncedChangedGraph**
         // Debounce wrapper for Changing the data range of the Graph.
@@ -473,11 +487,16 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // **clusterUpdate**
         // Handle cluster update events and update the cluster ID for models
         // that need the cluster fsid for requests.
-        clusterUpdate: function(model) {
+        clusterUpdate: function(cluster) {
+            if (cluster) {
+                this.collection.cluster = cluster.get('id');
+                this.collection.cluster_name = cluster.get('name');
+                this.collection.fetch();
+            }
             // re-init models that depend on cluster name issue #7140
             this.iopsTargetModels = new models.GraphitePoolIOPSModel(undefined, {
                 graphiteHost: this.graphiteHost,
-                clusterName: model.get('id')
+                clusterName: cluster.get('id')
             });
         },
         // **renderWrapper**
@@ -699,22 +718,36 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             return deferred.promise();
         },
         // **renderHostSelector**
-        // The Host Dropdown selector is dynamically populated by requesting the
-        // list of FQDNs via the RequestResponse event bus.
+        // The Host Dropdown selector is dynamically populated
+        // with the list of FQDNs
         renderHostSelector: function() {
-            var hosts = this.App.ReqRes.request('get:fqdns');
+            var hosts = this.collection.pluck('addr');
             var opts = _.reduce(hosts, function(memo, host) {
                 return memo + this.optionTemplate({
                     host: host
                 });
-            }, null, this);
+            }, '', this);
             var $el = this.ui.hosts;
             $el.html(this.selectTemplate({
-                Cluster: l10n.getSync('Cluster'),
+                Cluster: l10n.getSync('Cluster')+ ' - ' + this.collection.cluster_name,
                 PoolIOPS: l10n.getSync('PoolIOPS'),
                 list: opts
             }));
         },
+
+        // **resetGraphsOnClusterUpdate**
+        // Graphs of the new cluster needs to be displayed after changing the cluster
+        resetGraphsOnClusterUpdate: function() {
+            this.renderHostSelector();
+            this.currentGraph = '';
+            var route = this.navigateTemplate({
+                    host: 'all'
+            });
+            this.AppRouter.navigate(route, {
+                trigger: true
+            });
+        },
+
         // **jsonRequest**
         // Wrap the jQuery ajax method with the correct setup.
         // Returns a jQuery promise.

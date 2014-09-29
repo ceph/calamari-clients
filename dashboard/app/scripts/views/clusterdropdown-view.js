@@ -30,7 +30,7 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
                 return _.clone(this.cluster);
             }.bind(this));
         },
-        clusterLabelTemplate: _.template('Cluster <%- text %>'),
+        clusterLabelTemplate: _.template('Cluster : <%- text %>'),
         clusterHandler: function(evt) {
             var $target = $(evt.target);
             var id = $target.attr('data-id');

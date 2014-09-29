@@ -125,6 +125,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             $('.row').css('display', 'none');
             var ready = this.ReqRes.request('get:ready');
             var self = this;
+            // listeners will be removed when calling graphwall.close()
+            // So we need to re-intialize them again
+            self.graphWall.listenToClusterChanges(this.vent);
             // This promise guarantees the app has finished initializing.
             ready.then(function() {
                 self.graphWall.render();
