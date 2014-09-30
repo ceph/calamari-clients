@@ -396,9 +396,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             if (model === null) {
                 return;
             }
+            var totalNoOsds = model.collection.length;
             var start = this.startPosition[Math.floor(Math.random() * 4)];
-            var end = this.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step);
-            this.animateCircleTraversal(start.x + this.originX, start.y + this.originY, 8, end.nx, end.ny, model);
+            var end = this.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step, totalNoOsds);
+            this.animateCircleTraversal(start.x + this.originX, start.y + this.originY, 8, end.nx, end.ny, end.customSortx, model);
         },
         // **hex** Hexadecimalize value with correct prefix and length.
         hex: function(value) {
@@ -713,9 +714,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         // It tracks any Raphael wrapped SVG objects created in the collection model
         // in an object called views.
         //
-        animateCircleTraversal: function(originX, originY, radius, destX, destY, model) {
+        animateCircleTraversal: function(originX, originY, radius, destX, destY,customSortX, model) {
             var sq = null;
             if (this.customSort) {
+                //when customsort is enabled to display hosts in group.
+                //OSD numbering changes from right to left on every even row.
+                destX = destX + customSortX;
                 sq = this.addBackgroundSquare(destX, destY, model);
             }
             var c = this.paper.circle(originX, originY, 20 * model.getPercentage()).attr({
