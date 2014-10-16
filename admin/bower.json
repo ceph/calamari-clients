@@ -10,7 +10,7 @@
     "angular-resource": "~1.0.7",
     "angular-cookies": "~1.0.7",
     "angular-sanitize": "~1.0.7",
-    "font-awesome": "~3.2.1",
+    "font-awesome": "~4.2.0",
     "angular-ui-bootstrap-bower": "~0.4.0",
     "underscore": "~1.5.1"
   },
