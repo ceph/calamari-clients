@@ -23,6 +23,11 @@
             ];
             $scope.id = $routeParams.id;
 
+            // re-calculate the pgnum if the replication size changes
+            // only in new pool
+            // Refer PoolHelpers.addWatches()
+            $scope.isEdit = true;
+
             // **cancel**
             // Take us back to pool level.
             $scope.cancel = function() {
@@ -121,11 +126,7 @@
                             return;
                         }
                         $log.error('Unexpected response from PoolService.patch', result);
-                    }, ModalHelpers.makeOnError($modal({
-                        show: false
-                    }), function() {
-                        $location.path('/pool');
-                    }));
+                    }, PoolHelpers.errorOnPoolSave($scope, $modal));
                 }
             };
 
@@ -140,7 +141,7 @@
 
                 $scope.crushrulesets = PoolHelpers.normalizeCrushRulesets(this.crushrulesets);
                 $scope.up = true;
-                //helpers.addWatches($scope);
+                PoolHelpers.addWatches($scope);
             }.bind(this));
         };
         return ['$log', '$q', '$scope', 'PoolService', 'ClusterService', 'CrushService', 'ToolService', '$location', '$routeParams', '$modal', 'RequestTrackingService', PoolModifyController];
