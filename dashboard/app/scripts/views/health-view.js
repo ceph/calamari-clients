@@ -13,6 +13,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
         updateTemplate: _.template('<%- time %>'),
         badgeTemplate: _.template('<span class="badge <%- clazz %>"><%- count %></span> <%- description %>'),
         rowTemplate: _.template('<tr><td><span class="<%- clazz %>"><%- severity %></span></td><td><%- details %></td></tr>'),
+        healthTemplate: _.template('<i class="fa <%- clazz %>"></i>'),
         timer: null,
         events: {
             'click .badge': 'badgeHandler'
@@ -72,7 +73,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
             var model = this.model.toJSON();
             var subtext = '',
                 evt = 'status:ok',
-                healthText = 'OK';
+                healthText = 'ok fa-check';
             if (model.report.overall_status && model.report.summary.length) {
                 var counts = _.reduce(model.report.summary, function(result, summary) {
                     if (summary.severity === 'HEALTH_WARN') {
@@ -103,9 +104,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
             switch (model.report.overall_status) {
                 case 'HEALTH_WARN':
                     evt = 'status:warn';
+                    healthText = 'fa-warning warn';
                     break;
                 case 'HEALTH_ERR':
-                    healthText = 'ERROR';
+                    healthText = 'fail fa-exclamation-circle';
                     evt = 'status:fail';
                     break;
                 default:
@@ -114,7 +116,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
 
             return {
                 evt: evt,
-                healthText: healthText,
+                healthText: this.healthTemplate({clazz:healthText}),
                 relTimeStr: subtext,
                 title: l10n.getSync('healthOSDTitle')
             };
@@ -128,7 +130,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
         },
         updateView: function( /* model */ ) {
             var data = this.serializeData();
-            this.ui.headline.text(data.healthText);
+            this.ui.headline.html(data.healthText);
             this.ui.subtext.html(data.relTimeStr);
             this.trigger(data.evt);
         },
