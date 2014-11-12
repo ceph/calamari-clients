@@ -39,7 +39,7 @@
                     $scope.logs = _.map(lines, function(log) {
                         var line = log.split(' ');
                         return {
-                            timestamp: moment(line[0] + ' ' + line[1]).format('l HH:MM:SS ZZ'),
+                            timestamp: moment(line[0] + ' ' + line[1]).format('l HH:mm:SS ZZ'),
                             unit: line[2],
                             address: line[3] + ' ' + line[4],
                             rest: line.slice(6).join(' '),
