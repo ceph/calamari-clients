@@ -303,8 +303,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
 
             // Graphwall is intialized after the first cluster selection is made. 
             // So the server collection needs to be fetched manually just for the first time 
-            this.collection.cluster = Backbone.Marionette.getOption(this, 'cluster_id');
-            this.collection.cluster_name = Backbone.Marionette.getOption(this, 'cluster_name');
+            this.collection.cluster = Backbone.Marionette.getOption(this, 'clusterId');
+            this.collection.clusterName = Backbone.Marionette.getOption(this, 'cluster_name');
             this.collection.fetch();
 
             this.wrapTitleTemplate('makePoolIOPSGraphURL', this.poolIopsGraphTitleTemplate);
@@ -490,7 +490,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         clusterUpdate: function(cluster) {
             if (cluster) {
                 this.collection.cluster = cluster.get('id');
-                this.collection.cluster_name = cluster.get('name');
+                this.collection.clusterName = cluster.get('name');
                 this.collection.fetch();
             }
             // re-init models that depend on cluster name issue #7140
@@ -729,7 +729,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             }, '', this);
             var $el = this.ui.hosts;
             $el.html(this.selectTemplate({
-                Cluster: l10n.getSync('Cluster')+ ' - ' + this.collection.cluster_name,
+                Cluster: l10n.getSync('Cluster')+ ' - ' + this.collection.clusterName,
                 PoolIOPS: l10n.getSync('PoolIOPS'),
                 list: opts
             }));
