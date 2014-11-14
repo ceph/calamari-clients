@@ -515,7 +515,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // @returns the class selector for this element
         renderGraphTemplates: function() {
             var self = this;
-            this.selectors = _.map(_.range(30), function(id) {
+            this.selectors = _.map(_.range(96), function(id) {
                 var selector = 'graph-' + id;
                 var t = self.graphTemplate({
                     graphid: selector
