@@ -8,7 +8,7 @@ define(['underscore', 'models/graphite-model'], function(_, GraphiteModel) {
         url: function() {
             return this.graphiteHost + '/metrics/find?query=servers.' + this.host + '.iostat.*';
         },
-        DriveRegexp: new RegExp('[sv]d[a-z]$'),
+        DriveRegexp: new RegExp('[sv]d[a-z][a-z]?$'),
         keys: function() {
             var re = this.DriveRegexp;
             return _.filter(_.map(this.attributes, function(v, k) {
