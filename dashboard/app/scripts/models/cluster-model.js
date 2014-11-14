@@ -11,7 +11,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
             'name': 'unknown',
             'id': 0,
             'api_base_url': ''
-        },
+        }
     });
 
     return ClusterModel;

@@ -233,8 +233,8 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
             App.graphWall = new GraphWall({
                 App: App,
                 AppRouter: appRouter,
-                cluster_id: cluster.get('id'),
-                cluster_name: cluster.get('name'),
+                clusterId: cluster.get('id'),
+                clusterName: cluster.get('name'),
                 graphiteHost: config['graphite-host'],
                 graphiteRequestDelayMs: config['graphite-request-delay-ms']
             });
