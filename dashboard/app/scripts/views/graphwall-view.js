@@ -304,7 +304,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             // Graphwall is intialized after the first cluster selection is made. 
             // So the server collection needs to be fetched manually just for the first time 
             this.collection.cluster = Backbone.Marionette.getOption(this, 'clusterId');
-            this.collection.clusterName = Backbone.Marionette.getOption(this, 'cluster_name');
+            this.collection.clusterName = Backbone.Marionette.getOption(this, 'clusterName');
             this.collection.fetch();
 
             this.wrapTitleTemplate('makePoolIOPSGraphURL', this.poolIopsGraphTitleTemplate);
