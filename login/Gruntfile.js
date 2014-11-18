@@ -206,7 +206,7 @@ module.exports = function (grunt) {
             },
             font: {
                 src: '<%= yeoman.app %>/bower_components/font-awesome/font',
-                dest: '<%= yeoman.app %>/font',
+                dest: '<%= yeoman.app %>/font'
             }
         },
         useminPrepare: {
@@ -384,8 +384,10 @@ module.exports = function (grunt) {
 
     grunt.registerTask('saveRevision', function() {
         grunt.event.once('git-describe', function(rev) {
+            /* jshint -W024 */
+            grunt.file.delete('app/scripts/git.js');
+            grunt.file.write('app/scripts/git.js', '/* jshint -W105 */\n/* global define */\ndefine([], function() { \'use strict\'; return { \'git-commit\': \'' + rev + '\' }; });');
             grunt.log.writeln('Git Revision: ' + rev);
-            grunt.file.write('app/scripts/git.js', '/*global define */ define([], function() { \'use strict\'; return { \'git-commit\': \'' + rev + '\' }; });');
         });
         grunt.task.run('git-describe');
     });
