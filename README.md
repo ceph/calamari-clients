@@ -122,3 +122,14 @@ The Manage application is the first module which actively tries to change the st
  * **Simple Log Viewing**
 
 **This app owns all the content underneath the /manage URL prefix.**
+
+
+Build notes
+-----------
+
+Since build output is really distro-independent, the build is structured to
+build only on one distro (Ubuntu Precise, by default) in the Vagrant setups
+under vagrant/.  Build first with vagrant/precise-build, and the resultant
+sources are placed into a tarball "calamari-clients-build-output.tar.gz";
+then that tarball is used to feed the rest of the distro builds, which
+are really just repackaging.
