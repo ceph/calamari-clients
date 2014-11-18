@@ -24,7 +24,7 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="http://ceph.com"><img class='image-responsive' src="images/logo.png" alt="Ceph Logo"/></a>
         </div>
-        <ul class="navbar-nav clustermenu list-unstyled" ng-include="clusterDropdownTemplate" ng-controller='ClusterController'></ul>
+        <div class="nav navbar-nav navbar-left btn-group clustermenu" ng-include="clusterDropdownTemplate" ng-controller='ClusterController'></div>
         <div class='inknav'>
             <li class="dropdown" ng-include="navbarTemplate" ng-controller='NavbarController'> </li>
            <div >
