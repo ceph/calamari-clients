@@ -205,7 +205,7 @@ module.exports = function (grunt) {
                 overwrite: true
             },
             font: {
-                src: '<%= yeoman.app %>/bower_components/font-awesome/font',
+                src: '<%= yeoman.app %>/bower_components/font-awesome/fonts',
                 dest: '<%= yeoman.app %>/font',
             }
         },
