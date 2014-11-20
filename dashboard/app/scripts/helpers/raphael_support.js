@@ -70,7 +70,7 @@ define(['underscore', 'raphael'], function() {
             path.push(hdashes(ox, y, xp, step));
             return path.join('');
         };
-    var calculatePosition = function(index, ox, oy, w, h, step) {
+    var calculatePosition = function(index, ox, oy, w, h, step, totalNoOsds) {
             var cols = (w / step) - 1;
             //console.log(cols + ' / ' + rows);
             var startX = ox + step;
@@ -78,11 +78,21 @@ define(['underscore', 'raphael'], function() {
             //console.log('sx: ' + startX + ', ' + 'sy: ' + startY);
             var offsetX = Math.floor((index % cols)) * step;
             var offsetY = Math.floor((index / cols)) * step;
+            var extra = 0;
             //console.log('ox: ' + offsetX + ', ' + 'oy: ' + offsetY);
+            //Special case for last row OSD.
+            //when customsort is enabled to display hosts in group. 
+            //OSD numbering changes from right to left on every even row.
+            //fix for #9521
+            if((index-Math.floor(totalNoOsds / cols) * cols ) >= 0  && ((offsetY / 40) % 2 === 1)){
+                extra = ((Math.ceil(((index+1) / cols))*cols)-totalNoOsds) * step;
+            }
+            var customSortX = extra;
             var nX = startX + offsetX;
             var nY = startY + offsetY;
             //console.log('nx: ' + nX + ', ' + 'ny: ' + nY);
             return {
+                customSortx : customSortX,
                 nx: nX,
                 ny: nY
             };
@@ -93,3 +103,4 @@ define(['underscore', 'raphael'], function() {
         calcPosition: calculatePosition
     };
 });
+
