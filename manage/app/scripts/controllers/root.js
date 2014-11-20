@@ -123,7 +123,7 @@
                 $scope.updateSettings = cluster.updateSettings;
             });
 
-            var promises = [KeyService.getList(), ToolService.config(), OSDConfigService.get()];
+            var promises = [KeyService.getList(), ToolService.config(), OSDConfigService.getFull()];
             // Bootstrap the view after we the above API calls complete.
             var start = Date.now();
             $q.all(promises).then(function(results) {
@@ -168,9 +168,11 @@
                     $scope.configs = configs;
                 });
                 // Initialize the Cluster Wide Settings Config Data.
-                responseHelpers.osdConfigsInit(results[2]).then(function(osdConfigs) {
+                responseHelpers.osdConfigsInit(results[2].data).then(function(osdConfigs) {
                     $scope.osdconfigs = osdConfigs;
                     $scope.osdconfigsdefaults = angular.copy(osdConfigs);
+                    var headers = results[2].headers('Allow');
+                    $scope.isUpdateAllowed = headers && headers.indexOf('PATCH') > 0;
                 });
             });
         };

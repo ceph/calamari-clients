@@ -40,6 +40,16 @@ define(['lodash'], function(_) {
                     return osd;
                 });
             },
+            // **getFull**
+            // **@param** *id* - id as number of OSD.
+            // **@returns** promise with the specified OSD metadata and
+            // extra fields like headers, status code, etc.
+            getFull: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('osd', id).get().then(function(osd) {
+                    return osd;
+                });
+            },
             // **patch**
             // **@param** *id* - id of OSD you wish to patch.
             //             ID must be parseable by parseInt.

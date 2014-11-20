@@ -406,6 +406,19 @@
                     $scope.up = true;
                     $rootScope.keyTimer = $timeout(refreshOSDModels, config.getPollTimeoutMs());
                 });
+
+                // Actions on OSDs need to be disabled for a readonly user
+                // This is done by using the 'Allow' header of the respective resource through out the application
+                // But here, the osd's are fetched as a list and not as individual osd resources
+                // So we are going to fetch one osd resource, and disable the actions on all the osds based
+                // on the 'Allow' header
+                // This workaroud should be replaced with a proper approach in future
+                if (r.ids.length > 0 ) {
+                    OSDService.getFull(r.ids[0]).then(function (osd) {
+                        var headers = osd.headers('Allow');
+                        $scope.isUpdateAllowed = headers && headers.indexOf('PATCH') > 0;
+                    });
+                }
             });
 
         };

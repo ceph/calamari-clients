@@ -23,6 +23,9 @@
             ];
             $scope.id = $routeParams.id;
 
+            $scope.isUpdateAllowed = false;
+            $scope.isDeleteAllowed = false;
+
             // re-calculate the pgnum if the replication size changes
             // only in new pool
             // Refer PoolHelpers.addWatches()
@@ -130,12 +133,16 @@
                 }
             };
 
-            var promises = [PoolService.get($scope.id), CrushService.getList()];
+            var promises = [PoolService.getFull($scope.id), CrushService.getList()];
 
             // Set up page.
             $q.all(promises).then(function(results) {
                 /* jshint camelcase:false */
-                $scope.pool = results[0];
+                $scope.pool = results[0].data;
+                var headers = results[0].headers('Allow');
+                $scope.isUpdateAllowed = headers && headers.indexOf('PATCH') > 0;
+                $scope.isDeleteAllowed = headers && headers.indexOf('DELETE') > 0;
+
                 $scope.defaults = angular.copy($scope.pool);
                 this.crushrulesets = results[1];
 

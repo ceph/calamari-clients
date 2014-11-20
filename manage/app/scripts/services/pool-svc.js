@@ -19,12 +19,31 @@ define(['lodash'], function(_) {
                     return pools;
                 });
             },
+            // **getListFull**
+            // **@returns** a promise which has a reponse object comprises of 
+            // list of all the pools being managed by this Cluster
+            // and extra fields like headers, status code, etc.
+            getListFull: function() {
+                return this.restangular.clusterFull().all('pool').getList().then(function(pools) {
+                    return pools;
+                });
+            },
             // **get**
             // **@param** id - id of the pool you wish to retrieve
             // **@returns** a promise with the meta data associated with this pool.
             get: function(id) {
                 id = _.isString(id) ? parseInt(id, 10) : id;
                 return this.restangular.cluster().one('pool', id).get().then(function(pool) {
+                    return pool;
+                });
+            },
+            // **getFull**
+            // **@param** id - id of the pool you wish to retrieve
+            // **@returns** a promise with the meta data associated with this pool
+            // and extra fields like headers, status code, etc.
+            getFull: function(id) {
+                id = _.isString(id) ? parseInt(id, 10) : id;
+                return this.restangular.clusterFull().one('pool', id).get().then(function(pool) {
                     return pool;
                 });
             },
