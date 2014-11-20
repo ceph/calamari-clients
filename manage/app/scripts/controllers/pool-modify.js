@@ -5,7 +5,7 @@
 
         // **PoolModifyController**
         // Responsible for editing existing Pools.
-        var PoolModifyController = function($log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, $location, $routeParams, $modal, RequestTrackingService) {
+        var PoolModifyController = function($log, $q, $scope, PoolService, ClusterService, UserService, CrushService, ToolService, $location, $routeParams, $modal, RequestTrackingService) {
             var errorHelpers = ErrorHelpers.makeFunctions($q, $log);
 
             // Init Breadcrumbs
@@ -22,6 +22,12 @@
                 }
             ];
             $scope.id = $routeParams.id;
+
+            // Fetch the user permissions
+            // Actions needs to be disabled for read-only user
+            UserService.me().then(function(user) {
+                $scope.isReadOnly = user.isReadOnly;
+            });
 
             // re-calculate the pgnum if the replication size changes
             // only in new pool
@@ -144,6 +150,6 @@
                 PoolHelpers.addWatches($scope);
             }.bind(this));
         };
-        return ['$log', '$q', '$scope', 'PoolService', 'ClusterService', 'CrushService', 'ToolService', '$location', '$routeParams', '$modal', 'RequestTrackingService', PoolModifyController];
+        return ['$log', '$q', '$scope', 'PoolService', 'ClusterService', 'UserService', 'CrushService', 'ToolService', '$location', '$routeParams', '$modal', 'RequestTrackingService', PoolModifyController];
     });
 })();

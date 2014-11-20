@@ -27,7 +27,7 @@
         // that have their runtime dependencies injected when we initialize the controller
         // by using closures and having the helpers return functions.
         //
-        var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal, OSDConfigService, RequestTrackingService, config) {
+        var RootController = function($q, $log, $timeout, $rootScope, $location, $scope, KeyService, ClusterService, ToolService, ServerService, $modal, UserService, OSDConfigService, RequestTrackingService, config) {
 
             // If the cluster hasn't been initialized - redirect to first view.
             // TODO there's probably a way to get rid of this boilerplate by listening to change route
@@ -117,7 +117,7 @@
 
             // Set up Cluster Settings Sub-View
             // Inject dependencies into ClusterSettingsHelper.
-            ClusterSettingsHelpers.makeFunctions($log, $scope, $timeout, $q, breadcrumbs, OSDConfigService, $modal, osdConfigKeys, RequestTrackingService).initialize().then(function(cluster) {
+            ClusterSettingsHelpers.makeFunctions($log, $scope, $timeout, $q, breadcrumbs, UserService, OSDConfigService, $modal, osdConfigKeys, RequestTrackingService).initialize().then(function(cluster) {
                 $scope.helpInfo = cluster.helpInfo;
                 $scope.reset = cluster.reset;
                 $scope.updateSettings = cluster.updateSettings;
@@ -174,6 +174,6 @@
                 });
             });
         };
-        return ['$q', '$log', '$timeout', '$rootScope', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', 'OSDConfigService', 'RequestTrackingService', 'ConfigurationService', RootController];
+        return ['$q', '$log', '$timeout', '$rootScope', '$location', '$scope', 'KeyService', 'ClusterService', 'ToolService', 'ServerService', '$modal', 'UserService', 'OSDConfigService', 'RequestTrackingService', 'ConfigurationService', RootController];
     });
 })();

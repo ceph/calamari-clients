@@ -121,6 +121,6 @@
 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
     <div>
         <button ng-click="reset()" class="btn btn-warning">RESET</button>
-        <button style="min-width: 100px;" ng-click="updateSettings()" ng-bind-html="updateLabel" class="btn" ng-class="{'btn-primary': updatePrimary, 'btn-success': updateSuccess, 'disabled': osdmapForm.$pristine || !updatePrimary }"></button>
+        <button style="min-width: 100px;" ng-click="updateSettings()" ng-bind-html="updateLabel" class="btn" ng-class="{'btn-primary': updatePrimary, 'btn-success': updateSuccess, 'disabled': osdmapForm.$pristine || !updatePrimary }" ng-disabled="isReadOnly"></button>
     </div>
 </div>
