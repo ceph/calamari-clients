@@ -3,13 +3,13 @@
 <hr class="style-two"></hr>
 <div class='col-md-12'>
 <div style='display:none' class='filter-panel col-md-2'>
-  <h5 class='legend-pos'>Sort by</h5>
-  <div class='viz-controls sort make-switch' data-text-label='Sort' data-off='info' data-on='info' data-on-label='OSD' data-off-label='Host'>
+  <h5 class='legend-pos'><%- l10nSortBy %></h5>
+  <div class='viz-controls sort make-switch' data-text-label='<%- l10nSort %>' data-off='info' data-on='info' data-on-label='OSD' data-off-label='<%- l10nHost %>'>
       <input type='checkbox' checked>
   </div>
-  <h5 class='legend-pos'>Filter by<h5>
+  <h5 class='legend-pos'><%- l10nFilterBy %><h5>
   <div class="switcher make-switch" data-on-label="OSD" data-off-label="PG" data-on='primary' data-off='primary' data-label-icon='fa fa-lg fa-hdd-o'></div>
-  <h5 class='legend-pos'>States</h5>
+  <h5 class='legend-pos'><%- l10nStates %></h5>
   <ul class="filter"></ul>
 </div>
 <div style="margin-top: -25px;position:relative;float:left;" class="col-md-9">

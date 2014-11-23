@@ -1,4 +1,4 @@
-OSD Attributes <i class='pull-right fa fa-times'></i>
+OSD <%- l10nAttributes %> <i class='pull-right fa fa-times'></i>
 <hr class="style-two">
             <table>
               <tbody>
@@ -6,35 +6,36 @@ OSD Attributes <i class='pull-right fa fa-times'></i>
     <td>OSD ID</td>
 </tr>
 <tr class="value-row">
-    <td class="value"><%- osd %></td>
+    <td class="value"><%- model.osd %></td>
 </tr>
 <tr>
-    <td>Status</td>
+    <td> <%- l10nStatus %> </td>
 </tr>
 <tr class="value-row">
-    <td class="value"><%- status %></td>
+    <td class="value"><%- model.status %></td>
 </tr>
 <tr>
-    <td>Public IP</td>
+    <td><%- l10nPublicIP %></td>
 </tr>
 <tr class="value-row">
-    <td class="value"><%- public_addr %></td>
+    <td class="value"><%- model.public_addr %></td>
 </tr>
 <tr>
     <td>UUID</td>
 </tr>
 <tr class="value-row">
-    <td class="value"><%- uuid %></td>
+    <td class="value"><%-  model.uuid %></td>
 </tr>
 <tr>
-    <td>Hostname</td>
+    <td><%- l10nHostName %></td>
 </tr>
 <tr class="value-row">
-    <td class="value"><%- host %></td>
+    <td class="value"><%- model.host %></td>
 </tr>
               </tbody>
             </table>
 
-<button class='graph-button btn btn-primary'><i class="fa fa-icon-bar-chart-o fa-lg"></i> Graphs</button>
+<button class='graph-button btn btn-primary'><i class="fa fa-icon-bar-chart-o fa-lg"></i> 
+<%- l10nGraphs %></button>
 <i class="fa fa-cloud fa-lg"></i>
 <i class="fa fa-info-circle fa-lg"></i>

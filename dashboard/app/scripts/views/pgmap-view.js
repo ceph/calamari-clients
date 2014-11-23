@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'humanize', 'kinetic', 'loglevel', 'marionette'], function($, _, Backbone, JST, gaugeHelper, humanize, Kinetic, log) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'humanize', 'kinetic', 'loglevel', 'l20nCtx!locales/{{locale}}/strings', 'marionette'], function($, _, Backbone, JST, gaugeHelper, humanize, Kinetic, log, l10n) {
     'use strict';
 
     // ##PgmapView
@@ -34,12 +34,17 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
     var PgmapView = Backbone.Marionette.ItemView.extend({
         className: 'col-lg-12 col-md-12 col-sm-12 col-xs-12 custom-gutter',
         template: JST['app/scripts/templates/pgmap.ejs'],
+        serializeData: function() {
+            return {
+               L10nStatus: l10n.getSync('LabelStatus')
+            }
+        },
         headlineTemplate: _.template('<%- active %>/<%- total %>'),
         subtextTemplate: _.template('<%- value %> <%- key %>'),
         ui: {
             container: '.pgcanvas',
             headline: '.headline',
-            subtext: '.subtext'
+            subtext: '.subtext',
         },
         count: 15000,
         total: 0,

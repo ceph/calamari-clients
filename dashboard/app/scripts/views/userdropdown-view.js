@@ -1,5 +1,5 @@
 /* global define */
-define(['jquery', 'underscore', 'templates', 'backbone', 'Backbone.Modal', 'marionette'], function($, _, JST, Backbone) {
+define(['jquery', 'underscore', 'templates', 'backbone', 'l20nCtx!locales/{{locale}}/strings', 'Backbone.Modal', 'marionette'], function($, _, JST, Backbone, l10n) {
     'use strict';
     var UserDropDown = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/userdropdown.ejs'],
@@ -19,11 +19,11 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'Backbone.Modal', 'mari
             this.model.set({
                 username: '',
                 settingsIcon: 'fa fa-cogs',
-                settingsLabel: 'Settings',
+                settingsLabel: l10n.getSync('LabelSettings'),
                 logoutIcon: 'fa fa-power-off',
-                logoutLabel: 'Logout',
+                logoutLabel: l10n.getSync('LabelLogout'),
                 aboutIcon: 'fa fa-info-circle',
-                aboutLabel: 'About Calamari'
+                aboutLabel: l10n.getSync('LabelAbout').concat(' Calamari')
             });
             this.listenTo(this.model, 'change', this.render);
             _.bindAll(this, 'settings', 'logout');
@@ -48,7 +48,11 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'Backbone.Modal', 'mari
                             version: {
                                 calamariAPI: resp.version,
                                 client: window.inktank.commit
-                            }
+                            },
+                                l10nAbout: l10n.getSync('LabelAbout'),
+                                l10nBroughtToYouBy: l10n.getSync('LabelBroughtToYouBy'),
+                                l10nVersions: l10n.getSync('LabelVersions'),
+                                l10nClose: l10n.getSync('UserRequestViewCloseBtn')
                         });
                     },
                     cancelEl: '.btn-primary'

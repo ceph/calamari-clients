@@ -518,7 +518,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.selectors = _.map(_.range(30), function(id) {
                 var selector = 'graph-' + id;
                 var t = self.graphTemplate({
-                    graphid: selector
+                    graphid: selector,
+                    l10ntimeAxis: l10n.getSync('LabelTimeAxis'),
+                    l10nlegend: l10n.getSync('LabelLegend')
                 });
                 self.$el.append(t);
                 return '.' + selector;

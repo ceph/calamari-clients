@@ -6,13 +6,20 @@ define(['jquery',
         'templates',
         'helpers/gauge-helper',
         'collections/server-collection',
+        'l20nCtx!locales/{{locale}}/strings',
         'marionette'
-], function($, _, Backbone, JST, gaugeHelper, ServerCollection) {
+], function($, _, Backbone, JST, gaugeHelper, ServerCollection, l10n) {
     'use strict';
 
     var HostsDashView = Backbone.Marionette.ItemView.extend({
         className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/hosts-dash.ejs'],
+        serializeData: function() {
+            return {
+                        l10nHosts: l10n.getSync('LabelTitleHosts'),
+                        l10nReporting: l10n.getSync('LabelReporting')
+            }
+        },
         headlineTemplate: _.template('<%- count %>'),
         subtextTemplate: _.template('<%- mon %> MON/<%- osd %> OSD'),
         collectionEvents: {

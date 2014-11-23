@@ -52,7 +52,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
             var Modal = Backbone.Modal.extend({
                 template: function() {
                     return JST['app/scripts/templates/health-modal.ejs']({
-                        content: content.join('')
+                        content: content.join(''),
+                        l10nHealthReport: l10n.getSync('LabelHealthReport'),
+                        l10nSeverity: l10n.getSync('LabelHeaderSeverity'),
+                        l10nDetails: l10n.getSync('LabelHeaderDetails'),
+                        l10nClose: l10n.getSync('UserRequestViewCloseBtn')
                     });
                 },
                 cancelEl: '.bbm-button'
@@ -72,7 +76,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
             var model = this.model.toJSON();
             var subtext = '',
                 evt = 'status:ok',
-                healthText = 'OK';
+                healthText = l10n.getSync('LabelHealthOk');
             if (model.report.overall_status && model.report.summary.length) {
                 var counts = _.reduce(model.report.summary, function(result, summary) {
                     if (summary.severity === 'HEALTH_WARN') {
@@ -105,7 +109,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'humanize', 'helpers/ga
                     evt = 'status:warn';
                     break;
                 case 'HEALTH_ERR':
-                    healthText = 'ERROR';
+                    healthText = l10n.getSync('LabelHealthError');
                     evt = 'status:fail';
                     break;
                 default:

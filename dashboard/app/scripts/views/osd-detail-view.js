@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-model', 'humanize', 'helpers/animation'], function($, _, Backbone, JST, model, humanize, animation) {
+define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-model', 'humanize', 'helpers/animation', 'l20nCtx!locales/{{locale}}/strings'], function($, _, Backbone, JST, model, humanize, animation, l10n) {
     'use strict';
 
     var OSDDetailView = Backbone.Marionette.ItemView.extend({
@@ -75,7 +75,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                 index += 2;
             }
             model.status = this.statusLabel[index];
-            return model;
+            return {
+                model : model,
+                l10nAttributes: l10n.getSync('LabelAttributes'),
+                l10nStatus: l10n.getSync('LabelStatus'),
+                l10nPublicIP: l10n.getSync('LabelPublicIP'),
+                l10nHostName: l10n.getSync('LabelHostName'),
+                l10nGraphs: l10n.getSync('LabelGraphs')
+            };
         },
         show: function() {
             return this.$el.css('display', 'block');
@@ -118,7 +125,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                     }
                     var $sign = self.$('.fa-info-circle');
                     $sign.popover({
-                        title: 'Pool Membership',
+                        title: 'Pool '.concat(l10n.getSync('LabelMembership')),
                         content: pools.join(', '),
                         trigger: 'hover',
                         container: 'body',
@@ -127,7 +134,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', '../models/application-
                     var pgs = self.model.get('pg_states') || {};
                     var $cloud = self.$('.fa-cloud');
                     $cloud.popover({
-                        title: 'PG States',
+                        title: 'PG '.concat(l10n.getSync('LabelStates')),
                         content: self.pgTemplate(pgs),
                         html: true,
                         trigger: 'hover',
