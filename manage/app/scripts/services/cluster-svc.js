@@ -122,6 +122,13 @@ define(['lodash'], function(_) {
                 }
                 return this.restangularFull.one('cluster', id);
             },
+            // **switchCluster**
+            // This will be invoked when the user switches the cluster
+            // using the cluster dropdown in the top of the page
+            switchCluster: function(cluster){
+                this.clusterModel = cluster;
+                this.clusterId = cluster.id;
+            },
             // **base**
             // Return the raw restangular reference.
             base: function() {
