@@ -89,3 +89,34 @@
 .navbar-brand {
 	padding: 9px 15px;
 }
+
+.clustermenu{
+	background:#eee;
+	padding:8px;
+	border-radius:4px;
+	margin-right:10px;
+}
+
+.clustermenu:hover{
+	background-color:#fff;
+}
+
+.clustermenu > div > a{
+    text-decoration: none;
+	color:#5e6a71;
+}
+
+.clustermenu .fa {
+	color:#37424a;	
+}
+
+.clustermenu > div > a:hover{
+    text-decoration: none;
+	background-color:#fff;
+	cursor:pointer
+}
+
+.clustermenu .dropdown-menu{
+	right:-9px;
+	top:18px;
+}
