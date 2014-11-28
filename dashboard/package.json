@@ -30,7 +30,8 @@
     "generator-backbone": "~0.1.9",
     "grunt-newer": "~0.5.3",
     "grunt-git-describe": "~2.3.2",
-    "grunt-contrib-symlink": "^0.3.0"
+    "grunt-contrib-symlink": "^0.3.0",
+    "underscore": "~1"
   },
   "engines": {
     "node": ">=0.8.0"
