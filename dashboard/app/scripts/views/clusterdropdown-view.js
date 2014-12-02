@@ -30,11 +30,11 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
                 return _.clone(this.cluster);
             }.bind(this));
         },
-        clusterLabelTemplate: _.template('Cluster : <%- text %>'),
+        clusterLabelTemplate: _.template('<i class="fa fa-tasks"></i> <%- text %> <span class="caret"></span>'),
         clusterHandler: function(evt) {
             var $target = $(evt.target);
             var id = $target.attr('data-id');
-            this.ui.label.text(this.clusterLabelTemplate({
+            this.ui.label.html(this.clusterLabelTemplate({
                 text: $target.text()
             }));
             this.cluster = this.collection.get(id);
@@ -49,7 +49,7 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
             });
             this.ui.menu.html(markup.join(''));
             this.cluster = this.collection.first();
-            this.ui.label.text(this.clusterLabelTemplate({
+            this.ui.label.html(this.clusterLabelTemplate({
                 text: this.cluster.get('name')
             }));
             this.App.vent.trigger('cluster:update', this.cluster);

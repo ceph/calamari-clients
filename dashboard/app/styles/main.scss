@@ -25,3 +25,39 @@
 .navbar-brand {
 	padding: 9px 15px;
 }
+
+.clustermenu{
+	background:#eee;
+	padding:8px;
+	border-radius:4px;
+	margin:10px 10px 0 0;
+}
+
+.clustermenu:hover{
+	background-color:#fff;
+}
+
+.clustermenu a{
+    text-decoration: none;
+	color:#5e6a71;
+}
+
+.clustermenu .caret{
+    border-top-color:#5e6a71;
+    border-bottom-color:#5e6a71;
+}
+
+.clustermenu .fa {
+	color:#37424a;	
+}
+
+.clustermenu a:hover{
+    text-decoration: none;
+	background-color:#fff;
+	cursor:pointer
+}
+
+.clustermenu .dropdown-menu{
+	right:-9px;
+	top:18px;
+}
