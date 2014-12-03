@@ -64,3 +64,30 @@ you back out. Shift-drag will pan.
 <UserRequestViewColUpdated "Updated">
 <UserRequestViewCloseBtn "Close">
 <UserRequestViewError "error">
+
+<LabelAbout "About">
+<LabelBroughtToYouBy "Brought to you by">
+<LabelVersions "Versions">
+<LabelTimeAxis "Time Axis">
+<LabelLegend "Legend">
+<LabelHealthReport "Health Report">
+<LabelHeaderSeverity "SEVERITY">
+<LabelHeaderDetails "DETAILS">
+<LabelTitleHosts "HOSTS">
+<LabelReporting "Reporting">
+<LabelAttributes "Attributes">
+<LabelStatus "Status">
+<LabelPublicIP "Public IP">
+<LabelHostName "HostName">
+<LabelGraphs "Graphs">
+<LabelSortBy "Sort By">
+<LabelSort "Sort">
+<LabelHost "Host">
+<LabelFilterBY "Filter By">
+<LabelStates "States">
+<LabelHealthOk "OK">
+<LabelHealthError "ERROR">
+<LabelMembership "Membership">
+<LabelWorkbench "Workbench">
+<LabelSettings "Settings">
+<Labellogout "Logout">

@@ -1,7 +1,7 @@
 /*global define, Raphael*/
 
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/filterBy-view', 'loglevel', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, OSDDetailView, FilterView, Models, animation, FilterByView, log) {
+define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'templates', 'views/osd-detail-view', 'views/filter-view', 'models/application-model', 'helpers/animation', 'views/filterBy-view', 'loglevel', 'l20nCtx!locales/{{locale}}/strings', 'raphael', 'marionette', 'bootstrap-switch'], function($, _, Backbone, Rs, JST, OSDDetailView, FilterView, Models, animation, FilterByView, log, l10n) {
 
 
     // ###OSDVisualization 
@@ -27,7 +27,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
     var OSDVisualization = Backbone.Marionette.ItemView.extend({
         template: JST['app/scripts/templates/viz.ejs'],
         serializeData: function() {
-            return {};
+            return {
+                l10nSortBy: l10n.getSync('LabelSortBy'),
+                l10nSort: l10n.getSync('LabelSort'),
+                l10nHost: l10n.getSync('LabelHost'),
+                l10nFilterBy: l10n.getSync('LabelFilterBY'),
+                l10nStates: l10n.getSync('LabelStates')
+            }
         },
         // Max size of OSD element in pixels.
         step: 40,
@@ -313,7 +319,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         // **fullscreen** Run part 1 of 2 animation transition to workbench.
         fullscreen: function(callback) {
             this.state = 'fullscreen';
-            this.ui.cardTitle.text('OSD Workbench');
+            this.ui.cardTitle.text('OSD '.concat(l10n.getSync('LabelWorkbench')));
             this.$el.addClass('workbench');
             return this.toWorkBenchAnimation(this.$el, callback).then(this.toFullscreenTransitionTwo);
         },

@@ -1,0 +1,90 @@
+<unconfigured "未配置">
+<workbench "工作台">
+<graph "图表">
+<dashboard "仪表板">
+<manage "管理">
+<workbenchTitle "OSD 工作台">
+<graphTitle "图表">
+<dashboardTitle "仪表板">
+<manageTitle "管理">
+<healthOSDTitle "健康状态">
+<pleaseContactAdmin "请联系管理员">
+<serverErrorMessage """
+服务端错误 {{ $status }} {{ $responseText }}. {{ pleaseContactAdmin }}
+""">
+<clusterUpdatesAreStale """
+集群的更新都是陈旧的. Calamari更新失败。
+""">
+<clusterNotResponding """
+集群的更新都是陈旧的，集群没有更新Calamari. {{ pleaseContactAdmin }}
+""">
+<sessionTimeout "会话超时. 请重新登陆.">
+<loginButton "登陆">
+<dashboardUpdateTimeout "仪表板更新超时，请检查网络连接。">
+<unexpectedError "未知错误 ({{ $status }}){{ $responseText }}. {{ pleaseContactAdmin }}">
+<serverUnreachable "服务不可达，请重新加载或者联系管理员。">
+<JSONParserError "错误的解码 {{ $source }} 响应. {{ pleaseContactAdmin }}">
+<TitleGraphDiskSpaceBytes "OSD {{ $id }} 磁盘空间">
+<TitleGraphDiskSpaceInodes "OSD {{ $id }} 节点">
+<TitleGraphHostCPUSummary "{{ $hostname }} CPU 一览">
+<TitleGraphCPUDetail "{{ $id }} CPU 详细信息">
+<TitleGraphOpsLatency "{{ $id }} Ops 延时">
+<TitleGraphJournalOps "{{ $id }} Journal Ops">
+<TitleGraphLoadAverage "{{ $hostname }} 平均负载">
+<TitleGraphMemory "{{ $hostname }} 内存">
+<TitleGraphRWBytes "{{ $id }} RW Bytes">
+<TitleGraphRWAwait "{{ $id }} RW Await">
+<TitleGraphIOPS "{{ $id }} IOPS">
+<TitleGraphNetworkTXRXBytes "{{ $id }} Network TX/RX Bytes">
+<TitleGraphNetworkTXRXPackets "{{ $id }} Network TX/RX Packets">
+<TitleGraphNetworkTXRXErrors "{{ $id }} Network TX/RX Errors">
+<TitleGraphNetworkTXRXDrops "{{ $id }} Network TX/RX Drops">
+<TitleGraphPoolIOPS "Pool {{ $id }} IOPS">
+<TitleGraphPoolTotalDiskFree "Pools 剩余磁盘空间">
+<Graph1Week "1 周">
+<Graph3Days "3 天">
+<Graph24Hours "24 小时">
+<Graph12Hours "12 小时">
+<GraphHour "小时">
+<GraphLabelWeek "时间 ({{ Graph1Week }})">
+<GraphLabel3Days "时间 ({{ Graph3Days }})">
+<GraphLabel24Hours "时间 (最近 {{ Graph24Hours}})">
+<GraphLabel12Hours "时间 (最近 {{ Graph12Hours}})">
+<GraphLabelHour "时间 (最近 {{ GraphHour}})">
+<GraphHelp """
+图表是交互式的：你可以用鼠标划过高亮显示某个值，也可以点击并拖拽来缩放。双击放大的区域将还原。""">
+<Cluster "集群">
+<PoolIOPS "Pool IOPS">
+<UserRequestViewTitle "请求的任务">
+<UserRequestViewColTask "任务">
+<UserRequestViewColStatus "状态">
+<UserRequestViewColUpdated "更新的">
+<UserRequestViewCloseBtn "关闭">
+<UserRequestViewError "错误">
+
+<LabelAbout "关于">
+<LabelBroughtToYouBy "由">
+<LabelVersions "版本">
+<LabelTimeAxis "时间轴">
+<LabelLegend "图例">
+<LabelHealthReport "健康报告">
+<labelHeaderSeverity "严重性">
+<LabelHeaderDetails "详细信息">
+<LabelTitleHosts "主机">
+<LabelReporting "Reporting">
+<LabelAttributes "属性">
+<LabelStatus "状态">
+<LabelPublicIP "Public IP">
+<LabelHostName "主机名">
+<LabelGraphs "图表">
+<LabelSortBy "排序">
+<LabelSort "排序">
+<LabelHost "主机">
+<LabelFilterBY "过滤">
+<LabelStates "状态">
+<LabelHealthOk "正常">
+<LabelHealthError "异常">
+<LabelMembership "成员">
+<LabelWorkbench "工作台">
+<LabelSettings "设置">
+<LabelLogout "退出">
