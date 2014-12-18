@@ -82,6 +82,9 @@ define(['lodash'], function(_) {
             // **@returns** a promise with a list of all the clusters Calamari knows about.
             getList: function() {
                 return this.restangular.all('cluster').getList().then(function(clusters) {
+                    clusters = _.sortBy(clusters, function(cluster){
+                        return cluster.name;
+                    });
                     return clusters;
                 });
             },
