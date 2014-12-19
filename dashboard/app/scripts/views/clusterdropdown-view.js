@@ -12,7 +12,7 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
         template: JST['app/scripts/templates/clusterdropdown.ejs'],
         tagName: 'ul',
         className: 'nav pull-right',
-        rowTemplate: _.template('<li><a class="cluster" tabindex="-1" href="#" data-id="<%- id %>"><%- name %></a></li>'),
+        rowTemplate: _.template('<li><a class="cluster" tabindex="-1" href="#" data-id="<%- id %>"><%- name %> [<%- id_short %>]</a></li>'),
         ui: {
             'label': '.dropdown-toggle',
             'menu': '.dropdown-menu'
@@ -23,6 +23,7 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.collection = new Clusters();
+            this.collection.comparator = 'name';
             this.listenTo(this.collection, 'sync', this.render);
             this.listenTo(this, 'render', this.postRender);
             _.bindAll(this, 'clusterHandler');
@@ -44,13 +45,15 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
             var t = this.rowTemplate;
             var markup = [];
             this.collection.each(function(m) {
+                m.set('id_short', m.get('id').substring(0, 8));
                 log.debug(m.toJSON());
                 markup.push(t(m.toJSON()));
             });
             this.ui.menu.html(markup.join(''));
             this.cluster = this.collection.first();
+            var text = this.cluster.get('name') + ' [' + this.cluster.get('id_short') + ']';
             this.ui.label.html(this.clusterLabelTemplate({
-                text: this.cluster.get('name')
+                text: text
             }));
             this.App.vent.trigger('cluster:update', this.cluster);
         },

@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash'], function() {
+    define(['lodash'], function(_) {
 
         var ClusterController = function($location, $route, $scope, ClusterResolver, ClusterService, config, $modal, $http) {
             ClusterResolver.then(function() {
@@ -11,8 +11,13 @@
                 }
                 $scope.clusterDropdownTemplate = 'views/cluster-dropdown.html';
                 $scope.selectedCluster = ClusterService.clusterModel;
+                $scope.selectedCluster.id_short = ClusterService.clusterModel.id.substring(0, 8);
 
                 ClusterService.getList().then(function(clusters) {
+                    console.log(clusters);
+                    _.each(clusters, function(cluster){
+                        cluster.id_short = cluster.id.substring(0, 8);
+                    });
                     $scope.clusters = clusters;
                 });
             });
