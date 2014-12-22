@@ -14,7 +14,6 @@
                 $scope.selectedCluster.id_short = ClusterService.clusterModel.id.substring(0, 8);
 
                 ClusterService.getList().then(function(clusters) {
-                    console.log(clusters);
                     _.each(clusters, function(cluster){
                         cluster.id_short = cluster.id.substring(0, 8);
                     });
@@ -23,10 +22,15 @@
             });
 
             $scope.switchCluster = function(cluster) {
-                if (cluster.id === $scope.selectedCluster.id) {
+                if ($scope.selectedCluster && cluster.id === $scope.selectedCluster.id) {
                     return;
                 }
                 else {
+                    // Remember the last cluster selection in localStorage
+                    if(typeof(Storage)!=="undefined") {
+                        localStorage.setItem('cluster', JSON.stringify(cluster.id));
+                    }
+
                     $scope.selectedCluster = cluster;
                     ClusterService.switchCluster(cluster);
                     $route.reload();
