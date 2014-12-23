@@ -35,6 +35,10 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
         clusterHandler: function(evt) {
             var $target = $(evt.target);
             var id = $target.attr('data-id');
+            // Remember the last cluster selection in localStorage
+            if(typeof(Storage)!=="undefined") {
+                localStorage.setItem('cluster', JSON.stringify(id));
+            }
             this.ui.label.html(this.clusterLabelTemplate({
                 text: $target.text()
             }));
@@ -50,7 +54,23 @@ define(['jquery', 'underscore', 'templates', 'backbone', 'loglevel', 'collection
                 markup.push(t(m.toJSON()));
             });
             this.ui.menu.html(markup.join(''));
-            this.cluster = this.collection.first();
+
+            var cluster = this.collection.first();
+            if(typeof(Storage)!=="undefined") {
+                var lastClusterId = JSON.parse(localStorage.getItem('cluster'));
+                var lastCluster = undefined;
+                if (!_.isUndefined(lastClusterId)) {
+                    lastCluster = this.collection.get(lastClusterId);
+                }
+                if (!_.isUndefined(lastCluster)) {
+                    cluster = lastCluster;
+                }
+                else {
+                    localStorage.setItem('cluster', JSON.stringify(cluster.id));
+                }
+            }
+            this.cluster = cluster;
+            
             var text = this.cluster.get('name') + ' [' + this.cluster.get('id_short') + ']';
             this.ui.label.html(this.clusterLabelTemplate({
                 text: text

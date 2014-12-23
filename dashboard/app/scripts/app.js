@@ -205,7 +205,18 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
             App: App
         });
         clusterMenu.fetch().done(function() {
-            clusterDeferred.resolve(clusterMenu.collection.first());
+            var cluster = clusterMenu.collection.first();
+            if(typeof(Storage)!=="undefined") {
+                var lastClusterId = JSON.parse(localStorage.getItem('cluster'));
+                var lastCluster = undefined;
+                if (!_.isUndefined(lastClusterId)) {
+                    lastCluster = clusterMenu.collection.get(lastClusterId);
+                }
+                if (!_.isUndefined(lastCluster)) {
+                    cluster = lastCluster;
+                }
+            }
+            clusterDeferred.resolve(cluster);
         });
         clusterDeferred.promise().done(function(cluster) {
             // **All the following components need to know what cluster they are operating against.**

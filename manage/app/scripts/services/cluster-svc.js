@@ -69,6 +69,24 @@ define(['lodash'], function(_) {
                 return this.getList().then(function(clusters) {
                     if (clusters.length) {
                         var cluster = _.first(clusters);
+
+                        // Fetch the last selected cluster from localStorage
+                        if(typeof(Storage)!=="undefined") {
+                            var lastClusterId = JSON.parse(localStorage.getItem('cluster'));
+                            var lastCluster = undefined;
+                            if(!_.isUndefined(lastClusterId)) {
+                                lastCluster = _.find(clusters, function(cluster) {
+                                    return cluster.id === lastClusterId;
+                                })
+                            }
+                            if(!_.isUndefined(lastCluster)) {
+                                cluster = lastCluster;
+                            }
+                            else {
+                                localStorage.setItem('cluster', JSON.stringify(cluster.id));
+                            }
+                        }
+
                         self.clusterId = cluster.id;
                         self.clusterModel = cluster;
                         return;
