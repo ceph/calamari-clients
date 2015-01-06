@@ -14,6 +14,11 @@
                 return;
             }
 
+            // If the collection doesn't have 'POST' in 'Allow' reponse header,
+            // both add and delete action will be disabled
+            $scope.isAddAllowed = false;
+            $scope.isDeleteAllowed = false;
+
             var errorHelper = ErrorHelpers.makeFunctions($q, $log);
 
             // **copyPools**
@@ -68,8 +73,11 @@
                     $rootScope.keyTimer = undefined;
                 }
                 // Refresh pools metadata from API.
-                PoolService.getList().then(function(pools) {
-                    $scope.pools = updatePools(copyPools(pools), $scope.pools);
+                PoolService.getListFull().then(function(result) {
+                    $scope.pools = updatePools(copyPools(result.data), $scope.pools);
+                    var headers = result.headers('Allow');
+                    $scope.isAddAllowed = headers && headers.indexOf('POST') > 0;
+                    $scope.isDeleteAllowed = $scope.isAddAllowed;
                 });
                 // Re-install poll function for next cycle.
                 $rootScope.keyTimer = $timeout(refreshPools, config.getPollTimeoutMs());
@@ -100,14 +108,17 @@
             $scope.up = false;
 
             var start = Date.now();
-            PoolService.getList().then(function(pools) {
+            PoolService.getListFull().then(function(result) {
                 // Pool metadata received. Process and render page.
                 var elapsed = Date.now() - start;
                 var timeout = elapsed < 500 ? 500 - elapsed : 0;
                 $timeout(function() {
                     // Defer pool metadata processing to give animations
                     // time to run.
-                    $scope.pools = copyPools(pools);
+                    $scope.pools = copyPools(result.data);
+                    var headers = result.headers('Allow');
+                    $scope.isAddAllowed = headers && headers.indexOf('POST') > 0;
+                    $scope.isDeleteAllowed = $scope.isAddAllowed;
                 }, timeout);
                 // Install initial refreshPools polling handler.
                 $rootScope.keyTimer = $timeout(refreshPools, config.getPollTimeoutMs());

@@ -11,6 +11,11 @@ define(['lodash'], function(_) {
                     return config;
                 });
             },
+            getFull: function() {
+                return this.restangular.clusterFull().one('osd_config').get().then(function(config) {
+                    return config;
+                });
+            },
             patch: function(config) {
                 return this.restangular.clusterFull().one('osd_config').patch(config);
             }
