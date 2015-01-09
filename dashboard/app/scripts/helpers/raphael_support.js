@@ -70,7 +70,7 @@ define(['underscore', 'raphael'], function() {
             path.push(hdashes(ox, y, xp, step));
             return path.join('');
         };
-    var calculatePosition = function(index, ox, oy, w, h, step, totalNoOsds) {
+    var calculatePosition = function(index, ox, oy, w, h, step, totalNoOsds, cluster) {
             var cols = (w / step) - 1;
             //console.log(cols + ' / ' + rows);
             var startX = ox + step;
@@ -98,9 +98,15 @@ define(['underscore', 'raphael'], function() {
             };
 
         };
+    // OSD positions will change when the cluster is changed
+    // This hash function will force recalculation
+    var calculatePositionHash = function(index, ox, oy, w, h, step, totalNoOsds, cluster) {
+            return cluster + '-' + index;
+        };
     return {
         calcGrid: calcGrid,
-        calcPosition: calculatePosition
+        calcPosition: calculatePosition,
+        calculatePositionHash: calculatePositionHash
     };
 });
 

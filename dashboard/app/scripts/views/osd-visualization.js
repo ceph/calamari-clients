@@ -45,6 +45,8 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         timeout: 3000,
         // Promise used to gate when OSD Viz is fully initialized.
         readyPromise: null,
+        // To find if cluster is changed between refresh
+        clusterChanged: false,
         ui: {
             'cardTitle': '.card-title',
             viz: '.viz',
@@ -139,10 +141,19 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
                 this.collection.update.apply(this.collection);
             } else {
                 var vent = this.App.vent;
+                var self = this;
+                var clusterLocal = this.collection.cluster;
                 this.collection.fetch({
                     timeout: this.timeout,
                     error: this.fetchError
                 }).then(function() {
+                    // If cluster is changed and customSort is on, then re-render OSDs
+                    if (self.clusterChanged && clusterLocal === self.collection.cluster) {
+                        self.clusterChanged = false;
+                        if(self.customSort) {
+                            self.reset();
+                        }
+                    }
                     // after collection update update the filter counts
                     vent.trigger('filter:update');
                 });
@@ -155,6 +166,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         switchCluster: function(cluster) {
             if (cluster) {
                 this.collection.cluster = cluster.get('id');
+                this.clusterChanged = true;
             }
         },
         // **setupAnimations**
@@ -291,12 +303,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             this.lookupPositionById = _.map(_.range(this.columns * this.rows), function(id) {
                 return this.calcColAndRow(id);
             }.bind(this));
-            // WARNING - this function is being memoized in the full knowledge only the first
-            // parameter to calc position is being used for look ups. This is ok in this
+            // WARNING - this function is being memoized in the full knowledge only index
+            // and clusterId is being used for look ups. This is ok in this
             // particular application, if the grid were to change shape or size dynamically
-            // then this would no longer be true. You would need to write a hash function for memoize
-            // that took this into account.
-            this.calcPosition = _.memoize(Rs.calcPosition);
+            // then this would no longer be true. You would need to mofify the hash function for memoize
+            // to this into account.
+            this.calcPosition = _.memoize(Rs.calcPosition, Rs.calculatePositionHash);
         },
         // **toFullscreenTransitionTwo** part 2 or 2 of animation transition to workbench.
         toFullscreenTransitionTwo: function() {
@@ -336,7 +348,12 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
         },
         // **addOSD** Add a new OSD to grid. Perform animation.
         addOSD: function(model) {
-            this.moveCircle(model, this.collection.indexOf(model));
+            // Position of the OSDs and hostgroups needs to be re-calculated
+            // when the cluster has changed
+            // The OSDs will be automatically added to the grid in other scenarios
+            if (!this.customSort || !this.clusterChanged) {
+                this.moveCircle(model, this.collection.indexOf(model));
+            }
         },
         // **cleanupModelView**
         // Perform clean up of SVG elements and animate removal.
@@ -398,7 +415,7 @@ define(['jquery', 'underscore', 'backbone', 'helpers/raphael_support', 'template
             }
             var totalNoOsds = model.collection.length;
             var start = this.startPosition[Math.floor(Math.random() * 4)];
-            var end = this.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step, totalNoOsds);
+            var end = this.calcPosition(index, this.originX, this.originY, this.width, this.height, this.step, totalNoOsds, this.collection.cluster);
             this.animateCircleTraversal(start.x + this.originX, start.y + this.originY, 8, end.nx, end.ny, end.customSortx, model);
         },
         // **hex** Hexadecimalize value with correct prefix and length.
