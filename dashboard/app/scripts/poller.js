@@ -154,13 +154,13 @@ define(['jquery', 'underscore', 'backbone', 'loglevel', 'models/usage-model', 'm
             ];
             this.pollers = [
                     'healthPoller',
-                    'hostUpdateEvent',
-                    'iopsUpdateEvent',
                     'krakenHeartBeatPoller',
+                    'statusPoller',
+                    'usagePoller',
                     'osdUpdateEvent',
                     'poolUpdateEvent',
-                    'statusPoller',
-                    'usagePoller'
+                    'hostUpdateEvent',
+                    'iopsUpdateEvent'
             ];
         },
         // **updateModels**
@@ -184,13 +184,21 @@ define(['jquery', 'underscore', 'backbone', 'loglevel', 'models/usage-model', 'm
         },
         // **stop**
         // Stop and Remove All Currently running Pollers.
-        // TODO Extend to clean up event emitters.
         stop: function() {
             _.each(this.timers, function(timer) {
                 var id = this[timer + 'Timer'];
                 clearTimeout(id);
                 this[timer + 'Timer'] = null;
             }, this);
+            //Clean up event emitters
+            clearTimeout(this['osdUpdateTimer']);
+            clearTimeout(this['poolUpdateTimer']);
+            clearTimeout(this['hostUpdateTimer']);
+            clearTimeout(this['iopsUpdateTimer']);
+            this['osdUpdateTimer'] = null;
+            this['poolUpdateTimer'] = null;
+            this['hostUpdateTimer'] = null;
+            this['iopsUpdateTimer'] = null;
         }
     });
 });
