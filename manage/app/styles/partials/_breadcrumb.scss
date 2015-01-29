@@ -30,6 +30,7 @@ $third-row-height: 120px;
 }
 
 .navbar .navbar-nav > li > a {
+	padding: 15px 0 10px 15px;
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
         @include background(linear-gradient(bottom, darken($itdarkred, 20%), darken($itred, 40%)));
