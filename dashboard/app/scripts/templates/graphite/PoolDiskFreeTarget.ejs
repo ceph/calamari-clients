@@ -1,1 +1,1 @@
-scale(ceph.cluster.<%- clusterName %>.df.<%- metric %>, 1024)
+sumSeries( scale(ceph.cluster.<%- clusterName %>.df.<%- metric1 %>,1024) , ceph.cluster.<%- clusterName %>.df.<%- metric2 %> )

@@ -32,7 +32,6 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
     // We do it this way because we know which metrics want ahead of time, but need
     // to dynamically fill in the hostname and subkey we need to request usually after
     // making a 2nd request to graphite to find out what subkeys are available.
-
     function makeTargetTemplate(path) {
         var template = JST[path];
         return function(metrics) {
@@ -43,6 +42,26 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
                 return _.map(metrics, function(metric) {
                     return $.trim(template({
                         metric: metric,
+                        hostname: escapeHostname(hostname),
+                        id: id,
+                        clusterName: clusterName
+                    }));
+                });
+            };
+        };
+    }
+    // special template function to support old and new disk usage df_stats
+   function makePoolDiskFreeTargetTemplate(path) {
+        var template = JST[path];
+        return function(metrics) {
+            // pre-bind the metrics list using partial application
+            return function(hostname, id, clusterName) {
+                // returns a list of metrics target values as an array
+                // e.g. [ 'servers.mira064.memory.Active' ]
+                return _.map(metrics, function(metric) {
+                    return $.trim(template({
+                        metric1: metric.split(":")[0],
+                        metric2: metric.split(":")[1],
                         hostname: escapeHostname(hostname),
                         id: id,
                         clusterName: clusterName
@@ -62,7 +81,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, backbon
         makeIOStatIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/IOStatIOPSTargets.ejs'),
         makeNetworkTargets: makeTargetTemplate('app/scripts/templates/graphite/NetworkTargets.ejs'),
         makePoolIOPSTargets: makeTargetTemplate('app/scripts/templates/graphite/PoolIOPSTarget.ejs'),
-        makePoolDiskFreeTargets: makeTargetTemplate('app/scripts/templates/graphite/PoolDiskFreeTarget.ejs'),
+        makePoolDiskFreeTargets: makePoolDiskFreeTargetTemplate('app/scripts/templates/graphite/PoolDiskFreeTarget.ejs'),
         // **makeHeightWidthParams**
         // Construct height and width parameters for graphite.
         makeHeightWidthParams: function(width, height) {
