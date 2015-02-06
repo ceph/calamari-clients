@@ -133,6 +133,7 @@ $bc-margin: 4;
 $bc-item-count: 4;
 .nav.navbar {
     border-bottom: 1px solid $itgray;
+    min-height: 68px;
 }
 .inknav {
     @include user-select(none);	
