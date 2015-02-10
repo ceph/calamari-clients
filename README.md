@@ -50,7 +50,7 @@ How to Build Clients
 4. Ruby gem and `compass` via `gem`
 5. make sure your system has a recent gnu compatible `make` binary
 4. checkout the code `git clone git@github.com:ceph/calamari-clients.git`
-5. cd into `clients`
+5. cd into `calamari-clients`
 6. to build: `make dist`
 
 This will build all the modules.
