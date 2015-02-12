@@ -1,0 +1,18 @@
+{% set username = salt['environ.get']('SUDO_USER', 'vagrant') %}
+
+{% if username == 'vagrant' %}
+
+{%    set home = '/home/vagrant' %}
+{%    set gitname = 'clients' %}
+{%    set builddir = '/home/vagrant' %}
+{%    set pkgdest = '/git' %}
+
+{% else %}
+
+{%    set home = salt['user.info'](username)['home'] %}
+{%    set gitname = 'calamari-clients' %}
+{%    set builddir = salt['environ.get']('WORKSPACE', home) %}
+{%    set pkgdest = builddir %}
+
+{% endif %}
+
