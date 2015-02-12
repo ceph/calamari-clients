@@ -1,3 +1,4 @@
+{% import 'setvars' as vars with context %}
 full_build_deps:
   pkg.installed:
     - pkgs:
@@ -43,5 +44,5 @@ compass:
 
 fix_mode:
     cmd.run:
-        - name: chown -R vagrant:vagrant /home/vagrant
+        - name: chown -R {{vars.username}}:{{vars.username}} {{vars.home}}
         - user: root
