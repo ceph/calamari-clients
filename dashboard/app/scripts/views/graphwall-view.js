@@ -598,7 +598,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         // Request the available disk space per OSD ID.
         makeHostDeviceDiskSpaceBytes: function(hostname, id) {
             this.updateBtns(id);
-            return this.makePerHostModelGraphs(hostname, 'makeDiskSpaceBytesGraphUrl', this.getOSDIDs());
+            return this.makePerHostModelGraphs(hostname, 'makeDiskSpaceBytesGraphUrl', this.getOSDIDs(), this.collection.clusterName);
         },
         // **makeHostDeviceDiskSpaceInodes**
         // Request the available inode capacity per OSD ID.
