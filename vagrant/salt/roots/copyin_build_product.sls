@@ -1,4 +1,6 @@
+{% import 'setvars' as vars with context %}
+
 copyin_build_product:
   cmd.run:
-    - name: cp /git/calamari-clients*tar.gz /home/vagrant/clients
-    - user: vagrant
+    - name: cp {{vars.pkgdest}}/calamari-clients*tar.gz {{vars.builddir}}/{{vars.gitname}}
+    - user: {{vars.username}}
