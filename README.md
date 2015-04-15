@@ -45,7 +45,7 @@ How to Build Clients
 **Note**: *These instructions are deliberately non-system specific. Please visit the [wiki](https://github.com/ceph/calamari-clients/wiki) and help us write better more distro and release specific instructions.*
 
 1. install **nodejs**, a recent version like 0.10.
-2. install **npm**
+2. install **npm**, a recent version (1.4 cause troubles building package, use sudo npm install -g npm@next)
 3. install `grunt-cli` globally via `npm`
 4. Ruby gem and `compass` via `gem`
 5. make sure your system has a recent gnu compatible `make` binary
