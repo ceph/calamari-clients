@@ -22,7 +22,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
         growlTemplate: JST['app/scripts/templates/growl.ejs'],
         throttleMs: 10000,
         throttleCount: 3,
-        krakenFailThreshold: 1000 * 60 * 15,
+        krakenFailThreshold: 1000 * 60 * 5,
         timeoutCount: 0,
         initialize: function() {
             this.App = Backbone.Marionette.getOption(this, 'App');
@@ -41,7 +41,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
         },
         // **heartBeat**
         // Kraken HeartBeat Check. Compare the last cluster update time stamp against the current
-        // time and report an error if they have diverged more than 15 minutes. This can
+        // time and report an error if they have diverged more than 5 minutes. This can
         // indicate loss of communication.
         heartBeat: function(model) {
             if (model) {
