@@ -5,15 +5,14 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
     var LoginBox = Backbone.View.extend({
         events: {
             'click input[type="submit"]': 'loginHandler',
-            'submit form': 'loginHandler',
-            'input input[name="username"],input[name="password"]': 'loginToggle'
+            'submit form': 'loginHandler'
         },
         ui: {},
         iconTemplate: _.template('<i class="<%- iconClazz %>" icon-large"></i>'),
         initialize: function() {
             _.bindAll(this, 'loginHandler', 'loginToggle', 'toJSON', 'disableSubmit', 'enableSubmit', 'showErrors', 'hideErrors');
             // Issue #8352 Workaround Browser Autofill not sending input event
-            setTimeout(function() {
+            setInterval(function() {
                 this.loginToggle();
             }.bind(this), 500);
         },
