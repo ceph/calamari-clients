@@ -1,7 +1,7 @@
 /* global define */
 (function() {
     'use strict';
-    define(['lodash', 'angular', 'RouteConfig', 'ApiModule', 'requests/requestModule', 'controllers/root', 'controllers/pool', 'controllers/osd', 'controllers/osd-host', 'controllers/pool-new', 'controllers/tools', 'controllers/pool-modify', 'navbar/navbarModule', 'services/menu', 'run', 'controllers/first', 'controllers/userdropdown', 'controllers/bell', 'services/configuration', 'services/error', 'git', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate', 'restangular'], function(_, angular, RouteConfig, APIModule, RequestModule, RootController, PoolController, OSDController, OSDHostController, PoolNewController, ToolsController, PoolModifyController, NavbarModule, MenuService, PostInitRunBlock, FirstTimeController, UserDropDownController, BellController, ConfigurationService, ErrorService, GitRunBlock) {
+    define(['lodash', 'angular', 'RouteConfig', 'ApiModule', 'requests/requestModule', 'controllers/root', 'controllers/pool', 'controllers/osd', 'controllers/osd-host', 'controllers/pool-new', 'controllers/tools', 'controllers/pool-modify', 'navbar/navbarModule', 'services/menu', 'run', 'controllers/first', 'controllers/userdropdown', 'controllers/bell', 'controllers/cluster', 'services/configuration', 'services/error', 'git', 'angular-cookies', 'angular-resource', 'angular-sanitize', 'angular-route', 'angular-strap', 'angular-animate', 'restangular'], function(_, angular, RouteConfig, APIModule, RequestModule, RootController, PoolController, OSDController, OSDHostController, PoolNewController, ToolsController, PoolModifyController, NavbarModule, MenuService, PostInitRunBlock, FirstTimeController, UserDropDownController, BellController, ClusterController, ConfigurationService, ErrorService, GitRunBlock) {
 
         // This file initializes the application node graph.
         //
@@ -40,6 +40,7 @@
             .controller('FirstTimeController', FirstTimeController)
             .controller('UserDropDownController', UserDropDownController)
             .controller('BellController', BellController)
+            .controller('ClusterController', ClusterController)
         // Services are where a module can store state. They are loaded
         // once at start up and because they're shared module wide, they can
         // be used to maintain state between controllers.

@@ -133,6 +133,9 @@ $bc-item-count: 4;
 .nav.navbar {
     border-bottom: 1px solid $itgray;
 }
+.clustermenu {
+    top: 10px;
+}
 .inknav {
     @include user-select(none);	
     display: inline-block;
