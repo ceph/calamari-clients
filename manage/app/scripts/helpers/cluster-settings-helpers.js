@@ -4,7 +4,7 @@
 
     define(['lodash'], function(_) {
 
-        function makeFunctions($log, $scope, $timeout, $q, breadcrumbs, OSDConfigService, $modal, osdConfigKeys, RequestTrackingService) {
+        function makeFunctions($log, $scope, $timeout, $q, breadcrumbs, UserService, OSDConfigService, $modal, osdConfigKeys, RequestTrackingService) {
             function getDirtyOSDConfigKeys($scope) {
                 return _.reduce(osdConfigKeys, function(results, key) {
                     if ($scope.osdmapForm[key].$dirty) {
@@ -26,6 +26,9 @@
                     $scope.updateLabel = 'UPDATE';
                     $scope.updatePrimary = true;
                     $scope.updateSuccess = false;
+                    UserService.me().then(function(user) {
+                        $scope.isReadOnly = user.isReadOnly;
+                    });
                     $scope.button = {
                         radio: 'servers'
                     };

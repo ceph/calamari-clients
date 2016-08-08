@@ -12,7 +12,7 @@
         // this way to improve readability and make it easier to test.
         //
         // @see [Angular form validation tutorial](http://scotch.io/tutorials/javascript/angularjs-form-validation)
-        var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, CrushService, ToolService, RequestTrackingService, $modal) {
+        var PoolNewController = function($location, $log, $q, $scope, PoolService, ClusterService, UserService, CrushService, ToolService, RequestTrackingService, $modal) {
             var self = this;
 
             // Set up breadcrumbs.
@@ -27,6 +27,12 @@
                     active: true
                 }
             ];
+
+            // Fetch the user permissions
+            // Actions needs to be disabled for read-only user
+            UserService.me().then(function(user) {
+                $scope.isReadOnly = user.isReadOnly;
+            });
 
             // re-calculate the pgnum if the replication size changes
             // only in new pool
@@ -119,6 +125,7 @@
             '$scope',
             'PoolService',
             'ClusterService',
+            'UserService',
             'CrushService',
             'ToolService',
             'RequestTrackingService',

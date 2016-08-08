@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="standard-spacing">
-                <button type="button" ng-click="create()" class="btn btn-md btn-primary pull-right"
+                <button type="button" ng-disabled="isReadOnly" ng-click="create()" class="btn btn-md btn-primary pull-right"
                 data-placement="center"><i class="fa fa-lg fa-fw fa-plus-square" bs-tooltip="ttCreate"></i>
 
                 </button>
@@ -23,10 +23,10 @@
                             <td ng-bind="pool.size"></td>
                             <td ng-bind="pool.pg_num"></td>
                             <td>
-                                <button type="button" ng-click="modify(pool.id)" class="btn btn-md btn-primary"><i class="fa fa-lg fa-fw fa-edit" bs-tooltip="ttEdit"></i>
+                                <button type="button" ng-disabled="isReadOnly" ng-click="modify(pool.id)" class="btn btn-md btn-primary"><i class="fa fa-lg fa-fw fa-edit" bs-tooltip="ttEdit"></i>
 
                                 </button>
-                                <button type="button" ng-click="remove(pool)" class="btn btn-md btn-danger"><i class="fa fa-lg fa-fw fa-trash-o" bs-tooltip="ttDelete"></i>
+                                <button type="button" ng-disabled="isReadOnly" ng-click="remove(pool)" class="btn btn-md btn-danger"><i class="fa fa-lg fa-fw fa-trash-o" bs-tooltip="ttDelete"></i>
 
                                 </button>
                             </td>

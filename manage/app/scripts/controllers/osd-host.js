@@ -28,7 +28,7 @@
         // Most of the complexity in this controller is in dealing with polling Calamari API
         // and merging the results with the current view.
         //
-        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService, config, $rootScope) {
+        var OSDHostController = function($q, $log, $scope, $routeParams, ClusterService, UserService, ServerService, $location, OSDService, $modal, $timeout, RequestTrackingService, PoolService, config, $rootScope) {
 
             // Inject dependencies into Error Helpers.
             var errorHelpers = ErrorHelpers.makeFunctions($q, $log);
@@ -57,6 +57,12 @@
                     active: true
                 }
             ];
+
+            // Fetch the user permissions
+            // Actions needs to be disabled for read-only user
+            UserService.me().then(function(user) {
+                $scope.isReadOnly = user.isReadOnly;
+            });
 
             // **displayFn** Click handler for the ui info icon.
             // Pop a modal with detail about the OSD being viewed.
@@ -409,6 +415,6 @@
             });
 
         };
-        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', 'RequestTrackingService', 'PoolService', 'ConfigurationService', '$rootScope', OSDHostController];
+        return ['$q', '$log', '$scope', '$routeParams', 'ClusterService', 'UserService', 'ServerService', '$location', 'OSDService', '$modal', '$timeout', 'RequestTrackingService', 'PoolService', 'ConfigurationService', '$rootScope', OSDHostController];
     });
 })();

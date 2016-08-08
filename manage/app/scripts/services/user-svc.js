@@ -17,7 +17,10 @@ define(['lodash'], function(_) {
                 });
             },
             me: function() {
-                return this.get('me');
+                return this.get('me').then(function(me) {
+                    me.isReadOnly = true;
+                    return me;
+                });
             },
             logout: function() {
                 return this.restv1.one('auth').one('logout').get();

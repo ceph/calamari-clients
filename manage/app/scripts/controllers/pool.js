@@ -6,13 +6,19 @@
         // **PoolController**
         // Responsible for the initial pool overview. A tabular overview of which pools have been defined
         // on this cluster. This screen lets you add, edit, and delete pools.
-        var PoolController = function($q, $log, $scope, PoolService, ClusterService, $location, $modal, RequestTrackingService, $rootScope, $timeout, config) {
+        var PoolController = function($q, $log, $scope, PoolService, ClusterService, UserService, $location, $modal, RequestTrackingService, $rootScope, $timeout, config) {
             if (ClusterService.clusterId === null) {
                 // Redirect back to first view if no clusters are active
                 // on this Calamari instance.
                 $location.path(config.getFirstViewPath());
                 return;
-            }
+            
+
+            // Fetch the user permissions
+            // Actions needs to be disabled for read-only user
+            UserService.me().then(function(user) {
+                $scope.isReadOnly = user.isReadOnly;
+            });
 
             var errorHelper = ErrorHelpers.makeFunctions($q, $log);
 
@@ -160,6 +166,6 @@
                 };
             };
         };
-        return ['$q', '$log', '$scope', 'PoolService', 'ClusterService', '$location', '$modal', 'RequestTrackingService', '$rootScope', '$timeout', 'ConfigurationService', PoolController];
+        return ['$q', '$log', '$scope', 'PoolService', 'ClusterService', 'UserService', '$location', '$modal', 'RequestTrackingService', '$rootScope', '$timeout', 'ConfigurationService', PoolController];
     });
 })();
