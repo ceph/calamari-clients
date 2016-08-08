@@ -243,7 +243,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     fillGraph: true
                 }
             }, {
-                metrics: ['total_avail', 'total_used'],
+                metrics: ['total_avail_bytes', 'total_used_bytes'],
                 fn: 'makePoolDiskFreeGraphURL',
                 util: 'makePoolDiskFreeTargets',
                 titleTemplate: 'TitleGraphPoolTotalDiskFree',
