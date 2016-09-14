@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "dependencies": {},
   "devDependencies": {
+    "tmp": "0.0.23",
+    "bower": "~1.2.8",
     "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.9",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-coffee": "~0.7.0",
@@ -26,7 +29,7 @@
     "connect-livereload": "~0.2.0",
     "grunt-google-cdn": "~0.2.0",
     "grunt-ngmin": "~0.0.2",
-    "yo": "~1.0.0",
+    "yo": "~1.1.0",
     "generator-angular": "0.4.0",
     "grunt-git-describe": "~2.3.2"
   },
