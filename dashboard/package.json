@@ -4,7 +4,10 @@
   "dependencies": {
   },
   "devDependencies": {
+    "tmp": "0.0.23",
+    "bower": "~1.2.8",
     "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.9",
     "grunt-contrib-copy": "~0.4.0",
     "grunt-contrib-concat": "~0.2.0",
     "grunt-contrib-coffee": "~0.6.6",
@@ -26,7 +29,6 @@
     "grunt-open": "~0.2.0",
     "matchdep": "~0.1.2",
     "grunt-docco": "~0.3.0",
-    "grunt-cli": "~0.1.9",
     "generator-backbone": "~0.1.9",
     "grunt-newer": "~0.5.3",
     "grunt-git-describe": "~2.3.2",

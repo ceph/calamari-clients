@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "dependencies": {},
   "devDependencies": {
+    "tmp": "0.0.23",
+    "bower": "~1.2.8",
     "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.9",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-coffee": "~0.7.0",
